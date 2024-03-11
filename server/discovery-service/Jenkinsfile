@@ -107,7 +107,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f discovery"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Service_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name discovery --network front " + repository + ":Discovery_Server_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name discovery --network front " + repository + ":Discovery_Service_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
