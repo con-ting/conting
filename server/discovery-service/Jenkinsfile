@@ -49,7 +49,7 @@ pipeline {
                 stage('Build Discovery-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Discovery_Server_${BUILD_NUMBER}", "-f server/discovery-service/Dockerfile ./server/discovery-service")
+                            dockerImage = docker.build("${repository}:Discovery_Service_${BUILD_NUMBER}", "-f server/discovery-service/Dockerfile ./server/discovery-service")
                         }
                     }
                 }
@@ -87,7 +87,7 @@ pipeline {
                                     configName: "Cloud_Center",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep Discovery_Server | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep discovery | tr ' ' '\t' | cut -f1)"),
                                         sshTransfer(execCommand: "sudo docker system prune -af")
                                     ]
                                 )
@@ -105,8 +105,8 @@ pipeline {
                                     configName: "Cloud_Center",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker rm -f Discovery_Server"),
-                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Server_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker rm -f discovery"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Service_${BUILD_NUMBER}"),
                                         sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name discovery --network front " + repository + ":Discovery_Server_${BUILD_NUMBER}")
                                     ]
                                 )
