@@ -49,7 +49,7 @@ pipeline {
                 stage('Build Discovery-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Discovery_Server_${BUILD_NUMBER}", "-f BackEnd/service-discovery/Dockerfile ./BackEnd/service-discovery")
+                            dockerImage = docker.build("${repository}:Discovery_Server_${BUILD_NUMBER}", "-f server/discovery-service/Dockerfile ./server/discovery-service")
                         }
                     }
                 }
@@ -65,7 +65,7 @@ pipeline {
                 stage('Push Discovery-Server Image to DockerHub'){
                     steps {
                         script {
-                            sh "docker push \${repository}:Discovery_Server_\${BUILD_NUMBER}"
+                            sh "docker push \${repository}:Discovery_Service_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -73,7 +73,7 @@ pipeline {
                 stage('Clean Discovery-Server Image'){
                     steps{
                         script{
-                            sh "docker rmi \${repository}:Discovery_Server_\${BUILD_NUMBER}"
+                            sh "docker rmi \${repository}:Discovery_Service_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -107,7 +107,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f Discovery_Server"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Server_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name Discovery_Server --network front " + repository + ":Discovery_Server_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name discovery --network front " + repository + ":Discovery_Server_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
