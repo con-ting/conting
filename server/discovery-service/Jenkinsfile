@@ -30,6 +30,7 @@ pipeline {
                    endpoint: "${env.MM_WEBHOOK}",
                    channel: 'C209_CICD'
                    )
+                   echo "${env.MM_WEBHOOK}"
                }
            }
        failure {
@@ -41,6 +42,7 @@ pipeline {
                endpoint: "${env.MM_WEBHOOK}",
                channel: 'C209_CICD'
                )
+               echo "${env.MM_WEBHOOK}"
            }
        }
        unstable {
@@ -52,6 +54,7 @@ pipeline {
                endpoint: "${env.MM_WEBHOOK}",
                channel: 'C209_CICD'
                )
+               echo "${env.MM_WEBHOOK}"
            }
        }
     }
