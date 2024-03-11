@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+    }
     agent any
 
     stages {
@@ -11,13 +16,104 @@ pipeline {
             }
         }
 
-        stage('Build Discovery-Server .JAR') {
+        stage('Confirm Echo') {
             steps {
                 script {
                     echo "discovery server 입니다."
                 }
             }
         }
+         stage('Build Discovery-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "discovery server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/discovery-service/gradlew'
+                            sh '''
+                                cd ./server/discovery-service
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Discovery-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:Discovery_Server_${BUILD_NUMBER}", "-f BackEnd/service-discovery/Dockerfile ./BackEnd/service-discovery")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push Discovery-Server Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:Discovery_Server_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean Discovery-Server Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:Discovery_Server_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Cloud_Center",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep Discovery_Server | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Cloud_Center",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f Discovery_Server"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Server_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name Discovery_Server --network front " + repository + ":Discovery_Server_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
     }
 
     post {
