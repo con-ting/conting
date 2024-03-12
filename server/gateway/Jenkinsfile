@@ -1,12 +1,10 @@
 pipeline {
-<<<<<<< HEAD
-=======
     environment {
         repository = "1w2k/c209"
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
     }
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
     agent any
 
     stages {
@@ -19,19 +17,13 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
-        stage('Build Discovery-Server .JAR') {
-=======
         stage('Confirm Echo') {
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
             steps {
                 script {
                     echo "discovery server 입니다."
                 }
             }
         }
-<<<<<<< HEAD
-=======
          stage('Build Discovery-Server .JAR') {
                     steps {
                         script {
@@ -46,9 +38,9 @@ pipeline {
                             sh 'ls -al'
                             //gradlew 빌드
                             sh 'java --version'
-                            sh 'chmod +x ./server/discovery-service/gradlew'
+                            sh 'chmod +x ./server/gateway/gradlew'
                             sh '''
-                                cd ./server/discovery-service
+                                cd ./server/gateway
                                 ./gradlew clean build
                             '''
                         }
@@ -58,7 +50,7 @@ pipeline {
                 stage('Build Discovery-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Discovery_Service_${BUILD_NUMBER}", "-f server/discovery-service/Dockerfile ./server/discovery-service")
+                            dockerImage = docker.build("${repository}:Gateway_${BUILD_NUMBER}", "-f server/gateway/Dockerfile ./server/gateway")
                         }
                     }
                 }
@@ -71,18 +63,18 @@ pipeline {
                     }
                 }
 
-                stage('Push Discovery-Server Image to DockerHub'){
+                stage('Push Gateway Image to DockerHub'){
                     steps {
                         script {
-                            sh "docker push \${repository}:Discovery_Service_\${BUILD_NUMBER}"
+                            sh "docker push \${repository}:Gateway_\${BUILD_NUMBER}"
                         }
                     }
                 }
 
-                stage('Clean Discovery-Server Image'){
+                stage('Clean Gateway Image'){
                     steps{
                         script{
-                            sh "docker rmi \${repository}:Discovery_Service_\${BUILD_NUMBER}"
+                            sh "docker rmi \${repository}:Gateway_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -96,7 +88,7 @@ pipeline {
                                     configName: "Cloud_Center",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep discovery | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
                                         sshTransfer(execCommand: "sudo docker system prune -af")
                                     ]
                                 )
@@ -114,16 +106,15 @@ pipeline {
                                     configName: "Cloud_Center",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker rm -f discovery"),
-                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Discovery_Service_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8761:8761 --name discovery " + repository + ":Discovery_Service_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker rm -f gateway"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" " + repository + ":Gateway_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
                         )
                     }
                 }
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
     }
 
     post {
