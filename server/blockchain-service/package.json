@@ -1,0 +1,20 @@
+{
+	"type": "module",
+	"scripts": {
+		"build": "tsc --outDir build",
+		"start": "node build/index.js"
+	},
+	"dependencies": {
+		"@metaplex-foundation/mpl-bubblegum": "^3.1.2",
+		"@metaplex-foundation/mpl-token-metadata": "^3.2.1",
+		"@metaplex-foundation/umi": "^0.9.1",
+		"@metaplex-foundation/umi-bundle-defaults": "^0.9.1",
+		"@solana/web3.js": "^1.91.0",
+		"dotenv": "^16.4.5",
+		"fastify": "^4.26.2"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.26",
+		"typescript": "^5.4.2"
+	}
+}
