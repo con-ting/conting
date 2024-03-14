@@ -34,7 +34,7 @@ export const BasicButton = (props: BasicButtonProps) => {
           style={{
             backgroundColor: props.backgroundColor,
             borderRadius: widthPercent(props.borderRadius),
-            borderWidth: widthPercent(0.5),
+            borderWidth: widthPercent(0.8),
             borderColor: props.borderColor,
             paddingVertical: heightPercent(12),
             alignItems: 'center',
@@ -142,7 +142,7 @@ export const GrayButton = (props: ButtonProps) => {
 export const BlackButton = (props: ButtonProps) => {
     return (
       <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINBLACK} borderColor={Color.MAINYELLOR} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINWHITE, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
+          <Text style={{color: Color.MAINYELLOR, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
               {props.btnText}
           </Text>
       </BasicButton>
