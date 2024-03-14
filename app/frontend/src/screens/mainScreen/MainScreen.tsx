@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import EventCard from '../../components/SingerDetail/EventCard';
 import SingerProfile from '../../components/SingerDetail/SingerProfile';
-import AlbumCard from '../../components/SingerDetail/AlbumCard';
 
 export class MainScreen extends React.Component {
   render() {
