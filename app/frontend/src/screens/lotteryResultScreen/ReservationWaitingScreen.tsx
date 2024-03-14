@@ -1,14 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import { SimpleInput, MultiLineInput } from '../../components/input/input';
 
-export class ReservationWaitingScreen extends React.Component {
-  render() {
+const ReservationWaitingScreen = () => {
+    const [empId, setEmpId] = useState('');
     return (
       <View style={styles.container}>
         <Text style={styles.text}>환불대기중 페이지</Text>
+        <Text style={styles.text}>메인 페이지</Text>
+        <SimpleInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='30%' />
+        <MultiLineInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='70%' height={100} />
       </View>
     );
-  }
 }
 
 const styles = StyleSheet.create({
@@ -24,3 +27,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Jalnan2TTF',
   },
 });
+export default ReservationWaitingScreen;
