@@ -9,10 +9,6 @@ export class MainScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>메인 페이지</Text>
-        <AlbumCard
-          name="The Winning"
-          album="https://search.pstatic.net/common?type=f&size=150x150&expire=1&refresh=true&quality=100&direct=true&src=https%3A%2F%2Fmusicmeta-phinf.pstatic.net%2Falbum%2F030%2F796%2F30796788.jpg%3Ftype%3Dr204Fll%26v%3D20240223101020"
-        />
       </View>
     );
   }
