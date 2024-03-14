@@ -1,26 +1,49 @@
-import {Image, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import {fontPercent, heightPercent, widthPercent} from '../../config/Dimensions';
 
 export type profileProps = {
+  name: string;
   profile: string;
 };
 
+/**
+ * profile입입니다.
+ * @param props
+ * - name은 가수 이름
+ * - profile은 가수 프로필 상세
+ * @returns
+ * @author 강성권
+ */
 const SingerProfile = (props: profileProps) => {
   return (
     <View
-      style={{
-        width: 100,
-        height: 100,
-        overflow: 'hidden', // 넘치는 부분을 숨김
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 100,
-      }}>
+      style={styles.container}>
       <Image
-        style={{width: '100%', height: '100%', resizeMode: 'contain'}}
+        style={{width: widthPercent(80), height: heightPercent(80), borderRadius: 50 }}
         source={{uri: props.profile}}
       />
+      <Text
+      style={
+        styles.title
+      }
+      >
+        {props.name}
+      </Text>
     </View>
   );
 };
 
 export default SingerProfile;
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'black', // 배경색을 검은색으로 설정
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    color: 'white',
+    fontSize: fontPercent(16),
+    fontFamily: 'Jalnan2TTF',
+  },
+});
