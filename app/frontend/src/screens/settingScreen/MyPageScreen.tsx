@@ -1,11 +1,15 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import FamilySelectButton from '../../components/button/FamilySelectButton';
+import ConcertDateChoiceButton from '../../components/button/ConcertDateChoiceButton';
 
 export class MyPageScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>마이 페이지</Text>
+        <FamilySelectButton />
+        <ConcertDateChoiceButton />
       </View>
     );
   }
