@@ -3,7 +3,7 @@
 * 피그마 컬러팔레트 프레임 명
 */
 
-export const MAINYELLOR: string = '#FCC434';
+export const MAINYELLOW: string = '#FCC434';
 export const MAINBLACK: string = '#000000';
 export const MAINGRAY: string = '#CCCCCC';
 export const BUTTONSELECT: string = '#261D08';
