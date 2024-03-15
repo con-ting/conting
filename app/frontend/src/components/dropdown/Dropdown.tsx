@@ -4,7 +4,7 @@ import DropDownPicker, { DropDownPickerProps } from 'react-native-dropdown-picke
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 import { fontPercent } from '../../config/Dimensions';
-
+import * as ICON from 'iconsax-react-native';
 
 
 type dropdownProps = {
@@ -85,6 +85,8 @@ export const Dropdown = (props: dropdownProps) => {
       scrollViewProps={{
         nestedScrollEnabled: true,
       }}
+      ArrowUpIconComponent={({style}) => <ICON.ArrowUp2 color={Color.MAINWHITE} />}
+      ArrowDownIconComponent={({style}) => <ICON.ArrowDown2 color={Color.MAINWHITE} />}
       dropDownDirection='BOTTOM'
       zIndex={props.zIndex ? props.zIndex : 300}
       zIndexInverse={props.zIndexInverse}
