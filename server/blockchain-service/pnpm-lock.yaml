@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@metaplex-foundation/digital-asset-standard-api':
+    specifier: ^1.0.3
+    version: 1.0.3(@metaplex-foundation/umi@0.9.1)
   '@metaplex-foundation/mpl-bubblegum':
     specifier: ^3.1.2
     version: 3.1.2(@metaplex-foundation/umi@0.9.1)
@@ -31,6 +34,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.11.26
     version: 20.11.26
+  fastify-tsconfig:
+    specifier: ^2.0.0
+    version: 2.0.0
   typescript:
     specifier: ^5.4.2
     version: 5.4.2
@@ -699,6 +705,11 @@ packages:
   /fast-uri@2.3.0:
     resolution: {integrity: sha512-eel5UKGn369gGEWOqBShmFJWfq/xSJvsgDzgLYC845GneayWvXBf0lJCBn5qTABfewy1ZDPoaR5OZCP+kssfuw==}
     dev: false
+
+  /fastify-tsconfig@2.0.0:
+    resolution: {integrity: sha512-pvYwdtbZUJr/aTD7ZE0rGlvtYpx7IThHKVLBoqCKmT3FJpwm23XA2+PDmq8ZzfqqG4ajpyrHd5bkIixcIFjPhQ==}
+    engines: {node: '>=18.0.0'}
+    dev: true
 
   /fastify@4.26.2:
     resolution: {integrity: sha512-90pjTuPGrfVKtdpLeLzND5nyC4woXZN5VadiNQCicj/iJU4viNHKhsAnb7jmv1vu2IzkLXyBiCzdWuzeXgQ5Ug==}

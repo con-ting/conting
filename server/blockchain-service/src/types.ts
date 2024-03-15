@@ -7,7 +7,7 @@ export interface CollectionInput {
   creator: PublicKey
 }
 
-export interface TokenInput {
+export interface CNftInput {
   name: string
   uri: string
   sellerFeeBasisPoints: number
@@ -22,14 +22,10 @@ export interface CollectionBody {
   creator: string
 }
 
-export interface TokenBody {
+export interface CNftBody {
   name: string
   uri: string
   sellerFeeBasisPoints: number
   creator: string
   collectionMint: string
-}
-
-export interface TreeBody {
-  size: number
 }
