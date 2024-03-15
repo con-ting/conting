@@ -3,15 +3,18 @@ import {View, Text, StyleSheet} from 'react-native';
 import { SimpleInput, MultiLineInput } from '../../components/input/input';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { widthPercent } from '../../config/Dimensions';
+import { CheckBox } from '../../components/checkbox/CheckBox';
 
 const ReservationWaitingScreen = () => {
     const [empId, setEmpId] = useState('');
 
     const [dropDownTestOpen, setDropDownTestOpen] = useState(false);
+    
     const [selectedDropDownTest, setSelectedDropDownTest] = useState(null);
     const handleSidoItemSelect = (selectedValue) => {
       setSelectedDropDownTest(selectedValue);
     };
+    const [checkBoxTest, setCheckBoxTest] = useState(false);
     const hospitalData = [
       { label: '테스트1', value: '테스트벨류' },
       { label: '테스트2', value: '테스트벨류2' },
@@ -28,6 +31,8 @@ const ReservationWaitingScreen = () => {
         <MultiLineInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='70%' height={100} />
         
         <Dropdown data={hospitalData} width={widthPercent(165)} placeholder='드롭다운 테스트' zIndexInverse={10} open={dropDownTestOpen} setOpen={setDropDownTestOpen} onSelectValue={handleSidoItemSelect} textSize={12} />
+        
+        <CheckBox text='체크박스 테스트' isChecked={checkBoxTest} setIsChecked={() => setCheckBoxTest(!checkBoxTest)} />
       </View>
     );
 }
