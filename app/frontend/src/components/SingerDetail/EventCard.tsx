@@ -21,7 +21,7 @@ export type cardProps = {
  * @author 강성권
  */
 
-const EventCard = (props: cardProps) => {
+export default function EventCard(props: cardProps) {
   return (
     <View style={styles.container}>
       <View
@@ -68,8 +68,6 @@ const EventCard = (props: cardProps) => {
     </View>
   );
 };
-
-export default EventCard;
 
 const styles = StyleSheet.create({
   container: {

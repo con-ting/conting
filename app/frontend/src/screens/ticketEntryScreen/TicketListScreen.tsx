@@ -1,14 +1,19 @@
-import React from 'react';
+import {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import TicketEntryCard from './../../components/card/TicketEntryCard';
+import TicketQrCard from '../../components/card/TicketQrCard';
 
-export class TicketListScreen extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>입장권 페이지</Text>
-      </View>
-    );
+export default function TicketListScreen() {
+  const [isBack, setIsBack] = useState(false);
+  const onPress = () => {
+    setIsBack(!isBack)
   }
+
+  return (
+    <View style={styles.container}>
+      {isBack ? <TicketQrCard onPress={onPress} /> : <TicketEntryCard onPress={onPress}/>}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
