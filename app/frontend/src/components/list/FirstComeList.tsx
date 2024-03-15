@@ -1,11 +1,15 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import ConcertCard from '../card/ConcertCard';
+import SeeAllButton from '../button/SeeAllButton';
 
 export default function FisrtComeList() {
   return (
     <View>
-      <Text style={styles.title}>선착 예매</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>선착 예매</Text>
+        <SeeAllButton />
+      </View>
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -41,10 +45,16 @@ export default function FisrtComeList() {
 
 const styles = StyleSheet.create({
   container: {marginLeft: 5},
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   title: {
     fontSize: 24,
     fontFamily: 'Jalnan2TTF',
     color: '#FFFFFF',
+    margin: 10,
   },
   cards: {
     margin: 5,
