@@ -1,11 +1,8 @@
-package com.c209.catalog.domain.singer.dto;
-
+package com.c209.catalog.domain.hall.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
-
-import java.time.LocalDate;
 
 
 @Builder
@@ -14,11 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @Getter
-public class AlbumDto {
+public class HallDto {
+    private Long id;
     private String name;
-    private String image;
-    private String title;
-    private String title_url;
-    private LocalDate published_at;
-
+    private Integer total_seat_count;
+    private String address;
 }

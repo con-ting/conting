@@ -31,6 +31,7 @@ public class Singer extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+
     @Column
     private String image;
 
