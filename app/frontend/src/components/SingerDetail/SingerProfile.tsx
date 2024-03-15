@@ -14,7 +14,7 @@ export type profileProps = {
  * @returns
  * @author 강성권
  */
-const SingerProfile = (props: profileProps) => {
+export default function SingerProfile(props: profileProps){
   return (
     <View
       style={styles.container}>
@@ -33,7 +33,6 @@ const SingerProfile = (props: profileProps) => {
   );
 };
 
-export default SingerProfile;
 
 const styles = StyleSheet.create({
   container: {
