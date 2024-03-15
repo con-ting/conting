@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import { SimpleInput, MultiLineInput } from '../../components/input/input';
 import { Dropdown } from '../../components/dropdown/Dropdown';
@@ -23,18 +23,12 @@ const ReservationWaitingScreen = () => {
       { label: 'test', value: 'test' },
     ];
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>환불대기중 페이지</Text>
-        <Text style={styles.text}>메인 페이지</Text>
-        <SimpleInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='30%' />
-        <MultiLineInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='70%' height={100} />
-        
-        <Dropdown data={hospitalData} width={widthPercent(165)} placeholder='드롭다운 테스트' zIndexInverse={10} open={dropDownTestOpen} setOpen={setDropDownTestOpen} onSelectValue={handleSidoItemSelect} textSize={12} />
-        
-        <CheckBox text='체크박스 테스트' isChecked={checkBoxTest} setIsChecked={() => setCheckBoxTest(!checkBoxTest)} />
-      </View>
-    );
+export default function ReservationWaitingScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>환불대기중 페이지</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -44,6 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   text: {
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
     fontSize: 20,
