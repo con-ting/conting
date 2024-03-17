@@ -4,6 +4,8 @@ import { SimpleInput, MultiLineInput } from '../../components/input/input';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { widthPercent } from '../../config/Dimensions';
 import { CheckBox } from '../../components/checkbox/CheckBox';
+import { PopUpModal, SlideModal } from '../../components/modal/Modal';
+import { GrayButton } from '../../components/button/Button';
 
 const ReservationWaitingScreen = () => {
     const [empId, setEmpId] = useState('');
@@ -22,13 +24,24 @@ const ReservationWaitingScreen = () => {
       { label: '테스트4', value: '테스트벨류4' },
       { label: 'test', value: 'test' },
     ];
+    const [sliceModalTest, setSliceModalTest] = useState(false);
+    const sliceModalBtn = () => {
+      setSliceModalTest(!sliceModalTest);
+    }
+
 
     return (
       <View style={styles.container}>
         <Text style={styles.text}>환불대기중 페이지</Text>
         <Text style={styles.text}>메인 페이지</Text>
-        <SimpleInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='30%' />
-        <MultiLineInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='70%' height={100} />
+        <GrayButton onPress={sliceModalBtn} btnText='slice모달테스트'></GrayButton>
+
+        <PopUpModal isVisible={setCheckBoxTest} setIsVisible={setSliceModalTest}> 
+          <View style={{ padding: widthPercent(4) }}>
+            <SimpleInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='30%' />
+            <MultiLineInput placeholder='하기싫어' value={empId} onChangeText={setEmpId} width='70%' height={100} />
+          </View>
+        </PopUpModal>
         
         <Dropdown data={hospitalData} width={widthPercent(165)} placeholder='드롭다운 테스트' zIndexInverse={10} open={dropDownTestOpen} setOpen={setDropDownTestOpen} onSelectValue={handleSidoItemSelect} textSize={12} />
         
