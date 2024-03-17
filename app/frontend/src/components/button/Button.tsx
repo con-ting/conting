@@ -55,7 +55,7 @@ type ButtonProps = {
   disabled?: boolean;
   isRadius?: boolean;
   btnText: string;
-  textSize: number;
+  textSize?: number;
 };
 
 /**
@@ -73,7 +73,7 @@ type ButtonProps = {
 export const YelloButton = (props: ButtonProps) => {
   return (
     <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINYELLOR} borderColor={Color.MAINYELLOR} borderRadius={props.isRadius?64:8} >
-        <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
+        <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
             {props.btnText}
         </Text>
     </BasicButton>
@@ -96,7 +96,7 @@ export const YelloButton = (props: ButtonProps) => {
 export const WhiteButton = (props: ButtonProps) => {
     return (
       <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINWHITE} borderColor={Color.MAINWHITE} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
+          <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
               {props.btnText}
           </Text>
       </BasicButton>
@@ -119,7 +119,7 @@ export const WhiteButton = (props: ButtonProps) => {
 export const GrayButton = (props: ButtonProps) => {
     return (
       <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.BTNGRAY} borderColor={Color.BTNGRAY} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINWHITE, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
+          <Text style={{color: Color.MAINWHITE, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
               {props.btnText}
           </Text>
       </BasicButton>
@@ -142,7 +142,7 @@ export const GrayButton = (props: ButtonProps) => {
 export const BlackButton = (props: ButtonProps) => {
     return (
       <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINBLACK} borderColor={Color.MAINYELLOR} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINYELLOR, fontSize: fontPercent(props.textSize), fontFamily: Font.MAINFONT}}>
+          <Text style={{color: Color.MAINYELLOR, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
               {props.btnText}
           </Text>
       </BasicButton>
