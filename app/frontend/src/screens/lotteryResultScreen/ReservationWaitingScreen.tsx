@@ -7,7 +7,7 @@ import { CheckBox } from '../../components/checkbox/CheckBox';
 import { PopUpModal, SlideModal } from '../../components/modal/Modal';
 import { GrayButton } from '../../components/button/Button';
 
-const ReservationWaitingScreen = () => {
+export default function ReservationWaitingScreen() {
     const [empId, setEmpId] = useState('');
 
     const [dropDownTestOpen, setDropDownTestOpen] = useState(false);
@@ -62,10 +62,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   text: {
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
     fontSize: 20,
     fontFamily: 'Jalnan2TTF',
   },
 });
-export default ReservationWaitingScreen;
+

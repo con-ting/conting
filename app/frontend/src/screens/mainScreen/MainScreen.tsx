@@ -5,25 +5,28 @@ import SingerProfile from '../../components/SingerDetail/SingerProfile';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
 import ConcertCard from '../../components/card/ConcertCard';
 import FisrtComeList from '../../components/list/FirstComeList';
+import {ScrollView} from 'react-native';
 
 export class MainScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* <Text style={styles.text}>메인 페이지</Text> */}
-        <FisrtComeList />
-        <ConcertCard
-          poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
-          title="임영웅 콘서트 IM HERO TOUR 2023"
-          address="서울•킨텍스 1전시장"
-          date="2024.04.22(월) 13:00"
-        />
+        <ScrollView>
+          {/* <Text style={styles.text}>메인 페이지</Text> */}
+          <FisrtComeList />
+          {/* <ConcertCard
+            poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
+            title="임영웅 콘서트 IM HERO TOUR 2023"
+            address="서울•킨텍스 1전시장"
+            date="2024.04.22(월) 13:00"
+          /> */}
 
-        <ConcertHallCard
-          title="KSPO DOME"
-          seat={14730}
-          address="서울특별시 송파구 올림픽로 424"
-        />
+          <ConcertHallCard
+            title="KSPO DOME"
+            seat={14730}
+            address="서울특별시 송파구 올림픽로 424"
+          />
+        </ScrollView>
       </View>
     );
   }
