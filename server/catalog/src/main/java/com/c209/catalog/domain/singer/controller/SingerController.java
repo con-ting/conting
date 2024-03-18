@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/singer")
-<<<<<<< HEAD
 @RequiredArgsConstructor
-=======
-@RequiredArgsConstructor //private final 이 붙어있는 변수만 생성자로 만들어준다.
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
 public class SingerController {
 
     private final SingerService singerService;

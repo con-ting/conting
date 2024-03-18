@@ -23,10 +23,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Singer extends BaseEntity {
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="singer_id")
     @Id
@@ -35,10 +31,6 @@ public class Singer extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
     @Column
     private String image;
 

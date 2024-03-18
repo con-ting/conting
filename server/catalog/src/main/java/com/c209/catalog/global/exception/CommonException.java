@@ -17,13 +17,10 @@ public class CommonException extends RuntimeException{
         this.message = singerErrorCode.getMessage();
         this.httpStatus = singerErrorCode.getHttpStatus();
     }
-<<<<<<< HEAD
-=======
 
     public CommonException(String message, HttpStatus httpStatus) {
 
         this.message = message;
         this.httpStatus = httpStatus;
     }
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
 }

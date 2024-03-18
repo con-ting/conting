@@ -13,11 +13,6 @@ public enum SingerErrorCode {
 
     NOT_EXIST_SINGER("가수를 조회할 수 없습니다.", BAD_REQUEST);
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
     private final String message;
     private final HttpStatus httpStatus;
 

@@ -9,18 +9,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
     @ExceptionHandler(CommonException.class)
     public ErrorResponse commonExceptionHandler(CommonException e){
         return ErrorResponse.builder(e, e.getHttpStatus(), e.getMessage()).build();
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 61ae66f0f56f29afd874e80e6f911543bead33a7
     //해당 핸들러는 가장 마지막에 위치해야합니다!!!
     @ExceptionHandler(RuntimeException.class)
     public ErrorResponse runtimeExceptionHandler(RuntimeException e){

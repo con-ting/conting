@@ -30,7 +30,7 @@ public class HallService {
         return HallDto.builder()
                 .id(hall.getId())
                 .name(hall.getName())
-                .totalSeatCount(hall.getTotalSeatCount())
+                .total_seat_count(hall.getTotal_seat_count())
                 .address(hall.getAddress())
                 .build();
     }
