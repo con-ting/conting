@@ -1,9 +1,18 @@
 import React from 'react';
-import { ColorValue, DimensionValue, TouchableOpacity, View, Text } from 'react-native';
-import { fontPercent, heightPercent, widthPercent } from '../../config/Dimensions';
+import {
+  ColorValue,
+  DimensionValue,
+  TouchableOpacity,
+  View,
+  Text,
+} from 'react-native';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-
 
 type BasicButtonProps = {
   onPress: () => void;
@@ -29,7 +38,11 @@ type BasicButtonProps = {
  */
 export const BasicButton = (props: BasicButtonProps) => {
   return (
-    <View style={{ width: props.width || '100%', paddingHorizontal: widthPercent(4) }}>
+    <View
+      style={{
+        width: props.width || '100%',
+        paddingHorizontal: widthPercent(4),
+      }}>
       <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
         <View
           style={{
@@ -39,16 +52,13 @@ export const BasicButton = (props: BasicButtonProps) => {
             borderColor: props.borderColor,
             paddingVertical: heightPercent(12),
             alignItems: 'center',
-          }}
-        >
-            {props.children}
+          }}>
+          {props.children}
         </View>
       </TouchableOpacity>
     </View>
   );
 };
-
-
 
 type ButtonProps = {
   onPress: () => void;
@@ -73,14 +83,23 @@ type ButtonProps = {
  */
 export const YellowButton = (props: ButtonProps) => {
   return (
-    <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINYELLOW} borderColor={Color.MAINYELLOW} borderRadius={props.isRadius?64:8} >
-        <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
-            {props.btnText}
-        </Text>
+    <BasicButton
+      width={props.width}
+      onPress={props.onPress}
+      backgroundColor={Color.MAINYELLOW}
+      borderColor={Color.MAINYELLOW}
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: Color.MAINBLACK,
+          fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
     </BasicButton>
   );
 };
-
 
 /**
  * WhiteButton 입니다.
@@ -95,15 +114,24 @@ export const YellowButton = (props: ButtonProps) => {
  * @author 김형민
  */
 export const WhiteButton = (props: ButtonProps) => {
-    return (
-      <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINWHITE} borderColor={Color.MAINWHITE} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
-              {props.btnText}
-          </Text>
-      </BasicButton>
-    );
+  return (
+    <BasicButton
+      width={props.width}
+      onPress={props.onPress}
+      backgroundColor={Color.MAINWHITE}
+      borderColor={Color.MAINWHITE}
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: Color.MAINBLACK,
+          fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
 };
-
 
 /**
  * WhiteButton 입니다.
@@ -118,15 +146,24 @@ export const WhiteButton = (props: ButtonProps) => {
  * @author 김형민
  */
 export const GrayButton = (props: ButtonProps) => {
-    return (
-      <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.BTNGRAY} borderColor={Color.BTNGRAY} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINWHITE, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
-              {props.btnText}
-          </Text>
-      </BasicButton>
-    );
+  return (
+    <BasicButton
+      width={props.width}
+      onPress={props.onPress}
+      backgroundColor={Color.BTNGRAY}
+      borderColor={Color.BTNGRAY}
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: Color.MAINWHITE,
+          fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
 };
-
 
 /**
  * BlackButton 입니다.
@@ -141,11 +178,21 @@ export const GrayButton = (props: ButtonProps) => {
  * @author 김형민
  */
 export const BlackButton = (props: ButtonProps) => {
-    return (
-      <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINBLACK} borderColor={Color.MAINYELLOW} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINYELLOW, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
-              {props.btnText}
-          </Text>
-      </BasicButton>
-    );
+  return (
+    <BasicButton
+      width={props.width}
+      onPress={props.onPress}
+      backgroundColor={Color.MAINBLACK}
+      borderColor={Color.MAINYELLOW}
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: Color.MAINYELLOW,
+          fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
 };

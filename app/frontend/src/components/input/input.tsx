@@ -1,6 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, View, TextInput, Text, TextInputSubmitEditingEventData, NativeSyntheticEvent, DimensionValue, NativeTouchEvent } from 'react-native';
-import { fontPercent, heightPercent, widthPercent } from '../../config/Dimensions';
+import React, {useState, useEffect} from 'react';
+import {
+  TouchableOpacity,
+  View,
+  TextInput,
+  Text,
+  TextInputSubmitEditingEventData,
+  NativeSyntheticEvent,
+  DimensionValue,
+  NativeTouchEvent,
+} from 'react-native';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 import * as ICON from 'iconsax-react-native';
@@ -22,7 +35,9 @@ type InputProps = {
   height?: number;
   padding?: DimensionValue;
   onPressOut?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void;
-  onSubmitEditing?: (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
+  onSubmitEditing?: (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ) => void;
   refInput?: React.LegacyRef<TextInput>;
   onBlur?: () => void;
 };
@@ -61,10 +76,11 @@ export const SimpleInput = (props: InputProps) => {
         borderWidth: widthPercent(2),
         paddingHorizontal: widthPercent(4),
         borderColor: borderColor,
-        backgroundColor: props.backGroundColor?props.backGroundColor : Color.MAINBLACK,
+        backgroundColor: props.backGroundColor
+          ? props.backGroundColor
+          : Color.MAINBLACK,
         width: props.width || '100%',
-      }}
-    >
+      }}>
       <TextInput
         ref={props.refInput}
         value={props.value}
@@ -80,7 +96,13 @@ export const SimpleInput = (props: InputProps) => {
           setFocused(false);
           if (props.onBlur != undefined) props.onBlur();
         }}
-        style={{ fontSize: fontPercent(12), color: props.textColor ? props.textColor:Color.MAINWHITE, fontFamily: Font.MAINFONT, height: props.height ? heightPercent(props.height) : undefined, width: '100%' }}
+        style={{
+          fontSize: fontPercent(12),
+          color: props.textColor ? props.textColor : Color.MAINWHITE,
+          fontFamily: Font.MAINFONT,
+          height: props.height ? heightPercent(props.height) : undefined,
+          width: '100%',
+        }}
         editable={props.editable}
         onSubmitEditing={props.onSubmitEditing}
         returnKeyType={props.onSubmitEditing ? 'done' : 'next'}
@@ -114,7 +136,9 @@ export const MultiLineInput = (props: InputProps) => {
     <View
       style={{
         alignItems: 'center',
-        backgroundColor: props.backGroundColor ? props.backGroundColor : Color.MAINBLACK,
+        backgroundColor: props.backGroundColor
+          ? props.backGroundColor
+          : Color.MAINBLACK,
         justifyContent: 'space-between',
         flexDirection: 'row',
         borderRadius: widthPercent(8),
@@ -122,8 +146,7 @@ export const MultiLineInput = (props: InputProps) => {
         paddingHorizontal: widthPercent(4),
         borderColor: borderColor,
         width: props.width || '100%',
-      }}
-    >
+      }}>
       <TextInput
         multiline
         autoCorrect={false}
@@ -131,7 +154,13 @@ export const MultiLineInput = (props: InputProps) => {
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
         placeholderTextColor={Color.TEXTGRAY}
-        style={{ fontSize: fontPercent(12),color: props.textColor ? props.textColor:Color.MAINWHITE, fontFamily: Font.MAINFONT, width: '100%', height: heightPercent(props.height) }}
+        style={{
+          fontSize: fontPercent(12),
+          color: props.textColor ? props.textColor : Color.MAINWHITE,
+          fontFamily: Font.MAINFONT,
+          width: '100%',
+          height: heightPercent(props.height),
+        }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         editable={props.editable}
@@ -271,4 +300,3 @@ export const MultiLineInput = (props: InputProps) => {
 //     </View>
 //   );
 // };
-

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ColorValue, View } from 'react-native';
+import {ColorValue, View} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import { fontPercent, widthPercent } from '../../config/Dimensions';
+import {fontPercent, widthPercent} from '../../config/Dimensions';
 
 type checkBoxProps = {
   text: string;
@@ -36,12 +36,14 @@ export const CheckBox = (props: checkBoxProps) => {
           borderRadius: widthPercent(4),
           borderWidth: widthPercent(2),
         }}
-        iconStyle={{ borderRadius: widthPercent(4) }}
+        iconStyle={{borderRadius: widthPercent(4)}}
         textStyle={{
           textDecorationLine: 'none',
           fontFamily: Font.MAINFONT,
           color: props.fontColor ? props.fontColor : Color.MAINWHITE,
-          fontSize: props.textSize ? fontPercent(props.textSize) : fontPercent(10),
+          fontSize: props.textSize
+            ? fontPercent(props.textSize)
+            : fontPercent(10),
         }}
         onPress={() => {
           props.setIsChecked(props.isChecked);
