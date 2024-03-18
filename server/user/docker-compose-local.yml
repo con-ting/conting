@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  user-db:
+    container_name: user-db
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: 1w2k/user-db
+    environment:
+      - MARIADB_DATABASE=test
+      - MARIADB_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "9996:3306"
+  user-cache:
+    container_name: common-cache
+    build:
+      dockerfile: Dockerfile
+      context: ./cache
+    image: 1w2k/cache-redis
+    ports:
+      - "6379:6379"

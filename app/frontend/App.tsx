@@ -6,6 +6,7 @@
  */
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import React from 'react';
 
 function App(): React.JSX.Element {
   return (
