@@ -7,6 +7,7 @@ import { fontPercent } from '../../config/Dimensions';
 import * as ICON from 'iconsax-react-native';
 
 
+
 type dropdownProps = {
   width?: DimensionValue | '90%';
   zIndex?: number;
@@ -57,7 +58,7 @@ export const Dropdown = (props: dropdownProps) => {
 
   const selectedStyle: DropDownPickerProps<any>['style'] = {
     width: props.width,
-    borderColor: open ? Color.MAINYELLOR : Color.MAINGRAY,
+    borderColor: open ? Color.MAINYELLOW : Color.MAINGRAY,
     backgroundColor: Color.MAINBLACK,
     
     shadowColor: '#FEC84B',
@@ -95,10 +96,10 @@ export const Dropdown = (props: dropdownProps) => {
       dropDownContainerStyle={{
         width: props.width || '90%',
         backgroundColor: Color.MAINBLACK,
-        borderColor: Color.MAINYELLOR,
+        borderColor: Color.MAINYELLOW,
       }}
       selectedItemContainerStyle={{
-        backgroundColor: Color.MAINYELLOR,
+        backgroundColor: Color.MAINYELLOW,
         marginHorizontal: 5,
         borderRadius: 5,
       }}
