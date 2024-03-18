@@ -6,6 +6,7 @@ import {widthPercent} from '../../config/Dimensions';
 import {CheckBox} from '../../components/checkbox/CheckBox';
 import {PopUpModal, SlideModal} from '../../components/modal/Modal';
 import {GrayButton} from '../../components/button/Button';
+import {SearchBar} from "../../components/searchBar/SearchBar.tsx";
 
 export default function ReservationWaitingScreen() {
   const [empId, setEmpId] = useState('');
@@ -13,6 +14,7 @@ export default function ReservationWaitingScreen() {
   const [dropDownTestOpen, setDropDownTestOpen] = useState(false);
 
   const [selectedDropDownTest, setSelectedDropDownTest] = useState(null);
+
   const handleSidoItemSelect = selectedValue => {
     setSelectedDropDownTest(selectedValue);
   };
@@ -26,15 +28,23 @@ export default function ReservationWaitingScreen() {
   ];
   const [popUpModalTest, setPopUpModalTest] = useState(false);
   const [sliceModalTest, setSliceModalTest] = useState(false);
+
   const sliceModalBtn = () => {
     setSliceModalTest(!sliceModalTest);
   };
   const popUpModalBtn = () => {
     setPopUpModalTest(!popUpModalTest);
   };
+  const handleSearch = (query: string) => {
+    console.log("검색어: ", query);
+    // 검색어를 사용한 검색 로직 구현
+    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
+  };
 
   return (
     <View style={styles.container}>
+      <SearchBar onSearch={handleSearch}></SearchBar>
+      <SearchBar onSearch={handleSearch}></SearchBar>
       <Text style={styles.text}>환불대기중 페이지</Text>
       <Text style={styles.text}>메인 페이지</Text>
       <GrayButton
