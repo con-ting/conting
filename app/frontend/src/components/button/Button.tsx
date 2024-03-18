@@ -4,6 +4,7 @@ import { fontPercent, heightPercent, widthPercent } from '../../config/Dimension
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 
+
 type BasicButtonProps = {
   onPress: () => void;
   width?: DimensionValue;
@@ -28,7 +29,7 @@ type BasicButtonProps = {
  */
 export const BasicButton = (props: BasicButtonProps) => {
   return (
-    <View style={{ width: props.width || '100%', paddingHorizontal: 4 }}>
+    <View style={{ width: props.width || '100%', paddingHorizontal: widthPercent(4) }}>
       <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
         <View
           style={{
@@ -70,9 +71,9 @@ type ButtonProps = {
  * @returns
  * @author 김형민
  */
-export const YelloButton = (props: ButtonProps) => {
+export const YellowButton = (props: ButtonProps) => {
   return (
-    <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINYELLOR} borderColor={Color.MAINYELLOR} borderRadius={props.isRadius?64:8} >
+    <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINYELLOW} borderColor={Color.MAINYELLOW} borderRadius={props.isRadius?64:8} >
         <Text style={{color: Color.MAINBLACK, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
             {props.btnText}
         </Text>
@@ -141,8 +142,8 @@ export const GrayButton = (props: ButtonProps) => {
  */
 export const BlackButton = (props: ButtonProps) => {
     return (
-      <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINBLACK} borderColor={Color.MAINYELLOR} borderRadius={props.isRadius?64:8}>
-          <Text style={{color: Color.MAINYELLOR, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
+      <BasicButton width={props.width} onPress={props.onPress} backgroundColor={Color.MAINBLACK} borderColor={Color.MAINYELLOW} borderRadius={props.isRadius?64:8}>
+          <Text style={{color: Color.MAINYELLOW, fontSize: fontPercent(props.textSize?props.textSize:12), fontFamily: Font.MAINFONT}}>
               {props.btnText}
           </Text>
       </BasicButton>
