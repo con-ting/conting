@@ -5,13 +5,15 @@
  * @format
  */
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
-import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+// import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 import React from 'react';
+import AppContainer from './src/navigation/BottomTabNavigator';
 
 function App(): React.JSX.Element {
   return (
     <SafeAreaView style={[{backgroundColor: 'black', flex: 1}]}>
-      <BottomTabNavigator></BottomTabNavigator>
+      {/* <BottomTabNavigator></BottomTabNavigator> */}
+      <AppContainer />
     </SafeAreaView>
   );
 }
