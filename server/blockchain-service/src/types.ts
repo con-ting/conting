@@ -1,4 +1,4 @@
-import { PublicKey } from "@metaplex-foundation/umi"
+import { type PublicKey } from '@metaplex-foundation/umi'
 
 export interface CollectionInput {
   name: string

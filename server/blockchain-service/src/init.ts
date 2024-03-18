@@ -4,9 +4,7 @@ import { mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata'
 import { mplBubblegum } from '@metaplex-foundation/mpl-bubblegum'
 import * as dotenv from 'dotenv'
 
-
 dotenv.config()
-
 
 export const initUmi = () => {
   const umi = createUmi(process.env.ENDPOINT!)
@@ -17,7 +15,6 @@ export const initUmi = () => {
     .use(mplTokenMetadata())
     .use(mplBubblegum())
 }
-
 
 export const initForest = () => {
   return [

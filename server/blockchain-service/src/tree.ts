@@ -1,6 +1,5 @@
 import { createTree } from '@metaplex-foundation/mpl-bubblegum'
-import { Umi, generateSigner } from '@metaplex-foundation/umi'
-
+import { type Umi, generateSigner } from '@metaplex-foundation/umi'
 
 const calculateMaxDepth = (size: number) => {
   let maxDepth = 0
@@ -10,10 +9,9 @@ const calculateMaxDepth = (size: number) => {
   return maxDepth
 }
 
-
 export const createMerkleTree = async (
   umi: Umi,
-  size: number,
+  size: number
 ) => {
   const maxDepth = calculateMaxDepth(size)
   const merkleTree = generateSigner(umi)
@@ -21,7 +19,7 @@ export const createMerkleTree = async (
     merkleTree,
     maxDepth,
     maxBufferSize: 64,
-    canopyDepth: maxDepth - 7,
+    canopyDepth: maxDepth - 7
   })
   await builder.sendAndConfirm(umi)
   return merkleTree.publicKey
