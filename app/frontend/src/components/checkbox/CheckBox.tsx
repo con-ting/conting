@@ -4,6 +4,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 import { fontPercent, widthPercent } from '../../config/Dimensions';
+
 type checkBoxProps = {
   text: string;
   isChecked: boolean;
@@ -29,7 +30,7 @@ export const CheckBox = (props: checkBoxProps) => {
     <View>
       <BouncyCheckbox
         size={widthPercent(20)}
-        fillColor={Color.MAINYELLOR}
+        fillColor={Color.MAINYELLOW}
         text={props.text}
         innerIconStyle={{
           borderRadius: widthPercent(4),

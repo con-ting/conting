@@ -16,6 +16,8 @@ type InputProps = {
   isForReEnter?: boolean; // 비밀번호 재입력창일 경우
   isStart?: boolean; // 인증 번호 입력 제한 시간 카운트 시작 여부
   isSameCertNumber?: boolean; // 인증번호 같은지
+  backGroundColor?: string;
+  textColor?: string;
   editable?: boolean;
   height?: number;
   padding?: DimensionValue;
@@ -39,6 +41,8 @@ type InputProps = {
  * - height?: number; 입력 필드의 높이와 패딩을 정의합니다. 사용자 인터페이스의 일관성을 유지하기 위해 필요에 따라 조정할 수 있습니다.
  * - onPressOut?: (e: NativeSyntheticEvent<NativeTouchEvent>) => void; 입력 필드에서 특정 키 이벤트가 발생했을 때 호출될 콜백 함수입니다. 예를 들어, 입력을 완료하고 다음 필드로 넘어가는 동작을 구현할 수 있습니다.
  * - onSubmitEditing?: (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
+ * - backGroundColor?: 백그라운드 색상 지정 (기본 블랙)
+ * - textColor? : 텍스트 색상 지정 (기본 화이트)
  * - refInput?: React.LegacyRef<TextInput>;입력 필드에 대한 참조를 저장합니다. 이를 통해 컴포넌트 외부에서 입력 필드를 직접 조작할 수 있습니다.
  * - onBlur?: () => void;  입력 필드에서 포커스가 벗어났을 때 호출될 콜백 함수입니다. 필요한 정리 작업을 수행할 수 있습니다.
  * @returns
@@ -46,7 +50,7 @@ type InputProps = {
  */
 export const SimpleInput = (props: InputProps) => {
   const [focused, setFocused] = useState(false);
-  const borderColor = focused ? Color.MAINYELLOR : Color.MAINGRAY;
+  const borderColor = focused ? Color.MAINYELLOW : Color.MAINGRAY;
 
   return (
     <View
@@ -57,6 +61,7 @@ export const SimpleInput = (props: InputProps) => {
         borderWidth: widthPercent(2),
         paddingHorizontal: widthPercent(4),
         borderColor: borderColor,
+        backgroundColor: props.backGroundColor?props.backGroundColor : Color.MAINBLACK,
         width: props.width || '100%',
       }}
     >
@@ -75,7 +80,7 @@ export const SimpleInput = (props: InputProps) => {
           setFocused(false);
           if (props.onBlur != undefined) props.onBlur();
         }}
-        style={{ fontSize: fontPercent(12), color: Color.MAINWHITE, fontFamily: Font.MAINFONT, height: props.height ? heightPercent(props.height) : undefined, width: '100%' }}
+        style={{ fontSize: fontPercent(12), color: props.textColor ? props.textColor:Color.MAINWHITE, fontFamily: Font.MAINFONT, height: props.height ? heightPercent(props.height) : undefined, width: '100%' }}
         editable={props.editable}
         onSubmitEditing={props.onSubmitEditing}
         returnKeyType={props.onSubmitEditing ? 'done' : 'next'}
@@ -103,12 +108,13 @@ export const SimpleInput = (props: InputProps) => {
  */
 export const MultiLineInput = (props: InputProps) => {
   const [focused, setFocused] = useState(false);
-  const borderColor = focused ? Color.MAINYELLOR : Color.MAINGRAY;
+  const borderColor = focused ? Color.MAINYELLOW : Color.MAINGRAY;
 
   return (
     <View
       style={{
         alignItems: 'center',
+        backgroundColor: props.backGroundColor ? props.backGroundColor : Color.MAINBLACK,
         justifyContent: 'space-between',
         flexDirection: 'row',
         borderRadius: widthPercent(8),
@@ -125,7 +131,7 @@ export const MultiLineInput = (props: InputProps) => {
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
         placeholderTextColor={Color.TEXTGRAY}
-        style={{ fontSize: fontPercent(12), color: Color.MAINWHITE, fontFamily: Font.MAINFONT, width: '100%', height: heightPercent(props.height) }}
+        style={{ fontSize: fontPercent(12),color: props.textColor ? props.textColor:Color.MAINWHITE, fontFamily: Font.MAINFONT, width: '100%', height: heightPercent(props.height) }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         editable={props.editable}

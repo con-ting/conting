@@ -13,3 +13,4 @@ export const REDBASE: string = '#FF0000';
 export const MAINWHITE: string = '#FFFFFF';
 export const TEXTGRAY: string = '#F2F2F2';
 export const BTNGRAY: string = '#3B3B3B';
+export const CUTEYELLOW: string = '#FFEFC3';
