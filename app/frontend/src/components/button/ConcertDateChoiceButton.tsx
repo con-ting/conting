@@ -83,7 +83,7 @@ export default function ConcertChoiceButton() {
 
       <TouchableOpacity
         style={[styles.buttonTicketing]}
-        onPress={() => navigation.navigate('Waiting', {rank: 50425})}>
+        onPress={() => navigation.navigate('Waiting', {rank: 0})}>
         <Text style={styles.textTicketing}>직접 예매하기</Text>
       </TouchableOpacity>
     </View>
