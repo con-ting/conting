@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @NoArgsConstructor
@@ -39,7 +37,7 @@ public class Hall extends BaseEntity {
     private Float latitude;
 
     @Column
-    private Float longtitude;
+    private Float longitude;
 
     @Column
     private String address;

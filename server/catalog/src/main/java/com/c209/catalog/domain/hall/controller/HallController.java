@@ -15,14 +15,12 @@ import java.util.List;
 public class HallController {
     private final HallService hallService;
 
-    @Autowired
     public HallController(HallService hallService) {
         this.hallService = hallService;
     }
 
     @GetMapping
-    public List<HallDto> getHalls(@RequestParam("keyword") String keyword, @RequestParam("region") String region) {
+    public List<HallDto> getHallResponse(@RequestParam("keyword") String keyword, @RequestParam("region") String region) {
         return hallService.findHallsByKeywordAndRegion(keyword, region);
     }
-
 }
