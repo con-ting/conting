@@ -7,8 +7,8 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '10',
     },
     {
       id: '2',
@@ -17,8 +17,8 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '20',
     },
     {
       id: '3',
@@ -27,8 +27,8 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '53',
     },
     {
       id: '4',
@@ -37,8 +37,8 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '42',
     },
     {
       id: '5',
@@ -47,8 +47,8 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '73',
     },
     {
       id: '7',
@@ -57,8 +57,8 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '17',
     },
     {
       id: '8',
@@ -67,8 +67,8 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
-      competition: '70',
+      price: 10000,
+      competition: '90',
     },
     {
       id: '9',
@@ -77,7 +77,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -87,7 +87,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -97,7 +97,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -107,7 +107,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -117,7 +117,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -127,7 +127,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -137,7 +137,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -147,7 +147,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -157,7 +157,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -167,7 +167,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -177,7 +177,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -187,7 +187,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -197,7 +197,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -207,7 +207,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -217,7 +217,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -227,7 +227,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -237,7 +237,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -247,7 +247,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -257,7 +257,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -267,7 +267,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -277,7 +277,7 @@ const seatsData = {
       column: '7',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -287,7 +287,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -297,7 +297,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -307,7 +307,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -317,7 +317,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -327,7 +327,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -337,7 +337,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -347,7 +347,7 @@ const seatsData = {
       column: '7',
       grade: '가',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -357,7 +357,7 @@ const seatsData = {
       column: '8',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -367,7 +367,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -377,7 +377,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -387,7 +387,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -397,7 +397,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -407,7 +407,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -417,7 +417,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -427,7 +427,7 @@ const seatsData = {
       column: '7',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -437,7 +437,7 @@ const seatsData = {
       column: '8',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -447,7 +447,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -457,7 +457,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -467,7 +467,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -477,7 +477,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -487,7 +487,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -497,7 +497,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -507,7 +507,7 @@ const seatsData = {
       column: '7',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -517,7 +517,7 @@ const seatsData = {
       column: '8',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -527,7 +527,7 @@ const seatsData = {
       column: '1',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -537,7 +537,7 @@ const seatsData = {
       column: '2',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -547,7 +547,7 @@ const seatsData = {
       column: '3',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -557,7 +557,7 @@ const seatsData = {
       column: '4',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -567,7 +567,7 @@ const seatsData = {
       column: '5',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -577,7 +577,7 @@ const seatsData = {
       column: '6',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -587,7 +587,7 @@ const seatsData = {
       column: '7',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -597,7 +597,7 @@ const seatsData = {
       column: '8',
       grade: '가',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -607,7 +607,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -617,7 +617,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -627,7 +627,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -637,7 +637,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -647,7 +647,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -657,7 +657,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -667,7 +667,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -677,7 +677,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -687,7 +687,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -697,7 +697,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -708,7 +708,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -718,7 +718,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -728,7 +728,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -738,7 +738,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -748,7 +748,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -758,7 +758,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -768,7 +768,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -778,7 +778,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -788,7 +788,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -798,7 +798,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -808,7 +808,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -819,7 +819,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -829,7 +829,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -839,7 +839,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -849,7 +849,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -859,7 +859,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -869,7 +869,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -879,7 +879,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -889,7 +889,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -899,7 +899,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -909,7 +909,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -919,7 +919,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -929,7 +929,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -940,7 +940,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -950,7 +950,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -960,7 +960,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -970,7 +970,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -980,7 +980,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -990,7 +990,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1000,7 +1000,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1010,7 +1010,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1020,7 +1020,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1030,7 +1030,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1040,7 +1040,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1050,7 +1050,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1060,7 +1060,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -1071,7 +1071,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1081,7 +1081,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1091,7 +1091,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1101,7 +1101,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1111,7 +1111,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1121,7 +1121,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1131,7 +1131,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1141,7 +1141,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1151,7 +1151,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1161,7 +1161,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1171,7 +1171,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1181,7 +1181,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1191,7 +1191,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1201,7 +1201,7 @@ const seatsData = {
       column: '14',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -1212,7 +1212,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1222,7 +1222,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1232,7 +1232,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1242,7 +1242,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1252,7 +1252,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1262,7 +1262,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1272,7 +1272,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1282,7 +1282,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1292,7 +1292,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1302,7 +1302,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1312,7 +1312,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1322,7 +1322,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1332,7 +1332,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1342,7 +1342,7 @@ const seatsData = {
       column: '14',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1352,7 +1352,7 @@ const seatsData = {
       column: '15',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -1363,7 +1363,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1373,7 +1373,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1383,7 +1383,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1393,7 +1393,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1403,7 +1403,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1413,7 +1413,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1423,7 +1423,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1433,7 +1433,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1443,7 +1443,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1453,7 +1453,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1463,7 +1463,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1473,7 +1473,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1483,7 +1483,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1493,7 +1493,7 @@ const seatsData = {
       column: '14',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1503,7 +1503,7 @@ const seatsData = {
       column: '15',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1513,7 +1513,7 @@ const seatsData = {
       column: '16',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -1524,7 +1524,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1534,7 +1534,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1544,7 +1544,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1554,7 +1554,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1564,7 +1564,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1574,7 +1574,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1584,7 +1584,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1594,7 +1594,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1604,7 +1604,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1614,7 +1614,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1624,7 +1624,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1634,7 +1634,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1644,7 +1644,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1654,7 +1654,7 @@ const seatsData = {
       column: '14',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1664,7 +1664,7 @@ const seatsData = {
       column: '15',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1674,7 +1674,7 @@ const seatsData = {
       column: '16',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1684,7 +1684,7 @@ const seatsData = {
       column: '17',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1694,7 +1694,7 @@ const seatsData = {
       column: '1',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1704,7 +1704,7 @@ const seatsData = {
       column: '2',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1714,7 +1714,7 @@ const seatsData = {
       column: '3',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1724,7 +1724,7 @@ const seatsData = {
       column: '4',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1734,7 +1734,7 @@ const seatsData = {
       column: '5',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1744,7 +1744,7 @@ const seatsData = {
       column: '6',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1754,7 +1754,7 @@ const seatsData = {
       column: '7',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1764,7 +1764,7 @@ const seatsData = {
       column: '8',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1774,7 +1774,7 @@ const seatsData = {
       column: '9',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1784,7 +1784,7 @@ const seatsData = {
       column: '10',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1794,7 +1794,7 @@ const seatsData = {
       column: '11',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1804,7 +1804,7 @@ const seatsData = {
       column: '12',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1814,7 +1814,7 @@ const seatsData = {
       column: '13',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1824,7 +1824,7 @@ const seatsData = {
       column: '14',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1834,7 +1834,7 @@ const seatsData = {
       column: '15',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1844,7 +1844,7 @@ const seatsData = {
       column: '16',
       grade: '나',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1854,7 +1854,7 @@ const seatsData = {
       column: '17',
       grade: '나',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
 
@@ -1865,7 +1865,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1875,7 +1875,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1885,7 +1885,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1895,7 +1895,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1905,7 +1905,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1915,7 +1915,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1925,7 +1925,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1935,7 +1935,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1945,7 +1945,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1955,7 +1955,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1965,7 +1965,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1975,7 +1975,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1985,7 +1985,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -1995,7 +1995,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2005,7 +2005,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2015,7 +2015,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2025,7 +2025,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2035,7 +2035,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2045,7 +2045,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2055,7 +2055,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2065,7 +2065,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2075,7 +2075,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2085,7 +2085,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2095,7 +2095,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2105,7 +2105,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2115,7 +2115,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2125,7 +2125,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2135,7 +2135,7 @@ const seatsData = {
       column: '7',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2145,7 +2145,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2155,7 +2155,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2165,7 +2165,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2175,7 +2175,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2185,7 +2185,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2195,7 +2195,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2205,7 +2205,7 @@ const seatsData = {
       column: '7',
       grade: '다',
       is_available: false,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2215,7 +2215,7 @@ const seatsData = {
       column: '8',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2225,7 +2225,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2235,7 +2235,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2245,7 +2245,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2255,7 +2255,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2265,7 +2265,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2275,7 +2275,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2285,7 +2285,7 @@ const seatsData = {
       column: '7',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2295,7 +2295,7 @@ const seatsData = {
       column: '8',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2305,7 +2305,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2315,7 +2315,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2325,7 +2325,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2335,7 +2335,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2345,7 +2345,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2355,7 +2355,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2365,7 +2365,7 @@ const seatsData = {
       column: '7',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2375,7 +2375,7 @@ const seatsData = {
       column: '8',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2385,7 +2385,7 @@ const seatsData = {
       column: '1',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2395,7 +2395,7 @@ const seatsData = {
       column: '2',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2405,7 +2405,7 @@ const seatsData = {
       column: '3',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2415,7 +2415,7 @@ const seatsData = {
       column: '4',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2425,7 +2425,7 @@ const seatsData = {
       column: '5',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2435,7 +2435,7 @@ const seatsData = {
       column: '6',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2445,7 +2445,7 @@ const seatsData = {
       column: '7',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
     {
@@ -2455,7 +2455,7 @@ const seatsData = {
       column: '8',
       grade: '다',
       is_available: true,
-      price: '10000',
+      price: 10000,
       competition: '70',
     },
   ],
