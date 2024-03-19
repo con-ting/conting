@@ -4,6 +4,7 @@ import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,7 +57,7 @@ public class Show extends BaseEntity {
     @JoinColumn(name = "hall_id")
     private Hall hall;
 
-    @Column(name="view_count")
+    @Column(name="view_count", columnDefinition = "integer default 0")
     private Integer viewCount;
 
     @Column(name="reservation_start_datetime")
@@ -79,6 +80,9 @@ public class Show extends BaseEntity {
 
     @Column(name="max_ticket_per_person")
     private Integer maxTicketPerPerson;
+
+    @Column(name="is_adult_only", columnDefinition = "boolean default false")
+    private Boolean isAdultOnly;
 }
 
 // ManyToMany
