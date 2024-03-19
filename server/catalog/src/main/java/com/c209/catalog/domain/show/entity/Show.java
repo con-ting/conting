@@ -13,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 public class Show extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
-    @Column(name="company_id")
+    @Column(name="show_id")
     @Id
     private Long id;
 
