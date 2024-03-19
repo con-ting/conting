@@ -23,7 +23,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Singer extends BaseEntity {
 
-
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="singer_id")
     @Id
