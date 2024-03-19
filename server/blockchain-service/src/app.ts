@@ -1,10 +1,9 @@
 import Fastify from 'fastify'
 import { publicKey } from '@metaplex-foundation/umi'
 import { initForest, initUmi } from './init.js'
-import { type CollectionBody, type CollectionInput, type AssetBody, type AssetInput } from './types.js'
+import { type CollectionBody, type CollectionInput, type CNftBody, type CNftInput } from './types.js'
 import { createMerkleTree } from './tree.js'
-import { mintCollection, mintNftToCollection, transferNft, useNft, verifyCollectionNft } from './nft.js'
-import { mintCNftToCollection, transferCNft, useCNft } from './cnft.js'
+import { mintCollection, mintCNftToCollection, transferCNft, useCNft } from './nft.js'
 
 const umi = initUmi()
 const trees = initForest()
@@ -26,51 +25,22 @@ fastify.post<{ Body: CollectionBody }>('/collections', async (request, reply) =>
   return { collection }
 })
 
-fastify.post<{ Body: AssetBody }>('/nfts', async (request, reply) => {
-  const input: AssetInput = {
+fastify.post<{ Body: CNftBody }>('/cnfts', async (request, reply) => {
+  const input: CNftInput = {
     ...request.body,
     creator: publicKey(request.body.creator),
     collectionMint: publicKey(request.body.collectionMint)
   }
-  const assetId = await mintNftToCollection(umi, input)
-  return { assetId }
-})
-
-fastify.post<{ Params: { mint: string, newOwner: string } }>('/nfts/:mint/transfer/:newOwner', async (request, reply) => {
-  const mint = publicKey(request.params.mint)
-  const newOwner = publicKey(request.params.newOwner)
-  await transferNft(umi, mint, newOwner)
-})
-
-fastify.post<{ Params: { mint: string } }>('/nfts/:mint/use', async (request, reply) => {
-  const mint = publicKey(request.params.mint)
-  await useNft(umi, mint)
-})
-
-fastify.post<{ Params: { mint: string, collectionMint: string } }>('/nfts/:mint/verify/:collectionMint', async (request, reply) => {
-  const mint = publicKey(request.params.mint)
-  const collectionMint = publicKey(request.params.collectionMint)
-  await verifyCollectionNft(umi, mint, collectionMint)
-})
-
-fastify.post<{ Body: AssetBody }>('/cnfts', async (request, reply) => {
-  const input: AssetInput = {
-    ...request.body,
-    creator: publicKey(request.body.creator),
-    collectionMint: publicKey(request.body.collectionMint)
-  }
-  if (trees.length === 0) {
-    throw { statusCode: 404, message: 'merkle tree not found' }
-  }
+  if (trees.length === 0) { throw { statusCode: 404, message: 'merkle tree not found' } }
   const merkleTree = trees[trees.length - 1]
   const assetId = await mintCNftToCollection(umi, merkleTree, input)
   return { assetId }
 })
 
-fastify.post<{ Params: { assetId: string, newOwner: string } }>('/cnfts/:assetId/transfer/:newOwner', async (request, reply) => {
+fastify.post<{ Params: { assetId: string }, Body: { newLeafOwner: string } }>('/cnfts/:assetId/transfer', async (request, reply) => {
   const assetId = publicKey(request.params.assetId)
-  const newOwner = publicKey(request.params.newOwner)
-  await transferCNft(umi, assetId, newOwner)
+  const newLeafOwner = publicKey(request.body.newLeafOwner)
+  await transferCNft(umi, assetId, newLeafOwner)
 })
 
 fastify.post<{ Params: { assetId: string } }>('/cnfts/:assetId/use', async (request, reply) => {

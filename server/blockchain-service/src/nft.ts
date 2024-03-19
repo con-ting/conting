@@ -1,99 +1,92 @@
-import { type Umi, type PublicKey, generateSigner, percentAmount } from '@metaplex-foundation/umi'
-import { TokenStandard, UseMethod, burnV1, createNft, findMetadataPda, transferV1, updateV1, usesToggle, verifyCollectionV1 } from '@metaplex-foundation/mpl-token-metadata'
-import { type AssetInput, type CollectionInput } from './types.js'
+import { mintToCollectionV1, parseLeafFromMintToCollectionV1Transaction, findLeafAssetIdPda, transfer, burn, updateMetadata, getAssetWithProof, type UpdateArgsArgs } from '@metaplex-foundation/mpl-bubblegum'
+import { type PublicKey, type Umi, some, unwrapOption, generateSigner, percentAmount } from '@metaplex-foundation/umi'
+import { createNft } from '@metaplex-foundation/mpl-token-metadata'
+import { type CollectionInput, type CNftInput } from './types.js'
 
 export const mintCollection = async (
   umi: Umi,
   input: CollectionInput
 ) => {
   const { name, uri, sellerFeeBasisPoints, creator } = input
-  const mint = generateSigner(umi)
+  const collectionMint = generateSigner(umi)
   await createNft(umi, {
-    mint,
     name,
     uri,
-    sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints / 100),
+    sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints / 100, 2),
+    mint: collectionMint,
     creators: [
       { address: creator, verified: false, share: 100 }
     ],
     isCollection: true
   }).sendAndConfirm(umi)
-  return mint.publicKey
+  return collectionMint.publicKey
 }
 
-export const mintNftToCollection = async (
+export const mintCNftToCollection = async (
   umi: Umi,
-  input: AssetInput
+  merkleTree: PublicKey,
+  tokeInput: CNftInput
 ) => {
-  const { name, uri, sellerFeeBasisPoints, creator, collectionMint } = input
-  const mint = generateSigner(umi)
-  await createNft(umi, {
-    mint,
-    name,
-    uri,
-    sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints / 100),
-    collection: { key: collectionMint, verified: false },
-    creators: [
-      { address: creator, verified: false, share: 90 },
-      { address: umi.identity.publicKey, verified: true, share: 10 }
-    ],
-    isMutable: true,
-    uses: {
-      useMethod: UseMethod.Single,
-      remaining: 1n,
-      total: 1n
+  const leafOwner = umi.identity.publicKey
+  const { name, uri, sellerFeeBasisPoints, creator, collectionMint } = tokeInput
+  const { signature } = await mintToCollectionV1(umi, {
+    leafOwner,
+    merkleTree,
+    collectionMint,
+    metadata: {
+      name: `${name} (응모권 포함)`,
+      uri,
+      sellerFeeBasisPoints,
+      collection: { key: collectionMint, verified: true },
+      creators: [
+        { address: creator, verified: false, share: 90 },
+        { address: leafOwner, verified: true, share: 10 }
+      ],
+      isMutable: true
     }
   }).sendAndConfirm(umi)
-  return mint.publicKey
+  const leaf = await parseLeafFromMintToCollectionV1Transaction(umi, signature)
+  const [assetId, _] = findLeafAssetIdPda(umi, { merkleTree, leafIndex: leaf.nonce })
+  return assetId
 }
 
-export const verifyCollectionNft = async (
+export const transferCNft = async (
   umi: Umi,
-  assetMint: PublicKey,
-  collectionMint: PublicKey
+  assetId: PublicKey,
+  newLeafOwner: PublicKey
 ) => {
-  const metadata = findMetadataPda(umi, { mint: assetMint })
-  await verifyCollectionV1(umi, {
-    metadata,
-    collectionMint
+  const assetWithProof = await getAssetWithProof(umi, assetId)
+  await transfer(umi, {
+    ...assetWithProof,
+    newLeafOwner
   }).sendAndConfirm(umi)
 }
 
-export const transferNft = async (
+export const useCNft = async (
   umi: Umi,
-  mint: PublicKey,
-  newOwner: PublicKey
+  assetId: PublicKey
 ) => {
-  const currentOwner = umi.identity
-  await transferV1(umi, {
-    mint,
-    authority: currentOwner,
-    tokenOwner: currentOwner.publicKey,
-    destinationOwner: newOwner,
-    tokenStandard: TokenStandard.NonFungible
+  const assetWithProof = await getAssetWithProof(umi, assetId)
+  const currentMetadata = assetWithProof.metadata
+  const updateArgs: UpdateArgsArgs = {
+    name: some(currentMetadata.name.replace('(응모권 포함)', '').trimEnd())
+  }
+  console.log(currentMetadata)
+  await updateMetadata(umi, {
+    ...assetWithProof,
+    currentMetadata,
+    updateArgs,
+    authority: umi.identity,
+    collectionMint: unwrapOption(currentMetadata.collection)?.key
   }).sendAndConfirm(umi)
 }
 
-export const useNft = async (
+export const burnCNft = async (
   umi: Umi,
-  mint: PublicKey
+  assetId: PublicKey
 ) => {
-  await updateV1(umi, {
-    mint,
-    uses: usesToggle('Set', [{
-      useMethod: UseMethod.Single,
-      remaining: 0n,
-      total: 1n
-    }])
-  }).sendAndConfirm(umi)
-}
-
-export const burnNft = async (
-  umi: Umi,
-  mint: PublicKey
-) => {
-  await burnV1(umi, {
-    mint,
-    tokenStandard: TokenStandard.NonFungible
+  const assetWithProof = await getAssetWithProof(umi, assetId)
+  await burn(umi, {
+    ...assetWithProof
   }).sendAndConfirm(umi)
 }
