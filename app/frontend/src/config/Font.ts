@@ -3,7 +3,7 @@
  * 피그마 컬러팔레트 프레임 명
  */
 
-import { MAINYELLOW } from './Color';
+import {MAINBLACK, MAINYELLOW} from './Color';
 import {fontPercent} from './Dimensions';
 export const MAINFONT: string = 'Jalnan2TTF';
 
@@ -38,7 +38,6 @@ export const F_SIZE_SMALLTEXT: object = {
   fontSize: fontPercent(10),
 };
 
-
 export const F_SIZE_Y_HEADER: object = {
   color: MAINYELLOW,
   fontSize: fontPercent(28),
@@ -63,10 +62,22 @@ export const F_SIZE_Y_TEXT: object = {
   color: MAINYELLOW,
   fontFamily: MAINFONT,
   fontSize: fontPercent(12),
-  textAlign: 'center'
+  textAlign: 'center',
 };
 export const F_SIZE_Y_SMALLTEXT: object = {
   color: MAINYELLOW,
   fontFamily: MAINFONT,
   fontSize: fontPercent(10),
+};
+
+export const F_SIZE_B_BUTTON: object = {
+  color: MAINBLACK,
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(18),
+};
+
+export const F_SIZE_B_TITLE: object = {
+  color: MAINBLACK,
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(18),
 };
