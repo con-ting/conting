@@ -9,7 +9,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 public class Company extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
-    @Column(name="company_id")
+    @Column(name = "company_id")
     @Id
     private Long id;
 
