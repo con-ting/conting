@@ -1,2 +1,4 @@
-package com.c209.catalog.domain.show.service;public interface ShowService {
+package com.c209.catalog.domain.show.service;
+
+public interface ShowService {
 }

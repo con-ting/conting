@@ -1,2 +1,4 @@
-package com.c209.catalog.domain.show.entity;public class ShowEntity {
+package com.c209.catalog.domain.show.entity;
+
+public class Show {
 }
