@@ -5,12 +5,21 @@ import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Entity
 public class Show extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="show_id")
