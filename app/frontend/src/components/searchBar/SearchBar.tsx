@@ -22,8 +22,6 @@ type searchBarProps = {
   onBlur?: () => void;
 };
 
-
-
 /**
  * BasicButton입니다.
  * @param props
@@ -66,9 +64,7 @@ export const SearchBar = (props: searchBarProps) => {
       <TouchableOpacity
         onPress={handleSearch}
         style={{marginRight: widthPercent(10), marginLeft: widthPercent(10)}}>
-        <ICON.SearchNormal
-          color={borderColor}
-          size={16}></ICON.SearchNormal>
+        <ICON.SearchNormal color={borderColor} size={16}></ICON.SearchNormal>
       </TouchableOpacity>
       <TextInput
         style={{
@@ -81,9 +77,7 @@ export const SearchBar = (props: searchBarProps) => {
         }}
         onChangeText={setSearchQuery}
         value={searchQuery} // 입력 필드의 값을 searchQuery 상태로 설정
-        placeholder={
-          props.placeholder ? props.placeholder : '검색'
-        }
+        placeholder={props.placeholder ? props.placeholder : '검색'}
         placeholderTextColor={borderColor}
         autoCorrect={false}
         returnKeyType="search"
