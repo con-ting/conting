@@ -27,9 +27,9 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "show_id")
     private Show show;
 
-    @Column
-    private LocalDateTime start_time;
+    @Column(name="start_time")
+    private LocalDateTime startTime;
 
-    @Column
-    private LocalDateTime end_time;
+    @Column(name="end_time")
+    private LocalDateTime endTime;
 }

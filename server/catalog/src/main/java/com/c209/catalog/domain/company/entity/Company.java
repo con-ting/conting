@@ -23,9 +23,9 @@ public class Company extends BaseEntity {
     @Id
     private Long id;
 
-    @Column
-    private String company_name;
+    @Column(name="company_name")
+    private String companyName;
 
-    @Column
-    private String company_call;
+    @Column(name="company_call")
+    private String companyCall;
 }

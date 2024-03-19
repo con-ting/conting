@@ -33,23 +33,23 @@ public class Show extends BaseEntity {
     @Column
     private String title;
 
-    @Column
-    private String poster_image;
+    @Column(name="poster_image")
+    private String posterImage;
 
     @Column(columnDefinition="TEXT")
     private String description;
 
-    @Column
-    private String description_image;
+    @Column(name="description_image")
+    private String descriptionImage;
 
     @Column
     private String genre; // genre choice 추가하기
 
-    @Column
-    private String video_title;
+    @Column(name="video_title")
+    private String videoTitle;
 
-    @Column
-    private String video_url;
+    @Column(name="video_url")
+    private String videoUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "singer_id")
@@ -59,30 +59,29 @@ public class Show extends BaseEntity {
     @JoinColumn(name = "hall_id")
     private Hall hall;
 
-    @Column
-    private Integer view_count;
+    @Column(name="view_count")
+    private Integer viewCount;
 
-    @Column
-    private LocalDateTime reservation_start_datetime;
+    @Column(name="reservation_start_datetime")
+    private LocalDateTime reservationStartDatetime;
 
-    @Column
-    private LocalDateTime reservation_end_datetime;
+    @Column(name="reservation_end_datetime")
+    private LocalDateTime reservationEndDatetime;
 
     @Column
     private String status; // status choice 추가하기
 
-    @Column
-    private String reservation_type; // reservation_type choice 추가하기
+    @Column(name="reservation_type")
+    private String reservationType; // reservation_type choice 추가하기
 
-    // date만 필요한 컬럼들
-    @Column
-    private Date start_date;
+    @Column(name="start_date")
+    private Date startDate;
 
-    @Column
-    private Date end_date;
+    @Column(name="end_date")
+    private Date endDate;
 
-    @Column
-    private Integer max_ticket_per_person;
+    @Column(name="max_ticket_per_person")
+    private Integer maxTicketPerPerson;
 }
 
 // ManyToMany
