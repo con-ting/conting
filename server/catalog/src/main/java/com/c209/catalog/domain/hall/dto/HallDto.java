@@ -9,8 +9,9 @@ import lombok.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
+@Setter
+@Data
 public class HallDto {
     private Long id;
     private String name;
