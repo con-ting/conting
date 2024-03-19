@@ -45,7 +45,11 @@ logging:
   level:
     com.c209.user: DEBUG
 
-
+jwt:
+  access-key: ${JWT_ACCESS}
+  refresh-key: ${JWT_REFRESH}
+  refresh-expiration: 14d
+  access-expiration: 14d
 
 
 cool:
