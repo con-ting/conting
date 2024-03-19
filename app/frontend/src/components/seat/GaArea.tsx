@@ -7,16 +7,33 @@ import {
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
+import SeatCompetition from './SeatCompetition';
+import SeatSum from './SeatSum';
 
 export default function GaArea({seatsData}: any) {
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [lastSelectedSeatId, setLastSelectedSeatId] = useState<string | null>(
+    null,
+  );
 
   const handleSeatPress = (seatId: never, isAvailable: any) => {
     if (isAvailable) {
+      setLastSelectedSeatId(seatId); // 함수 호출 시 가장 최근 선택한 좌석의 아이디가 들어감
       setSelectedSeats(prevSelectedSeats => {
         if (prevSelectedSeats.includes(seatId)) {
-          return prevSelectedSeats.filter(id => id !== seatId);
+          const newSelectedSeats = prevSelectedSeats.filter(
+            id => id !== seatId,
+          );
+          // 선택 해제 시 lastSelectedSeatId 업데이트
+          setLastSelectedSeatId(
+            newSelectedSeats.length > 0
+              ? newSelectedSeats[newSelectedSeats.length - 1]
+              : null,
+          );
+          return newSelectedSeats;
         } else {
+          // 새로운 좌석을 선택한 경우
+          setLastSelectedSeatId(seatId);
           return [...prevSelectedSeats, seatId];
         }
       });
@@ -78,6 +95,15 @@ export default function GaArea({seatsData}: any) {
         <Text style={F_SIZE_BIGTEXT}>Reserved</Text>
         <View style={styles.selected} />
         <Text style={F_SIZE_BIGTEXT}>Selected</Text>
+      </View>
+      <View>
+        <SeatCompetition
+          lastSelectedSeatId={lastSelectedSeatId}
+          seatsData={seatsData}
+        />
+      </View>
+      <View>
+        <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
       </View>
     </>
   );

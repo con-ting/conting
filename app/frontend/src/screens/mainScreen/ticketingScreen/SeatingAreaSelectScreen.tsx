@@ -1,19 +1,18 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {F_SIZE_BIGTEXT} from '../../../config/Font';
 import SeatAreaButtons from '../../../components/button/SeatAreaButtons';
 
 export default function SeatingAreaSelectScreen() {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <SeatAreaButtons />
       {/* <Text style={F_SIZE_BIGTEXT}>구역 선택할 페이지입니다</Text> */}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     backgroundColor: 'black',
     flex: 1,
   },
