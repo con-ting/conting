@@ -1,18 +1,18 @@
-package com.c209.user.domain.auth.repository.redis;
+package com.c209.user.global.redis.repository;
 
 
+import com.c209.user.domain.auth.repository.redis.AuthRepository;
 import com.c209.user.global.redis.key.RedisKeyPrefix;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class AuthRedisRepository {
+public class AuthRedisRepository implements AuthRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 

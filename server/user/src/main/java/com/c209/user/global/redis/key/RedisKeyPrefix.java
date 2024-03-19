@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum RedisKeyPrefix {
 
     FCM_KEY("fcm::"),
+    REFRESH_TOKEN("refreshToken::")
     ;
 
     private final String keyName;
