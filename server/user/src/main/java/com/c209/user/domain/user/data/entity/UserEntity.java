@@ -1,6 +1,7 @@
 package com.c209.user.domain.user.data.entity;
 
 
+import com.c209.user.domain.user.data.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,5 +40,18 @@ public class UserEntity {
 
     @Column(nullable=false)
     private String wallet;
+
+
+    public UserDto toDto(){
+        return UserDto.builder()
+                .id(id)
+                .name(name)
+                .email(email)
+                .password(password)
+                .birthDate(birthDate)
+                .fcmToken(fcmToken)
+                .wallet(wallet)
+                .build();
+    }
 
 }

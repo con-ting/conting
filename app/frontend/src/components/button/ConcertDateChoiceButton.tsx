@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
@@ -10,6 +11,7 @@ import {
 
 export default function ConcertChoiceButton() {
   const [isDate, setIsDate] = useState([]);
+  const navigation = useNavigation();
 
   const switchColor = (id: any) => {
     if (isDate.includes(id)) {
@@ -81,10 +83,7 @@ export default function ConcertChoiceButton() {
 
       <TouchableOpacity
         style={[styles.buttonTicketing]}
-        onPress={() => {
-          //예매 로직
-          //   switchColor('ticketing');
-        }}>
+        onPress={() => navigation.navigate('Waiting', {rank: 0})}>
         <Text style={styles.textTicketing}>직접 예매하기</Text>
       </TouchableOpacity>
     </View>

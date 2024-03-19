@@ -1,9 +1,18 @@
 package com.c209.user.domain.auth.service.impl;
 
 
+import com.c209.user.domain.auth.data.dto.TokenDto;
+import com.c209.user.domain.auth.data.dto.request.LoginRequest;
+import com.c209.user.domain.auth.data.dto.request.TokenRefreshRequest;
 import com.c209.user.domain.auth.data.dto.request.VerificationSendRequest;
+import com.c209.user.domain.auth.data.dto.response.LoginResponse;
 import com.c209.user.domain.auth.error.AuthErrorCode;
-import com.c209.user.domain.auth.repository.redis.AuthRedisRepository;
+import com.c209.user.domain.auth.repository.redis.AuthRepository;
+import com.c209.user.domain.user.data.dto.UserDto;
+import com.c209.user.domain.user.exception.UserErrorCode;
+import com.c209.user.global.jwt.JwtTokenProvider;
+import com.c209.user.global.jwt.RefreshTokenRepository;
+import com.c209.user.global.redis.repository.AuthRedisRepository;
 import com.c209.user.domain.auth.service.AuthService;
 import com.c209.user.domain.auth.data.dto.request.JoinUserRequest;
 import com.c209.user.domain.user.data.entity.UserEntity;
@@ -13,13 +22,11 @@ import com.c209.user.global.util.RandomNumberUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,10 +42,14 @@ public class AuthServiceImpl implements AuthService {
     private String phoneNumber;
 
     private final UserRepository userRepository;
-    private final AuthRedisRepository authRedisRepository;
+    private final AuthRepository authRedisRepository;
     private final PasswordEncoder passwordEncoder;
     private final RandomNumberUtil randomNumberUtil;
     private final DefaultMessageService messageService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Override
@@ -103,4 +114,73 @@ public class AuthServiceImpl implements AuthService {
 
         return true;
     }
+
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+
+        UserDto loginUser = userRepository.findByEmail(request.email())
+                                            .orElseThrow(()-> new CommonException(UserErrorCode.NOT_FOUND_USER)).toDto();
+
+
+        //비밀번호가 일치하는지 확인
+
+        if(!passwordEncoder.matches(request.password(), loginUser.getPassword())){
+
+            throw new CommonException(AuthErrorCode.NOT_MATCHED_PASSWORD);
+        }
+
+        String accessToken = jwtTokenProvider.issueAccessToken(loginUser.getId());
+        String refreshToken = jwtTokenProvider.issueRefreshToken();
+
+
+        refreshTokenRepository.delete(String.valueOf(loginUser.getId()));
+        refreshTokenRepository.save(refreshToken, String.valueOf(loginUser.getId()));
+
+
+
+        return LoginResponse.builder()
+                .token(
+                        TokenDto.builder()
+                                .accessToken(accessToken)
+                                .refreshToken(refreshToken)
+                                .build()
+                )
+                .user(
+                        UserDto.builder()
+                                .id(loginUser.getId())
+                                .email(loginUser.getEmail())
+                                .build()
+                )
+                .build();
+    }
+
+    @Override
+    public TokenDto refresh(TokenRefreshRequest request) {
+
+        Long userId = jwtTokenProvider.parseAccessTokenByBase64((request.accessToken()));
+
+
+        String savedRefreshToken = String.valueOf(refreshTokenRepository.find(String.valueOf(userId))
+                .orElseThrow(()-> new CommonException(AuthErrorCode.INVALID_TOKEN)));
+
+
+        if(!savedRefreshToken.equals(request.refreshToken())){
+            throw new CommonException(AuthErrorCode.INVALID_TOKEN);
+        }
+
+        String renewalAccessToken = jwtTokenProvider.issueAccessToken(userId);
+        String renewalRefreshToken = jwtTokenProvider.issueRefreshToken();
+
+        refreshTokenRepository.delete(request.refreshToken());
+        refreshTokenRepository.save(renewalRefreshToken, String.valueOf(userId));
+
+
+        return TokenDto.builder()
+                .accessToken(renewalAccessToken)
+                .refreshToken(renewalRefreshToken)
+                .build();
+    }
+
+
 }
