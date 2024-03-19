@@ -35,7 +35,7 @@ export default function ReservationWaitingScreen() {
   const popUpModalBtn = () => {
     setPopUpModalTest(!popUpModalTest);
   };
-  const handleSearch = (query: string) => {
+  const search = (query: string) => {
     console.log("검색어: ", query);
     // 검색어를 사용한 검색 로직 구현
     // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
@@ -43,8 +43,7 @@ export default function ReservationWaitingScreen() {
 
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={handleSearch}></SearchBar>
-      <SearchBar onSearch={handleSearch}></SearchBar>
+      <SearchBar onSearch={search}></SearchBar>
       <Text style={styles.text}>환불대기중 페이지</Text>
       <Text style={styles.text}>메인 페이지</Text>
       <GrayButton

@@ -22,11 +22,32 @@ type searchBarProps = {
   onBlur?: () => void;
 };
 
+
+
+/**
+ * BasicButton입니다.
+ * @param props
+ * - [필수]
+ * - onSearch: 엔터, 검색아이콘 터치 이후 실행할 함수
+ * - [선택]
+ * - placeholder?: placeholedr
+ * - width?: default = '100%' 원하는 크기대로 삽입 가능
+ * - backgroundColor?: 뒷배경 색깔
+ * - textColor: 글씨 색상
+ * - textSize: 글씨 크기
+ * - value: 현재 입력값
+ * @returns
+ * @author 김형민
+ */
 export const SearchBar = (props: searchBarProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const borderColor = focused ? Color.MAINYELLOW : Color.MAINGRAY;
-
+  // 검색을 실행하고 검색어를 초기화하는 함수
+  const handleSearch = () => {
+    props.onSearch(searchQuery); // 사용자가 제공한 onSearch 함수 호출
+    setSearchQuery(''); // 검색어 상태를 빈 문자열로 초기화
+  };
   return (
     <View
       style={{
@@ -43,7 +64,7 @@ export const SearchBar = (props: searchBarProps) => {
           : Color.MAINBLACK,
       }}>
       <TouchableOpacity
-        onPress={() => props.onSearch(searchQuery)}
+        onPress={handleSearch}
         style={{marginRight: widthPercent(10), marginLeft: widthPercent(10)}}>
         <ICON.SearchNormal
           color={borderColor}
@@ -59,13 +80,14 @@ export const SearchBar = (props: searchBarProps) => {
           fontFamily: Font.MAINFONT,
         }}
         onChangeText={setSearchQuery}
+        value={searchQuery} // 입력 필드의 값을 searchQuery 상태로 설정
         placeholder={
           props.placeholder ? props.placeholder : '검색'
         }
         placeholderTextColor={borderColor}
         autoCorrect={false}
         returnKeyType="search"
-        onSubmitEditing={() => props.onSearch(searchQuery)}
+        onSubmitEditing={handleSearch}
         onFocus={() => {
           setFocused(true);
         }}
