@@ -45,9 +45,6 @@ public class Show extends BaseEntity {
     @Column
     private String genre; // genre choice 추가하기
 
-    @Column(name="video_title")
-    private String videoTitle;
-
     @Column(name="video_url")
     private String videoUrl;
 
