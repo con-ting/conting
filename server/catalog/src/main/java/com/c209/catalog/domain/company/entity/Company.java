@@ -17,5 +17,5 @@ public class Company extends BaseEntity {
     private String company_name;
 
     @Column
-    private String call;
+    private String company_call;
 }

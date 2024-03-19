@@ -11,7 +11,7 @@ import java.util.Date;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-public class Show  extends BaseEntity {
+public class Show extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="company_id")
     @Id
