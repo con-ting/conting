@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {MainScreen} from '../screens/mainScreen/MainScreen';
+import MainScreen from '../screens/mainScreen/MainScreen';
 import ReservationWaitingScreen from '../screens/lotteryResultScreen/ReservationWaitingScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
 import {TicketApplyListScreen} from '../screens/ticketApplyScreen/TicketApplyListScreen';
