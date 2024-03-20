@@ -1,17 +1,19 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import EventCard from '../../components/SingerDetail/EventCard';
-import SingerProfile from '../../components/SingerDetail/SingerProfile';
+import EventCard from '../../components/card/EventCard';
+import SingerProfile from '../../components/card/SingerProfile';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
 import ConcertCard from '../../components/card/ConcertCard';
 import FisrtComeList from '../../components/list/FirstComeList';
 import {ScrollView} from 'react-native';
+import PopularConcertList from './../../components/list/PopularConcertList';
 
 export class MainScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <ScrollView>
+          <PopularConcertList />
           {/* <Text style={styles.text}>메인 페이지</Text> */}
           <FisrtComeList />
           {/* <ConcertCard
