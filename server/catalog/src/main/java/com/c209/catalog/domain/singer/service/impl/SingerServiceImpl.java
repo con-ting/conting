@@ -47,7 +47,6 @@ public class SingerServiceImpl implements SingerService {
                         .image(info.getAlbumImage())
                         .build())
                 .collect(Collectors.toList());
-
     }
 
     @Override

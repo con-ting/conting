@@ -17,6 +17,29 @@ spring:
       on-profile: common
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalLoggingFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: auth-service
+          uri: ${AUTH_SERVICE}
+          predicates:
+            - Path=/auth/**
+        - id: user-service
+          uri: ${USER_SERVICE}
+          predicates:
+            - Path=/users/**
+          filters:
+            - AuthorizationHeaderFilter
+    default-filters:
+      - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+jwt:
+  access-key: ${JWT_ACCESS}
 
 ---
 spring:

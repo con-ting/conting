@@ -9,9 +9,9 @@ spring:
     name: user-service
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:9996/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 1234
+    url: ${USER_DB_URL}
+    username: ${USER_DB_USER_NAME}
+    password: ${USER_DB_PASSWORD}
     hikari:
       max-lifetime: 160000
   jpa:
@@ -25,15 +25,15 @@ spring:
         show_sql: true
     generate-ddl: true
 
-#  eureka:
-#    instance:
-#      hostname: localhost
-#      prefer-ip-address: true
-#    client:
-#      register-with-eureka: true
-#      fetch-registry: true
-#      service-url:
-#        defaultZone: http://127.0.0.1:8761/eureka
+  eureka:
+    instance:
+      hostname: localhost
+      prefer-ip-address: true
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: ${DISCOVERY_SERVER}
 
   data:
     redis:
@@ -54,7 +54,7 @@ jwt:
 
 cool:
   sms:
-    secretkey: ${COOL_SMS_SECRET_KEY}
+    secret: ${COOL_SMS_SECRET_KEY}
     apikey: ${COOL_SMS_API_KEY}
     outgoing:
       number: ${PHONE_NUMBER}

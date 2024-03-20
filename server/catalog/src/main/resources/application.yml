@@ -28,3 +28,5 @@ logging:
   level:
     com.c209.catalog: DEBUG
 
+key:
+  service: ${SERVICE_KEY}

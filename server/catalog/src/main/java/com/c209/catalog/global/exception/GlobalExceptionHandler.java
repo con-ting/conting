@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
     public ErrorResponse commonExceptionHandler(CommonException e){
         return ErrorResponse.builder(e, e.getHttpStatus(), e.getMessage()).build();
     }
+
     //해당 핸들러는 가장 마지막에 위치해야합니다!!!
     @ExceptionHandler(RuntimeException.class)
     public ErrorResponse runtimeExceptionHandler(RuntimeException e){

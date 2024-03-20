@@ -32,6 +32,7 @@ public class Album extends BaseEntity {
     @ManyToOne(fetch= LAZY, optional=false)
     @JoinColumn(name="singer_id", nullable = false)
     private Singer singer;
+
     @Column
     private String name;
 
