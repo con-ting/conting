@@ -37,16 +37,16 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             try {
                 String token = exchange.getRequest().getHeaders().get(AUTHORIZATION).get(0).substring(7);
 
-                String userId = jwtUtils.parseId(token);
+                String userIdFromToken = jwtUtils.parseId(token);
                 String userIdFromHeader = exchange.getRequest().getHeaders().get(USER_AGENT).get(0);
 
-                log.info(userId);
+                log.info("userIdFromToken : {}, userIdFromHeader : {}",userIdFromToken, userIdFromHeader);
 
-                if(!userId.equals(userIdFromHeader)){
+                if(!userIdFromToken.equals(userIdFromHeader)){
                     throw new AuthException("유효하지 않은 토큰입니다.");
                 }
 
-                addAuthorizationHeaders(exchange.getRequest(), userId);
+                addAuthorizationHeaders(exchange.getRequest(), userIdFromToken);
 
             } catch (ExpiredJwtException ex) {
                 log.info("토큰이 만료되었습니다.");

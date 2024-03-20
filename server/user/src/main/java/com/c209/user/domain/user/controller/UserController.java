@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping("/my")
     public ResponseEntity<UserDto> my(
-            @RequestHeader("X-Authorization")Long userId
+            @RequestHeader("X-Authorization-Id")Long userId
     ){
         log.debug("내 프로필 조회 : id");
         return ResponseEntity.ok(userService.getUserDetailsById(userId));
