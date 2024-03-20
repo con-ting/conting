@@ -116,7 +116,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f user"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":User_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name user --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e USER_DB_URL=\"${USER_DB_URL}\" -e USER_DB_USER_NAME=\"${USER_DB_USER_NAME}\" -e USER_DB_PASSWORD=\"${USER_DB_PASSWORD}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e JWT_REFRESH=\"${JWT_REFRESH}\" -e COOL_SMS_API_KEY=\"${COOL_SMS_API_KEY}\" -e COOL_SMS_SECRET_KEY=\"${COOL_SMS_SECRET_KEY}\" -e PHONE_NUMBER=\"${PHONE_NUMBER}\" "+ repository + ":User_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8881:8881 --name user --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e USER_DB_URL=\"${USER_DB_URL}\" -e USER_DB_USER_NAME=\"${USER_DB_USER_NAME}\" -e USER_DB_PASSWORD=\"${USER_DB_PASSWORD}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e JWT_REFRESH=\"${JWT_REFRESH}\" -e COOL_SMS_API_KEY=\"${COOL_SMS_API_KEY}\" -e COOL_SMS_SECRET_KEY=\"${COOL_SMS_SECRET_KEY}\" -e PHONE_NUMBER=\"${PHONE_NUMBER}\" "+ repository + ":User_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
