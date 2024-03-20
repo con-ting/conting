@@ -15,15 +15,15 @@ import java.util.Date;
 @Setter
 @Data
 public class PerformanceDto {
-    private Long id;
+    private Long show_id;
     private String title;
     private String description;
     private String poster;
     private String description_image;
     private String reservation_type;
     private Float reservation_rate;
-    private LocalDateTime reservation_start_datetime;
-    private LocalDateTime reservation_end_datetime;
+    private LocalDateTime ticket_open_date;
+    private LocalDateTime ticket_close_date;
     private Date start_date;
     private Date end_date;
 }
