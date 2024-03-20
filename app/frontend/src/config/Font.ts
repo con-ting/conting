@@ -22,6 +22,11 @@ export const F_SIZE_BUTTON: object = {
   fontFamily: MAINFONT,
   fontSize: fontPercent(18),
 };
+export const F_SIZE_SUBTITLE: object = {
+  color: 'white',
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(18),
+};
 export const F_SIZE_BIGTEXT: object = {
   color: 'white',
   fontFamily: MAINFONT,

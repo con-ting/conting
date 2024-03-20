@@ -1,38 +1,32 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {
   F_SIZE_BIGTEXT,
-  F_SIZE_HEADER,
+  F_SIZE_SUBTITLE,
   F_SIZE_TITLE,
-  F_SIZE_Y_HEADER,
   F_SIZE_Y_TITLE,
 } from '../../config/Font';
 import {BasicConcertCardWide} from '../card/ConcertCardWide';
 import {YellowButton} from '../button/Button';
-import {MAINGRAY} from '../../config/Color';
-import {widthPercent} from '../../config/Dimensions';
 import {useRoute} from '@react-navigation/native';
+import {useEffect, useState} from 'react';
 
-const payData = {
-  buyer: [
-    {name: '김싸피', email: 'ssafy@ssafy.com', seat_id: '스탠딩', price: 99000},
-    {
-      name: '김두피',
-      email: 'ssafy2@ssafy.com',
-      seat_id: 'VIP-8',
-      price: 199000,
-    },
-    {
-      name: '김세피',
-      email: 'ssafy3@ssafy.com',
-      seat_id: 'VIP-9',
-      price: 199000,
-    },
-  ],
-};
+const userName = '김싸피';
 
 export default function PayInfo() {
   const route = useRoute();
   const {selectedSeats} = route.params;
+
+  // 주문 번호 상태와 생성 로직
+  const [orderID, setOrderID] = useState('');
+
+  useEffect(() => {
+    // 주문 번호 생성 : 랜덤 숫자 6자리
+    const randomNumbers = Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(6, '0'); // 6자리 랜덤 숫자
+    const newOrderID = `ORD-${randomNumbers}`;
+    setOrderID(newOrderID);
+  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행됨
 
   // 총액 계산
   const totalAmout = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
@@ -52,15 +46,15 @@ export default function PayInfo() {
       />
       <Text style={[F_SIZE_TITLE, styles.header]}>구매 정보</Text>
       <View style={styles.titles}>
-        <Text style={F_SIZE_TITLE}>입장 권한</Text>
-        <Text style={[F_SIZE_TITLE, styles.seat]}>좌석 번호</Text>
-        <Text style={F_SIZE_TITLE}>티켓 가격</Text>
+        <Text style={F_SIZE_SUBTITLE}>입장 권한</Text>
+        <Text style={[F_SIZE_SUBTITLE, styles.seat]}>좌석 번호</Text>
+        <Text style={F_SIZE_SUBTITLE}>티켓 가격</Text>
       </View>
 
       {selectedSeats.map((seat, index) => (
-        <View key={index} style={styles.infoContainer}>
+        <View key={index} style={styles.titles}>
           <View style={styles.entry}>
-            <Text style={F_SIZE_BIGTEXT}>김싸피</Text>
+            <Text style={F_SIZE_BIGTEXT}>{userName}</Text>
             {/* <Text style={F_SIZE_BIGTEXT}>{buyer.email}</Text> */}
           </View>
           <Text style={F_SIZE_BIGTEXT}>{seat.seat_id}</Text>
@@ -71,13 +65,13 @@ export default function PayInfo() {
       <View>
         <Text style={[F_SIZE_TITLE, styles.header]}>결제 요약</Text>
 
-        <View style={styles.infoContainer}>
-          <Text style={F_SIZE_TITLE}>Order ID</Text>
-          <Text style={F_SIZE_TITLE}>573982854</Text>
+        <View style={styles.titles}>
+          <Text style={F_SIZE_SUBTITLE}>Order ID</Text>
+          <Text style={F_SIZE_SUBTITLE}>{orderID}</Text>
         </View>
-        <View style={styles.infoContainer}>
-          <Text style={F_SIZE_TITLE}>구매 수량</Text>
-          <Text style={F_SIZE_TITLE}>{selectedSeats.length}</Text>
+        <View style={styles.titles}>
+          <Text style={F_SIZE_SUBTITLE}>구매 수량</Text>
+          <Text style={F_SIZE_SUBTITLE}>{selectedSeats.length}</Text>
         </View>
         <View style={styles.line} />
       </View>
@@ -93,6 +87,7 @@ export default function PayInfo() {
 const styles = StyleSheet.create({
   header: {
     marginTop: 30,
+    marginLeft: 5,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -101,6 +96,7 @@ const styles = StyleSheet.create({
   titles: {
     marginLeft: 5,
     marginRight: 5,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
