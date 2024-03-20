@@ -7,7 +7,7 @@ import {
 } from '../../config/Font';
 import {BasicConcertCardWide} from '../card/ConcertCardWide';
 import {YellowButton} from '../button/Button';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 
 const userName = '김싸피';
@@ -15,6 +15,8 @@ const userName = '김싸피';
 export default function PayInfo() {
   const route = useRoute();
   const {selectedSeats} = route.params;
+
+  const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
   const [orderID, setOrderID] = useState('');
@@ -32,7 +34,7 @@ export default function PayInfo() {
   const totalAmout = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
 
   return (
-    <View>
+    <View style={styles.container}>
       <BasicConcertCardWide
         title="2024 IU HER WORLD TOUR CONCERT IN SEOUL"
         disabled
@@ -79,12 +81,18 @@ export default function PayInfo() {
         <Text style={F_SIZE_TITLE}>총액</Text>
         <Text style={F_SIZE_Y_TITLE}>{totalAmout.toLocaleString()} 원</Text>
       </View>
-      <YellowButton btnText="결제하기" isRadius textSize={20} />
+      <YellowButton
+        onPress={() => navigation.navigate('Result')}
+        btnText="결제하기"
+        isRadius
+        textSize={20}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {margin: 10},
   header: {
     marginTop: 30,
     marginLeft: 5,
