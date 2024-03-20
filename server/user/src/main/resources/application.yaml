@@ -25,20 +25,17 @@ spring:
         show_sql: true
     generate-ddl: true
 
-  eureka:
-    instance:
-      hostname: localhost
-      prefer-ip-address: true
-    client:
+eureka:
+  client:
       register-with-eureka: true
       fetch-registry: true
       service-url:
         defaultZone: ${DISCOVERY_SERVER}
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
+data:
+  redis:
+    host: localhost
+    port: 6379
 
 
 logging:

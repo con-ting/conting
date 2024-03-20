@@ -1,0 +1,166 @@
+pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        USER_DB_URL="${env.USER_DB_URL}"
+        USER_DB_USER_NAME="${env.USER_DB_USER_NAME}"
+        USER_DB_PASSWORD="${env.USER_DB_PASSWORD}"
+        JWT_ACCESS="${JWT_ACCESS}"
+        JWT_REFRESH="${JWT_REFRESH}"
+        COOL_SMS_SECRET_KEY="${env.COOL_SMS_SECRET_KEY}"
+        COOL_SMS_API_KEY="${env.COOL_SMS_API_KEY}"
+        PHONE_NUMBER="${PHONE_NUMBER}"
+    }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // 코드 체크아웃
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Confirm Echo') {
+            steps {
+                script {
+                    echo "user server 입니다."
+                }
+            }
+        }
+         stage('Build User-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "user server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/user/gradlew'
+                            sh '''
+                                cd ./server/user
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Discovery-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:User_${BUILD_NUMBER}", "-f server/user/Dockerfile ./server/user")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push User Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:User_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean User Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:User_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "User_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep user | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "User_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f user"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":User_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name user --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e USER_DB_URL=\"${USER_DB_URL}\" -e USER_DB_USER_NAME=\"${USER_DB_USER_NAME}\" -e USER_DB_PASSWORD=\"${USER_DB_PASSWORD}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e JWT_REFRESH=\"${JWT_REFRESH}\" -e COOL_SMS_API_KEY=\"${COOL_SMS_API_KEY}\" -e COOL_SMS_SECRET_KEY=\"${COOL_SMS_SECRET_KEY}\" -e PHONE_NUMBER=\"${PHONE_NUMBER}\" "+ repository + ":User_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+    }
+
+    post {
+        success {
+           script {
+                   def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                   def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                   mattermostSend (color: 'good',
+                   message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                   endpoint: "${env.MM_WEBHOOK}",
+                   channel: 'C209_CICD'
+                   )
+                   echo "${env.MM_WEBHOOK}"
+               }
+           }
+       failure {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'danger',
+               message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+       unstable {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'good',
+               message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+    }
+}
