@@ -77,6 +77,8 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request
     ){
+
+        log.debug("회원가입요청");
         return ResponseEntity.ok().body(authService.login(request));
     }
 

@@ -14,16 +14,12 @@ public class CoolSmsConfig {
     @Value("${cool.sms.apikey}")
     private String API_KEY;
 
-    @Value("${cool.sms.secret")
+    @Value("${cool.sms.secret}")
     private String SECRET_KEY;
 
 
-    @Value("${cool.sms.domain")
-    private String DOMAIN;
-
     @Bean
     public DefaultMessageService defaultMessageService(){
-
         return NurigoApp.INSTANCE.initialize(API_KEY, SECRET_KEY, "https://api.coolsms.co.kr");
     }
 
