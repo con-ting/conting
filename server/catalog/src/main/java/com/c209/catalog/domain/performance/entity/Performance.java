@@ -2,6 +2,9 @@ package com.c209.catalog.domain.performance.entity;
 
 import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.hall.entity.Hall;
+import com.c209.catalog.domain.performance.enums.Genre;
+import com.c209.catalog.domain.performance.enums.ReservationType;
+import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -42,8 +45,9 @@ public class Performance extends BaseEntity {
     @Column(name="description_image")
     private String descriptionImage;
 
-    @Column
-    private String genre; // genre choice 추가하기
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private Genre genre;
 
     @Column(name="video_url")
     private String videoUrl;
@@ -65,11 +69,13 @@ public class Performance extends BaseEntity {
     @Column(name="reservation_end_datetime")
     private LocalDateTime reservationEndDatetime;
 
-    @Column
-    private String status; // status choice 추가하기
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
-    @Column(name="reservation_type")
-    private String reservationType; // reservation_type choice 추가하기
+    @Enumerated(value = EnumType.STRING)
+    @Column(name="reservation_type", nullable = false)
+    private ReservationType reservationType;
 
     @Column(name="start_date")
     private Date startDate;
