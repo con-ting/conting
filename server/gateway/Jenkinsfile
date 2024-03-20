@@ -108,7 +108,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f gateway"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" " + repository + ":Gateway_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
