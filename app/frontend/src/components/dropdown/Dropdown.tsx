@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, DimensionValue, TextStyle } from 'react-native';
-import DropDownPicker, { DropDownPickerProps } from 'react-native-dropdown-picker';
+import React, {useState, useEffect} from 'react';
+import {View, DimensionValue, TextStyle} from 'react-native';
+import DropDownPicker, {
+  DropDownPickerProps,
+} from 'react-native-dropdown-picker';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import { fontPercent } from '../../config/Dimensions';
+import {fontPercent} from '../../config/Dimensions';
 import * as ICON from 'iconsax-react-native';
-
-
 
 type dropdownProps = {
   width?: DimensionValue | '90%';
   zIndex?: number;
   zIndexInverse: number;
-  data: Array<{ label: string; value: string }>;
+  data: Array<{label: string; value: string}>;
   open: boolean;
   setOpen: Function;
   placeholder?: string;
@@ -36,7 +36,7 @@ type dropdownProps = {
  * @author 김형민
  */
 export const Dropdown = (props: dropdownProps) => {
-  const { open, setOpen } = props;
+  const {open, setOpen} = props;
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(props.data);
 
@@ -52,7 +52,7 @@ export const Dropdown = (props: dropdownProps) => {
     props.setOpen(false);
   };
 
-  const handleSelectValue = (selectedValue) => {
+  const handleSelectValue = selectedValue => {
     props.onSelectValue(selectedValue);
   };
 
@@ -60,9 +60,9 @@ export const Dropdown = (props: dropdownProps) => {
     width: props.width,
     borderColor: open ? Color.MAINYELLOW : Color.MAINGRAY,
     backgroundColor: Color.MAINBLACK,
-    
+
     shadowColor: '#FEC84B',
-    shadowOffset: { width: 0, height: open ? 10 : 0 },
+    shadowOffset: {width: 0, height: open ? 10 : 0},
     shadowOpacity: open ? 0.5 : 0,
     shadowRadius: open ? 5 : 0,
     elevation: open ? 12 : 0,
@@ -77,18 +77,22 @@ export const Dropdown = (props: dropdownProps) => {
       setOpen={handleOpen}
       setValue={setValue}
       setItems={setItems}
-      onChangeValue={(value) => {
+      onChangeValue={value => {
         handleSelectValue(value);
       }}
       placeholder={props.placeholder ? props.placeholder : '선택'}
-      listMode='SCROLLVIEW'
+      listMode="SCROLLVIEW"
       autoScroll={true}
       scrollViewProps={{
         nestedScrollEnabled: true,
       }}
-      ArrowUpIconComponent={({style}) => <ICON.ArrowUp2 color={Color.MAINWHITE} />}
-      ArrowDownIconComponent={({style}) => <ICON.ArrowDown2 color={Color.MAINWHITE} />}
-      dropDownDirection='BOTTOM'
+      ArrowUpIconComponent={({style}) => (
+        <ICON.ArrowUp2 color={Color.MAINWHITE} />
+      )}
+      ArrowDownIconComponent={({style}) => (
+        <ICON.ArrowDown2 color={Color.MAINWHITE} />
+      )}
+      dropDownDirection="BOTTOM"
       zIndex={props.zIndex ? props.zIndex : 300}
       zIndexInverse={props.zIndexInverse}
       closeOnBackPressed={true}

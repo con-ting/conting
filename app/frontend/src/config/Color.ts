@@ -14,3 +14,4 @@ export const MAINWHITE: string = '#FFFFFF';
 export const TEXTGRAY: string = '#F2F2F2';
 export const BTNGRAY: string = '#3B3B3B';
 export const CUTEYELLOW: string = '#FFEFC3';
+export const CARDBASE: string = '#1C1C1C';
