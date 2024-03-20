@@ -13,7 +13,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.*;
 
 @Component
 @Slf4j
@@ -38,8 +38,13 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 String token = exchange.getRequest().getHeaders().get(AUTHORIZATION).get(0).substring(7);
 
                 String userId = jwtUtils.parseId(token);
+                String userIdFromHeader = exchange.getRequest().getHeaders().get(USER_AGENT).get(0);
 
                 log.info(userId);
+
+                if(!userId.equals(userIdFromHeader)){
+                    throw new AuthException("유효하지 않은 토큰입니다.");
+                }
 
                 addAuthorizationHeaders(exchange.getRequest(), userId);
 
@@ -51,6 +56,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 log.info("인증에 실패하였습니다.");
                 throw new AuthException("인증에 실패하였습니다.");
             }
+
+
+
+
 
             return chain.filter(exchange);
         };
