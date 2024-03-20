@@ -73,8 +73,8 @@ public class AuthServiceImpl implements AuthService {
 
         String encodedPassword = passwordEncoder.encode(request.password());
         UserEntity user = request.toEntity(encodedPassword);
-        log.debug(request.toString());
-        log.debug(user.toString());
+
+        
 
         return userRepository.save(user).getId();
 
