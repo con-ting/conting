@@ -1,20 +1,49 @@
-import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import EventCard from '../../components/card/EventCard';
-import SingerProfile from '../../components/card/SingerProfile';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
-import ConcertCard from '../../components/card/ConcertCard';
 import FisrtComeList from '../../components/list/FirstComeList';
 import {ScrollView} from 'react-native';
 import PopularConcertList from './../../components/list/PopularConcertList';
+import LinearGradient from 'react-native-linear-gradient';
+import { useState } from 'react';
 
-export class MainScreen extends React.Component {
-  render() {
-    return (
+
+export default function MainScreen() {
+  const [backgroundColors, setBackgroundColors] = useState(['#000000', '#000000', '#000000'])
+  const concertList = [
+    {
+      poster:
+        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxNzEwMTFfMjY3%2FMDAxNTA3NzIzNjU0MjM1.kTHfzzQ5oZEEl0cUUpEwsklfZq_HhzfOckVtOspfVwEg._0FoK4KQ6_eqwt7vRGVLNcZ90leatv1A_QiPL7mD-Cgg.JPEG.yun1202%2FexternalFile.jpg&type=a340',
+    },
+    {
+      poster:
+        'https://search.pstatic.net/sunny/?src=http%3A%2F%2Ffile3.instiz.net%2Fdata%2Ffile3%2F2018%2F09%2F27%2Fb%2Ff%2F0%2Fbf08fa9f2403e7d43aa3863d58ee8b0a.jpg&type=a340',
+    },
+    {
+      poster:
+        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTEwMjFfMjYx%2FMDAxNTcxNjQzOTQxMzY4.YolACTYNYE8yCQUDEVF9tKd-B1OOI0NPcbNjhtfsLVMg.5VdwQO9LhJPrOx-53s8BfXAdLQBshTgizcNmgDMmcysg.JPEG%2F20191021_164330.jpg&type=a340',
+    },
+    {
+      poster:
+        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTEwMDNfMjUy%2FMDAxNTcwMTAzODQ4NDk4.TTqxmb1BcDJ_yHnqUb-hK1waq6d4WqHxHK_pEncGXwEg.KFGgOBwX9bs4S5QM_jzd9aV6276LPYlO81SpFpaN6lsg.JPEG%2FD8932865-F929-4F1F-BA37-71DFA3EC5825.jpeg&type=a340',
+    },
+    {
+      poster:
+        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxODExMTlfOTgg%2FMDAxNTQyNjE0ODMwMzY0.yvRdj5mecR1HfyCf-ND24sGy4Nvwoao4BKu9kV97y60g.r2LZzxYHnBWEtgkMGWSNPq8SbM0Cmf8uRviYXpPqCZUg.JPEG.dmsejrl1%2F6.jpg&type=a340',
+    },
+    {
+      poster:
+        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxODExMTlfOTgg%2FMDAxNTQyNjE0ODMwMzY0.yvRdj5mecR1HfyCf-ND24sGy4Nvwoao4BKu9kV97y60g.r2LZzxYHnBWEtgkMGWSNPq8SbM0Cmf8uRviYXpPqCZUg.JPEG.dmsejrl1%2F6.jpg&type=a340',
+    },
+  ];
+  
+  const getBackgroundColors = (colors:any) =>{
+    setBackgroundColors(colors)
+  }
+  return (
+    <LinearGradient colors={backgroundColors} style={styles.container}>
       <View style={styles.container}>
         <ScrollView>
-          <PopularConcertList />
-          {/* <Text style={styles.text}>메인 페이지</Text> */}
+          <PopularConcertList popularConcert={concertList} getBackgroundColors={getBackgroundColors}/>
           <FisrtComeList />
           {/* <ConcertCard
             poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
@@ -30,16 +59,13 @@ export class MainScreen extends React.Component {
           />
         </ScrollView>
       </View>
-    );
-  }
+    </LinearGradient>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black', // 배경색을 검은색으로 설정
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   text: {
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
