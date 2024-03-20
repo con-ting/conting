@@ -52,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
 
+
     @Override
     public Long registryUser(JoinUserRequest request) {
 
@@ -92,6 +93,7 @@ public class AuthServiceImpl implements AuthService {
         message.setFrom(phoneNumber);
         message.setTo(request.phone_number());
         message.setText("[콘팅] : 다음 번호를 입력해주세요 "+ randomNumber );
+
         log.debug("인증 번호 : {}", randomNumber);
         try{
             SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
@@ -132,6 +134,7 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtTokenProvider.issueAccessToken(loginUser.getId());
         String refreshToken = jwtTokenProvider.issueRefreshToken();
+
 
 
         refreshTokenRepository.delete(String.valueOf(loginUser.getId()));
