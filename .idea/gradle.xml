@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/app/frontend/android" />
             <option value="$PROJECT_DIR$/app/frontend/android/app" />
             <option value="$PROJECT_DIR$/app/frontend/node_modules/@react-native/gradle-plugin" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-gesture-handler/android" />
             <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-linear-gradient/android" />
             <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-safe-area-context/android" />
             <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-screens/android" />

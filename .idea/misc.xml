@@ -4,6 +4,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/app/frontend/android" />
     <file type="web" url="file://$PROJECT_DIR$/app/frontend/node_modules/@react-native/gradle-plugin" />
+    <file type="web" url="file://$PROJECT_DIR$/app/frontend/node_modules/react-native-gesture-handler/android" />
     <file type="web" url="file://$PROJECT_DIR$/app/frontend/node_modules/react-native-linear-gradient/android" />
     <file type="web" url="file://$PROJECT_DIR$/app/frontend/node_modules/react-native-safe-area-context/android" />
     <file type="web" url="file://$PROJECT_DIR$/app/frontend/node_modules/react-native-screens/android" />
