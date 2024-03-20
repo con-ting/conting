@@ -21,7 +21,7 @@ public class PerformanceDto {
     private String poster;
     private String description_image;
     private String reservation_type;
-    private Float reservation_rate;
+//    private Float reservation_rate;
     private LocalDateTime ticket_open_date;
     private LocalDateTime ticket_close_date;
     private Date start_date;
