@@ -1,6 +1,6 @@
 package com.c209.catalog.domain.schedule.entity;
 
-import com.c209.catalog.domain.show.entity.Show;
+import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,8 +24,8 @@ public class Schedule extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "show_id")
-    private Show show;
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
 
     @Column(name="start_time")
     private LocalDateTime startTime;

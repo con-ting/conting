@@ -1,10 +1,9 @@
-package com.c209.catalog.domain.show.entity;
+package com.c209.catalog.domain.performance.entity;
 
 import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,14 +20,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Getter
 @Entity
-public class Show extends BaseEntity {
-    @GeneratedValue(strategy=IDENTITY)
-    @Column(name="show_id")
+public class Performance extends BaseEntity {
     @Id
+    @GeneratedValue(strategy=IDENTITY)
+    @Column(name="performance_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_id") // foreign key
+    @JoinColumn(name="company_id", nullable = false)
     private Company company;
 
     @Column
@@ -50,11 +49,11 @@ public class Show extends BaseEntity {
     private String videoUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "singer_id")
+    @JoinColumn(name="singer_id", nullable = false)
     private Singer singer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "hall_id")
+    @JoinColumn(name="hall_id", nullable = false)
     private Hall hall;
 
     @Column(name="view_count", columnDefinition = "integer default 0")
