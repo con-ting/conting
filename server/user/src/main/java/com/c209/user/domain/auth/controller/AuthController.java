@@ -30,6 +30,7 @@ public class AuthController {
     @PostMapping("/join")
     public ResponseEntity<JoinResponse> joinUser(@RequestBody JoinUserRequest request){
         Long createdId = authService.registryUser(request);
+        log.debug("회원 가입 요청");
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -44,6 +45,8 @@ public class AuthController {
     //UUID 등록 테이블
     @PostMapping("/message")
     public ResponseEntity<VerificationSendResponse> sendVerificationMessage(@RequestBody VerificationSendRequest request){
+
+        log.debug("메시지 발송 요청");
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -62,6 +65,7 @@ public class AuthController {
             @RequestParam String randomNumber,
             @RequestParam String fcm
     ){
+        log.debug("인증번호 검증 요청 :: {}, {}", randomNumber, fcm);
 
         return ResponseEntity
                 .ok(
@@ -78,7 +82,7 @@ public class AuthController {
             @RequestBody LoginRequest request
     ){
 
-        log.debug("회원가입요청");
+        log.debug("로그인 요청");
         return ResponseEntity.ok().body(authService.login(request));
     }
 
