@@ -24,7 +24,10 @@ spring:
         format_sql: true
         show_sql: true
     generate-ddl: true
-
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 eureka:
   client:
       register-with-eureka: true
@@ -32,10 +35,7 @@ eureka:
       service-url:
         defaultZone: ${DISCOVERY_SERVER}
 
-data:
-  redis:
-    host: localhost
-    port: 6379
+
 
 
 logging:
