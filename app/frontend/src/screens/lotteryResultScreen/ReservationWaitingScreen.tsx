@@ -6,8 +6,8 @@ import {widthPercent} from '../../config/Dimensions';
 import {CheckBox} from '../../components/checkbox/CheckBox';
 import {PopUpModal, SlideModal} from '../../components/modal/Modal';
 import {GrayButton} from '../../components/button/Button';
-import {SearchBar} from "../../components/searchBar/SearchBar.tsx";
-import {BasicConcertCardWide} from "../../components/card/ConcertCardWide.tsx";
+import {SearchBar} from '../../components/searchBar/SearchBar.tsx';
+import {BasicConcertCardWide} from '../../components/card/ConcertCardWide.tsx';
 
 export default function ReservationWaitingScreen() {
   const [empId, setEmpId] = useState('');
@@ -37,7 +37,7 @@ export default function ReservationWaitingScreen() {
     setPopUpModalTest(!popUpModalTest);
   };
   const search = (query: string) => {
-    console.log("검색어: ", query);
+    console.log('검색어: ', query);
     // 검색어를 사용한 검색 로직 구현
     // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
   };
@@ -53,7 +53,23 @@ export default function ReservationWaitingScreen() {
       <GrayButton
         onPress={sliceModalBtn}
         btnText="슬라이스 모달테스트"></GrayButton>
-      <BasicConcertCardWide title={"우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv"} img_url={"http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif"} img_tag={"예매 예정"} sido={"서울"} concert_hall={"신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a"} date_tag={"예매시작일"} date={"2024.07.05"}/>
+      <BasicConcertCardWide
+        onPress={() => console.log("히히")}
+        disabled={true}
+        img_tag_disabled={true}
+        title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
+        img_url={
+          'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
+        }
+        img_tag={'예매 예정'}
+        sido={'서울'}
+        concert_hall={
+          '신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a'
+        }
+        date_tag={'예매시작일'}
+        date={'2024.07.05'}
+        swipe_btn_disabled={true}
+      />
       <PopUpModal isVisible={popUpModalTest} setIsVisible={setPopUpModalTest}>
         <View style={{padding: widthPercent(4)}}>
           <SimpleInput
