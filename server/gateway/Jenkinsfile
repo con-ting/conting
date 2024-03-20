@@ -4,6 +4,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
         DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        JWT_ACCESS="${env.JWT_ACCESS}"
     }
     agent any
 
