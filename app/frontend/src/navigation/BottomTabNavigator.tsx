@@ -25,6 +25,7 @@ import WaitingScreen from '../screens/mainScreen/ticketingScreen/WaitingScreen';
 import SeatingAreaSelectScreen from '../screens/mainScreen/ticketingScreen/SeatingAreaSelectScreen';
 import {heightPercent} from '../config/Dimensions';
 import PaymentScreen from '../screens/mainScreen/ticketingScreen/PaymentScreen';
+import ResultScreen from '../screens/mainScreen/ticketingScreen/ResultScreen';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -296,6 +297,15 @@ export default function AppContainer() {
               fontFamily: 'Jalnan2TTF',
             },
             headerTitleAlign: 'center',
+            // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}></Stack.Screen>
+        <Stack.Screen
+          name="Result"
+          component={ResultScreen}
+          options={{
+            headerShown: false,
+            tabBarVisible: false,
             // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}></Stack.Screen>
