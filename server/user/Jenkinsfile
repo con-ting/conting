@@ -96,7 +96,7 @@ pipeline {
                                     configName: "User_Service",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep user | tr ' ' '\t' | cut -f1)"),
+//                                         sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep user | tr ' ' '\t' | cut -f1)"),
                                         sshTransfer(execCommand: "sudo docker system prune -af")
                                     ]
                                 )
