@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping("/my")
     public ResponseEntity<UserDto> my(
-            @RequestHeader("X_Authorization")Long userId
+            @RequestHeader("X-Authorization")Long userId
     ){
         return ResponseEntity.ok(userService.getUserDetailsById(userId));
     }
