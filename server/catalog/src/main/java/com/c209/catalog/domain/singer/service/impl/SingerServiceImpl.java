@@ -5,6 +5,7 @@ import com.c209.catalog.domain.singer.dto.AlbumDto;
 import com.c209.catalog.domain.singer.dto.SingerDto;
 import com.c209.catalog.domain.singer.dto.info.SingerAndAlbumInfo;
 import com.c209.catalog.domain.singer.dto.response.GetSingerResponse;
+import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.domain.singer.exception.SingerErrorCode;
 import com.c209.catalog.domain.singer.repository.SingerRepository;
 import com.c209.catalog.domain.singer.service.SingerService;
@@ -60,6 +61,11 @@ public class SingerServiceImpl implements SingerService {
 
         SingerDto singerDto = getSingerDtoFromSingerAndAlbumInfoList(singerAndAlbumInfoList);
         List<AlbumDto> albumList = getAlbumDtoFromSingerAndAlbumInfoList(singerAndAlbumInfoList);
+
+        Singer singer = singerRepository.findById(singerId)
+                .orElseThrow(() -> new CommonException(SingerErrorCode.NOT_EXIST_SINGER));
+        singer.setView(singer.getView() + 1);
+        singerRepository.save(singer);
 
         return GetSingerResponse.builder().singer(singerDto).albums(albumList).build();
     }
