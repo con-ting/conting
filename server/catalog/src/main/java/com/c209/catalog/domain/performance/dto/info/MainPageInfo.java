@@ -31,8 +31,8 @@ public class MainPageInfo {
     private ReservationType fShowReservationType;
     private LocalDateTime fShowTicketOpenDate;
     private LocalDateTime fShowTicketCloseDate;
-    private Date fpShowStartDate;
-    private Date fpShowEndDate;
+    private Date fShowStartDate;
+    private Date fShowEndDate;
 
     private Long rShowId;
     private String rShowPoster;
