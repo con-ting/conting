@@ -13,11 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import java.util.Collections;
-import java.util.Optional;
-
 @Service
-@RequiredArgsConstructor //변수명에 private final만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
+@RequiredArgsConstructor //변수명에 private final 만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
 
@@ -54,9 +51,11 @@ public class PerformanceServiceImpl implements PerformanceService {
     private List<ScheduleDto> getScheduleDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList) {
         return performanceDetailInfoList.stream()
                 .map(info -> ScheduleDto.builder()
+                        .id(info.getScheduleId())
                         .start_datetime(info.getScheduleStartDateTime())
                         .end_datetime(info.getScheduleEndDateTime())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
