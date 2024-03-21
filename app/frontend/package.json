@@ -24,6 +24,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.15.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-qrcode-svg": "^6.3.0",
     "react-native-responsive-dimensions": "^3.1.1",
