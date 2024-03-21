@@ -6,6 +6,11 @@ import {
   heightPercent,
 } from '../../config/Dimensions';
 import {Calendar, Video} from 'iconsax-react-native';
+import {
+  F_SIZE_Y_BUTTON,
+  F_SIZE_Y_HEADER,
+  F_SIZE_Y_TITLE,
+} from '../../config/Font';
 
 type ConcertCardProps = {
   onPress: () => void;
@@ -36,21 +41,26 @@ export default function ConcertCard(props: ConcertCardProps) {
   //   };
   return (
     <View>
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={props.onPress}>
         <View style={styles.imageContainer}>
           <Image source={{uri: props.poster}} style={styles.image} />
         </View>
-        <Text style={styles.title}>{props.title}</Text>
-
-        <View style={styles.infoContainer}>
-          <Video size={16} color="#FFFFFF" />
-          <Text style={styles.context} numberOfLines={1} ellipsizeMode="tail">
-            {props.address}
-          </Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <Calendar size={16} color="#FFFFFF" />
-          <Text style={styles.context}>{props.date}</Text>
+        <View
+        style={{
+          marginTop:heightPercent(20)
+        }}
+        >
+          <Text style={F_SIZE_Y_BUTTON}>{props.title}</Text>
+          <View style={styles.infoContainer}>
+            <Video size={16} color="#FFFFFF" />
+            <Text style={styles.context} numberOfLines={1} ellipsizeMode="tail">
+              {props.address}
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Calendar size={16} color="#FFFFFF" />
+            <Text style={styles.context}>{props.date}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     </View>
@@ -59,10 +69,9 @@ export default function ConcertCard(props: ConcertCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     width: widthPercent(180),
     height: heightPercent(350),
-    borderWidth: 2,
+    margin: 10,
     // borderColor: '#FCC434',
   },
   imageContainer: {

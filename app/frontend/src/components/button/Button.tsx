@@ -15,7 +15,7 @@ import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 
 type BasicButtonProps = {
-  onPress: () => void;
+  onPress?: () => void;
   width?: DimensionValue;
   disabled?: boolean;
   backgroundColor: ColorValue;
@@ -189,6 +189,26 @@ export const BlackButton = (props: ButtonProps) => {
         style={{
           color: Color.MAINYELLOW,
           fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
+};
+
+export const BlueButton = (props: ButtonProps) => {
+  return (
+    <BasicButton
+      width={props.width}
+      disabled={props.disabled}
+      backgroundColor="#F2F2F2"
+      borderColor="#234A96"
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: '#234A96',
+          fontSize: props.textSize,
           fontFamily: Font.MAINFONT,
         }}>
         {props.btnText}
