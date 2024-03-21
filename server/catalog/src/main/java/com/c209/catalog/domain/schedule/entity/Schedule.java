@@ -17,6 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Getter
 @Entity
+@Table(indexes = @Index(name = "performance_schedule", columnList = "performance_id"))
 public class Schedule extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="schedule_id")

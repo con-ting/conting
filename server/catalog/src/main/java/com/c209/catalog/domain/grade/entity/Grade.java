@@ -12,6 +12,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Getter
 @Entity
+@Table(indexes = @Index(name="performance_grade", columnList = "performance_id"))
 public class Grade extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="grade_id")
