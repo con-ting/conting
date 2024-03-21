@@ -5,6 +5,7 @@ import {useEffect, useState} from 'react';
 import {getColors} from 'react-native-image-colors';
 import Carousel from 'react-native-reanimated-carousel';
 
+// 인기 콘서트 조회
 type PopularConcertListProps = {
   popularConcert: any;
   getBackgroundColors: (colors: Array<string>) => void;
