@@ -4,11 +4,32 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/app/frontend/node_modules/@react-native/gradle-plugin" name="react-native-gradle-plugin">
+                <projects>
+                  <project path="$PROJECT_DIR$/app/frontend/node_modules/@react-native/gradle-plugin" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$/app/frontend/android" />
-        <option name="gradleJvm" value="corretto-20" />
+        <option name="gradleJvm" value="17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/app/frontend/android" />
+            <option value="$PROJECT_DIR$/app/frontend/android/app" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/@react-native-firebase/app/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/@react-native-firebase/messaging/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/@react-native/gradle-plugin" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-gesture-handler/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-linear-gradient/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-safe-area-context/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-screens/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-svg/android" />
+            <option value="$PROJECT_DIR$/app/frontend/node_modules/react-native-vector-icons/android" />
           </set>
         </option>
       </GradleProjectSettings>

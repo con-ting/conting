@@ -1,3 +1,4 @@
+package com.ssafy.conting
 package com.frontend
 
 import expo.modules.ReactActivityDelegateWrapper

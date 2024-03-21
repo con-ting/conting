@@ -1,4 +1,4 @@
-package com.frontend
+package com.ssafy.conting
 
 import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher

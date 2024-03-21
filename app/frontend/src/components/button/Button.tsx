@@ -73,11 +73,11 @@ type ButtonProps = {
  * YelloButton 입니다.
  * @param props
  * - onPress: 클릭 시 발생할 이벤트
- * - width: default = '100%' 원하는 크기대로 삽입 가능
- * - disabled: default = false, 버튼 클릭을 막고자 할 때 사용
+ * - width?: default = '100%' 원하는 크기대로 삽입 가능
+ * - disabled?: default = false, 버튼 클릭을 막고자 할 때 사용
  * - btnText: 버튼 내용
  * - textSize: 글자 크기
- * - isRadius: 곡선 T, 사각 F
+ * - isRadius?: 곡선 T, 사각 F
  * @returns
  * @author 김형민
  */
