@@ -12,21 +12,21 @@ import java.util.Optional;
 
 @Repository
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
-//    @Query("SELECT new com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo(" +
-//            "p.showId, p.showTitle, p.showDescription, p.showPoster, p.showDescriptionImage, " +
-//            "p.showReservationType, p.showTicketOpenDate, p.showTicketCloseDate, " +
-//            "p.showStartDate, p.showEndDate, " +
-//            "g.gradeId, g.gradeGrade, g.gradePrice, " +
-//            "s.scheduleId, s.scheduleStartDateTime, s.scheduleEndDateTime, " +
-//            "h.hallId, h.hallName, h.hallAddress, h.hallSeatTotal, h.hallX, h.hallY, " +
-//            "si.singerId, si.singerName, si.singerProfile, " +
-//            "c.companyId, c.companyName, c.companyCall) " +
-//            "FROM Performance p " +
-//            "JOIN p.grade g " +
-//            "JOIN p.schedule s " +
-//            "JOIN p.hall h " +
-//            "JOIN p.singer si " +
-//            "JOIN p.company c " +
-//            "WHERE p.showId = :showId")
-//    Optional<List<PerformanceDetailInfo>> getPerformanceByShowId(@Param("showId") Long showId);
+    @Query("SELECT new com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo( "  +
+            "p.id, p.title, p.description, p.posterImage, p.descriptionImage, " +
+            "p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, " +
+            "p.startDate, p.endDate, " +
+            "g.id, g.grade, g.price, " +
+            "s.id, s.startTime, s.endTime, " +
+            "h.id, h.name, h.address, h.total_seat_count, h.latitude, h.longitude, " +
+            "si.id, si.name, si.image, " +
+            "c.id, c.companyName, c.companyCall) " +
+            "FROM Performance p " +
+            "JOIN p.hall h " +
+            "JOIN p.singer si " +
+            "JOIN p.company c " +
+            "RIGHT JOIN Schedule s ON s.performance.id = p.id " +
+            "RIGHT JOIN Grade g ON g.performance.id = p.id " +
+            "WHERE p.id = :showId")
+    Optional<List<PerformanceDetailInfo>> getPerformanceByShowId(@Param("showId") Long showId);
 }

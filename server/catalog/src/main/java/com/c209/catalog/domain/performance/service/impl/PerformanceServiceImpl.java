@@ -27,7 +27,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .description(info.getShowDescription())
                         .poster(info.getShowPoster())
                         .description_image(info.getShowDescriptionImage())
-                        .reservation_type(info.getShowReservationType())
+                        .reservation_type(String.valueOf(info.getShowReservationType()))
 //                        .reservation_rate(info.getShowReservationRate())
                         .ticket_open_date(info.getShowTicketOpenDate())
                         .ticket_close_date(info.getShowTicketCloseDate())
@@ -78,6 +78,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .name(info.getSingerName())
                         .profile(info.getSingerProfile())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -94,27 +95,26 @@ public class PerformanceServiceImpl implements PerformanceService {
 
     @Override
     public GetShowResponse getShowDetails(Long showId) {
-//        List<PerformanceDetailInfo> performanceDetailInfoList = performanceRepository
-//                .getPerformanceByShowId((showId))
-//                .orElseThrow(() ->
-//                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
-//                );
-//
-//        PerformanceDto performanceDto = getPerformanceDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
-//        List<GradeDto> gradeList = getGradeDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
-//        List<ScheduleDto> scheduleList = getScheduleDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
-//        HallDto hallDto = getHallDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
-//        List<SingerDto> singerList = getSingerDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
-//        CompanyDto companyDto= getCompanyDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        List<PerformanceDetailInfo> performanceDetailInfoList = performanceRepository
+                .getPerformanceByShowId((showId))
+                .orElseThrow(() ->
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                );
 
-//        return GetShowResponse.builder()
-//                .show(performanceDto)
-//                .grade(gradeList)
-//                .schedule(scheduleList)
-//                .hall(hallDto)
-//                .singers(singerList)
-//                .company(companyDto)
-//                .build();
-        return null;
+        PerformanceDto performanceDto = getPerformanceDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        List<GradeDto> gradeList = getGradeDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        List<ScheduleDto> scheduleList = getScheduleDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        HallDto hallDto = getHallDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        List<SingerDto> singerList = getSingerDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+        CompanyDto companyDto= getCompanyDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+
+        return GetShowResponse.builder()
+                .show(performanceDto)
+                .grade(gradeList)
+                .schedule(scheduleList)
+                .hall(hallDto)
+                .singers(singerList)
+                .company(companyDto)
+                .build();
     }
 }

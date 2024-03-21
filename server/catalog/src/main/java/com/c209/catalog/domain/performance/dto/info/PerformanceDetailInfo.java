@@ -1,5 +1,6 @@
 package com.c209.catalog.domain.performance.dto.info;
 
+import com.c209.catalog.domain.performance.enums.ReservationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class PerformanceDetailInfo {
     private String showDescription;
     private String showPoster;
     private String showDescriptionImage;
-    private String showReservationType;
+    private ReservationType showReservationType;
 //    private String showReservationRate;
     private LocalDateTime showTicketOpenDate;
     private LocalDateTime showTicketCloseDate;
