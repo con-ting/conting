@@ -1,10 +1,10 @@
-package com.c209.catalog.domain.singer.dto;
+package com.c209.catalog.domain.performance.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -12,11 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Getter
-public class SingerDto {
-    @NotNull
-    private String name;
-    private String profile;
-    private String instagram;
+public class ScheduleDto {
+    private LocalDateTime start_datetime;
+    private LocalDateTime end_datetime;
 }
-
-
