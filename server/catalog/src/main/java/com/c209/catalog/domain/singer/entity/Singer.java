@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 
 import java.time.LocalDate;
@@ -46,4 +47,6 @@ public class Singer extends BaseEntity {
     @Column(name="date_of_birth")
     LocalDate dateOfBirth;
 
+    @Column(columnDefinition = "integer default 0")
+    private Integer view;
 }
