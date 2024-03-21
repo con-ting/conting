@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor //변수명에 private final만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
-
 
     private PerformanceDto getPerformanceDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
         return performanceDetailInfoList.stream()
