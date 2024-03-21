@@ -203,8 +203,8 @@
 [작업 내용]
 Elastic Search, Fluent D, Kibana를 활용해 기동중인 모든 도커 컨테이너의 로그를 수집하여 한 곳에서 관리합니다. 
 ```
+![image.png](./image.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7472e42-7118-406f-8758-f9c76b1cf86a/7f1f7dad-5014-4a00-aad1-fb5d31dd79a9/Untitled.png)
 
 ## 젠킨스와 도커 컨테이너 기반 CI/CD 환경 구축
 
@@ -226,7 +226,7 @@ peek test를 진행하고 성능 개선 방안을 고민중입니다.
  
 ```
 
-![/](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7472e42-7118-406f-8758-f9c76b1cf86a/6fcf0da4-c1b9-4d5a-8010-d256c1b10079/Untitled.png)
+
 
 /
 
