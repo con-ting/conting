@@ -20,7 +20,7 @@ export default function ResultScreen({route}) {
         <View style={styles.container}>
           <View style={styles.subContainer}>
             <Image
-              source={require('../../../assets/gif/cute.gif')}
+              source={require('../../../assets/gif/success3.gif')}
               style={styles.img}
             />
             <Text style={F_SIZE_HEADER}>예매 성공!</Text>
@@ -40,6 +40,10 @@ export default function ResultScreen({route}) {
       return (
         <View style={styles.container}>
           <View style={styles.subContainer}>
+            <Image
+              source={require('../../../assets/gif/success.gif')}
+              style={styles.img}
+            />
             <Text style={F_SIZE_HEADER}>응모 완료!</Text>
           </View>
           <View style={styles.button}>
@@ -60,15 +64,21 @@ export default function ResultScreen({route}) {
   const renderFail = () => (
     <View style={styles.container}>
       <View style={styles.subContainer}>
+        <Image
+          source={require('../../../assets/gif/fail.gif')}
+          style={styles.img}
+        />
         <Text style={F_SIZE_HEADER}>예매 실패</Text>
       </View>
-      <YellowButton
-        onPress={() => navigation.goBack()} // 이전 화면으로 돌아가기
-        width={'90%'}
-        btnText="다시 예매하기"
-        textSize={20}
-        isRadius
-      />
+      <View style={styles.button}>
+        <YellowButton
+          onPress={() => navigation.goBack()} // 이전 화면으로 돌아가기
+          width={'90%'}
+          btnText="다시 예매하기"
+          textSize={20}
+          isRadius
+        />
+      </View>
     </View>
   );
 
@@ -97,7 +107,8 @@ const styles = StyleSheet.create({
   },
 
   img: {
-    width: widthPercent(200),
-    height: heightPercent(200),
+    width: widthPercent(110),
+    height: heightPercent(110),
+    margin: 20,
   },
 });
