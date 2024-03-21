@@ -8,10 +8,7 @@ import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -88,6 +85,10 @@ public class Performance extends BaseEntity {
 
     @Column(name="is_adult_only", columnDefinition = "boolean default false")
     private Boolean isAdultOnly;
+
+    @Setter
+    @Column(columnDefinition = "integer default 0")
+    private Integer view;
 }
 
 // ManyToMany
