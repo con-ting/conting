@@ -1,6 +1,6 @@
-import {Dimensions, Image, Text, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {F_SIZE_HEADER, F_SIZE_TEXT, F_SIZE_Y_BIGTEXT} from '../../config/Font';
+import {F_SIZE_HEADER, F_SIZE_TITLE, F_SIZE_Y_TITLE} from '../../config/Font';
 import {useEffect, useState} from 'react';
 import {getColors} from 'react-native-image-colors';
 import Carousel from 'react-native-reanimated-carousel';
@@ -29,8 +29,8 @@ export default function PopularConcertList({
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      console.log(res);
-      setColors([res?.dominant, res?.average, res?.vibrant]);
+      console.log(res)
+      setColors([res?.dominant, res.muted, res.average,]);
     });
     console.log(currentIndex);
   }, [currentIndex]);
@@ -39,35 +39,40 @@ export default function PopularConcertList({
     item,
     index,
   }: {
-    item: {poster: string};
+    item: {poster: string; title: string; address: string};
     index: number;
   }) => {
     return (
       <View
         style={{
-          marginVertical: heightPercent(30),
+          justifyContent: 'center',
           alignItems: 'center',
         }}>
         <View
           style={{
             borderRadius: widthPercent(16),
-            alignItems: 'center',
+            width: '90%',
+            height: '80%',
             overflow: 'hidden',
-            width: widthPercent(250),
-            height: heightPercent(400),
           }}>
           <Image
             style={{
               width: '100%',
               height: '100%',
-              resizeMode: 'cover',
+              resizeMode: 'stretch',
             }}
             source={{uri: item.poster}}
           />
         </View>
-        <Text style={F_SIZE_Y_BIGTEXT}>선착순 예매</Text>
-        <Text style={F_SIZE_HEADER}>콘서트명</Text>
-        <Text style={F_SIZE_TEXT}>서울 잠실 실내</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            marginVertical: 20,
+          }}>
+          <Text style={F_SIZE_Y_TITLE}>선착순 예매</Text>
+          <Text style={F_SIZE_HEADER}>{item.title}</Text>
+          <Text style={F_SIZE_TITLE}>{item.address}</Text>
+        </View>
       </View>
     );
   };
@@ -78,9 +83,10 @@ export default function PopularConcertList({
         data={popularConcert}
         renderItem={renderItem}
         width={Dimensions.get('screen').width}
-        height={heightPercent(440)}
+        height={Dimensions.get('window').height * 0.7}
         onSnapToItem={index => setCurrentIndex(index)}
-        mode={'parallax'}
+        defaultIndex={0}
+        mode="parallax"
       />
     </View>
   );
