@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 
 export class TicketApplyListScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Image source={require('../../assets/gif/cute.gif')} />
         <Text style={styles.text}>티켓목록 페이지</Text>
       </View>
     );
