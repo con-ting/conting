@@ -11,7 +11,7 @@ import AppContainer from './src/navigation/BottomTabNavigator';
 
 function App(): React.JSX.Element {
   return (
-    <SafeAreaView style={[{backgroundColor: 'black', flex: 1}]}>
+    <SafeAreaView style={[{backgroundColor: 'transparent', flex: 1}]}>
       {/* <BottomTabNavigator></BottomTabNavigator> */}
       <AppContainer />
     </SafeAreaView>
