@@ -14,9 +14,9 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Getter
-public class GetMainResponse {
+public class GetMainPageResponse {
     private PShowsDto popular_shows;
     private FShowsDto f_shows;
     private RShowsDto r_shows;
-    private SingerDto popular_singers
+    private SingerDto popular_singers;
 }

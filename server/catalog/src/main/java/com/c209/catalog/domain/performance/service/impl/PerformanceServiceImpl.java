@@ -47,6 +47,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .grade(info.getGradeGrade())
                         .price(info.getGradePrice())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
