@@ -3,12 +3,13 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {heightPercent} from '../../config/Dimensions.tsx';
-import Logo from '../../assets/logo/logo.svg';
+import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
 import * as Color from '../../config/Color';
+import {LocalImageLoader} from "../../utils/common/ImageLoader.tsx";
+
 
 type RootStackParamList = {
-  OauthScreen: undefined;
+  LoginScreen: undefined;
   SplashScreen: undefined;
 };
 
@@ -18,7 +19,7 @@ const SplashScreen = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      navigation.navigate('OauthScreen');
+      navigation.navigate('LoginScreen');
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, []);
@@ -26,7 +27,7 @@ const SplashScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Animatable.View animation="bounceIn" duration={1500}>
-        <Logo width={200} height={200} preserveAspectRatio="xMidYMid meet" />
+        <LocalImageLoader source={require('../../assets/logo/logoPng.png')} />
       </Animatable.View>
     </SafeAreaView>
   );
