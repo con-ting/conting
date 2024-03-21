@@ -228,7 +228,7 @@ peek test를 진행하고 성능 개선 방안을 고민중입니다.
 
 
 
-/
+![image-1.png](./image-1.png)
 
 ```java
 현재 결과에서는 약 82만의 리퀘스트에 대해 3만 정도의 에러가 발생했습니다. 
@@ -237,7 +237,7 @@ connection out에 따른 서버 에러는 없는 상태입니다.
 
 ```
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7472e42-7118-406f-8758-f9c76b1cf86a/c6a149ea-dec8-4753-bb7b-0923c5b33828/Untitled.png)
+![image-2.png](./image-2.png)
 
 ```java
 대부분 
