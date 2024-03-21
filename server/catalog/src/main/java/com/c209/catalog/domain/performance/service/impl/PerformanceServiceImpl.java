@@ -3,10 +3,12 @@ package com.c209.catalog.domain.performance.service.impl;
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
+import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformanceException;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -109,6 +111,10 @@ public class PerformanceServiceImpl implements PerformanceService {
         HallDto hallDto = getHallDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
         List<SingerDto> singerList = getSingerDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
         CompanyDto companyDto= getCompanyDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
+
+        Performance performance = performanceRepository.findById(showId)
+                .orElseThrow(() -> new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW));
+        performance.setView(performance.getView()+1);
 
         return GetShowResponse.builder()
                 .show(performanceDto)

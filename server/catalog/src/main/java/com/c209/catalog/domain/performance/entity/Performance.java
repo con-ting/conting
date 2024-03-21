@@ -57,9 +57,6 @@ public class Performance extends BaseEntity {
     @JoinColumn(name="hall_id", nullable = false)
     private Hall hall;
 
-    @Column(name="view_count", columnDefinition = "integer default 0")
-    private Integer viewCount;
-
     @Column(name="reservation_start_datetime")
     private LocalDateTime reservationStartDatetime;
 
