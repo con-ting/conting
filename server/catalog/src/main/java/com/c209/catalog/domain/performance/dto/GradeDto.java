@@ -2,6 +2,8 @@ package com.c209.catalog.domain.performance.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Builder
@@ -12,6 +14,8 @@ import lombok.*;
 @Getter
 public class GradeDto {
     private Long id;
+    @NotNull
     private String grade;
+    @PositiveOrZero
     private Integer price;
 }
