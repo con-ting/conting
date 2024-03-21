@@ -4,9 +4,9 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
+
 import * as Color from '../../config/Color';
 import {LocalImageLoader} from "../../utils/common/ImageLoader.tsx";
-
 
 type RootStackParamList = {
   LoginScreen: undefined;

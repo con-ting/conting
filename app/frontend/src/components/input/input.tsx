@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  DimensionValue,
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  Text,
+  TextInput,
+  TextInputSubmitEditingEventData,
   TouchableOpacity,
   View,
-  TextInput,
-  Text,
-  TextInputSubmitEditingEventData,
-  NativeSyntheticEvent,
-  DimensionValue,
-  NativeTouchEvent,
 } from 'react-native';
 import {
   fontPercent,
@@ -87,7 +87,7 @@ export const SimpleInput = (props: InputProps) => {
         onChangeText={props.onChangeText}
         autoCorrect={false}
         placeholder={props.placeholder}
-        placeholderTextColor={Color.MAINGRAY}
+        placeholderTextColor={borderColor}
         onPressOut={props.onPressOut}
         onFocus={() => {
           setFocused(true);
@@ -153,7 +153,7 @@ export const MultiLineInput = (props: InputProps) => {
         value={props.value}
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
-        placeholderTextColor={Color.TEXTGRAY}
+        placeholderTextColor={borderColor}
         style={{
           fontSize: fontPercent(12),
           color: props.textColor ? props.textColor : Color.MAINWHITE,
@@ -193,110 +193,189 @@ export const MultiLineInput = (props: InputProps) => {
  * @returns
  * @author 김형민
  */
-// export const PasswordInput = (props: InputProps) => {
-//   const [focused, setFocused] = useState(false);
-//   const [isSecure, setIsSecure] = useState(true);
-//   const borderColor = focused ? Color.MAINYELLOR : Color.MAINGRAY;
+export const PasswordInput = (props: InputProps) => {
+  const [focused, setFocused] = useState(false);
+  const [isSecure, setIsSecure] = useState(true);
+  const borderColor = focused ? Color.MAINYELLOW : Color.MAINGRAY;
 
-//   // 비밀번호 유효성 검사 start
-//   const checkPassword = (password) => {
-//     const containsLetter = /[a-zA-Z]/.test(password);
-//     const containsNumber = /\d/.test(password);
-//     const containsSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-//     const isValidLength = password.length >= 8 && password.length <= 20;
+  // 비밀번호 유효성 검사 start
+  const checkPassword = (password: string) => {
+    const containsLetter = /[a-zA-Z]/.test(password);
+    const containsNumber = /\d/.test(password);
+    const containsSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const isValidLength = password.length >= 8 && password.length <= 20;
 
-//     return {
-//       containsLetter,
-//       containsNumber,
-//       containsSpecialChar,
-//       isValidLength,
-//     };
-//   };
+    return {
+      containsLetter,
+      containsNumber,
+      containsSpecialChar,
+      isValidLength,
+    };
+  };
 
-//   const getCheckColor = (strengthType) => {
-//     return strengthType ? Color.MAINYELLOR : Color.MAINGRAY;
-//   };
+  const getCheckColor = (strengthType: boolean) => {
+    return strengthType ? Color.MAINYELLOW : Color.MAINGRAY;
+  };
 
-//   const handleFocus = () => {
-//     setFocused(true);
-//     if (props.onFocusCallback) {
-//       props.onFocusCallback(); // Trigger the onFocus callback if provided
-//     }
-//   };
+  const handleFocus = () => {
+    setFocused(true);
+    if (props.onFocusCallback) {
+      props.onFocusCallback(); // Trigger the onFocus callback if provided
+    }
+  };
 
-//   const passwordStrength = checkPassword(props.value);
-//   // 비밀번호 유효성 검사 end
+  const passwordStrength = checkPassword(props.value);
+  // 비밀번호 유효성 검사 end
 
-//   // 재입력 비밀번호 일치 검사 start
-//   const [isRePasswordMatch, setIsRePasswordMatch] = useState(false);
+  // 재입력 비밀번호 일치 검사 start
+  const [isRePasswordMatch, setIsRePasswordMatch] = useState(false);
 
-//   useEffect(() => {
-//     // 입력한 값이 서버에서 받은 인증번호와 일치하는지 확인
-//     setIsRePasswordMatch(props.value && props.value === props.realPassword);
-//   }, [props.value, props.realPassword]);
-//   // 재입력 비밀번호 일치 검사 end
+  useEffect(() => {
+    // 입력한 값이 서버에서 받은 인증번호와 일치하는지 확인
+    setIsRePasswordMatch((props.value && props.value) === props.realPassword);
+  }, [props.value, props.realPassword]);
+  // 재입력 비밀번호 일치 검사 end
 
-//   return (
-//     <View>
-//       <View
-//         style={{
-//           alignItems: 'center',
-//           justifyContent: 'space-between',
-//           flexDirection: 'row',
-//           borderRadius: widthPercent(8),
-//           borderWidth: widthPercent(2),
-//           padding: widthPercent(12),
-//           borderColor: borderColor,
-//           width: props.width === 'small' ? widthPercent(240) : undefined,
-//         }}
-//       >
-//         <TextInput
-//           value={props.value}
-//           onChangeText={props.onChangeText}
-//           autoCorrect={false}
-//           placeholder={props.placeholder}
-//           placeholderTextColor={Color.TEXTGRAY}
-//           onFocus={handleFocus}
-//           onBlur={() => {
-//             setFocused(false);
-//           }}
-//           style={{ fontSize: fontPercent(12), fontFamily: Font.MAINFONT, width: '94%' }}
-//           secureTextEntry={isSecure}
-//         />
-//         <TouchableOpacity
-//           onPress={() => {
-//             setIsSecure(!isSecure);
-//           }}
-//         >
-//           {isSecure ? <ICON.Eye size={25}></ICON.Eye> : <ICON.EyeSlash size={25}></ICON.EyeSlash>}
-//         </TouchableOpacity>
-//       </View>
-//       {props.isForNewEnter && (
-//         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: heightPercent(4) }}>
-//           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//             <Icon name='check' size={widthPercent(14)} iconColor={getCheckColor(passwordStrength.containsLetter)} />
-//             <Text style={{ paddingLeft: widthPercent(2), paddingRight: widthPercent(5), color: getCheckColor(passwordStrength.containsLetter) }}>영문</Text>
-//           </View>
-//           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//             <Icon name='check' size={widthPercent(14)} iconColor={getCheckColor(passwordStrength.containsNumber)} />
-//             <Text style={{ paddingLeft: widthPercent(2), paddingRight: widthPercent(5), color: getCheckColor(passwordStrength.containsNumber) }}>숫자</Text>
-//           </View>
-//           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//             <Icon name='check' size={widthPercent(14)} iconColor={getCheckColor(passwordStrength.containsSpecialChar)} />
-//             <Text style={{ paddingLeft: widthPercent(2), paddingRight: widthPercent(5), color: getCheckColor(passwordStrength.containsSpecialChar) }}>특수문자</Text>
-//           </View>
-//           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//             <Icon name='check' size={widthPercent(14)} iconColor={getCheckColor(passwordStrength.isValidLength)} />
-//             <Text style={{ paddingLeft: widthPercent(2), paddingRight: widthPercent(5), color: getCheckColor(passwordStrength.isValidLength) }}>8~20자</Text>
-//           </View>
-//         </View>
-//       )}
-//       {props.isForReEnter && (
-//         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: heightPercent(4) }}>
-//           <Icon name='check' size={widthPercent(14)} iconColor={isRePasswordMatch ? Color.MAINYELLOR : Color.MAINGRAY} />
-//           <Text style={{ paddingLeft: widthPercent(2), paddingRight: widthPercent(5), color: isRePasswordMatch ? Color.MAINYELLOR : Color.MAINGRAY }}>비밀번호가 같아요</Text>
-//         </View>
-//       )}
-//     </View>
-//   );
-// };
+  return (
+    <View>
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: props.backGroundColor
+            ? props.backGroundColor
+            : Color.MAINBLACK,
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          borderRadius: widthPercent(8),
+          borderWidth: widthPercent(2),
+          paddingHorizontal: widthPercent(4),
+          borderColor: borderColor,
+          width: props.width || '100%',
+        }}>
+        <TextInput
+          value={props.value}
+          onChangeText={props.onChangeText}
+          autoCorrect={false}
+          placeholder={props.placeholder}
+          placeholderTextColor={borderColor}
+          onFocus={handleFocus}
+          onBlur={() => {
+            setFocused(false);
+          }}
+          style={{
+            fontSize: fontPercent(12),
+            color: props.textColor ? props.textColor : Color.MAINWHITE,
+            fontFamily: Font.MAINFONT,
+            height: props.height ? heightPercent(props.height) : undefined,
+            width: '90%',
+          }}
+          secureTextEntry={isSecure}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            setIsSecure(!isSecure);
+          }}>
+          {isSecure ? (
+            <ICON.Eye size={25} color={borderColor}></ICON.Eye>
+          ) : (
+            <ICON.EyeSlash size={25} color={borderColor}></ICON.EyeSlash>
+          )}
+        </TouchableOpacity>
+      </View>
+      {props.isForNewEnter && (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: heightPercent(4),
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <ICON.SecuritySafe
+              size={widthPercent(14)}
+              color={getCheckColor(passwordStrength.containsLetter)}
+              variant={"Bold"}
+            />
+            <Text
+              style={{
+                paddingLeft: widthPercent(2),
+                paddingRight: widthPercent(5),
+                color: getCheckColor(passwordStrength.containsLetter),
+                fontFamily: Font.MAINFONT
+              }}>
+              영문
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <ICON.SecuritySafe
+              size={widthPercent(14)}
+              color={getCheckColor(passwordStrength.containsNumber)}
+              variant={"Bold"}
+            />
+            <Text
+              style={{
+                paddingLeft: widthPercent(2),
+                paddingRight: widthPercent(5),
+                color: getCheckColor(passwordStrength.containsNumber),
+                fontFamily: Font.MAINFONT
+              }}>
+              숫자
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <ICON.SecuritySafe
+              size={widthPercent(16)}
+              color={getCheckColor(passwordStrength.containsSpecialChar)}
+              variant={"Bold"}
+            />
+            <Text
+              style={{
+                paddingLeft: widthPercent(2),
+                paddingRight: widthPercent(5),
+                color: getCheckColor(passwordStrength.containsSpecialChar),
+                fontFamily: Font.MAINFONT
+              }}>
+              특수문자
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <ICON.SecuritySafe
+              size={widthPercent(14)}
+              color={getCheckColor(passwordStrength.isValidLength)}
+              variant={"Bold"}
+            />
+            <Text
+              style={{
+                paddingLeft: widthPercent(2),
+                paddingRight: widthPercent(5),
+                color: getCheckColor(passwordStrength.isValidLength),
+                fontFamily: Font.MAINFONT
+              }}>
+              8~20자
+            </Text>
+          </View>
+        </View>
+      )}
+      {props.isForReEnter && (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: heightPercent(4),
+          }}>
+          <ICON.Check
+            size={widthPercent(14)}
+            color={isRePasswordMatch ? Color.MAINYELLOW : Color.MAINGRAY}
+          />
+          <Text
+            style={{
+              paddingLeft: widthPercent(2),
+              paddingRight: widthPercent(5),
+              color: isRePasswordMatch ? Color.MAINYELLOW : Color.MAINGRAY,
+            }}>
+            비밀번호가 같아요
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
