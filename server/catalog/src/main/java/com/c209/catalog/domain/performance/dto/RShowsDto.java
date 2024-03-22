@@ -24,7 +24,9 @@ public class RShowsDto {
     @NotNull
     private String title;
     @NotNull
-    private String hall;
+    private Long hall_id;
+    @NotNull
+    private String hall_name;
     @NotNull
     private String reservation_type;
     private LocalDateTime reservation_start_date_time;

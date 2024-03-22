@@ -1,17 +1,17 @@
 package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.performance.dto.*;
-import com.c209.catalog.domain.performance.dto.info.MainPageInfo;
+import com.c209.catalog.domain.performance.dto.info.*;
 import com.c209.catalog.domain.performance.dto.response.GetMainPageResponse;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformanceException;
 import com.c209.catalog.domain.performance.repository.MainPageRepository;
 import com.c209.catalog.domain.performance.service.MainPageService;
+import com.c209.catalog.domain.singer.exception.SingerErrorCode;
+import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,15 +20,14 @@ import java.util.stream.Collectors;
 public class MainPageServiceImpl implements MainPageService {
     private final MainPageRepository mainPageRepository;
 
-    private List<PShowsDto> getPShowsDtoFromMainPageInfoList(List<MainPageInfo> mainPageInfoList) {
-        return mainPageInfoList.stream()
-                .sorted(Comparator.comparing(MainPageInfo::getPShowView).reversed())
-                .limit(10)
+    private List<PShowsDto> getPShowsDtoFromPShowsInfoList(List<PShowInfo> pShowInfoList) {
+        return pShowInfoList.stream()
                 .map(info -> PShowsDto.builder()
                         .show_id(info.getPShowId())
                         .poster(info.getPShowPoster())
                         .title(info.getPShowTitle())
-                        .hall(info.getPShowHall())
+                        .hall_id(info.getPShowHallId())
+                        .hall_name(info.getPShowHallName())
                         .reservation_type(String.valueOf(info.getPShowReservationType()))
                         .reservation_start_date_time(info.getPShowTicketOpenDate())
                         .reservation_end_date_time(info.getPShowTicketCloseDate())
@@ -40,16 +39,14 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     // reservation_start_date_time 지금 혹은 이후인 것들 중 reservation_start_date_time 가 지금과 가까운 순
-    private List<FShowsDto> getFShowsDtoFromMainPageInfoList(List<MainPageInfo> mainPageInfoList) {
-        return mainPageInfoList.stream()
-                .filter(info -> info.getFShowTicketOpenDate().isAfter(LocalDateTime.now()))
-                .sorted(Comparator.comparing(MainPageInfo::getFShowTicketOpenDate))
-                .limit(10)
+    private List<FShowsDto> getFShowsDtoFromFShowsInfoList(List<FShowInfo> fShowInfoList) {
+        return fShowInfoList.stream()
                 .map(info -> FShowsDto.builder()
                         .show_id(info.getFShowId())
                         .poster(info.getFShowPoster())
                         .title(info.getFShowTitle())
-                        .hall(info.getFShowHall())
+                        .hall_id(info.getFShowHallId())
+                        .hall_name(info.getFShowHallName())
                         .reservation_type(String.valueOf(info.getFShowReservationType()))
                         .reservation_start_date_time(info.getFShowTicketOpenDate())
                         .reservation_end_date_time(info.getFShowTicketCloseDate())
@@ -60,16 +57,14 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     // reservation_end_date_time 지금 혹은 이후인 것들 중,reservation_end_date_time 가 가까운 순
-    private List<RShowsDto> getRShowsDtoFromMainPageInfoList(List<MainPageInfo> mainPageInfoList) {
-        return mainPageInfoList.stream()
-                .filter(info -> info.getRShowTicketOpenDate().isAfter(LocalDateTime.now()))
-                .sorted(Comparator.comparing(MainPageInfo::getRShowTicketOpenDate))
-                .limit(10)
+    private List<RShowsDto> getRShowsDtoFromRShowsInfoList(List<RShowInfo> rShowInfoList) {
+        return rShowInfoList.stream()
                 .map(info -> RShowsDto.builder()
                         .show_id(info.getRShowId())
                         .poster(info.getRShowPoster())
                         .title(info.getRShowTitle())
-                        .hall(info.getRShowHall())
+                        .hall_id(info.getRShowHallId())
+                        .hall_name(info.getRShowHallName())
                         .reservation_type(String.valueOf(info.getRShowReservationType()))
                         .reservation_start_date_time(info.getRShowTicketOpenDate())
                         .reservation_end_date_time(info.getRShowTicketCloseDate())
@@ -80,32 +75,46 @@ public class MainPageServiceImpl implements MainPageService {
     }
 
     // view 기준 내림차순
-    private List<PSingerDto> getSingerDtoFromMainPageInfoList(List<MainPageInfo> mainPageInfoList) {
-        return mainPageInfoList
-                .stream()
-                .sorted(Comparator.comparing(MainPageInfo::getPSingerView).reversed())
-                .limit(10)
+    private List<PSingerDto> getPSingerDtoFromPSingerInfoList(List<PSingerInfo> pSingerInfoList) {
+        return pSingerInfoList.stream()
                 .map(info -> PSingerDto.builder()
                         .id(info.getPSingerId())
                         .name(info.getPSingerName())
                         .profile(info.getPSingerProfile())
                         .view(info.getPSingerView())
                         .build())
-                .sorted()
                 .collect(Collectors.toList());
     }
     @Override
     public GetMainPageResponse getMainPage() {
-        List<MainPageInfo> mainPageInfoList = mainPageRepository
-                .getMainPageList()
+        List<PShowInfo> pShowInfoList = mainPageRepository
+                .getPShowsList()
                 .orElseThrow(() ->
                         new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
 
-        List<PShowsDto> pShowsDtoList = getPShowsDtoFromMainPageInfoList(mainPageInfoList);
-        List<FShowsDto> fShowsDtoList = getFShowsDtoFromMainPageInfoList(mainPageInfoList);
-        List<RShowsDto> rShowsDtoList = getRShowsDtoFromMainPageInfoList(mainPageInfoList);
-        List<PSingerDto> pSingerDtoList = getSingerDtoFromMainPageInfoList(mainPageInfoList);
+        List<FShowInfo> fShowInfoList = mainPageRepository
+                .getFShowsList()
+                .orElseThrow(() ->
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                );
+
+        List<RShowInfo> rShowInfoList = mainPageRepository
+                .getRShowsList()
+                .orElseThrow(() ->
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                );
+
+        List<PSingerInfo> pSingerInfoList = mainPageRepository
+                .getPSingerList()
+                .orElseThrow(() ->
+                        new CommonException(SingerErrorCode.NOT_EXIST_SINGER)
+                );
+
+        List<PShowsDto> pShowsDtoList = getPShowsDtoFromPShowsInfoList(pShowInfoList);
+        List<FShowsDto> fShowsDtoList = getFShowsDtoFromFShowsInfoList(fShowInfoList);
+        List<RShowsDto> rShowsDtoList = getRShowsDtoFromRShowsInfoList(rShowInfoList);
+        List<PSingerDto> pSingerDtoList = getPSingerDtoFromPSingerInfoList(pSingerInfoList);
 
         return GetMainPageResponse.builder()
                 .popular_shows(pShowsDtoList)

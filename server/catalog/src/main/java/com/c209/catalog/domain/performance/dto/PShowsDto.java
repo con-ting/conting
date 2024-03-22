@@ -9,7 +9,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -25,7 +24,9 @@ public class PShowsDto {
     @NotNull
     private String title;
     @NotNull
-    private String hall;
+    private Long hall_id;
+    @NotNull
+    private String hall_name;
     @NotNull
     private String reservation_type;
     private LocalDateTime reservation_start_date_time;

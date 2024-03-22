@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
-    @Query("SELECT new com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo( "  +
+    @Query("SELECT new com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo( " +
             "p.id, p.title, p.description, p.posterImage, p.descriptionImage, " +
             "p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, " +
             "p.startDate, p.endDate, " +
