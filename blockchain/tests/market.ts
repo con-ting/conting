@@ -124,4 +124,28 @@ describe('market', async () => {
     expect(marketState.escrows.length).to.eq(0)
     console.log('Tickets for sale ::', marketState.escrows)
   })
+
+  it('Cancels a trade', async () => {
+    const sellersToken = await splToken.getAssociatedTokenAddressSync(
+      mint,
+      seller.publicKey,
+    )
+
+    const tx = await program.methods.cancel()
+      .accounts({
+        seller: seller.publicKey,
+        market: market.publicKey,
+        escrow,
+        escrowedToken: escrowedToken.publicKey,
+        sellersToken,
+        tokenProgram: splToken.TOKEN_PROGRAM_ID,
+      })
+      .signers([seller])
+      .rpc()
+    console.log('TxHash ::', tx)
+
+    const marketState = await program.account.market.fetch(market.publicKey)
+    expect(marketState.escrows.length).to.eq(0)
+    console.log('Tickets for sale ::', marketState.escrows)
+  })
 })

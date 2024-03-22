@@ -45,7 +45,6 @@ pub mod market {
             1,
         )?;
 
-        // 판매 목록에 추가
         let market = &mut ctx.accounts.market;
         market.escrows.push(escrow.key());
         Ok(())
@@ -79,6 +78,60 @@ pub mod market {
             ),
             ctx.accounts.escrow.lamports,
         )?;
+
+        // token::close_account(CpiContext::new_with_signer(
+        //     ctx.accounts.token_program.to_account_info(),
+        //     token::CloseAccount {
+        //         account: ctx.accounts.escrowed_token.to_account_info(),
+        //         destination: ctx.accounts.seller.to_account_info(),
+        //         authority: ctx.accounts.escrow.to_account_info(),
+        //     },
+        //     &[&[
+        //         "escrow".as_bytes(),
+        //         ctx.accounts.escrow.authority.as_ref(),
+        //         &[ctx.accounts.escrow.bump],
+        //     ]],
+        // ))?;
+
+        let escrow = ctx.accounts.escrow.key();
+        let escrows = &mut ctx.accounts.market.escrows;
+        if let Some(index) = escrows.iter().position(|x| *x == escrow) {
+            escrows.remove(index);
+        }
+        Ok(())
+    }
+
+    pub fn cancel(ctx: Context<Cancel>) -> Result<()> {
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                token::Transfer {
+                    from: ctx.accounts.escrowed_token.to_account_info(),
+                    to: ctx.accounts.sellers_token.to_account_info(),
+                    authority: ctx.accounts.escrow.to_account_info(),
+                },
+                &[&[
+                    "escrow".as_bytes(),
+                    ctx.accounts.seller.key().as_ref(),
+                    &[ctx.accounts.escrow.bump],
+                ]],
+            ),
+            ctx.accounts.escrowed_token.amount,
+        )?;
+
+        token::close_account(CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::CloseAccount {
+                account: ctx.accounts.escrowed_token.to_account_info(),
+                destination: ctx.accounts.seller.to_account_info(),
+                authority: ctx.accounts.escrow.to_account_info(),
+            },
+            &[&[
+                "escrow".as_bytes(),
+                ctx.accounts.seller.key().as_ref(),
+                &[ctx.accounts.escrow.bump],
+            ]],
+        ))?;
 
         let escrow = ctx.accounts.escrow.key();
         let escrows = &mut ctx.accounts.market.escrows;
@@ -181,4 +234,32 @@ pub struct BuyTicket<'info> {
 
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct Cancel<'info> {
+    #[account(mut)]
+    pub seller: Signer<'info>,
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+
+    #[account(
+        mut,
+        close = seller,
+        constraint = escrow.authority == seller.key(),
+        seeds = ["escrow".as_bytes(), seller.key().as_ref()],
+        bump = escrow.bump,
+    )]
+    pub escrow: Account<'info, Escrow>,
+
+    #[account(mut, constraint = escrowed_token.key() == escrow.escrowed_token)]
+    pub escrowed_token: Account<'info, TokenAccount>,
+    #[account(
+        mut,
+        constraint = sellers_token.mint == escrowed_token.mint,
+        constraint = sellers_token.owner == seller.key(),
+    )]
+    sellers_token: Account<'info, TokenAccount>,
+
+    token_program: Program<'info, Token>,
 }
