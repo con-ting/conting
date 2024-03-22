@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  master:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile-issue-asyncV2.py --master -H http://host.docker.internal:8881
+    deploy:
+      resources:
+        limits:
+          cpus: '1' # 0.5 CPU 할당
+          memory: 5G # 512MB 메모리 할당
+  worker:
+    image: locustio/locust
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile-issue-asyncV2.py --worker --master-host master
+    deploy:
+      resources:
+        limits:
+          cpus: '9' # 0.5 CPU 할당
+          memory: 5G # 512MB 메모리 할당
