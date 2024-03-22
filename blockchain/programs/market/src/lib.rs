@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
+use anchor_lang::system_program;
+use anchor_spl::token::Mint;
+use anchor_spl::token::{self, Token, TokenAccount};
 use mpl_token_metadata::accounts::Metadata;
 
 const SERVER_PUBKEY: Pubkey = Pubkey::new_from_array([
@@ -11,71 +13,78 @@ declare_id!("9dC52fm1DiZyrZkfG6ZhmTn5PM6ekMENKoAeBxHhjRpA");
 
 #[program]
 pub mod market {
+
     use super::*;
 
     pub fn create_market(ctx: Context<CreateMarket>) -> Result<()> {
-        ctx.accounts.market.items = Vec::new();
+        ctx.accounts.market.escrows = Vec::new();
         Ok(())
     }
 
     pub fn sell_ticket(ctx: Context<SellTicket>, lamports: u64) -> Result<()> {
-        // collection은 server owned여야 함
-        let collection_token_account = &ctx.accounts.collection_token_account;
-        require_keys_eq!(collection_token_account.owner.key(), SERVER_PUBKEY);
-
-        // ticket은 collection verified여야 함
-        let ticket_metadata_pda = &ctx.accounts.ticket_metadata_pda;
-        let metadata = Metadata::try_from(&ticket_metadata_pda.to_account_info())?;
+        let metadata = Metadata::try_from(&ctx.accounts.metadata_pda.to_account_info())?;
         let metadata_collection = metadata.collection.unwrap();
         require_eq!(metadata_collection.verified, true);
-        require_keys_eq!(metadata_collection.key, collection_token_account.mint);
+        require_keys_eq!(metadata_collection.key, ctx.accounts.collection_token.mint);
 
-        // seller의 ticket을 market에게 전송함
-        let ticket_token_account = &ctx.accounts.ticket_token_account;
-        let ticket_token_account_market = &ctx.accounts.ticket_token_account_market;
-        let seller = &ctx.accounts.seller;
-        let token_program = &ctx.accounts.token_program;
+        let escrow = &mut ctx.accounts.escrow;
+        escrow.bump = ctx.bumps.escrow;
+        escrow.authority = ctx.accounts.seller.key();
+        escrow.escrowed_token = ctx.accounts.escrowed_token.key();
+        escrow.lamports = lamports;
 
-        let cpi_accounts = Transfer {
-            from: ticket_token_account.to_account_info(),
-            to: ticket_token_account_market.to_account_info(),
-            authority: seller.to_account_info(),
-        };
-        let cpi_program = token_program.to_account_info();
-        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-        token::transfer(cpi_ctx, 1)?;
+        token::transfer(
+            CpiContext::new(
+                ctx.accounts.token_program.to_account_info(),
+                token::Transfer {
+                    from: ctx.accounts.sellers_token.to_account_info(),
+                    to: ctx.accounts.escrowed_token.to_account_info(),
+                    authority: ctx.accounts.seller.to_account_info(),
+                },
+            ),
+            1,
+        )?;
 
+        // 판매 목록에 추가
         let market = &mut ctx.accounts.market;
-        let item = Item {
-            seller: seller.key(),
-            ticket_mint: ticket_token_account.mint,
-            lamports,
-        };
-        market.items.push(item);
+        market.escrows.push(escrow.key());
         Ok(())
     }
 
     pub fn buy_ticket(ctx: Context<BuyTicket>) -> Result<()> {
-        let market = &mut ctx.accounts.market;
-        let ticket_mint = &ctx.accounts.ticket_mint;
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                token::Transfer {
+                    from: ctx.accounts.escrowed_token.to_account_info(),
+                    to: ctx.accounts.buyers_token.to_account_info(),
+                    authority: ctx.accounts.escrow.to_account_info(),
+                },
+                &[&[
+                    "escrow".as_bytes(),
+                    ctx.accounts.escrow.authority.as_ref(),
+                    &[ctx.accounts.escrow.bump],
+                ]],
+            ),
+            ctx.accounts.escrowed_token.amount,
+        )?;
 
-        if let Some(item_index) = market
-            .items
-            .iter()
-            .position(|item| item.ticket_mint == ticket_mint.key())
-        {
-            let item = &market.items[item_index];
-            let buyer = &ctx.accounts.buyer;
+        system_program::transfer(
+            CpiContext::new(
+                ctx.accounts.system_program.to_account_info(),
+                system_program::Transfer {
+                    from: ctx.accounts.buyer.to_account_info(),
+                    to: ctx.accounts.seller.clone(),
+                },
+            ),
+            ctx.accounts.escrow.lamports,
+        )?;
 
-            // **seller.to_account_info().try_borrow_mut_lamports()? = item.lamports;
-            // **buyer.to_account_info().try_borrow_mut_lamports()? = item.lamports;
-        } else {
-            return Err(ErrorCode::TicketNotFound.into());
+        let escrow = ctx.accounts.escrow.key();
+        let escrows = &mut ctx.accounts.market.escrows;
+        if let Some(index) = escrows.iter().position(|x| *x == escrow) {
+            escrows.remove(index);
         }
-
-        market
-            .items
-            .retain(|item| item.ticket_mint != ticket_mint.key());
         Ok(())
     }
 }
@@ -91,7 +100,7 @@ pub struct CreateMarket<'info> {
     #[account(
         init,
         payer = server,
-        space = 8 + 24 + 72 * 100
+        space = 8 + 24 + 32 * 100
     )]
     pub market: Account<'info, Market>,
 
@@ -100,46 +109,76 @@ pub struct CreateMarket<'info> {
 
 #[account]
 pub struct Market {
-    pub items: Vec<Item>,
+    pub escrows: Vec<Pubkey>,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
-pub struct Item {
-    pub seller: Pubkey,
-    pub ticket_mint: Pubkey,
+#[account]
+pub struct Escrow {
+    pub authority: Pubkey,
+    pub bump: u8,
+    pub escrowed_token: Pubkey,
     pub lamports: u64,
 }
 
 #[derive(Accounts)]
 pub struct SellTicket<'info> {
+    #[account(mut)]
     pub seller: Signer<'info>,
-
     #[account(mut)]
     pub market: Account<'info, Market>,
 
-    pub collection_token_account: Account<'info, TokenAccount>,
-    #[account(mut)]
-    pub ticket_token_account: Account<'info, TokenAccount>,
-    #[account(mut)]
-    pub ticket_token_account_market: Account<'info, TokenAccount>,
-    /// CHECK: validated in access control logic
-    pub ticket_metadata_pda: AccountInfo<'info>,
+    pub mint: Account<'info, Mint>,
+    #[account(mut, constraint = sellers_token.mint == mint.key() && sellers_token.owner == seller.key())]
+    pub sellers_token: Account<'info, TokenAccount>,
+
+    #[account(
+        init,
+        payer = seller,
+        space = 8 + 80,
+        seeds = ["escrow".as_bytes(), seller.key().as_ref()],
+        bump,
+    )]
+    pub escrow: Account<'info, Escrow>,
+    #[account(
+        init,
+        payer = seller,
+        token::mint = mint,
+        token::authority = escrow,
+    )]
+    pub escrowed_token: Account<'info, TokenAccount>,
+
+    #[account(constraint = collection_token.owner == SERVER_PUBKEY)]
+    pub collection_token: Account<'info, TokenAccount>,
+    /// CHECK:
+    pub metadata_pda: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
+    pub rent: Sysvar<'info, Rent>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 pub struct BuyTicket<'info> {
+    #[account(mut)]
     pub buyer: Signer<'info>,
-
+    /// CHECK:
+    #[account(mut)]
+    pub seller: AccountInfo<'info>,
     #[account(mut)]
     pub market: Account<'info, Market>,
 
-    pub ticket_mint: Account<'info, Mint>,
-}
+    #[account(
+        mut,
+        seeds = ["escrow".as_bytes(), seller.key().as_ref()],
+        bump = escrow.bump,
+    )]
+    pub escrow: Account<'info, Escrow>,
 
-#[error_code]
-pub enum ErrorCode {
-    #[msg("Ticket not found")]
-    TicketNotFound,
+    #[account(mut, constraint = escrowed_token.key() == escrow.escrowed_token)]
+    pub escrowed_token: Account<'info, TokenAccount>,
+    #[account(mut, constraint = buyers_token.mint == escrowed_token.mint)]
+    pub buyers_token: Account<'info, TokenAccount>,
+
+    pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
 }
