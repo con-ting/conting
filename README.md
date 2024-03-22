@@ -110,7 +110,8 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 좌석 선택
-- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/SeatSelectScreen.tsx)
+- [해당 화면 FE 코드 보기](/app/frontend/src/components/seat)
+
 ![좌석선택.gif](/docs/img/좌석선택.gif)
 
 ```
