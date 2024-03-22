@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
-use anchor_spl::token::Mint;
-use anchor_spl::token::{self, Token, TokenAccount};
+use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mpl_token_metadata::accounts::Metadata;
 
 const SERVER_PUBKEY: Pubkey = Pubkey::new_from_array([
@@ -13,7 +12,6 @@ declare_id!("7vpxsYH5jCSHS6pvR6zQGLdPsNUyoHH1w36wHXuuGnid");
 
 #[program]
 pub mod market {
-
     use super::*;
 
     pub fn create_market(ctx: Context<CreateMarket>) -> Result<()> {
