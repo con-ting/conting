@@ -35,7 +35,7 @@
 
 ### 메인화면
 - [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/MainScreen.tsx)
-
+- [해당 화면 BE 코드 보기](https://lab.ssafy.com/s10-blockchain-contract-sub2/S10P22C209/-/tree/main/server/catalog/src/main/java/com/c209/catalog/domain?ref_type=heads)
   ![메인카드.gif](/docs/img/메인카드.gif)
 
 
@@ -91,7 +91,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 
 ### 예매할 경우 대기열 입장
 - [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/WaitingScreen.tsx)
-
+- [해당 화면 BE 코드 보기](https://lab.ssafy.com/s10-blockchain-contract-sub2/S10P22C209/-/tree/main/server/queue?ref_type=heads)
 ![대기열.gif](/docs/img/대기열.gif)
 
 ```
@@ -191,7 +191,8 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 # 인프라
 
 ## 중앙 로그 관리소
-
+- [키바나 링크](http://j10c209.p.ssafy.io:5601/)
+- 비밀번호는 임시로 풀어놓았습니다. 
 ```
 [작업 내용]
 Elastic Search, Fluent D, Kibana를 활용해 기동중인 모든 도커 컨테이너의 로그를 수집하여 한 곳에서 관리합니다. 
@@ -200,13 +201,15 @@ Elastic Search, Fluent D, Kibana를 활용해 기동중인 모든 도커 컨테�
 
 
 ## 젠킨스와 도커 컨테이너 기반 CI/CD 환경 구축
-
+- [젠킨스 링크](http://3.39.248.185:8080/login?from=%2F)
+- ssh private key등 예민한 정보를 내부에서 다루고 있어서 계정 로그인을 설정해놓았습니다. 
 ```
 [작업 내용] 
 도커 컨테이너와 EC2, Jenkins를 활용해 모노레포에서의 MSA CI/CD 환경을 구축하였습니다. 
 ```
 
 ## locust를 활용해 대기큐 성능 측정 중
+- [테스트 및 환경설정 코드 보기](https://lab.ssafy.com/s10-blockchain-contract-sub2/S10P22C209/-/tree/main/server/queue/load-test?ref_type=heads)
 
 ```
 [작업 내용]
