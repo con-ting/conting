@@ -1,0 +1,124 @@
+
+
+server:
+  port: 8881
+
+spring:
+  profiles:
+    active: local
+    group:
+      local:
+        - common
+      prod:
+        - common
+      test:
+        - common
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+  application:
+    name: queue-service
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${USER_DB_URL}
+    username: root
+    password: 1234
+    hikari:
+      max-lifetime: 160000
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6380
+
+
+logging:
+  level:
+    com.c209.queue: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-cluster
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${USER_DB_URL}
+    username: root
+    password: 1234
+    hikari:
+      max-lifetime: 160000
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: true
+  data:
+    redis:
+      cluster:
+        nodes: 172.17.0.1:6371,172.17.0.1:6372,172.17.0.1:6373,172.17.0.1:6374,172.17.0.1:6375,172.17.0.1:6376
+        max-redirects: 3
+      password: bitnami
+      connect-timeout: 500ms
+  session:
+    redis:
+      flush-mode: on_save
+
+
+logging:
+  level:
+    com.c209.queue: DEBUG
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+#    database-platform: H2Dialect
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6380
+
+
+logging:
+  level:
+    com.c209.queue: DEBUG
+
