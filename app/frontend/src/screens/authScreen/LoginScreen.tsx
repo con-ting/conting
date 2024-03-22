@@ -19,7 +19,7 @@ import * as Animatable from 'react-native-animatable';
 
 type RootStackParamList = {
   LoginScreen: undefined;
-  JoinScreen: undefined;
+  PhoneAuthScreen: undefined;
 };
 type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -94,7 +94,7 @@ const LoginScreen = () => {
             <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('JoinScreen');
+                navigation.navigate('PhoneAuthScreen');
               }}>
               <Typo.DETAIL2 color={'#98A2B3'}>회원가입</Typo.DETAIL2>
             </TouchableOpacity>

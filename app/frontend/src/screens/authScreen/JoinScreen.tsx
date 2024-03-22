@@ -1,5 +1,5 @@
 import {Alert, View} from 'react-native';
-import {DETAIL1, H3, H4} from '../../config/Typography.tsx';
+import {H3} from '../../config/Typography.tsx';
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
 import {useState} from 'react';
 import * as Color from '../../config/Color.ts';
@@ -76,7 +76,6 @@ const JoinScreen = () => {
               width={'30%'}
               paddingVertical={16}
               textSize={16}
-
             />
           </View>
           <Spacer space={heightPercent(20)} />

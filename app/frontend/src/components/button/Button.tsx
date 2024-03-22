@@ -21,7 +21,7 @@ type BasicButtonProps = {
   disabled?: boolean;
   backgroundColor: ColorValue;
   borderColor: string;
-  borderRadius: number;
+  borderRadius?: number;
   children: React.ReactNode;
 };
 /**
@@ -52,7 +52,9 @@ export const BasicButton = (props: BasicButtonProps) => {
             borderRadius: widthPercent(props.borderRadius),
             borderWidth: widthPercent(0.8),
             borderColor: props.borderColor,
-            paddingVertical: props.paddingVertical? heightPercent(props.paddingVertical):heightPercent(12),
+            paddingVertical: props.paddingVertical
+              ? heightPercent(props.paddingVertical)
+              : heightPercent(12),
             alignItems: 'center',
           }}>
           {props.children}
