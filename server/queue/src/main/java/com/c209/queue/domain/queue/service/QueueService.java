@@ -1,10 +1,7 @@
 package com.c209.queue.domain.queue.service;
 
-import org.springframework.http.ResponseEntity;
+import com.c209.queue.domain.queue.data.dto.response.AuthorizationTokenResponse;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoSink;
-
-import java.util.function.Consumer;
 
 public interface QueueService {
 
@@ -15,4 +12,8 @@ public interface QueueService {
     Mono<Long> allowOrder(Long scheduleId);
 
     Mono<String> health();
+
+    Mono<String> generateToken(Long scheduleId, Long userId);
+
+    Mono<Boolean> authorizeToken(Long scheduleId, Long userId, String token);
 }
