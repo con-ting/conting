@@ -39,7 +39,6 @@ public class MainPageServiceImpl implements MainPageService {
                 .collect(Collectors.toList());
     }
 
-    // reservation_start_date_time 지금 혹은 이후인 것들 중 reservation_start_date_time 가 지금과 가까운 순
     private List<FShowsDto> getFShowsDtoFromFShowsInfoList(List<FShowInfo> fShowInfoList) {
         return fShowInfoList.stream()
                 .map(info -> FShowsDto.builder()
@@ -58,7 +57,6 @@ public class MainPageServiceImpl implements MainPageService {
                 .collect(Collectors.toList());
     }
 
-    // reservation_end_date_time 지금 혹은 이후인 것들 중,reservation_end_date_time 가 가까운 순
     private List<RShowsDto> getRShowsDtoFromRShowsInfoList(List<RShowInfo> rShowInfoList) {
         return rShowInfoList.stream()
                 .map(info -> RShowsDto.builder()
@@ -77,7 +75,6 @@ public class MainPageServiceImpl implements MainPageService {
                 .collect(Collectors.toList());
     }
 
-    // view 기준 내림차순
     private List<PSingerDto> getPSingerDtoFromPSingerInfoList(List<PSingerInfo> pSingerInfoList) {
         return pSingerInfoList.stream()
                 .map(info -> PSingerDto.builder()
