@@ -242,3 +242,12 @@ connection out에 따른 서버 에러는 없는 상태입니다.
 0.2초에서 4초 사이의 응답을 받지만, 
 일부 유저들의 경우 대기시간이 6초를 넘어가기 때문에 이를 해결해야할 것 같습니다
 ```
+
+
+# 블록체인
+블록 체인은 다음 기능을 구현하였습니다. 
+1. 나의 NFT 티켓 판매 조회
+2. 나의 NFT 티켓 조회 
+3. NFT 티켓 응모권 구매 
+4. NFT 티켓 판매 
+- [다음 링크에서 확인 가능합니다.](https://lab.ssafy.com/s10-blockchain-contract-sub2/S10P22C209/-/tree/main/server/blockchain-service?ref_type=heads)
