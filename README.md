@@ -5,6 +5,8 @@
 
 ![스플래시.gif](/docs/img/스플래시.gif)
 
+- [코드](/app/frontend/src/screens/authScreen/SplashScreen.tsx)
+
 ```
 스플레쉬 화면에서 서버에 모든 콘서트 정보를 요청합니다. 
 해당 요청이 완료가 된경우 앱 내 저장소에 저장 후 로그인 페이지로 이동합니다.
