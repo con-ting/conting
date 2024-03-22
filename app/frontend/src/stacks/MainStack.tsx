@@ -9,16 +9,19 @@ import BottomTabNavigator from './../navigation/BottomTabNavigator';
 import {heightPercent} from '../config/Dimensions';
 import {MAINFONT} from '../config/Font';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import ConcertDetailScreen from '../screens/mainScreen/ConcertDetailScreen';
+import { useRecoilValue } from 'recoil';
+import { posterColor } from '../utils/recoil/Atoms';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
 // header style을 위한 변수
-const options = (headerShown: boolean, title: string) => {
+const options = (headerShown: boolean, title: string, color='black')  => {
   return {
     headerShown: headerShown,
     title: title,
     headerStyle: {
-      backgroundColor: 'black',
+      backgroundColor: color,
       borderBottomColor: 'transparent', //헤더 테두리 색 제거
       elevation: 0, //Android에서 헤더 그림자 제거
       height: heightPercent(60),
@@ -34,6 +37,7 @@ const options = (headerShown: boolean, title: string) => {
 };
 
 function MainStack() {
+  const backgroundColor = useRecoilValue(posterColor)
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}}/>
@@ -43,6 +47,7 @@ function MainStack() {
       <Stack.Screen name="Result" component={ResultScreen}options={{headerShown: false}}/>
       <Stack.Screen name="Refund" component={RefundInfoScreen} options={options(true, '구매 내역')}/>
       <Stack.Screen name="ResultRefund" component={ResultRefundScreen} options={{headerShown: false}}/>
+      <Stack.Screen name='ConcertDetail' component={ConcertDetailScreen} options={options(false, '공연 상세')}/>
     </Stack.Navigator>
   );
 }

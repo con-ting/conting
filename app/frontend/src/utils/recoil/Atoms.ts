@@ -27,3 +27,8 @@ export const userInfoState = atom<null | UserInfoStateType>({
     profileImg: '',
   },
 });
+
+export const posterColor = atom<Array<string>>({
+  key : 'posterColor',
+  default: ['#000000', '#000000', '#000000']
+})
