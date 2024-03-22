@@ -1,10 +1,12 @@
 package com.c209.queue.domain.queue.service.impl;
 
 
+import com.c209.queue.domain.queue.data.dto.response.AuthorizationTokenResponse;
 import com.c209.queue.domain.queue.exception.QueueErrorCode;
 import com.c209.queue.domain.queue.service.QueueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 
 import static com.c209.queue.domain.queue.service.QueueKey.*;
@@ -58,6 +63,39 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
     @Override
     public Mono<String> health() {
         return Mono.empty();
+    }
+
+    @Override
+    public Mono<String> generateToken(Long scheduleId, Long userId) {
+
+        MessageDigest digest = null;
+
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            String input = USER_QUEUE_TOKEN.getName().formatted(scheduleId, userId);
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            StringBuilder hexString = new StringBuilder();
+
+            for(byte hashUnit : encodedHash){
+                hexString.append(String.format("%02x", hashUnit));
+            }
+
+            return Mono.just(hexString.toString());
+
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public Mono<Boolean> authorizeToken(Long scheduleId, Long userId, String requestedToken) {
+        return generateToken(scheduleId, userId)
+                .filter(generatedToken -> generatedToken.equals(requestedToken))
+                .map(i-> true)
+                .defaultIfEmpty(false);
     }
 
     @Scheduled(initialDelay=5000, fixedDelay = 10000)
