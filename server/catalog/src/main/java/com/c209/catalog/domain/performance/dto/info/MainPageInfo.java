@@ -23,6 +23,7 @@ public class MainPageInfo {
     private LocalDateTime pShowTicketCloseDate;
     private Date pShowStartDate;
     private Date pShowEndDate;
+    private Integer pShowView;
 
     private Long fShowId;
     private String fShowPoster;
@@ -44,7 +45,8 @@ public class MainPageInfo {
     private Date rShowStartDate;
     private Date rShowEndDate;
 
-    private Long singerId;
-    private String singerName;
-    private String singerProfile;
+    private Long pSingerId;
+    private String pSingerName;
+    private String pSingerProfile;
+    private Integer pSingerView;
 }

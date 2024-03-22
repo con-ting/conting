@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -32,4 +33,5 @@ public class PShowsDto {
     private Date start_date;
     @FutureOrPresent
     private Date end_date;
+    private Integer view;
 }
