@@ -1,5 +1,4 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {F_SIZE_BIGTEXT} from '../../../config/Font';
 import SeatAreaButtons from '../../../components/button/SeatAreaButtons';
 
 export default function SeatingAreaSelectScreen() {

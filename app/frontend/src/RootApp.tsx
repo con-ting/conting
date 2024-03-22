@@ -1,5 +1,5 @@
-import { useRecoilValue } from 'recoil';
-import { goMainPageState } from './utils/recoil/Atoms';
+import {useRecoilValue} from 'recoil';
+import {goMainPageState} from './utils/recoil/Atoms';
 import MainStack from './stacks/MainStack';
 import AuthStack from './stacks/AuthStack';
 

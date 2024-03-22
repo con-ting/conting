@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/authScreen/SplashScreen';
 import LoginScreen from '../screens/authScreen/LoginScreen';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 
 const Stack = createNativeStackNavigator();
@@ -14,4 +15,4 @@ const AuthStack = () => {
   );
 };
 
-export default AuthStack;
+export default gestureHandlerRootHOC(AuthStack);
