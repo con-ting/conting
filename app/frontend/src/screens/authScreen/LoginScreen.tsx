@@ -19,6 +19,7 @@ import * as Animatable from 'react-native-animatable';
 
 type RootStackParamList = {
   LoginScreen: undefined;
+  JoinScreen: undefined;
 };
 type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -36,10 +37,12 @@ const LoginScreen = () => {
         paddingHorizontal: widthPercent(10),
         backgroundColor: Color.CUTEYELLOW,
       }}>
-      <KeyboardAwareScrollView style={{flex: 1}}  contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: 'center', // 컨텐츠를 세로 방향으로 가운데 정렬
-      }}>
+      <KeyboardAwareScrollView
+        style={{flex: 1}}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center', // 컨텐츠를 세로 방향으로 가운데 정렬
+        }}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           {/* intro title 부분 */}
           <Animatable.View animation="bounceIn" duration={1500}>
@@ -76,18 +79,24 @@ const LoginScreen = () => {
           {/* 이메일 찾기, 비밀번호 찾기, 회원가입 부분 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity
-              onPress={() => {Alert.alert("응 이메일 못찾아")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>이메일 찾기</Typo.DETAIL2>
+              onPress={() => {
+                Alert.alert('응 이메일 못찾아');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>이메일 찾기</Typo.DETAIL2>
             </TouchableOpacity>
-            <Typo.DETAIL2 color={"#98A2B3"}> | </Typo.DETAIL2>
+            <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
             <TouchableOpacity
-              onPress={() => {Alert.alert("응 비번도 내꺼야")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>비밀번호 찾기</Typo.DETAIL2>
+              onPress={() => {
+                Alert.alert('응 비번도 내꺼야');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>비밀번호 찾기</Typo.DETAIL2>
             </TouchableOpacity>
-            <Typo.DETAIL2 color={"#98A2B3"}> | </Typo.DETAIL2>
+            <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
             <TouchableOpacity
-              onPress={() => {Alert.alert("가입도 하지마")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>회원가입</Typo.DETAIL2>
+              onPress={() => {
+                navigation.navigate('JoinScreen');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>회원가입</Typo.DETAIL2>
             </TouchableOpacity>
           </View>
           <Spacer space={40} />

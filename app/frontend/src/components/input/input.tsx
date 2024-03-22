@@ -293,14 +293,14 @@ export const PasswordInput = (props: InputProps) => {
             <ICON.SecuritySafe
               size={widthPercent(14)}
               color={getCheckColor(passwordStrength.containsLetter)}
-              variant={"Bold"}
+              variant={'Bold'}
             />
             <Text
               style={{
                 paddingLeft: widthPercent(2),
                 paddingRight: widthPercent(5),
                 color: getCheckColor(passwordStrength.containsLetter),
-                fontFamily: Font.MAINFONT
+                fontFamily: Font.MAINFONT,
               }}>
               영문
             </Text>
@@ -309,14 +309,14 @@ export const PasswordInput = (props: InputProps) => {
             <ICON.SecuritySafe
               size={widthPercent(14)}
               color={getCheckColor(passwordStrength.containsNumber)}
-              variant={"Bold"}
+              variant={'Bold'}
             />
             <Text
               style={{
                 paddingLeft: widthPercent(2),
                 paddingRight: widthPercent(5),
                 color: getCheckColor(passwordStrength.containsNumber),
-                fontFamily: Font.MAINFONT
+                fontFamily: Font.MAINFONT,
               }}>
               숫자
             </Text>
@@ -325,14 +325,14 @@ export const PasswordInput = (props: InputProps) => {
             <ICON.SecuritySafe
               size={widthPercent(16)}
               color={getCheckColor(passwordStrength.containsSpecialChar)}
-              variant={"Bold"}
+              variant={'Bold'}
             />
             <Text
               style={{
                 paddingLeft: widthPercent(2),
                 paddingRight: widthPercent(5),
                 color: getCheckColor(passwordStrength.containsSpecialChar),
-                fontFamily: Font.MAINFONT
+                fontFamily: Font.MAINFONT,
               }}>
               특수문자
             </Text>
@@ -341,14 +341,14 @@ export const PasswordInput = (props: InputProps) => {
             <ICON.SecuritySafe
               size={widthPercent(14)}
               color={getCheckColor(passwordStrength.isValidLength)}
-              variant={"Bold"}
+              variant={'Bold'}
             />
             <Text
               style={{
                 paddingLeft: widthPercent(2),
                 paddingRight: widthPercent(5),
                 color: getCheckColor(passwordStrength.isValidLength),
-                fontFamily: Font.MAINFONT
+                fontFamily: Font.MAINFONT,
               }}>
               8~20자
             </Text>
@@ -362,15 +362,24 @@ export const PasswordInput = (props: InputProps) => {
             alignItems: 'center',
             marginTop: heightPercent(4),
           }}>
-          <ICON.Check
+          <ICON.SecuritySafe
             size={widthPercent(14)}
-            color={isRePasswordMatch ? Color.MAINYELLOW : Color.MAINGRAY}
+            color={
+              isRePasswordMatch && props.value != ''
+                ? Color.MAINYELLOW
+                : Color.MAINGRAY
+            }
+            variant={'Bold'}
           />
           <Text
             style={{
               paddingLeft: widthPercent(2),
               paddingRight: widthPercent(5),
-              color: isRePasswordMatch ? Color.MAINYELLOW : Color.MAINGRAY,
+              color:
+                isRePasswordMatch && props.value != ''
+                  ? Color.MAINYELLOW
+                  : Color.MAINGRAY,
+              fontFamily: Font.MAINFONT,
             }}>
             비밀번호가 같아요
           </Text>
