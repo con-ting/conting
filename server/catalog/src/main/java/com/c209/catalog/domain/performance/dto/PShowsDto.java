@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -35,4 +36,27 @@ public class PShowsDto {
     @FutureOrPresent
     private Date end_date;
     private Integer view;
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((show_id == null) ? 0 : show_id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        PShowsDto other = (PShowsDto) obj;
+        return Objects.equals(show_id, other.show_id);
+    }
 }

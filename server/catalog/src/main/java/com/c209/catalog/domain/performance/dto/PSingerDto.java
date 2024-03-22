@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Objects;
+
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -18,4 +20,27 @@ public class PSingerDto {
     private String name;
     private String profile;
     private Integer view;
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        PSingerDto other = (PSingerDto) obj;
+        return Objects.equals(id, other.id);
+    }
 }

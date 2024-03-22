@@ -16,18 +16,18 @@ import java.util.Optional;
 public interface MainPageRepository extends JpaRepository<Performance, Long> {
     @Query("SELECT new com.c209.catalog.domain.performance.dto.info.PShowInfo( " +
             "p.id, p.posterImage, p.title, p.hall.id, p.hall.name, p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, p.startDate, p.endDate, p.viewCount) " +
-            "FROM Performance p ORDER BY p.viewCount DESC LIMIT 10")
+            "FROM Performance p WHERE p.endDate > NOW() ORDER BY p.viewCount DESC LIMIT 10")
     Optional<List<PShowInfo>> getPShowsList();
 
     @Query("SELECT new com.c209.catalog.domain.performance.dto.info.FShowInfo( " +
             "p.id, p.posterImage, p.title, p.hall.id, p.hall.name, p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, p.startDate, p.endDate " +
-            ") FROM Performance p WHERE p.reservationStartDatetime > NOW() ORDER BY p.reservationStartDatetime ASC LIMIT 10")
+            ") FROM Performance p WHERE p.reservationEndDatetime > NOW() AND p.reservationType = 'F' ORDER BY p.reservationStartDatetime ASC LIMIT 10")
     Optional<List<FShowInfo>> getFShowsList();
 
 
     @Query("SELECT new com.c209.catalog.domain.performance.dto.info.RShowInfo( " +
             "p.id, p.posterImage, p.title, p.hall.id, p.hall.name, p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, p.startDate, p.endDate " +
-            ") FROM Performance p WHERE p.reservationEndDatetime > NOW()  ORDER BY p.reservationEndDatetime ASC LIMIT 10")
+            ") FROM Performance p WHERE p.reservationEndDatetime > NOW() AND p.reservationType = 'R' ORDER BY p.reservationEndDatetime ASC LIMIT 10")
     Optional<List<RShowInfo>> getRShowsList();
 
 

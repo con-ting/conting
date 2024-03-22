@@ -35,6 +35,7 @@ public class MainPageServiceImpl implements MainPageService {
                         .end_date(info.getPShowEndDate())
                         .view(info.getPShowView())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -53,6 +54,7 @@ public class MainPageServiceImpl implements MainPageService {
                         .start_date(info.getFShowStartDate())
                         .end_date(info.getFShowEndDate())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -71,6 +73,7 @@ public class MainPageServiceImpl implements MainPageService {
                         .start_date(info.getRShowStartDate())
                         .end_date(info.getRShowEndDate())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -83,6 +86,7 @@ public class MainPageServiceImpl implements MainPageService {
                         .profile(info.getPSingerProfile())
                         .view(info.getPSingerView())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
     @Override
