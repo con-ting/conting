@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-market = "9dC52fm1DiZyrZkfG6ZhmTn5PM6ekMENKoAeBxHhjRpA"
+market = "7vpxsYH5jCSHS6pvR6zQGLdPsNUyoHH1w36wHXuuGnid"
 
 [registry]
 url = "https://api.apr.dev"

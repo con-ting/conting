@@ -9,7 +9,7 @@ const SERVER_PUBKEY: Pubkey = Pubkey::new_from_array([
     81, 89, 3, 188, 143, 164, 145, 14, 44, 167, 74,
 ]);
 
-declare_id!("9dC52fm1DiZyrZkfG6ZhmTn5PM6ekMENKoAeBxHhjRpA");
+declare_id!("7vpxsYH5jCSHS6pvR6zQGLdPsNUyoHH1w36wHXuuGnid");
 
 #[program]
 pub mod market {
