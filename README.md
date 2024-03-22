@@ -2,10 +2,10 @@
 # 기능 구현 내역
 
 ### 스플래시 뷰
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/authScreen/SplashScreen.tsx)
 
-![스플래시.gif](/docs/img/스플래시.gif)
+  ![스플래시.gif](/docs/img/스플래시.gif)
 
-- [코드](/app/frontend/src/screens/authScreen/SplashScreen.tsx)
 
 ```
 스플레쉬 화면에서 서버에 모든 콘서트 정보를 요청합니다. 
@@ -15,8 +15,10 @@
 
 
 ### 로그인
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/authScreen/LoginScreen.tsx)
 
-![로그인.gif](/docs/img/로그인.gif)
+  ![로그인.gif](/docs/img/로그인.gif)
+
 
 ```
 [작업 내용]
@@ -31,8 +33,10 @@
 ```
 
 ### 메인화면
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/MainScreen.tsx)
 
-![메인카드.gif](/docs/img/메인카드.gif)
+  ![메인카드.gif](/docs/img/메인카드.gif)
+
 
 ```
 [작업 내용]
@@ -75,6 +79,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 
 
 ### 공연 상세 페이지에서 토글이 될 예매부탁/직접예매 버튼
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/settingScreen/MyPageScreen.tsx)
 
 ![공연상세버튼들.gif](/docs/img/공연상세버튼들.gif)
 
@@ -84,6 +89,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 예매할 경우 대기열 입장
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/WaitingScreen.tsx)
 
 ![대기열.gif](/docs/img/대기열.gif)
 
@@ -93,6 +99,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 구역 선택
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/SeatingAreaSelectScreen.tsx)
 
 ![구역선택.gif](/docs/img/구역선택.gif)
 
@@ -103,7 +110,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 좌석 선택
-
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/SeatSelectScreen.tsx)
 ![좌석선택.gif](/docs/img/좌석선택.gif)
 
 ```
@@ -111,6 +118,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 결제 정보 및 결제 결과
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/PaymentScreen.tsx)
 
 - 결제 성공 시
 
@@ -136,10 +144,12 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 ```
 
 ### 입장권
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/ticketEntryScreen/TicketListScreen.tsx)
 
 ![입장권.gif](/docs/img/입장권.gif)
 
 ### 구매 내역
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/ticketEntryScreen/ticketRefundScreen/RefundInfoScreen.tsx)
 
 ![구매내역.gif](/docs/img/구매내역.gif)
 
@@ -150,12 +160,11 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 
 
 ### 환불
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/mainScreen/ticketingScreen/ResultRefundScreen.tsx)
 
 - 성공 시
 
 ![환불성공.gif](/docs/img/환불성공.gif)
-    
-
 
 
 - 실패 시
@@ -170,6 +179,8 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 
 
 ### 그 외 작업중인 추첨결과 및 티켓북 탭 화면
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/lotteryResultScreen/ReservationWaitingScreen.tsx)
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/ticketApplyScreen/TicketApplyListScreen.tsx)
 
 ![작업중탭.gif](/docs/img/작업중탭.gif)
 
