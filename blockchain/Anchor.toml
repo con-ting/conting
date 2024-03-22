@@ -5,6 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
+event = "GaZApi6LfvqsEBTpcz9smXHTxq9eERvvXxAQX8vQNm5k"
 market = "7vpxsYH5jCSHS6pvR6zQGLdPsNUyoHH1w36wHXuuGnid"
 
 [registry]
