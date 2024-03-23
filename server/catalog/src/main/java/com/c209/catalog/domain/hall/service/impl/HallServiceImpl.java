@@ -42,7 +42,7 @@ public class HallServiceImpl implements HallService {
 //        for 문 사용할 때에는 halls 에 있는 것들 반복하면서 리스트에 담아줌.
 
 
-        if (halls.isEmpty()) throw new CommonException(HallErrorCode.NOT_EXIST_HALL.getMessage(), HallErrorCode.NOT_EXIST_HALL.getHttpStatus());
+        if (halls.isEmpty()) throw new CommonException(HallErrorCode.NOT_EXIST_HALL);
         return HallsResponse.builder().halls(hallDto).build();
     }
 }

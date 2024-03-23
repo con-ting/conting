@@ -35,7 +35,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .end_date(info.getShowEndDate())
                         .build())
                 .findFirst()
-                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus()));
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
     }
 
     private List<GradeDto> getGradeDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
@@ -98,7 +98,7 @@ public class PerformanceServiceImpl implements PerformanceService {
         List<PerformanceDetailInfo> performanceDetailInfoList = performanceRepository
                 .getPerformanceByShowId((showId))
                 .orElseThrow(() ->
-                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus())
+                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
 
         PerformanceDto performanceDto = getPerformanceDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
@@ -109,7 +109,7 @@ public class PerformanceServiceImpl implements PerformanceService {
         CompanyDto companyDto= getCompanyDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
 
         Performance performance = performanceRepository.findById(showId)
-                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus()));
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
         performance.setView(performance.getView()+1);
 
         return GetShowResponse.builder()

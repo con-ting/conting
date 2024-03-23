@@ -3,6 +3,7 @@ package com.c209.catalog.domain.performance.controller;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,4 +20,9 @@ public class PerformanceController {
     ){
         return ResponseEntity.ok(performanceService.getShowDetails(showId));
     }
+
+//    @PostMapping()
+//    public postShow() {
+//        return HttpStatus.CREATED;
+//    }
 }
