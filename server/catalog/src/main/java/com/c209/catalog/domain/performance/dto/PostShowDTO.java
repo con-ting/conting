@@ -3,9 +3,7 @@ package com.c209.catalog.domain.performance.dto;
 import com.c209.catalog.domain.performance.enums.Genre;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -36,4 +34,13 @@ public class PostShowDTO {
     @Min(value = 1)
     @Max(value = 8)
     private Integer maxTicketPerPerson;
+
+    @AssertTrue(message = "공연 종료시점은 공연 시작시점보다 후여야 합니다.")
+    private boolean isValidEndDate() {
+        return endDate.after(startDate);
+    }
+    @AssertTrue(message = "예매 종료시점은 예매 시작시점보다 후여야 합니다.")
+    private boolean isValidReservationEndDateTime() {
+        return reservationEndDatetime.isAfter(reservationStartDatetime);
+    }
 }
