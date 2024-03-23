@@ -1,10 +1,8 @@
 package com.c209.catalog.domain.performance.dto;
 
-import com.c209.catalog.domain.grade.enums.Grades;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Builder
@@ -13,10 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Getter
-public class GradeDto {
-    private Long id;
+@Data
+public class PostCompanyDTO {
     @NotNull
-    private Grades grade;
-    @PositiveOrZero
-    private Integer price;
+    private String companyName;
+    @NotNull
+    private String call;
 }
