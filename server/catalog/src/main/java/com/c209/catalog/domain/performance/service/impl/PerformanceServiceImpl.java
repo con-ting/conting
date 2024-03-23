@@ -1,5 +1,6 @@
 package com.c209.catalog.domain.performance.service.impl;
 
+import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
@@ -125,6 +126,25 @@ public class PerformanceServiceImpl implements PerformanceService {
 
     @Override
     public void createShow(PostShowRequest postShowRequest) {
+        Performance performance = Performance.builder()
+                .title(postShowRequest.getShow().getTitle())
+                .description(postShowRequest.getShow().getDescription())
+                .posterImage(postShowRequest.getShow().getPosterImage())
+                .descriptionImage(postShowRequest.getShow().getDescriptionImage())
+                .genre(postShowRequest.getShow().getGenre())
+                .videoUrl(postShowRequest.getShow().getVideoUrl())
+                .reservationStartDatetime(postShowRequest.getShow().getReservationStartDatetime())
+                .reservationEndDatetime(postShowRequest.getShow().getReservationEndDatetime())
+                .reservationType(postShowRequest.getShow().getReservationType())
+                .startDate(postShowRequest.getShow().getStartDate())
+                .endDate(postShowRequest.getShow().getEndDate())
+                .maxTicketPerPerson(postShowRequest.getShow().getMaxTicketPerPerson())
+                .company(Company.builder()
+                        .companyName(postShowRequest.getCompany().getCompanyName())
+                        .companyCall(postShowRequest.getCompany().getCall())
+                        .build())
+                .build();
 
+        performanceRepository.save(performance);
     }
 }
