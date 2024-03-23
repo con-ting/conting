@@ -2,12 +2,20 @@ package com.c209.catalog.domain.performance.dto;
 
 import com.c209.catalog.domain.performance.enums.Genre;
 import com.c209.catalog.domain.performance.enums.ReservationType;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Getter
 @Data
 public class PostShowDTO {
     @NotBlank
@@ -26,6 +34,7 @@ public class PostShowDTO {
     private LocalDateTime reservationStartDatetime;
     @Future
     private LocalDateTime reservationEndDatetime;
+    @NotNull
     private ReservationType reservationType;
     @FutureOrPresent
     private Date startDate;

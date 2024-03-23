@@ -1,25 +1,37 @@
 package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.company.entity.Company;
+import com.c209.catalog.domain.company.repository.CompanyRepository;
+import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.domain.singer.entity.Singer;
+import com.c209.catalog.domain.singer.exception.SingerErrorCode;
+import com.c209.catalog.domain.singer.repository.SingerRepository;
 import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor //변수명에 private final 만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
+    private final CompanyRepository companyRepository;
+    private final SingerRepository singerRepository;
 
     private PerformanceDto getPerformanceDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
         return performanceDetailInfoList.stream()
@@ -125,7 +137,25 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     @Override
+    @Transactional
     public void createShow(PostShowRequest postShowRequest) {
+        Optional<Company> existingCompanyOptional = companyRepository.findByCompanyName(postShowRequest.getCompany().getCompanyName());
+        Company company;
+        if (existingCompanyOptional.isPresent()) {
+            company = existingCompanyOptional.get();
+        } else {
+            company = Company.builder()
+                    .companyName(postShowRequest.getCompany().getCompanyName())
+                    .companyCall(postShowRequest.getCompany().getCall())
+                    .build();
+
+            company = companyRepository.save(company);
+        }
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Status status = postShowRequest.getShow().getReservationStartDatetime().isAfter(currentDateTime)
+                ? Status.before_sale : Status.on_sale;
+
         Performance performance = Performance.builder()
                 .title(postShowRequest.getShow().getTitle())
                 .description(postShowRequest.getShow().getDescription())
@@ -139,10 +169,14 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .startDate(postShowRequest.getShow().getStartDate())
                 .endDate(postShowRequest.getShow().getEndDate())
                 .maxTicketPerPerson(postShowRequest.getShow().getMaxTicketPerPerson())
-                .company(Company.builder()
-                        .companyName(postShowRequest.getCompany().getCompanyName())
-                        .companyCall(postShowRequest.getCompany().getCall())
+                .hall(Hall.builder()
+                        .id(postShowRequest.getHallId())
                         .build())
+                .singer(Singer.builder().id(postShowRequest.getSingerId()).build())
+                .company(company)
+                .status(status)
+                .isAdultOnly(false)
+                .view(0)
                 .build();
 
         performanceRepository.save(performance);

@@ -1,12 +1,20 @@
 package com.c209.catalog.domain.performance.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Getter
 @Data
 public class PostScheduleDTO {
     @FutureOrPresent

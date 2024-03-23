@@ -18,6 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 @ToString
 @Getter
+@Setter
 @Data
 public class PostShowRequest {
     private PostShowDTO show;
@@ -27,6 +28,6 @@ public class PostShowRequest {
     @NotNull
     private Map<Grades, Integer> gradePrice;
     @NotNull
-    private List<Long> singerIds;
+    private Long singerId;
     private PostCompanyDTO company;
 }
