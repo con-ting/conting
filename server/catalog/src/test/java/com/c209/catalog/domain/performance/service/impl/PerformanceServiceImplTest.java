@@ -65,6 +65,7 @@ package com.c209.catalog.domain.performance.service.impl;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
+import com.c209.catalog.global.exception.CommonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -118,7 +119,7 @@ class PerformanceServiceImplTest {
         when(performanceRepository.getPerformanceByShowId(anyLong())).thenReturn(Optional.empty());
 
         // when, then
-        PerformanceException exception = assertThrows(PerformanceException.class, () -> performanceService.getShowDetails(showId));
+        CommonException exception = assertThrows(CommonException.class, () -> performanceService.getShowDetails(showId));
         assertEquals("NOT_EXIST_SHOW", exception.getHttpStatus().toString());
     }
 }

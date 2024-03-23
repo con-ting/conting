@@ -7,6 +7,7 @@ import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.MethodNotAllowedException;
@@ -26,13 +27,14 @@ public class PerformanceController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> postShow(
-//            @RequestBody
-//            PostShowRequest;
-    ) {
+    public ResponseEntity<String> postShow(@RequestBody PostShowRequest postShowRequest) {
         try {
+            performanceService.createShow(postShowRequest);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("공연이 성공적으로 등록되었습니다.");
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Show Created");
+//                    .body("/show/" + postShowRequest.getShow());
         } catch (CommonException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         }

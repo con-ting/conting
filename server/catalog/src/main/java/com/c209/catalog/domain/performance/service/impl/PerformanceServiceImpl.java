@@ -2,6 +2,7 @@ package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
+import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor //변수명에 private final만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
+@RequiredArgsConstructor //변수명에 private final 만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
 
@@ -120,5 +121,10 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .singers(singerList)
                 .company(companyDto)
                 .build();
+    }
+
+    @Override
+    public void createShow(PostShowRequest postShowRequest) {
+
     }
 }
