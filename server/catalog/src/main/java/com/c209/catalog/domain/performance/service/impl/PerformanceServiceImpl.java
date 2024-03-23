@@ -10,6 +10,7 @@ import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
+import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.domain.singer.entity.Singer;
@@ -139,6 +140,11 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     @Transactional
     public void createShow(PostShowRequest postShowRequest) {
+        Optional<Performance> existingPerformanceOptional = performanceRepository.findByTitle(postShowRequest.getShow().getTitle());
+        if (existingPerformanceOptional.isPresent()) {
+            throw new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST);
+        }
+
         Optional<Company> existingCompanyOptional = companyRepository.findByCompanyName(postShowRequest.getCompany().getCompanyName());
         Company company;
         if (existingCompanyOptional.isPresent()) {
