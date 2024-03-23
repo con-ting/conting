@@ -7,7 +7,7 @@ import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.hall.exception.HallErrorCode;
 import com.c209.catalog.domain.hall.repository.HallRepository;
 import com.c209.catalog.domain.hall.service.HallService;
-import com.c209.catalog.global.exception.HallException;
+import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class HallServiceImpl implements HallService {
 //        for 문 사용할 때에는 halls 에 있는 것들 반복하면서 리스트에 담아줌.
 
 
-        if (halls.isEmpty()) throw new HallException(HallErrorCode.NOT_EXIST_HALL);
+        if (halls.isEmpty()) throw new CommonException(HallErrorCode.NOT_EXIST_HALL.getMessage(), HallErrorCode.NOT_EXIST_HALL.getHttpStatus());
         return HallsResponse.builder().halls(hallDto).build();
     }
 }

@@ -64,7 +64,6 @@ package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
-import com.c209.catalog.domain.performance.exception.PerformanceException;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

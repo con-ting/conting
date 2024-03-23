@@ -5,7 +5,6 @@ import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
-import com.c209.catalog.domain.performance.exception.PerformanceException;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.global.exception.CommonException;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor //변수명에 private final만 붙은 빈들로만 인자를 구성한 생성자가 만들어진다.
@@ -39,7 +35,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .end_date(info.getShowEndDate())
                         .build())
                 .findFirst()
-                .orElseThrow(() -> new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW));
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus()));
     }
 
     private List<GradeDto> getGradeDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
@@ -102,7 +98,7 @@ public class PerformanceServiceImpl implements PerformanceService {
         List<PerformanceDetailInfo> performanceDetailInfoList = performanceRepository
                 .getPerformanceByShowId((showId))
                 .orElseThrow(() ->
-                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus())
                 );
 
         PerformanceDto performanceDto = getPerformanceDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
@@ -113,7 +109,7 @@ public class PerformanceServiceImpl implements PerformanceService {
         CompanyDto companyDto= getCompanyDtoFromPerformanceDetailInfoList(performanceDetailInfoList);
 
         Performance performance = performanceRepository.findById(showId)
-                .orElseThrow(() -> new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW));
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW.getMessage(), PerformanceErrorCode.NOT_EXIST_SHOW.getHttpStatus()));
         performance.setView(performance.getView()+1);
 
         return GetShowResponse.builder()
