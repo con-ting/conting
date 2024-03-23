@@ -14,15 +14,12 @@ import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.domain.singer.entity.Singer;
-import com.c209.catalog.domain.singer.exception.SingerErrorCode;
-import com.c209.catalog.domain.singer.repository.SingerRepository;
 import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +29,6 @@ import java.util.stream.Collectors;
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
     private final CompanyRepository companyRepository;
-    private final SingerRepository singerRepository;
 
     private PerformanceDto getPerformanceDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
         return performanceDetailInfoList.stream()

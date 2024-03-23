@@ -30,5 +30,5 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "WHERE p.id = :showId")
     Optional<List<PerformanceDetailInfo>> getPerformanceByShowId(@Param("showId") Long showId);
 
-
+    Optional<Performance> findByTitle(String title);
 }
