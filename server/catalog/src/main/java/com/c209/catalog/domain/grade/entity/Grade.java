@@ -1,6 +1,7 @@
 package com.c209.catalog.domain.grade.entity;
 
 import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.domain.grade.enums.Grades;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +25,7 @@ public class Grade extends BaseEntity {
     private Performance performance;
 
     @Column
-    private String grade;
+    private Grades grade;
 
     @Column
     private Integer price;

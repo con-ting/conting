@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GradeTest {
+class GradesTest {
     @Test
     @DisplayName("Grade Entity Test")
 
