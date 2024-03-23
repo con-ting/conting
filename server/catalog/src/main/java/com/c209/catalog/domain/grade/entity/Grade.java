@@ -24,6 +24,7 @@ public class Grade extends BaseEntity {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Grades grade;
 

@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum Grades {
     P("President"),
-    VIP("VIP: Very Important Person"),
-    R("Royal"),
-    S("Special"),
+    VIP("VIP"), // Very Important Person
+    R("R"), // Royal
+    S("S"), // Special
     A("A"),
     B("B"),
     C("C");

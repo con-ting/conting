@@ -1,7 +1,9 @@
 package com.c209.catalog.domain.performance.controller;
 
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
+import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,14 @@ public class PerformanceController {
     }
 
 //    @PostMapping()
-//    public postShow() {
-//        return HttpStatus.CREATED;
+//    public ResponseEntity<?> postShow(
+////            @RequestBody
+////            PostShowDto postShowDto;
+//    ) {
+//        try {
+//
+//        } catch (CommonException(PerformancePostErrorCode)) {
+//            return CommonException(PerformancePostErrorCode);
+//        }
 //    }
 }
