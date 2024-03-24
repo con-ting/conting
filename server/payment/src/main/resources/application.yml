@@ -1,0 +1,44 @@
+
+
+server:
+  port: 8881
+
+
+spring:
+  application:
+    name: pay-service
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:7779/payment?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1234
+  datasource:
+
+    url: jdbc:mysql://localhost:7779/payment?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1234
+    hikari:
+      max-lifetime: 160000
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: true
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: ${DISCOVERY_SERVER}
+
+
+
+
+logging:
+  level:
+    com.c209.user: DEBUG
