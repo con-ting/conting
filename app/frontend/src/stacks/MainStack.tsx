@@ -55,6 +55,7 @@ const GradientIcon = ({focused}: any) => {
             backgroundColor: 'black', // 아이콘 배경색, 필요에 따라 조정
             alignItems: 'center',
             justifyContent: 'czenter',
+            padding: 10,
           }}>
           <Ticket
             size={25}
@@ -63,7 +64,7 @@ const GradientIcon = ({focused}: any) => {
           <Text
             style={{
               color: focused ? '#FCC434' : '#FFFFFF',
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 'bold',
               marginTop: 5,
             }}>
