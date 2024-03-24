@@ -4,14 +4,17 @@ import {  F_SIZE_B_BUTTON, F_SIZE_TITLE } from "../../../config/Font";
 import { Calendar, Ticket2 } from "iconsax-react-native";
 import { heightPercent, widthPercent } from "../../../config/Dimensions";
 import { BUTTONSELECT, MAINBLACK, MAINWHITE, MAINYELLOW } from "../../../config/Color"; // MAINYELLOW 추가
-import { WhiteButton } from "../../../components/button/Button";
 import CalendarSelect from '../../../components/calendar/CalendarSelect';
 import TimeInput from '../../../components/input/TimeInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { YellowButton } from '../../../components/button/Button';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function ConcertRegistScreen() {
   const [selected, setSelected] = useState(''); // 선택된 버튼을 추적하기 위한 상태
   const [selectedDates, setSelectedDates] = useState({}); // 선택된 날짜들을 저장하는 상태
+  const navigation = useNavigation();
   
   // 버튼을 누를 때 호출되는 함수
   const handlePress = (type) => {
@@ -19,7 +22,7 @@ export default function ConcertRegistScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView style={styles.container}>
       <View style={styles.context}>
         <View style={styles.title}>
           <Ticket2 style={styles.icon}/>
@@ -50,12 +53,17 @@ export default function ConcertRegistScreen() {
             <Calendar style={styles.icon}/>
             <Text style={F_SIZE_TITLE}>공연 일정</Text>
         </View>
-        {/* 공연 일정을 선택하는 컴포넌트 */}
-        <CalendarSelect onDateSelected={setSelectedDates}/>
-        <TimeInput dates={selectedDates}/>
+        <View style={styles.calendarContainer}>
+            {/* 공연 일정을 선택하는 컴포넌트 */}
+            <CalendarSelect onDateSelected={setSelectedDates}/>
+            <TimeInput dates={selectedDates}/>
+        </View>
+        <View style={styles.nextButton}>
+            <YellowButton onPress={() => navigation.navigate('ConcertRegistInfo')} width={'30%'} btnText='다음' textSize={20}/>
+        </View>
         
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -77,6 +85,11 @@ const styles = StyleSheet.create({
     marginTop: 14,
     flexDirection: 'row',
   },
+  calendarContainer:{
+    marginLeft: 10,
+    marginTop: 14,
+  },
+
   icon: {
     width: widthPercent(32),
     height: heightPercent(32),
@@ -103,6 +116,10 @@ const styles = StyleSheet.create({
   },
   space:{
     marginTop: 40,
+  },
+  nextButton:{
+    marginTop: 20,
+    alignItems: 'center',
   }
   
 });
