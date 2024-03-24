@@ -3,13 +3,15 @@ import { F_SIZE_BUTTON } from "../../config/Font";
 import { ArrowRight2, ShoppingCart, Ticket2, Translate } from "iconsax-react-native";
 import { heightPercent, widthPercent } from "../../config/Dimensions";
 import { MAINWHITE } from "../../config/Color";
+import { useNavigation } from "@react-navigation/native";
 
 export default function MyPageButtons({onPress}: any){
+    
+    const navigation = useNavigation();
     return(
         <View style={styles.container}>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate('ConcertRegist')} style={styles.button}>
             <View style={styles.name}>
-
             <Ticket2 style={styles.icon}/>
             <Text style={F_SIZE_BUTTON}>공연 등록하기</Text>
             </View>

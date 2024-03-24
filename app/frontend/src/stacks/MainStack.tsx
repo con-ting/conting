@@ -27,6 +27,8 @@ import PaymentScreen from '../screens/mainScreen/ticketingScreen/PaymentScreen';
 import ResultScreen from '../screens/mainScreen/ticketingScreen/ResultScreen';
 import RefundInfoScreen from '../screens/ticketEntryScreen/ticketRefundScreen/RefundInfoScreen';
 import ResultRefundScreen from '../screens/mainScreen/ticketingScreen/ResultRefundScreen';
+import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
+import { MAINWHITE } from '../config/Color';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -337,6 +339,23 @@ export default function MainStack() {
         options={{
           headerShown: false,
           tabBarVisible: false,
+          // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}></Stack.Screen>
+        <Stack.Screen
+        name="ConcertRegist"
+        component={ConcertRegistScreen}
+        options={{
+          headerShown: true,
+          tabBarVisible: false,
+          headerStyle: {
+            backgroundColor: 'black',
+            borderBottomColor: 'transparent', //헤더 테두리 색 제거
+            elevation: 0, //Android에서 헤더 그림자 제거
+            height: heightPercent(60),
+          },
+          headerTintColor: MAINWHITE,
+          title: '',
           // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}></Stack.Screen>
