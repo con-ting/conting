@@ -2,6 +2,7 @@ package com.c209.seat.domain.seat.service.impl;
 
 import com.c209.seat.domain.seat.dto.SeatDto;
 import com.c209.seat.domain.seat.dto.response.SeatListResponse;
+import com.c209.seat.domain.seat.dto.response.SeatStatusResponse;
 import com.c209.seat.domain.seat.entity.enums.Sector;
 import com.c209.seat.domain.seat.repository.SeatR2dbcRepository;
 import com.c209.seat.domain.seat.service.SeatService;
@@ -28,5 +29,10 @@ public class SeatServiceImpl implements SeatService {
                 .map(seat -> seat.toDto());
 
         return seatDtoFlux.collectList().map(SeatListResponse::new);
+    }
+
+    @Override
+    public Mono<SeatStatusResponse> getSeatStatus(Long seatId) {
+        return seatR2dbcRepository.findBySeatId(seatId);
     }
 }
