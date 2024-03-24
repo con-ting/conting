@@ -1,14 +1,9 @@
 package com.c209.catalog.domain.hall.controller;
 
-import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.domain.hall.dto.response.HallsResponse;
 import com.c209.catalog.domain.hall.service.HallService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/hall")
