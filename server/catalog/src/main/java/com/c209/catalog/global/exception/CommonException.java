@@ -4,6 +4,7 @@ import com.c209.catalog.domain.hall.exception.HallErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
+import com.c209.catalog.domain.schedule.exception.ScheduleErrorCode;
 import com.c209.catalog.domain.singer.exception.SingerErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,11 @@ public class CommonException extends RuntimeException {
     public CommonException(PerformancePostErrorCode performancePostErrorCode) {
         this.message = performancePostErrorCode.getMessage();
         this.httpStatus = performancePostErrorCode.getHttpStatus();
+    }
+
+    public CommonException(ScheduleErrorCode scheduleErrorCode) {
+        this.message = scheduleErrorCode.getMessage();
+        this.httpStatus = scheduleErrorCode.getHttpStatus();
     }
 
     public CommonException(String message, HttpStatus httpStatus) {
