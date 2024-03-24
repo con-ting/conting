@@ -1,16 +1,16 @@
 import * as anchor from '@coral-xyz/anchor'
-import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
 import { Event } from '../target/types/event'
 import { expect } from 'chai'
 import * as splToken from '@solana/spl-token'
 import { Metaplex } from '@metaplex-foundation/js'
 import { SYSVAR_INSTRUCTIONS_PUBKEY } from '@solana/web3.js'
 import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
 
-describe('market', async () => {
+describe('event', async () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
-  const program = anchor.workspace.Market as anchor.Program<Event>
+  const program = anchor.workspace.Event as anchor.Program<Event>
 
   const server = (provider.wallet as NodeWallet).payer
   const creator = anchor.web3.Keypair.generate()
@@ -20,8 +20,8 @@ describe('market', async () => {
   const event = anchor.web3.Keypair.generate()
   const entry = anchor.web3.Keypair.generate()
 
-  const collectionMint = anchor.web3.Keypair.generate().publicKey
-  const mint = anchor.web3.Keypair.generate().publicKey
+  const mint = new anchor.web3.PublicKey('5FD27ojtnUrbLg1D2aErsoYQEMUvMXDiyFDtw25TZg5d')
+  const collectionMint = new anchor.web3.PublicKey('GFktYvJLGkh5jfdv9ZFuzcXzgNu8bKLhsYnX3DsRU2L6')
   let collectionToken: anchor.web3.PublicKey;
   let collectionMetadataPda: anchor.web3.PublicKey;
   let token: anchor.web3.PublicKey;
@@ -56,7 +56,7 @@ describe('market', async () => {
     const end = new Date()
     end.setDate(end.getDate() + 3)
 
-    const tx = program.methods.createEvent(
+    const tx = await program.methods.createEvent(
       new anchor.BN(start.getTime()),
       new anchor.BN(end.getTime()),
       1,
@@ -82,7 +82,7 @@ describe('market', async () => {
   })
 
   it('Entry Event', async () => {
-    const tx = program.methods.entryEvent()
+    const tx = await program.methods.entryEvent()
       .accounts({
         participant: participant.publicKey,
         event: event.publicKey,
@@ -104,10 +104,13 @@ describe('market', async () => {
   it('Pick Winner', async () => {
     const participants = [participant.publicKey]
 
-    const tx = program.methods.pickWinner(participants)
+    const tx = await program.methods.pickWinner(
+      participants,
+    )
       .accounts({
         creator: creator.publicKey,
         event: event.publicKey,
+        recentSlothashes: new anchor.web3.PublicKey('SysvarS1otHashes111111111111111111111111111'),
       })
       .signers([creator])
       .rpc()
