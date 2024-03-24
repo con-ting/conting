@@ -13,7 +13,13 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import * as Typo from '../../config/Typography.tsx';
 import {H4} from '../../config/Typography.tsx';
 import * as ICON from 'iconsax-react-native';
-import {MAINBLACK, MAINWHITE, MAINYELLOW} from '../../config/Color.ts';
+import {
+  CUTEYELLOW,
+  MAINBLACK,
+  MAINGRAY,
+  MAINWHITE,
+  MAINYELLOW,
+} from '../../config/Color.ts';
 import {
   CertNumberInput,
   PhoneNumberInput,
@@ -38,13 +44,12 @@ const PhoneAuthScreen = () => {
   const realCertNumber = 'aaaaaa';
 
   const startCertTimer = () => {
-    if (phoneNumber) {
-      setIsStart(true);
-    }
+    console.log(phoneNumber);
+    setIsStart(true);
   };
 
   // 모달 관련
-  const [cancelModalVisible, setCancelModalVisible] = useState(false); // x버튼 눌렀을 때 모달
+  const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const [helpModalVisible, setHelpModalVisible] = useState(false); // '인증번호가 오지 않아요' 눌렀을 때 모달
 
   const toggleCancelModal = () => {
@@ -57,13 +62,17 @@ const PhoneAuthScreen = () => {
 
   return (
     <SafeAreaView
-      style={{padding: widthPercent(10), backgroundColor: Color.CUTEYELLOW}}>
+      style={{
+        flex: 1,
+        padding: widthPercent(10),
+        backgroundColor: Color.CUTEYELLOW,
+      }}>
       <AuthHeader
         text="핸드폰 인증"
         borderLevel={5}
         leftIcon={<ICON.ArrowLeft2 size={22} color={MAINBLACK} />}
         fontColor={MAINBLACK}
-        onRightPress={toggleCancelModal}
+        onLeftPress={toggleCancelModal}
       />
       <Spacer space={heightPercent(45)} />
       <KeyboardAwareScrollView>
@@ -87,13 +96,23 @@ const PhoneAuthScreen = () => {
             textColor={Color.MAINBLACK}
             onChangeText={phoneNumber => setPhoneNumber(phoneNumber)}
           />
-          <YellowButton
+          <BasicButton
             onPress={startCertTimer}
             paddingVertical={16}
-            textSize={16}
+            disabled={phoneNumber ? false : true}
             width={'30%'}
-            btnText={isStart ? '다시 요청' : '인증 요청'}
-          />
+            borderRadius={8}
+            backgroundColor={phoneNumber ? MAINYELLOW : '#D0D5DD'}
+            borderColor={phoneNumber ? MAINYELLOW : '#D0D5DD'}>
+            <Text
+              style={{
+                color: phoneNumber ? Color.MAINBLACK : MAINWHITE,
+                fontSize: fontPercent(16),
+                fontFamily: Font.MAINFONT,
+              }}>
+              {isStart ? '다시 요청' : '인증 요청'}
+            </Text>
+          </BasicButton>
         </View>
         <Spacer space={heightPercent(10)} />
         {isStart && (
@@ -102,16 +121,22 @@ const PhoneAuthScreen = () => {
               placeholder="인증번호"
               value={certNumber}
               onChangeText={certNumber => setCertNumber(certNumber)}
+              backGroundColor={CUTEYELLOW}
               realCertNumber={realCertNumber}
+              textColor={MAINBLACK}
               isStart={isStart}
             />
             <Spacer space={heightPercent(20)} />
             <TouchableOpacity
               onPress={toggleHelpModal}
-              style={{marginHorizontal: widthPercent(100)}}>
-              <Typo.DETAIL3 color={'#98A2B3'}>
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>
                 인증번호가 오지 않아요.
-              </Typo.DETAIL3>
+              </Typo.DETAIL2>
             </TouchableOpacity>
           </View>
         )}
@@ -119,15 +144,16 @@ const PhoneAuthScreen = () => {
         <BasicButton
           onPress={() => navigation.navigate('JoinScreen')}
           disabled={certNumber ? false : true}
+          borderRadius={8}
           backgroundColor={certNumber ? MAINYELLOW : '#D0D5DD'}
           borderColor={certNumber ? MAINYELLOW : '#D0D5DD'}>
           <Text
             style={{
-              color: Color.MAINYELLOW,
-              fontSize: fontPercent(12),
+              color: certNumber ? Color.MAINBLACK : MAINWHITE,
+              fontSize: fontPercent(16),
               fontFamily: Font.MAINFONT,
             }}>
-            회원정보 입력하기
+            가입하기
           </Text>
         </BasicButton>
       </KeyboardAwareScrollView>
@@ -135,24 +161,29 @@ const PhoneAuthScreen = () => {
       {/* X 버튼 모달 */}
       <PopUpModal
         isVisible={cancelModalVisible}
+        backGroundColor={MAINWHITE}
         setIsVisible={setCancelModalVisible}>
         <View style={{padding: widthPercent(4)}}>
-          <Typo.DETAIL1>비밀번호 찾기를 그만 하시겠어요?</Typo.DETAIL1>
+          <Typo.DETAIL1 color={MAINBLACK}>
+            회원 가입을 그만 하시겠어요?
+          </Typo.DETAIL1>
           <Spacer space={heightPercent(8)} />
-          <Typo.DETAIL3>
-            계정을 찾고 근무 관리를 편리하게 해보세요!
-          </Typo.DETAIL3>
+          <Typo.DETAIL2 color={MAINGRAY}>
+            회원 가입 후 암표 없는 티켓팅 서비스를 사용해보세요!
+          </Typo.DETAIL2>
           <Spacer space={heightPercent(20)} />
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <BasicButton
               onPress={() => navigation.navigate('LoginScreen')}
               width="50%"
+              borderRadius={8}
               backgroundColor={MAINWHITE}
               borderColor={MAINYELLOW}>
               <Typo.DETAIL2 color={MAINBLACK}>그만하기</Typo.DETAIL2>
             </BasicButton>
             <YellowButton
               onPress={toggleCancelModal}
+              isRadius={false}
               btnText={'계속하기'}
               width="50%"
             />
@@ -163,16 +194,19 @@ const PhoneAuthScreen = () => {
       {/* 인증번호 안올 때 모달 */}
       <PopUpModal
         isVisible={helpModalVisible}
+        backGroundColor={MAINWHITE}
         setIsVisible={setHelpModalVisible}>
         <TouchableOpacity
           onPress={toggleHelpModal}
           style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-          <ICON.Back size={20} />
+          <ICON.CloseSquare size={20} color={MAINGRAY} />
         </TouchableOpacity>
         <View style={{padding: widthPercent(4)}}>
           <Spacer space={16} />
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Typo.DETAIL1>인증번호가 안 온다면 확인해주세요</Typo.DETAIL1>
+            <Typo.DETAIL1 color={MAINYELLOW}>
+              인증번호가 안 온다면 확인해주세요
+            </Typo.DETAIL1>
           </View>
           <Spacer space={20} />
           <Typo.DETAIL2 color={'#667085'}>

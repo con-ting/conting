@@ -19,8 +19,10 @@
     "@react-navigation/native-stack": "^6.9.24",
     "@react-navigation/stack": "^6.3.28",
     "axios": "^1.6.8",
+    "bs58": "^5.0.0",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^50.0.13",
+    "expo-linking": "^6.2.2",
     "iconsax-react-native": "^0.0.8",
     "lottie-react-native": "^6.7.0",
     "react": "18.2.0",
@@ -29,6 +31,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.15.0",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-image-colors": "^2.4.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.3",
@@ -43,7 +46,8 @@
     "react-native-swipeout": "^2.3.6",
     "react-native-vector-icons": "^10.0.3",
     "react-native-windows": "0.73.11",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

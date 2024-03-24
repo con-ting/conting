@@ -473,12 +473,15 @@ export const CertNumberInput = (props: InputProps) => {
       </View>
       <View style={{marginTop: heightPercent(4), marginLeft: widthPercent(4)}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          size={widthPercent(14)}
-          color=
-          {props.isSameCertNumber && props.value != ''
-            ? Color.MAINYELLOW
-            : Color.MAINGRAY}
-          variant={'Bold'}
+          <ICON.SecuritySafe
+            size={widthPercent(14)}
+            color={
+              props.isSameCertNumber && props.value != ''
+                ? Color.MAINYELLOW
+                : Color.MAINGRAY
+            }
+            variant={'Bold'}
+          />
           <Text
             style={{
               fontFamily: Font.MAINFONT,
