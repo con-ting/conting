@@ -1,11 +1,10 @@
-package com.c209.catalog.domain.schedule.dto.response;
+package com.c209.catalog.domain.schedule.dto;
 
-import com.c209.catalog.domain.schedule.dto.ScheduleDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
-import java.util.List;
+import java.time.LocalTime;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -13,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Getter
-public class GetScheduleResponse {
-    private List<ScheduleDto> schedule;
+public class TimeDto {
+    private String TimeId;
+    private LocalTime startTime;
 }
