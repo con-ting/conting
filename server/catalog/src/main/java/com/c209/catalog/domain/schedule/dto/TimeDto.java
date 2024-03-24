@@ -13,6 +13,6 @@ import java.time.LocalTime;
 @ToString
 @Getter
 public class TimeDto {
-    private String TimeId;
+    private String id;
     private LocalTime startTime;
 }
