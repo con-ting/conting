@@ -14,9 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,18 +25,6 @@ import java.util.Optional;
 @Slf4j
 public class ScheduleServiceImpl implements ScheduleService {
     public final ScheduleRepository scheduleRepository;
-
-    private List<TimeDto> getTimeDtoList(ScheduleInfo scheduleInfo) {
-        List<TimeDto> timeDtoList = new ArrayList<>();
-        LocalTime startTime = scheduleInfo.getStartTime().toLocalTime();
-
-        timeDtoList.add(TimeDto.builder()
-                .id(scheduleInfo.getScheduleId().toString())
-                .startTime(startTime)
-                .build());
-
-        return timeDtoList;
-    }
 
     @Override
     public GetScheduleResponse getScheduleDetails(Long showId) {
@@ -48,19 +37,35 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new CommonException(ScheduleErrorCode.NOT_EXIST_SCHEDULE);
         }
 
-        List<ScheduleDto> scheduleDtoList = new ArrayList<>();
-        List<ScheduleInfo> schedules = optionalSchedules.get();
+        List<ScheduleDto> scheduleDtoList = groupSchedules(optionalSchedules.get());
+
+        return GetScheduleResponse.builder()
+                .schedule(scheduleDtoList)
+                .build();
+    }
+
+    private List<ScheduleDto> groupSchedules(List<ScheduleInfo> schedules) {
+        schedules.sort((s1, s2) -> s1.getStartTime().toLocalDate().compareTo(s2.getStartTime().toLocalDate()));
+
+        Map<LocalDate, List<TimeDto>> scheduleMap = new HashMap<>();
         for (ScheduleInfo schedule : schedules) {
             LocalDate startDate = schedule.getStartTime().toLocalDate();
-            List<TimeDto> timeList = getTimeDtoList(schedule);
+            TimeDto timeDto = TimeDto.builder()
+                    .id(schedule.getScheduleId().toString())
+                    .startTime(schedule.getStartTime().toLocalTime())
+                    .build();
+            scheduleMap.computeIfAbsent(startDate, k -> new ArrayList<>()).add(timeDto);
+        }
+
+        List<ScheduleDto> scheduleDtoList = new ArrayList<>();
+        for (LocalDate startDate : scheduleMap.keySet()) {
+            List<TimeDto> timeList = scheduleMap.get(startDate);
             scheduleDtoList.add(ScheduleDto.builder()
                     .startDate(startDate)
                     .timeList(timeList)
                     .build());
         }
 
-        return GetScheduleResponse.builder()
-                .schedule(scheduleDtoList)
-                .build();
+        return scheduleDtoList;
     }
 }
