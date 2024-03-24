@@ -22,7 +22,7 @@ public class PerformanceController {
     @GetMapping("{show_id}")
     public ResponseEntity<GetShowResponse> getSingerDetail(
 //            @RequestHeader("X-Authorization-Id") Long memberId,
-            @PathVariable(value = "show_id", required = false) Long showId
+            @PathVariable(value = "show_id") Long showId
     ){
         return ResponseEntity.ok(performanceService.getShowDetails(showId));
     }
@@ -43,12 +43,12 @@ public class PerformanceController {
     @GetMapping
     public ResponseEntity<List<SearchShowResponse>> searchShows(
 //            @RequestHeader("X-Authorization-Id") Long memberId,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String region,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String searchType,
-            @RequestParam(required = false) String reservation_type
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "region", required = false) String region,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "reservation_type", required = false) String reservation_type
     ) {
         return ResponseEntity.ok(Collections.emptyList());
     }
