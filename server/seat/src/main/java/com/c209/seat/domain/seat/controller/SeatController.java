@@ -1,6 +1,7 @@
 package com.c209.seat.domain.seat.controller;
 
 import com.c209.seat.domain.seat.dto.response.SeatListResponse;
+import com.c209.seat.domain.seat.dto.response.SeatStatusResponse;
 import com.c209.seat.domain.seat.entity.enums.Sector;
 import com.c209.seat.domain.seat.service.SeatService;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,14 @@ public class SeatController {
         return seatService.getSeatList(scheduleId, sector)
                 .map(ResponseEntity::ok);
     }
+
+    @GetMapping("/{seat_id}/status")
+    public Mono<ResponseEntity<SeatStatusResponse>> getSeatStatus(
+            @PathVariable("seat_id") Long seatId,
+            @RequestHeader("X-Authorization-Id") Long userId
+    ){
+        return seatService.getSeatStatus(seatId)
+                .map(ResponseEntity::ok);
+    }
+
 }

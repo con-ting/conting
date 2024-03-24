@@ -5,12 +5,14 @@ import com.c209.seat.domain.seat.dto.SeatDto;
 import com.c209.seat.domain.seat.entity.enums.Grade;
 import com.c209.seat.domain.seat.entity.enums.Sector;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.NoArgsConstructor;
 
 @Table("seat")
 @AllArgsConstructor
+@Getter
 public class Seat {
 
     @Id

@@ -14,8 +14,8 @@ services:
       - ./database/init:/docker-entrypoint-initdb.d
     ports:
       - "9996:3306"
-    logging: # 로깅 옵션 추가
-      driver: syslog
+#    logging: # 로깅 옵션 추가
+#      driver: syslog
 
   user-cache:
     container_name: user-cache
@@ -25,5 +25,5 @@ services:
     image: 1w2k/cache-redis
     ports:
       - "6379:6379"
-    logging: # 로깅 옵션 추가
-      driver: syslog
+#    logging: # 로깅 옵션 추가
+#      driver: syslog
