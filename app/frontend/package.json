@@ -11,13 +11,13 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@react-native-community/blur": "^4.4.0",
     "@react-native-firebase/app": "^19.0.1",
     "@react-native-firebase/messaging": "^19.0.1",
     "@react-navigation/bottom-tabs": "^6.5.19",
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.24",
     "@react-navigation/stack": "^6.3.28",
-    "expo": "^50.0.13",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^50.0.13",
     "iamport-react-native": "^2.0.12",
@@ -29,6 +29,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-calendars": "^1.1304.1",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-image-colors": "^2.4.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
