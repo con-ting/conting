@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: CARDBASE,
     borderRadius: 12,
     width: widthPercent(345),
-    height: heightPercent(440),
+    height: heightPercent(400),
   },
   drop: {
     // width: '100%',

@@ -26,51 +26,55 @@ export default function ConcertRegistScreen() {
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.container}>
-      <View style={styles.context}>
-        <View style={styles.title}>
-          <Ticket2 style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>예매 방식</Text>
-        </View>
-        <View style={styles.infos}>
-          <TouchableOpacity
-            onPress={() => handlePress('선착순')}
-            style={[
-              styles.button,
-              selected === '선착순' && styles.selectedButton,
-            ]}>
-            <Text
+    <KeyboardAwareScrollView
+      style={styles.view}
+      contentContainerStyle={styles.contentContainer}>
+      <View style={styles.container}>
+        <View style={styles.context}>
+          <View style={styles.title}>
+            <Ticket2 style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>예매 방식</Text>
+          </View>
+          <View style={styles.infos}>
+            <TouchableOpacity
+              onPress={() => handlePress('선착순')}
               style={[
-                F_SIZE_B_BUTTON,
-                selected === '선착순' && styles.selectedText,
+                styles.button,
+                selected === '선착순' && styles.selectedButton,
               ]}>
-              선착순
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handlePress('추첨')}
-            style={[
-              styles.button,
-              selected === '추첨' && styles.selectedButton,
-            ]}>
-            <Text
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '선착순' && styles.selectedText,
+                ]}>
+                선착순
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handlePress('추첨')}
               style={[
-                F_SIZE_B_BUTTON,
-                selected === '추첨' && styles.selectedText,
+                styles.button,
+                selected === '추첨' && styles.selectedButton,
               ]}>
-              추첨
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.space} />
-        <View style={styles.title}>
-          <Calendar style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>공연 일정</Text>
-        </View>
-        <View style={styles.calendarContainer}>
-          {/* 공연 일정을 선택하는 컴포넌트 */}
-          <CalendarSelect onDateSelected={setSelectedDates} />
-          <TimeInput dates={selectedDates} />
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '추첨' && styles.selectedText,
+                ]}>
+                추첨
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.space} />
+          <View style={styles.title}>
+            <Calendar style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>공연 일정</Text>
+          </View>
+          <View style={styles.calendarContainer}>
+            {/* 공연 일정을 선택하는 컴포넌트 */}
+            <CalendarSelect onDateSelected={setSelectedDates} />
+            <TimeInput dates={selectedDates} />
+          </View>
         </View>
         <View style={styles.nextButton}>
           <YellowButton
@@ -86,12 +90,22 @@ export default function ConcertRegistScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  view: {
     flex: 1,
     backgroundColor: MAINBLACK,
   },
-  context: {
+  contentContainer: {
+    flexGrow: 1, // 스크롤 뷰의 컨텐츠가 충분한 공간을 차지하도록 설정
+    justifyContent: 'space-between', // 컨텐츠와 하단 버튼 사이에 공간을 만듦
+  },
+
+  container: {
+    flex: 1,
+    // backgroundColor: 'white',
     margin: 20,
+  },
+  context: {
+    flex: 1,
   },
   title: {
     gap: 16,
@@ -135,7 +149,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   nextButton: {
-    marginTop: 20,
+    marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'center',
   },
 });

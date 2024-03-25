@@ -13,6 +13,7 @@ import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/Co
 import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
 import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
 import ConcertRegistCastScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistCastScreen';
+import ConcertRegistCompany from '../screens/settingScreen/concertRegistScreen/ConcertRegistCompany';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -93,6 +94,11 @@ function MainStack() {
       <Stack.Screen
         name="ConcertRegistCast"
         component={ConcertRegistCastScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistCompany"
+        component={ConcertRegistCompany}
         options={options(true, '')}
       />
     </Stack.Navigator>

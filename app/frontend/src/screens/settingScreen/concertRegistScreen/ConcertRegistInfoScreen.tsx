@@ -34,135 +34,138 @@ export default function COncertRegistInfoScreen() {
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.container}>
-      <View style={styles.context}>
-        <View style={styles.posterContainer}>
-          <View>
-            <View style={styles.title}>
-              <Gallery style={styles.icon} />
-              <Text style={F_SIZE_TITLE}>포스터 등록</Text>
+    <KeyboardAwareScrollView
+      style={styles.view}
+      contentContainerStyle={styles.contentContainer}>
+      <View style={styles.container}>
+        <View style={styles.context}>
+          <View style={styles.posterContainer}>
+            <View>
+              <View style={styles.title}>
+                <Gallery style={styles.icon} />
+                <Text style={F_SIZE_TITLE}>포스터 등록</Text>
+              </View>
+              <View style={styles.findFileContainer}>
+                <GrayButton width={'100%'} btnText="파일찾기" textSize={16} />
+              </View>
             </View>
-            <View style={styles.findFileContainer}>
-              <GrayButton width={'100%'} btnText="파일찾기" textSize={16} />
+            <View>
+              <Image
+                source={require('../../../assets/images/iuconcert.png')}
+                style={styles.img}
+              />
             </View>
           </View>
-          <View>
-            <Image
-              source={require('../../../assets/images/iuconcert.png')}
-              style={styles.img}
-            />
+          <View style={styles.title}>
+            <Edit style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>공연 제목</Text>
           </View>
-        </View>
-        <View style={styles.title}>
-          <Edit style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>공연 제목</Text>
-        </View>
-        <View style={styles.infos}>
-          <SimpleInput
-            textColor={MAINBLACK}
-            placeholder="제목 입력"
-            backGroundColor={MAINWHITE}
-            height={heightPercent(40)}
-          />
-        </View>
-        <View style={styles.title}>
-          <ClipboardText style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>소개 내용 / 소개용 이미지</Text>
-        </View>
-        <View style={styles.infos}>
-          <MultiLineInput
-            textColor={MAINBLACK}
-            placeholder="소개 입력"
-            width={widthPercent(355)}
-            height={heightPercent(72)}
-          />
-          <View style={styles.space} />
-          <View style={styles.row}>
+          <View style={styles.infos}>
             <SimpleInput
               textColor={MAINBLACK}
-              placeholder="파일 첨부"
+              placeholder="제목 입력"
               backGroundColor={MAINWHITE}
-              width={widthPercent(250)}
               height={heightPercent(40)}
             />
-            <GrayButton width={'30%'} btnText="파일찾기" textSize={16} />
+          </View>
+          <View style={styles.title}>
+            <ClipboardText style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>소개 내용 / 소개용 이미지</Text>
+          </View>
+          <View style={styles.infos}>
+            <MultiLineInput
+              textColor={MAINBLACK}
+              placeholder="소개 입력"
+              width={widthPercent(355)}
+              height={heightPercent(72)}
+            />
+            <View style={styles.space} />
+            <View style={styles.row}>
+              <SimpleInput
+                textColor={MAINBLACK}
+                placeholder="파일 첨부"
+                backGroundColor={MAINWHITE}
+                width={widthPercent(250)}
+                height={heightPercent(40)}
+              />
+              <GrayButton width={'30%'} btnText="파일찾기" textSize={16} />
+            </View>
+          </View>
+          <View style={styles.title}>
+            <VideoPlay style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>홍보 영상 제목 / URL</Text>
+          </View>
+          <View style={styles.infos}>
+            <SimpleInput
+              textColor={MAINBLACK}
+              placeholder="URL"
+              backGroundColor={MAINWHITE}
+              height={heightPercent(40)}
+            />
+          </View>
+          <View style={styles.title}>
+            <VideoHorizontal style={styles.icon} />
+            <Text style={F_SIZE_TITLE}>장르</Text>
+          </View>
+          <View style={styles.genre}>
+            <TouchableOpacity
+              onPress={() => handlePress('발라드')}
+              style={[
+                styles.button,
+                selected === '발라드' && styles.selectedButton,
+              ]}>
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '발라드' && styles.selectedText,
+                ]}>
+                발라드
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handlePress('랩/힙합')}
+              style={[
+                styles.button,
+                selected === '랩/힙합' && styles.selectedButton,
+              ]}>
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '랩/힙합' && styles.selectedText,
+                ]}>
+                랩/힙합
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handlePress('락/메탈')}
+              style={[
+                styles.button,
+                selected === '락/메탈' && styles.selectedButton,
+              ]}>
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '락/메탈' && styles.selectedText,
+                ]}>
+                락/메탈
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handlePress('재즈')}
+              style={[
+                styles.button,
+                selected === '재즈' && styles.selectedButton,
+              ]}>
+              <Text
+                style={[
+                  F_SIZE_B_BUTTON,
+                  selected === '재즈' && styles.selectedText,
+                ]}>
+                재즈
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.title}>
-          <VideoPlay style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>홍보 영상 제목 / URL</Text>
-        </View>
-        <View style={styles.infos}>
-          <SimpleInput
-            textColor={MAINBLACK}
-            placeholder="URL"
-            backGroundColor={MAINWHITE}
-            height={heightPercent(40)}
-          />
-        </View>
-        <View style={styles.title}>
-          <VideoHorizontal style={styles.icon} />
-          <Text style={F_SIZE_TITLE}>장르</Text>
-        </View>
-        <View style={styles.genre}>
-          <TouchableOpacity
-            onPress={() => handlePress('발라드')}
-            style={[
-              styles.button,
-              selected === '발라드' && styles.selectedButton,
-            ]}>
-            <Text
-              style={[
-                F_SIZE_B_BUTTON,
-                selected === '발라드' && styles.selectedText,
-              ]}>
-              발라드
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handlePress('랩/힙합')}
-            style={[
-              styles.button,
-              selected === '랩/힙합' && styles.selectedButton,
-            ]}>
-            <Text
-              style={[
-                F_SIZE_B_BUTTON,
-                selected === '랩/힙합' && styles.selectedText,
-              ]}>
-              랩/힙합
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handlePress('락/메탈')}
-            style={[
-              styles.button,
-              selected === '락/메탈' && styles.selectedButton,
-            ]}>
-            <Text
-              style={[
-                F_SIZE_B_BUTTON,
-                selected === '락/메탈' && styles.selectedText,
-              ]}>
-              락/메탈
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handlePress('재즈')}
-            style={[
-              styles.button,
-              selected === '재즈' && styles.selectedButton,
-            ]}>
-            <Text
-              style={[
-                F_SIZE_B_BUTTON,
-                selected === '재즈' && styles.selectedText,
-              ]}>
-              재즈
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.nextButton}>
           <YellowButton
             onPress={() => navigation.navigate('ConcertRegistHall')}
@@ -177,12 +180,21 @@ export default function COncertRegistInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  view: {
     flex: 1,
     backgroundColor: MAINBLACK,
   },
-  context: {
+  contentContainer: {
+    flexGrow: 1, // 스크롤 뷰의 컨텐츠가 충분한 공간을 차지하도록 설정
+    justifyContent: 'space-between', // 컨텐츠와 하단 버튼 사이에 공간을 만듦
+  },
+
+  container: {
+    flex: 1,
     margin: 20,
+  },
+  context: {
+    flex: 1,
   },
 
   findFileContainer: {
@@ -246,7 +258,8 @@ const styles = StyleSheet.create({
     color: MAINWHITE,
   },
   nextButton: {
-    marginTop: 20,
+    marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'center',
   },
 });
