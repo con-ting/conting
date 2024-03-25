@@ -23,8 +23,12 @@ import {MultiLineInput, SimpleInput} from '../../../components/input/input';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import { launchImageLibrary } from 'react-native-image-picker';
 
-export default function COncertRegistInfoScreen() {
+export default function ConcertRegistInfoScreen() {
+  const [image, setImage] = useState(null); // 이미지 등록
+  const [fileName, setFileName] = useState('');
+
   const [selected, setSelected] = useState(''); // 선택된 버튼을 추적하기 위한 상태]
   const navigation = useNavigation();
 
@@ -32,6 +36,29 @@ export default function COncertRegistInfoScreen() {
   const handlePress = type => {
     setSelected(type);
   };
+
+  const selectImage = () => {
+    const options = {
+      mediaType: 'photo',
+      maxWidth: 2000,
+      maxHeight: 2000,
+      quality: 1,
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('image picker 사용 취소');
+      } else if (response.error) {
+        console.log('ImagePicker 에러: ', response.error);
+      } else {
+        const source = {uri: response.assets[0].uri};
+        const fileName = response.assets[0].fileName; // 파일 이름 추출
+        setImage(source);
+        setFileName(fileName); // 파일 이름 상태 업데이트
+      }
+    });
+  };
+
 
   return (
     <KeyboardAwareScrollView
@@ -46,12 +73,12 @@ export default function COncertRegistInfoScreen() {
                 <Text style={F_SIZE_TITLE}>포스터 등록</Text>
               </View>
               <View style={styles.findFileContainer}>
-                <GrayButton width={'100%'} btnText="파일찾기" textSize={16} />
+                <GrayButton onPress={selectImage} width={'100%'} btnText="파일찾기" textSize={16} />
               </View>
             </View>
             <View>
               <Image
-                source={require('../../../assets/images/iuconcert.png')}
+                source={image || require('../../../assets/images/bro.png')}
                 style={styles.img}
               />
             </View>
@@ -87,8 +114,10 @@ export default function COncertRegistInfoScreen() {
                 backGroundColor={MAINWHITE}
                 width={widthPercent(250)}
                 height={heightPercent(40)}
+                value={fileName} //fileName 상태 적용
+                editable={false}
               />
-              <GrayButton width={'30%'} btnText="파일찾기" textSize={16} />
+              <GrayButton onPress={selectImage} width={'30%'} btnText="파일찾기" textSize={16} />
             </View>
           </View>
           <View style={styles.title}>
