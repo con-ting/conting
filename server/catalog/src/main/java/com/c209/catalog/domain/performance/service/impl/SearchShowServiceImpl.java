@@ -32,60 +32,59 @@ public class SearchShowServiceImpl implements SearchShowService {
     ) {
         Optional<List<PerformanceSearchDto>> searchResult = searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType);
 
-
         if (searchResult.isEmpty()) {
                 throw new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW);
         }
 
         List<PerformanceSearchDto> performanceSearchDtos = searchResult.get();
 
-        if (status != null) {
-            performanceSearchDtos = performanceSearchDtos.stream()
-                    .filter(dto -> dto.getStatus() == status)
-                    .collect(Collectors.toList());
-        }
-
-        if (region != null) {
-            performanceSearchDtos = performanceSearchDtos.stream()
-                    .filter(dto -> dto.getHall_address().contains(region))
-                    .collect(Collectors.toList());
-        }
-
-        if (reservationType != null) {
-            performanceSearchDtos = performanceSearchDtos.stream()
-                    .filter(dto -> dto.getReservation_type() == reservationType)
-                    .collect(Collectors.toList());
-        }
-
-        if (searchType != null) {
-            if (searchType.equals("가수")) {
-                performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getSinger_name().contains(keyword))
-                        .collect(Collectors.toList());
-            } else if (searchType.equals("공연장")) {
-                performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getHall_name().contains(keyword))
-                        .collect(Collectors.toList());
-            } else if (searchType.equals("공연명")) {
-                performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getTitle().contains(keyword))
-                        .collect(Collectors.toList());
-            }
-        }
-
-        switch (sort) {
-            case "예매일순":
-                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getReservation_start_date_time));
-                break;
-            case "이름순":
-                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getTitle));
-                break;
-            case "공연일순":
-                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getStart_date));
-                break;
-            default:
-                break;
-        }
+//        if (status != null) {
+//            performanceSearchDtos = performanceSearchDtos.stream()
+//                    .filter(dto -> dto.getStatus() == status)
+//                    .collect(Collectors.toList());
+//        }
+//
+//        if (region != null) {
+//            performanceSearchDtos = performanceSearchDtos.stream()
+//                    .filter(dto -> dto.getHall_address().contains(region))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        if (reservationType != null) {
+//            performanceSearchDtos = performanceSearchDtos.stream()
+//                    .filter(dto -> dto.getReservation_type() == reservationType)
+//                    .collect(Collectors.toList());
+//        }
+//
+//        if (searchType != null) {
+//            if (searchType.equals("가수")) {
+//                performanceSearchDtos = performanceSearchDtos.stream()
+//                        .filter(dto -> dto.getSinger_name().contains(keyword))
+//                        .collect(Collectors.toList());
+//            } else if (searchType.equals("공연장")) {
+//                performanceSearchDtos = performanceSearchDtos.stream()
+//                        .filter(dto -> dto.getHall_name().contains(keyword))
+//                        .collect(Collectors.toList());
+//            } else if (searchType.equals("공연명")) {
+//                performanceSearchDtos = performanceSearchDtos.stream()
+//                        .filter(dto -> dto.getTitle().contains(keyword))
+//                        .collect(Collectors.toList());
+//            }
+//        }
+//
+//        switch (sort) {
+//            case "예매일순":
+//                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getReservation_start_date_time));
+//                break;
+//            case "이름순":
+//                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getTitle));
+//                break;
+//            case "공연일순":
+//                performanceSearchDtos.sort(Comparator.comparing(PerformanceSearchDto::getStart_date));
+//                break;
+//            default:
+//                break;
+//        }
 
         SearchShowResponse response = new SearchShowResponse();
         response.setPerformances(performanceSearchDtos);
