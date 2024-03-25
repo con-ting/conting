@@ -86,6 +86,22 @@ public class Performance extends BaseEntity {
     @Setter
     @Column(columnDefinition = "integer default 0")
     private Integer view;
+
+    // status 자동 계산
+    // PrePersist 어노테이션으로 엔티티 영속화 전의 메서드 정의해줌
+    @PrePersist
+    @PreUpdate
+    private void calculateStatus() {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isBefore(reservationStartDatetime)) {
+            status = Status.before_sale;
+        } else if (now.isAfter(reservationStartDatetime) && now.isBefore(reservationEndDatetime)) {
+            status = Status.on_sale;
+        } else {
+            status = Status.after_sale;
+        }
+    }
 }
 
 // ManyToMany

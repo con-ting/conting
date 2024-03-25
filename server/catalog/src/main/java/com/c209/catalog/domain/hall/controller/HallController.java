@@ -1,14 +1,9 @@
 package com.c209.catalog.domain.hall.controller;
 
-import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.domain.hall.dto.response.HallsResponse;
 import com.c209.catalog.domain.hall.service.HallService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/hall")
@@ -27,8 +22,10 @@ public class HallController {
 
 
     @GetMapping
-    public ResponseEntity<HallsResponse> getHallResponse(@RequestParam("keyword") String keyword, @RequestParam("region") String region) {
-
+    public ResponseEntity<HallsResponse> getHallResponse(
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+            @RequestParam(value = "region", required = false, defaultValue = "") String region
+    ) {
 //       흔한 오류들은 여기에서 적기도 함(handler 따로 안하고. 바디를 직접 커스텀하고싶을 경우에만 아래 주석처럼 사용
         //ResponseEntity.status(HttpStatus.ACCEPTED).body(hallService.findHallsByKeywordAndRegion(keyword, region));
         return ResponseEntity.ok(hallService.findHallsByKeywordAndRegion(keyword, region));
