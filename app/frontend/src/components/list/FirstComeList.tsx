@@ -1,52 +1,80 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
 import ConcertCard from '../card/ConcertCard';
 import SeeAllButton from '../button/SeeAllButton';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions';
+import {BlueButton} from '../button/Button';
 
-export default function FisrtComeList() {
+/**
+ * 선착 예매 콘서트 조회입니다.
+ * @param props
+ * - [필수]
+ * @returns
+ * @author 강성권
+ */
+
+interface concertProps {
+  poster: string;
+  title: string;
+  address: string;
+  date: string;
+}
+
+interface concertListProps {
+  concerts: concertProps[];
+  way: string;
+}
+
+export default function FisrtComeList({concerts, way}: concertListProps) {
+  const renderItem = ({item, index}: {item: concertProps; index: number}) => (
+    <ConcertCard
+      onPress={() => console.log('공연 상세로 이동')}
+      poster={item.poster}
+      title={item.title}
+      address={item.address}
+      date={item.date}
+    />
+  );
+
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>선착 예매</Text>
+        <BlueButton
+          onPress={() => true}
+          width={100}
+          textSize={fontPercent(14)}
+          btnText={way}
+          disabled={true}
+        />
         <SeeAllButton />
       </View>
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.container}>
-        <View style={styles.cards}>
-          <ConcertCard
-            poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
-            title="임영웅 콘서트 IM HERO TOUR 2023"
-            address="서울•킨텍스 1전시장"
-            date="2024.04.22(월) 13:00"
-          />
-        </View>
-        <View style={styles.cards}>
-          <ConcertCard
-            poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
-            title="임영웅 콘서트 IM HERO TOUR 2023"
-            address="서울•킨텍스 1전시장"
-            date="2024.04.22(월) 13:00"
-          />
-        </View>
-        <View style={styles.cards}>
-          <ConcertCard
-            poster="https://ticketimage.interpark.com/Play/image/large/22/22008289_p.gif"
-            title="임영웅 콘서트 IM HERO TOUR 2023"
-            address="서울•킨텍스 1전시장"
-            date="2024.04.22(월) 13:00"
-          />
-        </View>
-      </ScrollView>
+      <View style={{margin: 10}}>
+        <FlatList
+          data={concerts}
+          decelerationRate="fast"
+          horizontal
+          renderItem={renderItem}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {marginLeft: 5},
+  container: {
+    borderRadius: widthPercent(10),
+    height: heightPercent(450),
+    marginBottom: heightPercent(20),
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
   titleContainer: {
     flexDirection: 'row',
+    margin: widthPercent(10),
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -55,8 +83,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Jalnan2TTF',
     color: '#FFFFFF',
     margin: 10,
-  },
-  cards: {
-    margin: 5,
   },
 });

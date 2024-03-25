@@ -1,21 +1,21 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
-// import BottomTabNavigator from './src/navigation/BottomTabNavigator';
-import React from 'react';
-import AppContainer from './src/navigation/BottomTabNavigator';
+import {RecoilRoot} from 'recoil';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {NavigationContainer} from '@react-navigation/native';
+import {RootApp} from './src/RootApp';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-function App(): React.JSX.Element {
+const App = () => {
   return (
-    <SafeAreaView style={[{backgroundColor: 'black', flex: 1}]}>
-      {/* <BottomTabNavigator></BottomTabNavigator> */}
-      <AppContainer />
-    </SafeAreaView>
+    <RecoilRoot>
+      <SafeAreaProvider>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <NavigationContainer>
+            <RootApp />
+          </NavigationContainer>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+    </RecoilRoot>
   );
-}
+};
 
 export default App;

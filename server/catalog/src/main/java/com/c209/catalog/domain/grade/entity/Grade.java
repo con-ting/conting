@@ -1,6 +1,7 @@
 package com.c209.catalog.domain.grade.entity;
 
 import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.domain.grade.enums.Grades;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +24,9 @@ public class Grade extends BaseEntity {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private String grade;
+    private Grades grade;
 
     @Column
     private Integer price;

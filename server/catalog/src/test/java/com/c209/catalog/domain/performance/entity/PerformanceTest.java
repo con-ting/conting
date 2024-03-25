@@ -28,7 +28,7 @@ class PerformanceTest {
         builder.videoUrl("videoURL");
         builder.singer(Singer.builder().build());
         builder.hall(Hall.builder().build());
-        builder.viewCount(1);
+        builder.view(1);
         builder.reservationStartDatetime(TT);
         builder.reservationEndDatetime(TT.plusHours(2));
         builder.status(Status.before_sale);

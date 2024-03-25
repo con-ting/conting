@@ -15,7 +15,7 @@ import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
 
 type BasicButtonProps = {
-  onPress: () => void;
+  onPress?: () => void;
   width?: DimensionValue;
   disabled?: boolean;
   backgroundColor: ColorValue;
@@ -73,11 +73,11 @@ type ButtonProps = {
  * YelloButton 입니다.
  * @param props
  * - onPress: 클릭 시 발생할 이벤트
- * - width: default = '100%' 원하는 크기대로 삽입 가능
- * - disabled: default = false, 버튼 클릭을 막고자 할 때 사용
+ * - width?: default = '100%' 원하는 크기대로 삽입 가능
+ * - disabled?: default = false, 버튼 클릭을 막고자 할 때 사용
  * - btnText: 버튼 내용
  * - textSize: 글자 크기
- * - isRadius: 곡선 T, 사각 F
+ * - isRadius?: 곡선 T, 사각 F
  * @returns
  * @author 김형민
  */
@@ -189,6 +189,26 @@ export const BlackButton = (props: ButtonProps) => {
         style={{
           color: Color.MAINYELLOW,
           fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
+};
+
+export const BlueButton = (props: ButtonProps) => {
+  return (
+    <BasicButton
+      width={props.width}
+      disabled={props.disabled}
+      backgroundColor="#F2F2F2"
+      borderColor="#234A96"
+      borderRadius={props.isRadius ? 64 : 8}>
+      <Text
+        style={{
+          color: '#234A96',
+          fontSize: props.textSize,
           fontFamily: Font.MAINFONT,
         }}>
         {props.btnText}

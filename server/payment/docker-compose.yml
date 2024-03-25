@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  catalog-db:
+    container_name: c209-pay-db
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: 1w2k/pay-db
+    environment:
+      - MYSQL_DATABASE=pay
+      - MYSQL_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "7779:3306"

@@ -8,10 +8,7 @@ import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -60,9 +57,6 @@ public class Performance extends BaseEntity {
     @JoinColumn(name="hall_id", nullable = false)
     private Hall hall;
 
-    @Column(name="view_count", columnDefinition = "integer default 0")
-    private Integer viewCount;
-
     @Column(name="reservation_start_datetime")
     private LocalDateTime reservationStartDatetime;
 
@@ -88,6 +82,10 @@ public class Performance extends BaseEntity {
 
     @Column(name="is_adult_only", columnDefinition = "boolean default false")
     private Boolean isAdultOnly;
+
+    @Setter
+    @Column(columnDefinition = "integer default 0")
+    private Integer view;
 }
 
 // ManyToMany

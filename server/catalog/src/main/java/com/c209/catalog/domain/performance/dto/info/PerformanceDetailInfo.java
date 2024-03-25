@@ -1,5 +1,6 @@
 package com.c209.catalog.domain.performance.dto.info;
 
+import com.c209.catalog.domain.grade.enums.Grades;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class PerformanceDetailInfo {
     private Date showEndDate;
 
     private Long gradeId;
-    private String gradeGrade;
+    private Grades gradeGrade;
     private Integer gradePrice;
 
     private Long scheduleId;

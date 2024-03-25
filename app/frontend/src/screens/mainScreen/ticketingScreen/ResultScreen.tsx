@@ -2,14 +2,13 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import {F_SIZE_HEADER} from '../../../config/Font';
 import {MAINBLACK} from '../../../config/Color';
 import {YellowButton} from '../../../components/button/Button';
-
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 
 export default function ResultScreen({route}) {
   const [paySuccess, setPaySuccess] = useState(true); // 결제 성공 여부
-  const [reservationType, setReservationType] = useState('선착순'); // 예매 방식
+  const [reservationType, setReservationType] = useState('추첨'); // 예매 방식
 
   const navigation = useNavigation();
 

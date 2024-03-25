@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    active: prod
+    active: local
     group:
       local:
         - common
@@ -34,6 +34,12 @@ spring:
           uri: ${USER_SERVICE}
           predicates:
             - Path=/users/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: seat-service
+          uri: ${SEAT_SERVICE}
+          predicates:
+            - Path=/seat/**
           filters:
             - AuthorizationHeaderFilter
     default-filters:
