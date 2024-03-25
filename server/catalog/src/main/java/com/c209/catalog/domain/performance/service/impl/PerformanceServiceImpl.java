@@ -56,15 +56,18 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .grade(info.getGradeGrade())
                         .price(info.getGradePrice())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
     private List<ScheduleDto> getScheduleDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList) {
         return performanceDetailInfoList.stream()
                 .map(info -> ScheduleDto.builder()
+                        .id(info.getScheduleId())
                         .start_datetime(info.getScheduleStartDateTime())
                         .end_datetime(info.getScheduleEndDateTime())
                         .build())
+                .distinct()
                 .collect(Collectors.toList());
     }
 

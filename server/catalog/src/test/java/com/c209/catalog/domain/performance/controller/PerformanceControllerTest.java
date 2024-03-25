@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 
 @ExtendWith(SpringExtension.class)
@@ -24,9 +25,6 @@ import java.time.LocalDateTime;
 class PerformanceControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private PerformanceService performanceService;
