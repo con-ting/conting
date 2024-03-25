@@ -2,7 +2,7 @@ package com.c209.catalog.domain.performance.controller;
 
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
-import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.domain.performance.dto.response.SearchShowResponse;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.service.PerformanceService;
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,14 +44,14 @@ public class PerformanceController {
     }
 
     @GetMapping
-    public ResponseEntity<Optional<List<Performance>>> searchShows(
+    public ResponseEntity<SearchShowResponse> searchShows(
 //            @RequestHeader("X-Authorization-Id") Long memberId,
             @RequestParam(value = "status", required = false, defaultValue = "") Status status,
             @RequestParam(value = "region", required = false, defaultValue = "") String region,
             @RequestParam(value = "sort", required = false, defaultValue = "") String sort,
             @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
             @RequestParam(value = "searchType", required = false, defaultValue = "") String searchType,
-            @RequestParam(value = "reservation_type", required = false, defaultValue = "") ReservationType reservation_type
+            @RequestParam(value = "reservationType", required = false, defaultValue = "") ReservationType reservation_type
     ) {
         return ResponseEntity.ok(searchShowService.searchShows(status, region, sort, keyword, searchType, reservation_type));
     }

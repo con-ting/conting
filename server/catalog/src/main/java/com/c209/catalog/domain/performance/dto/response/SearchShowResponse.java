@@ -13,6 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Getter
+@Setter
 public class SearchShowResponse {
     private List<PerformanceSearchDto> shows;
+
+    public void setPerformances(List<PerformanceSearchDto> performanceSearchDtos) {
+        this.shows = performanceSearchDtos;
+    }
 }
