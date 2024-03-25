@@ -2,6 +2,7 @@ package com.c209.catalog.domain.performance.dto;
 
 import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.performance.enums.ReservationType;
+import com.c209.catalog.domain.performance.enums.Status;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
@@ -22,6 +23,7 @@ public class PerformanceSearchDto {
     private String title;
     private Hall hall;
     private ReservationType reservation_type;
+    private Status status;
     private LocalDateTime reservation_start_date_time;
     private LocalDateTime reservation_end_date_time;
     private LocalDate start_date;
