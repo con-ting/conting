@@ -4,14 +4,16 @@ export interface CollectionInput {
   name: string
   uri: string
   sellerFeeBasisPoints: number
-  creator: PublicKey
+  agency: PublicKey
+  singer: PublicKey
 }
 
 export interface AssetInput {
   name: string
   uri: string
   sellerFeeBasisPoints: number
-  creator: PublicKey
+  agency: PublicKey
+  singer: PublicKey
   collectionMint: PublicKey
 }
 
@@ -19,13 +21,15 @@ export interface CollectionBody {
   name: string
   uri: string
   sellerFeeBasisPoints: number
-  creator: string
+  agency: string
+  singer: string
 }
 
 export interface AssetBody {
   name: string
   uri: string
   sellerFeeBasisPoints: number
-  creator: string
+  agency: string
+  singer: string
   collectionMint: string
 }
