@@ -213,9 +213,8 @@ pub struct SellTicket<'info> {
 pub struct BuyTicket<'info> {
     #[account(mut)]
     pub buyer: Signer<'info>,
-    /// CHECK:
     #[account(mut)]
-    pub seller: UncheckedAccount<'info>,
+    pub seller: SystemAccount<'info>,
     #[account(mut)]
     pub market: Account<'info, Market>,
 

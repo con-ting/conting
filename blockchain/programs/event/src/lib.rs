@@ -133,8 +133,7 @@ pub struct Entry {
 pub struct CreateEvent<'info> {
     #[account(mut)]
     pub agency: Signer<'info>,
-    /// CHECK:
-    pub singer: UncheckedAccount<'info>,
+    pub singer: SystemAccount<'info>,
 
     #[account(
         init,
