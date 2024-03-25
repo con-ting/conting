@@ -1,33 +1,47 @@
 package com.c209.catalog.domain.performance.dto;
 
-import com.c209.catalog.domain.grade.enums.Grades;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
-public class GradeDto {
-    private Long id;
+@Setter
+@Data
+public class RShowsDto {
+    private Long show_id;
     @NotNull
-    private Grades grade;
-    @PositiveOrZero
-    private Integer price;
+    private String poster;
+    @NotNull
+    private String title;
+    @NotNull
+    private Long hall_id;
+    @NotNull
+    private String hall_name;
+    @NotNull
+    private String reservation_type;
+    private LocalDateTime reservation_start_date_time;
+    @FutureOrPresent
+    private LocalDateTime reservation_end_date_time;
+    private Date start_date;
+    private Date end_date;
 
 
     @Override
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((show_id == null) ? 0 : show_id.hashCode());
         return result;
     }
 
@@ -42,7 +56,7 @@ public class GradeDto {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        GradeDto other = (GradeDto) obj;
-        return Objects.equals(id, other.id);
+        RShowsDto other = (RShowsDto) obj;
+        return Objects.equals(show_id, other.show_id);
     }
 }

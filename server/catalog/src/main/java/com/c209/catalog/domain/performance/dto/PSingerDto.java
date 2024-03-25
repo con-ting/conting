@@ -2,10 +2,11 @@ package com.c209.catalog.domain.performance.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
+
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -13,10 +14,12 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString
 @Getter
-public class ScheduleDto {
+public class PSingerDto {
     private Long id;
-    private LocalDateTime start_datetime;
-    private LocalDateTime end_datetime;
+    @NotNull
+    private String name;
+    private String profile;
+    private Integer view;
 
     @Override
     public int hashCode() {
@@ -37,7 +40,7 @@ public class ScheduleDto {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ScheduleDto other = (ScheduleDto) obj;
+        PSingerDto other = (PSingerDto) obj;
         return Objects.equals(id, other.id);
     }
 }
