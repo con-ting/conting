@@ -1,12 +1,12 @@
 [package]
-name = "market"
+name = "event"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "market"
+name = "event"
 
 [features]
 no-entrypoint = []
@@ -19,4 +19,5 @@ default = []
 anchor-lang = "0.29.0"
 anchor-spl = "0.29.0"
 mpl-token-metadata = "4.1.2"
-solana-program = "1.8.8"
+solana-program = "1.18.8"
+arrayref = "0.3.7"
