@@ -1,6 +1,15 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {F_SIZE_TEXT} from '../../config/Font';
+import {F_SIZE_TEXT, F_SIZE_Y_TITLE} from '../../config/Font';
+
+const Info = ({title, content}: {title: string; content: any}) => {
+  return (
+    <View>
+      <Text style={F_SIZE_Y_TITLE}>{title}</Text>
+      <Text style={F_SIZE_TEXT}>{content}</Text>
+    </View>
+  );
+};
 
 export default function SummaryCard({info}: {info: any}) {
   console.log(info);
@@ -10,14 +19,7 @@ export default function SummaryCard({info}: {info: any}) {
         <Image style={styles.image} source={{uri: info.poster}} />
       </View>
       <View style={{...styles.cardContainer, alignItems: 'center'}}>
-        <View>
-          <Text>장소</Text>
-          <Text>{info.address}</Text>
-        </View>
-        <View>
-          <Text>제목</Text>
-          <Text style={F_SIZE_TEXT}>{info.title}</Text>
-        </View>
+        <Info title="장소" content={info.address} />
       </View>
     </View>
   );
