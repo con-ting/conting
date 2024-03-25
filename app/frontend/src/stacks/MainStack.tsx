@@ -10,7 +10,9 @@ import {heightPercent} from '../config/Dimensions';
 import {MAINFONT} from '../config/Font';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
-import COncertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
+import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
+import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
+import ConcertRegistCastScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistCastScreen';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -80,7 +82,17 @@ function MainStack() {
       />
       <Stack.Screen
         name="ConcertRegistInfo"
-        component={COncertRegistInfoScreen}
+        component={ConcertRegistInfoScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistHall"
+        component={ConcertRegistHallScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistCast"
+        component={ConcertRegistCastScreen}
         options={options(true, '')}
       />
     </Stack.Navigator>
