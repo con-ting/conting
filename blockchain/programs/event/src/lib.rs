@@ -1,16 +1,16 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::sysvar::SysvarId;
 use anchor_spl::token::{Mint, TokenAccount};
 use arrayref::array_ref;
 use mpl_token_metadata::accounts::Metadata;
 use mpl_token_metadata::instructions::UseV1CpiBuilder;
+use solana_program::sysvar::{self, SysvarId};
+
+declare_id!("Even2kqboEgiEv8ozq4fMyiDi727VeRbTD7SQogF5vrn");
 
 const SERVER_PUBKEY: Pubkey = Pubkey::new_from_array([
     136, 5, 219, 160, 32, 90, 40, 48, 191, 238, 134, 32, 24, 42, 140, 100, 90, 234, 161, 150, 187,
     81, 89, 3, 188, 143, 164, 145, 14, 44, 167, 74,
 ]);
-
-declare_id!("GaZApi6LfvqsEBTpcz9smXHTxq9eERvvXxAQX8vQNm5k");
 
 #[program]
 pub mod event {
@@ -30,18 +30,18 @@ pub mod event {
         let metadata = Metadata::try_from(&ctx.accounts.collection_metadata_pda.to_account_info())?;
         let creators = metadata.creators.unwrap();
         let maybe_server = creators.get(0).unwrap();
-        let maybe_creator = creators.get(1).unwrap();
+        let maybe_agency = creators.get(1).unwrap();
         let maybe_singer = creators.get(2).unwrap();
         require_eq!(maybe_server.verified, true);
         require_keys_eq!(maybe_server.address, SERVER_PUBKEY);
-        require_keys_eq!(maybe_creator.address, ctx.accounts.creator.key());
+        require_keys_eq!(maybe_agency.address, ctx.accounts.agency.key());
         require_keys_eq!(maybe_singer.address, ctx.accounts.singer.key());
 
         let clock = Clock::get()?;
         require_gt!(end_timestamp, clock.unix_timestamp);
 
         let event = &mut ctx.accounts.event;
-        event.authority = ctx.accounts.creator.key();
+        event.authority = ctx.accounts.agency.key();
         event.singer = ctx.accounts.singer.key();
         event.start_timestamp = start_timestamp;
         event.end_timestamp = end_timestamp;
@@ -63,7 +63,7 @@ pub mod event {
         require_gt!(now, event.start_timestamp);
         require_gt!(event.end_timestamp, now);
 
-        let metadata = Metadata::try_from(&ctx.accounts.metadata_pda)?;
+        let metadata = Metadata::try_from(&ctx.accounts.metadata_pda.to_account_info())?;
         let creators = metadata.creators.unwrap();
         let maybe_server = creators.get(0).unwrap();
         let maybe_singer = creators.get(2).unwrap();
@@ -75,14 +75,14 @@ pub mod event {
         require_gte!(uses.remaining, 1);
 
         let participant = &ctx.accounts.participant;
-        UseV1CpiBuilder::new(&ctx.accounts.metadata_program)
-            .authority(&participant)
-            .mint(&ctx.accounts.mint.to_account_info())
-            .metadata(&ctx.accounts.metadata_pda)
-            .payer(&participant)
-            .system_program(&ctx.accounts.system_program)
-            .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-            .invoke()?;
+        // UseV1CpiBuilder::new(&ctx.accounts.metadata_program)
+        //     .authority(&participant)
+        //     .mint(&ctx.accounts.mint.to_account_info())
+        //     .metadata(&ctx.accounts.metadata_pda)
+        //     .payer(&participant)
+        //     .system_program(&ctx.accounts.system_program)
+        //     .sysvar_instructions(&ctx.accounts.sysvar_instructions)
+        //     .invoke()?;
 
         let entry = &mut ctx.accounts.entry;
         entry.event = event.key();
@@ -92,17 +92,16 @@ pub mod event {
 
     pub fn pick_winner(ctx: Context<PickWinner>, participants: Vec<Pubkey>) -> Result<()> {
         let event = &mut ctx.accounts.event;
-
-        let recent_slothashes = &ctx.accounts.recent_slothashes.to_account_info();
-        let data = recent_slothashes.data.borrow();
-        let most_recent = array_ref![data, 12, 8];
-
         let clock = Clock::get()?;
+        require_gt!(clock.unix_timestamp, event.end_timestamp);
+
+        let recent_slot_hashes = &ctx.accounts.recent_slot_hashes.to_account_info();
+        let data = recent_slot_hashes.data.borrow();
+        let most_recent = array_ref![data, 12, 8];
         let seed = u64::from_le_bytes(*most_recent).saturating_sub(clock.unix_timestamp as u64);
-
         let remainder = seed as usize % (participants.len());
-        let winner = participants.get(remainder).unwrap();
 
+        let winner = participants.get(remainder).unwrap();
         event.winners.push(*winner);
         Ok(())
     }
@@ -133,23 +132,21 @@ pub struct Entry {
 #[derive(Accounts)]
 pub struct CreateEvent<'info> {
     #[account(mut)]
-    pub creator: Signer<'info>,
+    pub agency: Signer<'info>,
     /// CHECK:
-    pub singer: AccountInfo<'info>,
+    pub singer: UncheckedAccount<'info>,
 
     #[account(
         init,
-        payer = creator,
-        space = 8
-            + 32 + 32 + 8 + 8 + 2 + (4 + 32 * 100)
-            + (4 + 20) + (4 + 40) + (4 + 256) + (4 + 40) + (4 + 20)
+        payer = agency,
+        space = 8 + 40 + 32 + 32 + 8 + 8 + 2 + (4 + 32 * 100) + (4 + 20) + (4 + 40) + (4 + 256) + (4 + 40) + (4 + 20),
     )]
     pub event: Account<'info, Event>,
 
-    #[account(owner = SERVER_PUBKEY)]
+    #[account(constraint = collection_token.owner == SERVER_PUBKEY)]
     pub collection_token: Account<'info, TokenAccount>,
     /// CHECK:
-    pub collection_metadata_pda: AccountInfo<'info>,
+    pub collection_metadata_pda: UncheckedAccount<'info>,
 
     pub system_program: Program<'info, System>,
 }
@@ -163,37 +160,39 @@ pub struct EntryEvent<'info> {
     #[account(
         init,
         payer = participant,
-        space = 72
+        space = 8 + 72,
+        // seeds = ["entry".as_bytes(), participant.key().as_ref()],
+        // bump,
     )]
     pub entry: Account<'info, Entry>,
 
     pub mint: Account<'info, Mint>,
-    #[account(mut, owner = participant.key())]
+    #[account(mut, constraint = token.owner == participant.key())]
     pub token: Account<'info, TokenAccount>,
     /// CHECK:
     #[account(mut)]
-    pub metadata_pda: AccountInfo<'info>,
+    pub metadata_pda: UncheckedAccount<'info>,
 
-    /// CHECK:
-    #[account(address = mpl_token_metadata::ID)]
-    pub metadata_program: AccountInfo<'info>,
+    // Error: failed to send transaction: Transaction simulation failed: This program may not be used for executing instructions
+    // /// CHECK:
+    // #[account(address = mpl_token_metadata::ID)]
+    // pub metadata_program: UncheckedAccount<'info>,
     /// CHECK:
     #[account(address = Instructions::id())]
-    pub sysvar_instructions: AccountInfo<'info>,
+    pub sysvar_instructions: UncheckedAccount<'info>,
+    // pub rent: Sysvar<'info, Rent>,
     pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 pub struct PickWinner<'info> {
     #[account(mut, address = event.authority)]
-    pub creator: Signer<'info>,
+    pub agency: Signer<'info>,
 
-    #[account(
-        mut,
-        constraint = event.end_timestamp < Clock::get()?.unix_timestamp,
-        constraint = event.winners.len() < event.winners_total as usize
-    )]
+    #[account(mut, constraint = event.winners.len() < event.winners_total as usize)]
     pub event: Account<'info, Event>,
 
-    pub recent_slothashes: Sysvar<'info, SlotHashes>,
+    /// CHECK:
+    #[account(address = sysvar::slot_hashes::ID)]
+    pub recent_slot_hashes: UncheckedAccount<'info>,
 }

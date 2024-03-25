@@ -3,9 +3,13 @@ import { Event } from '../target/types/event'
 import { expect } from 'chai'
 import * as splToken from '@solana/spl-token'
 import { Metaplex } from '@metaplex-foundation/js'
-import { SYSVAR_INSTRUCTIONS_PUBKEY } from '@solana/web3.js'
+import { SYSVAR_INSTRUCTIONS_PUBKEY, SYSVAR_SLOT_HASHES_PUBKEY, SYSVAR_SLOT_HISTORY_PUBKEY } from '@solana/web3.js'
 import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
+import {
+  agency, singer, participant1 as par1, participant2 as par2, participant3 as par3,
+  collectionMint, par1sMint, par2sMint, par3sMint
+} from './env'
 
 describe('event', async () => {
   const provider = anchor.AnchorProvider.env()
@@ -13,52 +17,80 @@ describe('event', async () => {
   const program = anchor.workspace.Event as anchor.Program<Event>
 
   const server = (provider.wallet as NodeWallet).payer
-  const creator = anchor.web3.Keypair.generate()
-  const singer = anchor.web3.Keypair.generate()
-  const participant = anchor.web3.Keypair.generate()
-
   const event = anchor.web3.Keypair.generate()
   const entry = anchor.web3.Keypair.generate()
+  // let entry: anchor.web3.PublicKey;
 
-  const mint = new anchor.web3.PublicKey('5FD27ojtnUrbLg1D2aErsoYQEMUvMXDiyFDtw25TZg5d')
-  const collectionMint = new anchor.web3.PublicKey('GFktYvJLGkh5jfdv9ZFuzcXzgNu8bKLhsYnX3DsRU2L6')
   let collectionToken: anchor.web3.PublicKey;
   let collectionMetadataPda: anchor.web3.PublicKey;
-  let token: anchor.web3.PublicKey;
-  let metadataPda: anchor.web3.PublicKey;
+  let par1sToken: anchor.web3.PublicKey;
+  let par2sToken: anchor.web3.PublicKey;
+  let par3sToken: anchor.web3.PublicKey;
+  let par1sMetadataPda: anchor.web3.PublicKey;
+  let par2sMetadataPda: anchor.web3.PublicKey;
+  let par3sMetadataPda: anchor.web3.PublicKey;
 
   before(async () => {
-    await provider.connection.requestAirdrop(creator.publicKey, 1 * anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(participant.publicKey, 1 * anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(agency.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(singer.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(par1.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(par2.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(par3.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+
+    // entry = anchor.web3.PublicKey.findProgramAddressSync(
+    //   [
+    //     anchor.utils.bytes.utf8.encode('entry'),
+    //     par1.publicKey.toBuffer(),
+    //   ],
+    //   program.programId
+    // )[0]
+    // console.log('Event ::', entry)
 
     collectionToken = splToken.getAssociatedTokenAddressSync(
       collectionMint,
       server.publicKey,
     )
-    token = splToken.getAssociatedTokenAddressSync(
-      mint,
-      participant.publicKey,
+    par1sToken = splToken.getAssociatedTokenAddressSync(
+      par1sMint,
+      par1.publicKey,
     )
-
+    par2sToken = splToken.getAssociatedTokenAddressSync(
+      par2sMint,
+      par2.publicKey,
+    )
+    par3sToken = splToken.getAssociatedTokenAddressSync(
+      par3sMint,
+      par3.publicKey,
+    )
     const metaplex = Metaplex.make(provider.connection)
     collectionMetadataPda = metaplex
       .nfts()
       .pdas()
       .metadata({ mint: collectionMint })
-    metadataPda = metaplex
+    par1sMetadataPda = metaplex
       .nfts()
       .pdas()
-      .metadata({ mint })
+      .metadata({ mint: par1sMint })
+    par2sMetadataPda = metaplex
+      .nfts()
+      .pdas()
+      .metadata({ mint: par2sMint })
+    par3sMetadataPda = metaplex
+      .nfts()
+      .pdas()
+      .metadata({ mint: par3sMint })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   })
 
   it('Create Event', async () => {
-    const start = new Date()
-    const end = new Date()
-    end.setDate(end.getDate() + 3)
+    const now = Date.now() / 1000
+    const start = now - 3
+    const end = now + 2
 
     const tx = await program.methods.createEvent(
-      new anchor.BN(start.getTime()),
-      new anchor.BN(end.getTime()),
+      new anchor.BN(start),
+      new anchor.BN(end),
       1,
       'singer_name',
       'name',
@@ -67,13 +99,13 @@ describe('event', async () => {
       'uri',
     )
       .accounts({
-        creator: creator.publicKey,
+        agency: agency.publicKey,
         singer: singer.publicKey,
         event: event.publicKey,
         collectionToken,
         collectionMetadataPda,
       })
-      .signers([creator, event])
+      .signers([agency, event])
       .rpc()
     console.log('TxHash ::', tx)
 
@@ -84,16 +116,16 @@ describe('event', async () => {
   it('Entry Event', async () => {
     const tx = await program.methods.entryEvent()
       .accounts({
-        participant: participant.publicKey,
+        participant: par1.publicKey,
         event: event.publicKey,
         entry: entry.publicKey,
-        mint,
-        token,
-        metadataPda,
-        metadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+        mint: par1sMint,
+        token: par1sToken,
+        metadataPda: par1sMetadataPda,
+        // metadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
+        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY
       })
-      .signers([participant, entry])
+      .signers([par1, entry])
       .rpc()
     console.log('TxHash ::', tx)
 
@@ -102,21 +134,22 @@ describe('event', async () => {
   })
 
   it('Pick Winner', async () => {
-    const participants = [participant.publicKey]
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    const participants = [par1.publicKey]
 
     const tx = await program.methods.pickWinner(
       participants,
     )
       .accounts({
-        creator: creator.publicKey,
+        agency: agency.publicKey,
         event: event.publicKey,
-        recentSlothashes: new anchor.web3.PublicKey('SysvarS1otHashes111111111111111111111111111'),
+        recentSlotHashes: SYSVAR_SLOT_HASHES_PUBKEY,
       })
-      .signers([creator])
+      .signers([agency])
       .rpc()
     console.log('TxHash ::', tx)
 
     const eventState = await program.account.event.fetch(event.publicKey)
-    expect(eventState.winners.length).to.eq(0)
+    expect(eventState.winners.length).to.eq(1)
   })
 })

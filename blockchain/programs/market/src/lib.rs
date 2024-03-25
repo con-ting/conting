@@ -3,12 +3,12 @@ use anchor_lang::system_program;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use mpl_token_metadata::accounts::Metadata;
 
+declare_id!("MarqygkQw8N9f1byiDrWvtbKs6iDfeWiUmBpovQiJpi");
+
 const SERVER_PUBKEY: Pubkey = Pubkey::new_from_array([
     136, 5, 219, 160, 32, 90, 40, 48, 191, 238, 134, 32, 24, 42, 140, 100, 90, 234, 161, 150, 187,
     81, 89, 3, 188, 143, 164, 145, 14, 44, 167, 74,
 ]);
-
-declare_id!("7vpxsYH5jCSHS6pvR6zQGLdPsNUyoHH1w36wHXuuGnid");
 
 #[program]
 pub mod market {
@@ -71,7 +71,7 @@ pub mod market {
                 ctx.accounts.system_program.to_account_info(),
                 system_program::Transfer {
                     from: ctx.accounts.buyer.to_account_info(),
-                    to: ctx.accounts.seller.clone(),
+                    to: ctx.accounts.seller.to_account_info(),
                 },
             ),
             ctx.accounts.escrow.lamports,
@@ -140,24 +140,6 @@ pub mod market {
     }
 }
 
-#[derive(Accounts)]
-pub struct CreateMarket<'info> {
-    #[account(
-        mut,
-        address = SERVER_PUBKEY
-    )]
-    pub server: Signer<'info>,
-
-    #[account(
-        init,
-        payer = server,
-        space = 8 + 24 + 32 * 100
-    )]
-    pub market: Account<'info, Market>,
-
-    pub system_program: Program<'info, System>,
-}
-
 #[account]
 pub struct Market {
     pub escrows: Vec<Pubkey>,
@@ -172,6 +154,21 @@ pub struct Escrow {
 }
 
 #[derive(Accounts)]
+pub struct CreateMarket<'info> {
+    #[account(mut, address = SERVER_PUBKEY)]
+    pub server: Signer<'info>,
+
+    #[account(
+        init,
+        payer = server,
+        space = 8 + 24 + 32 * 100
+    )]
+    pub market: Account<'info, Market>,
+
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
 pub struct SellTicket<'info> {
     #[account(mut)]
     pub seller: Signer<'info>,
@@ -179,7 +176,11 @@ pub struct SellTicket<'info> {
     pub market: Account<'info, Market>,
 
     pub mint: Account<'info, Mint>,
-    #[account(mut, constraint = sellers_token.mint == mint.key() && sellers_token.owner == seller.key())]
+    #[account(
+        mut,
+        constraint = sellers_token.mint == mint.key(),
+        constraint = sellers_token.owner == seller.key()
+    )]
     pub sellers_token: Account<'info, TokenAccount>,
 
     #[account(
@@ -201,7 +202,7 @@ pub struct SellTicket<'info> {
     #[account(constraint = collection_token.owner == SERVER_PUBKEY)]
     pub collection_token: Account<'info, TokenAccount>,
     /// CHECK:
-    pub metadata_pda: AccountInfo<'info>,
+    pub metadata_pda: UncheckedAccount<'info>,
 
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
@@ -214,7 +215,7 @@ pub struct BuyTicket<'info> {
     pub buyer: Signer<'info>,
     /// CHECK:
     #[account(mut)]
-    pub seller: AccountInfo<'info>,
+    pub seller: UncheckedAccount<'info>,
     #[account(mut)]
     pub market: Account<'info, Market>,
 
