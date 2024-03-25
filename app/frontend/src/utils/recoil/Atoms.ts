@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import {atom} from 'recoil';
 
 /**
  * token확인 후 main으로 갈지에 대한 정보를 저장하고 있을 상태 atom입니다.
@@ -26,4 +26,13 @@ export const userInfoState = atom<null | UserInfoStateType>({
     user_id: 1,
     profileImg: '',
   },
+});
+
+/**
+ * FCM Token 을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const fcmToken = atom<string>({
+  key: 'fcmToken',
+  default: '',
 });

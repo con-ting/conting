@@ -8,6 +8,8 @@ import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
 import * as Color from '../../config/Color';
 import {LocalImageLoader} from '../../utils/common/ImageLoader.tsx';
 import messaging from '@react-native-firebase/messaging';
+import {useRecoilState} from 'recoil';
+import {fcmToken} from '../../utils/recoil/Atoms.ts';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -17,10 +19,12 @@ type RootStackParamList = {
 type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 const SplashScreen = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
+  const [token, setToken] = useRecoilState(fcmToken);
 
   useEffect(() => {
     const fetchFCMToken = async () => {
       const token = await messaging().getToken();
+      setToken(token);
       console.log('FCM Token:', token);
     };
 

@@ -142,7 +142,7 @@ const PhoneAuthScreen = () => {
         )}
         <Spacer space={heightPercent(30)} />
         <BasicButton
-          onPress={() => navigation.navigate('JoinScreen')}
+          onPress={() => navigation.navigate('JoinScreen', phoneNumber)}
           disabled={certNumber ? false : true}
           borderRadius={8}
           backgroundColor={certNumber ? MAINYELLOW : '#D0D5DD'}

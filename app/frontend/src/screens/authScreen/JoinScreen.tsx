@@ -1,9 +1,13 @@
-import {Alert, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 import {H3} from '../../config/Typography.tsx';
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
 import React, {useState} from 'react';
 import * as Color from '../../config/Color.ts';
-import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions.tsx';
 import {
   BasicButton,
   WhiteButton,
@@ -22,9 +26,12 @@ import {
 } from '../../config/Color.ts';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
-import * as Linking from 'expo-linking';
-import bs58 from 'bs58';
-import nacl from 'tweetnacl';
+import {userJoin} from '../../api/auth/user.ts';
+import {useRecoilState} from 'recoil';
+import {fcmToken} from '../../utils/recoil/Atoms.ts';
+import {korDateFormat} from '../../config/TimeFormat.ts';
+import DatePicker from 'react-native-date-picker';
+import * as Font from '../../config/Font.ts';
 
 type RootStackParamList = {
   PhoneAuthScreen: undefined;
@@ -33,33 +40,57 @@ type RootStackParamList = {
 };
 type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 
-const JoinScreen = () => {
+const JoinScreen = propsData => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const [email, setEmail] = useState('');
   const [emailPass, setEmailPass] = useState(false);
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [rePassword, setRePassword] = useState('');
+  const [token, setToken] = useRecoilState(fcmToken);
+  const [cryptoAddress, setCryptoAddress] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [dateModalOpen, setDateModalOpen] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
-
+  const phoneNumber = propsData.route.params.replace(/-/g, '');
   const toggleCancelModal = () => {
     setCancelModalVisible(!cancelModalVisible);
   };
-  // DApp 키 쌍과 Phantom 지갑 공개키를 저장하기 위한 상태
-  const [dappKeyPair] = useState(() => nacl.box.keyPair());
-  const [phantomWalletPublicKey, setPhantomWalletPublicKey] = useState(null);
-  // Phantom 지갑 연결 함수
-  const connect = async () => {
-    const params = new URLSearchParams({
-      dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
-      cluster: 'mainnet-beta',
-      app_url: 'https://phantom.app',
-      redirect_link: Linking.createURL('/'),
-    });
+  const abledButton = emailPass && password === rePassword && password !== '';
 
-    const url = `https://phantom.app/ul/v1/connect?${params.toString()}`;
-    Linking.openURL(url);
+  const connect = () => {
+    console.log({
+      email: email,
+      password: password,
+      name: userName,
+      phone_number: phoneNumber,
+      birth_date: birthDate,
+      fcm: token,
+      wallet: cryptoAddress,
+    });
+    //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
+
+    //2. API 전송
+    userJoin({
+      email: email,
+      password: password,
+      name: userName,
+      phone_number: phoneNumber,
+      birth_date: birthDate,
+      fcm: token,
+      wallet: cryptoAddress,
+    });
+    //3. 로그인 후 토큰 저장
+
+    //4. goMainPage 수정
   };
+
+  const validateEmail = (): boolean => {
+    //이메일 검증 api 전송 후 emailPass 세팅
+    setEmailPass(!emailPass);
+    return emailPass;
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -115,7 +146,7 @@ const JoinScreen = () => {
               width={'70%'}
             />
             <YellowButton
-              onPress={() => setEmailPass(!emailPass)}
+              onPress={validateEmail}
               btnText={'중복확인'}
               width={'30%'}
               paddingVertical={16}
@@ -199,6 +230,53 @@ const JoinScreen = () => {
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                borderBottomColor: '#D0D5DD',
+                borderBottomWidth: 2,
+                width: widthPercent(120),
+              }}
+            />
+            <Typo.DETAIL1 color="#98A2B3">생년월일 입력</Typo.DETAIL1>
+            <View
+              style={{
+                borderBottomColor: '#D0D5DD',
+                borderBottomWidth: 2,
+                width: widthPercent(120),
+              }}
+            />
+          </View>
+          <Spacer space={heightPercent(10)} />
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}>
+            <SimpleInput
+              placeholder={'생년월일 입력'}
+              value={korDateFormat(birthDate)}
+              editable={false}
+              onChangeText={birthDate => setBirthDate(birthDate)}
+              backGroundColor={Color.CUTEYELLOW}
+              textColor={Color.MAINBLACK}
+              width={'70%'}
+            />
+            <YellowButton
+              onPress={() => setDateModalOpen(!dateModalOpen)}
+              btnText={'생년월일 선택'}
+              width={'30%'}
+              paddingVertical={16}
+              textSize={16}
+            />
+          </View>
+          <Spacer space={heightPercent(20)} />
+          <View
+            style={{
+              flexDirection: 'row',
             }}>
             <WhiteButton
               onPress={toggleCancelModal}
@@ -206,12 +284,22 @@ const JoinScreen = () => {
               width={'50%'}
               textSize={16}
             />
-            <YellowButton
+            <BasicButton
               onPress={connect}
-              btnText={'체인 지갑 연결하기'}
+              disabled={abledButton ? false : true}
+              borderRadius={8}
               width={'50%'}
-              textSize={16}
-            />
+              backgroundColor={abledButton ? MAINYELLOW : '#D0D5DD'}
+              borderColor={abledButton ? MAINYELLOW : '#D0D5DD'}>
+              <Text
+                style={{
+                  color: abledButton ? Color.MAINBLACK : MAINWHITE,
+                  fontSize: fontPercent(16),
+                  fontFamily: Font.MAINFONT,
+                }}>
+                체인 지갑 연결하기
+              </Text>
+            </BasicButton>
           </View>
         </View>
       </KeyboardAwareScrollView>
@@ -248,6 +336,20 @@ const JoinScreen = () => {
           </View>
         </View>
       </PopUpModal>
+      <DatePicker
+        mode="date"
+        locale="ko-KR"
+        modal
+        open={dateModalOpen}
+        date={birthDate}
+        onConfirm={birthDate => {
+          setDateModalOpen(false);
+          setBirthDate(birthDate);
+        }}
+        onCancel={() => {
+          setDateModalOpen(false);
+        }}
+      />
     </SafeAreaView>
   );
 };
