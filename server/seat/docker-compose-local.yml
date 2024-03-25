@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  user-db:
+    container_name: seat-db
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: 1w2k/seat-db
+    environment:
+      - MARIADB_DATABASE=seat
+      - MARIADB_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "9999:3306"
+#    logging: # 로깅 옵션 추가
+#      driver: syslog
+
+#  user-cache:
+#    container_name: user-cache
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./cache
+#    image: 1w2k/cache-redis
+#    ports:
+#      - "6379:6379"
+#    logging: # 로깅 옵션 추가
+#      driver: syslog

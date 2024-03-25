@@ -1,6 +1,5 @@
 package com.c209.catalog.domain.singer.exception;
 
-import com.c209.catalog.global.exception.CommonException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
