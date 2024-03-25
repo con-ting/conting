@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  queue-db:
+    container_name: queue-db
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: 1w2k/queue-db
+    environment:
+      - MARIADB_DATABASE=user
+      - MARIADB_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "9997:3306"
+#    logging: # 로깅 옵션 추가
+#      driver: syslog
+
+  queue-cache:
+    container_name: redis-queue
+    build:
+      dockerfile: Dockerfile
+      context: ./queue
+    image: 1w2k/redis-queue
+    ports:
+      - "6380:6379"
+#    logging: # 로깅 옵션 추가
+#      driver: syslog

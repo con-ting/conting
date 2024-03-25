@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Modal, StyleSheet, Text, View} from 'react-native';
 import {
   F_SIZE_BIGTEXT,
   F_SIZE_SUBTITLE,
@@ -9,6 +9,10 @@ import {BasicConcertCardWide} from '../card/ConcertCardWide';
 import {YellowButton} from '../button/Button';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
+
+import IMP from 'iamport-react-native';
+import Loading from '../loader/Loading';
+import WebView from 'react-native-webview';
 
 const userName = '김싸피';
 
@@ -21,6 +25,7 @@ export default function PayInfo() {
   // 주문 번호 상태와 생성 로직
   const [orderID, setOrderID] = useState('');
 
+  const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)
@@ -31,7 +36,47 @@ export default function PayInfo() {
   }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행됨
 
   // 총액 계산
-  const totalAmout = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+  const totalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+
+  // 결제 데에터
+  const paymentData = {
+    pg: 'kakaopay.TC0ONETIME',
+    pay_method: 'card',
+    name: '콘서트 티켓 결제',
+    merchant_uid: `mid_${new Date().getTime()}`,
+    amount: totalAmount,
+    buyer_name: userName,
+    buyer_tel: '01091250545',
+    buyer_email: 'example@naver.com',
+    buyer_addr: '서울시 강남구 신사동 661-16',
+    buyer_postcode: '06018',
+    app_scheme: 'example',
+  };
+
+  function startPayment() {
+    setIsPaying(true);
+  }
+
+  function closePayment() {
+    setIsPaying(false);
+  }
+
+  function handlePaymentResult(response) {
+    const {success, merchant_id, error_msg} = response;
+    setIsPaying(false);
+    navigation.replace('Result', response);
+
+    // console.log(response);
+    // 결제 페이지 렌더링 시 조건
+    // if (success) {
+    //   alert('결제 성공');
+    //   console.log(success);
+    //   setIsPaying(false);
+    //   navigation.replace('Result', response);
+    // } else {
+    //   alert(`결제 실패 : $(error_msg)`);
+    // }
+  }
 
   return (
     <View style={styles.container}>
@@ -79,20 +124,34 @@ export default function PayInfo() {
       </View>
       <View style={styles.header}>
         <Text style={F_SIZE_TITLE}>총액</Text>
-        <Text style={F_SIZE_Y_TITLE}>{totalAmout.toLocaleString()} 원</Text>
+        <Text style={F_SIZE_Y_TITLE}>{totalAmount.toLocaleString()} 원</Text>
       </View>
       <YellowButton
-        onPress={() => navigation.navigate('Result')}
+        onPress={startPayment}
         btnText="결제하기"
         isRadius
         textSize={20}
       />
+      <Modal
+        visible={isPaying}
+        onRequestClose={closePayment}
+        animationType="slide">
+        <View style={styles.modalContent}>
+          <IMP.Payment
+            userCode="imp13658303" // 실제 가맹점 식별코드로 변경
+            data={paymentData}
+            callback={handlePaymentResult}
+            loading={<Loading />}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {margin: 10},
+  modalContent: {flex: 1},
   header: {
     marginTop: 30,
     marginLeft: 5,

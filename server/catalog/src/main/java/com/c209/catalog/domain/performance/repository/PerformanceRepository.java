@@ -29,4 +29,6 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "RIGHT JOIN Grade g ON g.performance.id = p.id " +
             "WHERE p.id = :showId")
     Optional<List<PerformanceDetailInfo>> getPerformanceByShowId(@Param("showId") Long showId);
+
+    Optional<Performance> findByTitle(String title);
 }

@@ -1,0 +1,39 @@
+package com.c209.seat.global.config;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.stereotype.Component;
+
+@Component
+@EnableR2dbcRepositories
+@EnableR2dbcAuditing
+@RequiredArgsConstructor
+@Slf4j
+public class R2dbcConfig implements ApplicationListener<ApplicationReadyEvent> {
+
+    private final DatabaseClient databaseClient;
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        databaseClient.sql("SELECT 1").fetch().one()
+                .subscribe(
+                        success->{
+                            log.info("R2DBC DB 설정 완료");
+                        },
+                        error->{
+
+                            log.error("R2DBC DB 설정 실패");
+                            log.error(error.getMessage());
+                            //R2DBC DB 설정 실패시 스프링 종료
+                            SpringApplication.exit(event.getApplicationContext(), ()->110);
+                        }
+                );
+    }
+}
+
