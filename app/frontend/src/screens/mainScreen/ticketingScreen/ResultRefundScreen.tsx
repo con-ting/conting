@@ -8,7 +8,7 @@ import {useState} from 'react';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 
 export default function ResultRefundScreen({route}) {
-  const [refundSuccess, setRefundSuccess] = useState(true); // 환불 성공 여부
+  const [refundSuccess, setRefundSuccess] = useState(false); // 환불 성공 여부
 
   const navigation = useNavigation();
 
