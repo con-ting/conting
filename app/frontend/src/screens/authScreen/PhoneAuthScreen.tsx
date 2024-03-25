@@ -1,6 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {
   fontPercent,
@@ -28,6 +28,12 @@ import {BasicButton, YellowButton} from '../../components/button/Button.tsx';
 import * as Color from '../../config/Color.ts';
 import * as Font from '../../config/Font.ts';
 import {PopUpModal} from '../../components/modal/Modal.tsx';
+import {useRecoilState} from 'recoil';
+import {fcmToken} from '../../utils/recoil/Atoms.ts';
+import {
+  certCodeConfirmCodeApi,
+  phoneNumberCertMessageSenderApi,
+} from '../../api/auth/auth.ts';
 
 type RootStackParamList = {
   PhoneAuthScreen: undefined;
@@ -41,10 +47,14 @@ const PhoneAuthScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isStart, setIsStart] = useState(false);
   const [certNumber, setCertNumber] = useState('');
-  const realCertNumber = 'aaaaaa';
+  const [certPass, setCertPass] = useState(false);
+  const [token, setToken] = useRecoilState(fcmToken);
 
   const startCertTimer = () => {
     console.log(phoneNumber);
+    //인증번호 발송 api
+    phoneNumberCertMessageSenderApi;
+
     setIsStart(true);
   };
 
@@ -59,6 +69,24 @@ const PhoneAuthScreen = () => {
   const toggleHelpModal = () => {
     setHelpModalVisible(!helpModalVisible);
   };
+
+  useEffect(() => {
+    // 인증번호가 6자리 이상일 때 API 호출 로직을 실행
+    if (certNumber.length >= 6) {
+      const timer = setTimeout(() => {
+        // API 호출 함수
+        const response = certCodeConfirmCodeApi({
+          random_number: certNumber,
+          fcm: token,
+        });
+        //api 요청 후 값 세팅
+        setCertPass(response.result);
+      }, 1000); // 1초 후 실행
+      // Cleanup function을 통해 컴포넌트가 언마운트되거나 인증번호가 변경되어 다시 useEffect가 호출될 때
+      // 이전에 설정된 타이머를 제거함으로써 메모리 누수를 방지
+      return () => clearTimeout(timer);
+    }
+  }, [certNumber]);
 
   return (
     <SafeAreaView
@@ -92,6 +120,7 @@ const PhoneAuthScreen = () => {
             placeholder="번호 입력"
             width="70%"
             value={phoneNumber}
+            editable={!certPass}
             backGroundColor={Color.CUTEYELLOW}
             textColor={Color.MAINBLACK}
             onChangeText={phoneNumber => setPhoneNumber(phoneNumber)}
@@ -122,7 +151,8 @@ const PhoneAuthScreen = () => {
               value={certNumber}
               onChangeText={certNumber => setCertNumber(certNumber)}
               backGroundColor={CUTEYELLOW}
-              realCertNumber={realCertNumber}
+              editable={!certPass}
+              isSameCertNumber={certPass}
               textColor={MAINBLACK}
               isStart={isStart}
             />
@@ -143,13 +173,13 @@ const PhoneAuthScreen = () => {
         <Spacer space={heightPercent(30)} />
         <BasicButton
           onPress={() => navigation.navigate('JoinScreen', phoneNumber)}
-          disabled={certNumber ? false : true}
+          disabled={certPass ? false : true}
           borderRadius={8}
-          backgroundColor={certNumber ? MAINYELLOW : '#D0D5DD'}
-          borderColor={certNumber ? MAINYELLOW : '#D0D5DD'}>
+          backgroundColor={certPass ? MAINYELLOW : '#D0D5DD'}
+          borderColor={certPass ? MAINYELLOW : '#D0D5DD'}>
           <Text
             style={{
-              color: certNumber ? Color.MAINBLACK : MAINWHITE,
+              color: certPass ? Color.MAINBLACK : MAINWHITE,
               fontSize: fontPercent(16),
               fontFamily: Font.MAINFONT,
             }}>

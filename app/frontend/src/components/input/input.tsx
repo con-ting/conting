@@ -439,7 +439,7 @@ export const CertNumberInput = (props: InputProps) => {
             : Color.MAINBLACK,
           borderRadius: widthPercent(8),
           borderWidth: widthPercent(2),
-          padding: widthPercent(12),
+          paddingHorizontal: widthPercent(4),
           borderColor: borderColor,
           width: props.width || '100%',
         }}>

@@ -1,20 +1,19 @@
 import instance from '../../utils/axios/axiosInstance'; // token 필요없는 axios
 import tokenInstance from '../../utils/axios/axiosTokenInstance'; // token 필요한 axios
+const authUrl: string = 'auth';
 
-const userUrl: string = 'user';
-const emailUrl: string = 'email';
-
-export const userJoin = async (params: { email: string; password: string; name: string; phone_number: string; birth_date: string; fcm: string, wallet: string }) => {
-  const res = await instance.post(`${userUrl}/auth/join`, params);
+export const phoneNumberCertMessageSenderApi = async (params: {
+  random_number: string;
+  fcm: string;
+}) => {
+  const res = await instance.post(`${authUrl}/message`, params);
   return res.data;
 };
 
-export const getJoinCode = async (params: { email: string }) => {
-  const res = await instance.post(`${emailUrl}/join-code`, params);
-  return res.data;
-};
-
-export const confirmCode = async (params: { randomNumber: string, fcm: string}) => {
-  const res = await instance.get(`${emailUrl}/auth/verification`,);
+export const certCodeConfirmCodeApi = async (params: {
+  random_number: string;
+  fcm: string;
+}) => {
+  const res = await instance.get(`${authUrl}/verification?`, params);
   return res.data;
 };
