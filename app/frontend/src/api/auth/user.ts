@@ -8,7 +8,7 @@ export const userJoin = async (params: {
   password: string;
   name: string;
   phone_number: string;
-  birth_date: Date;
+  birthday: string;
   fcm: string;
   wallet: string;
 }) => {

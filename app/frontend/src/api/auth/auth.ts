@@ -7,7 +7,7 @@ export const phoneNumberCertMessageSenderApi = async (params: {
   fcm: string;
 }) => {
   const res = await instance.post(`${authUrl}/message`, params);
-  console.log('res = ', res.data);
+  console.log('[phoneNumberCertMessageSenderApi Response] =', res.data);
   return res.data;
 };
 
@@ -18,6 +18,12 @@ export const certCodeConfirmCodeApi = async (params: {
   const res = await instance.get(
     `${authUrl}/verification?randomNumber=${params.random_number}&fcm=${params.fcm}`,
   );
-  console.log('res = ', res.data);
+  console.log('[certCodeConfirmCodeApi Response] = ', res.data);
+  return res.data;
+};
+
+export const login = async (params: {email: string; password: string}) => {
+  const res = await instance.post(`${authUrl}/login`, params);
+  console.log('[login Response] = ', res.data);
   return res.data;
 };

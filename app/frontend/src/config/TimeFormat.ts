@@ -21,3 +21,12 @@ export function korDateFormat(date: Date): string {
 // 예제 사용
 // const dateString = "2024.07.05";
 // console.log(formatDateWithDay(dateString)); "2024.07.05(금)" 출력
+// 날짜 문자열을 받아 YYYY-MM-DD 포맷으로 반환하는 함수
+export function serverDateFormat(date: Date): string {
+  const year = date.getFullYear();
+  // 월과 일은 0부터 시작하므로 +1을 하고, 두 자리 숫자로 만들기 위해 `padStart()` 메서드 사용
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}

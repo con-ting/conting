@@ -1,6 +1,7 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { BASE_URL, CONTENT_TYPE, TIMEOUT } from '../../config/AxiosConfig.ts';
-import { getAsync, setAsync } from '../async/asyncUtil';
+import axios, {AxiosError, AxiosRequestConfig} from 'axios';
+import {BASE_URL, CONTENT_TYPE, TIMEOUT} from '../../config/AxiosConfig.ts';
+import {getAsync, setAsync} from '../async/asyncUtil';
+import {Alert} from 'react-native';
 
 /**
  * 인증을 요구할때 사용되는 토큰 인스턴스입니다.
@@ -36,7 +37,7 @@ const refreshAccessTokenAndRetry = async (config: AxiosRequestConfig) => {
           'Content-Type': CONTENT_TYPE,
           Authorization: await getAuthorizationHeader('refreshToken'),
         },
-      }
+      },
     );
     if (response.status === 201) {
       const newAccessToken = response.data.data.accessToken;
@@ -54,7 +55,7 @@ const refreshAccessTokenAndRetry = async (config: AxiosRequestConfig) => {
     if (error.response.status === 401) {
       // TODO
       // await logout();
-      alert('토큰 갱신에 실패했습니다. 다시 로그인 해주세요.');
+      Alert.alert('토큰 갱신에 실패했습니다. 다시 로그인 해주세요.');
       return Promise.reject(error);
     }
   }
@@ -62,13 +63,15 @@ const refreshAccessTokenAndRetry = async (config: AxiosRequestConfig) => {
 
 const handleResponseError = async (error: AxiosError) => {
   if (!error.response) return Promise.reject(error);
-  const { status, config } = error.response;
-  console.log('status :', status);
+  const {status, config} = error.response;
+  console.error('error.response :', error.response.data);
 
   switch (status) {
     case 400:
-      if (error.response.data['data_header']) alert(error.response.data['data_header'].result_message);
-      else alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
+      if (error.response.data.detail) {
+        console.error(error.response.data.detail);
+      }
+      Alert.alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
       break;
     case 403:
       return await refreshAccessTokenAndRetry(config);
@@ -81,7 +84,7 @@ const handleResponseError = async (error: AxiosError) => {
   }
 };
 
-const handleResponseSuccess = (response) => {
+const handleResponseSuccess = response => {
   console.log('Success response');
   return response;
 };
@@ -92,6 +95,9 @@ const handleRequestError = (error: AxiosError) => {
 };
 
 tokenInstance.interceptors.request.use(setCommonHeaders, handleRequestError);
-tokenInstance.interceptors.response.use(handleResponseSuccess, handleResponseError);
+tokenInstance.interceptors.response.use(
+  handleResponseSuccess,
+  handleResponseError,
+);
 
 export default tokenInstance;
