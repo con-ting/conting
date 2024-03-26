@@ -16,7 +16,7 @@ import java.util.Optional;
 @Getter
 @Setter
 public class SearchShowResponse {
-    private List<PerformanceSearchDto> shows;
+    private Optional<List<PerformanceSearchDto>> shows;
 
     public void setPerformances(Optional<List<PerformanceSearchDto>> performanceSearchDtos) {
         this.shows = performanceSearchDtos;

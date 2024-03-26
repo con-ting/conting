@@ -2,88 +2,99 @@ package com.c209.catalog.domain.performance.repository;
 
 import com.c209.catalog.domain.performance.dto.PerformanceSearchDto;
 import com.c209.catalog.domain.performance.entity.Performance;
-import com.c209.catalog.domain.performance.entity.QPerformance;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 
+import static com.c209.catalog.domain.performance.entity.QPerformance.performance;
+
+@Repository
 public interface SearchShowRepository extends JpaRepository<Performance, Long> {
-    @Query("SELECT new com.c209.catalog.domain.performance.dto.PerformanceSearchDto( " +
-            "p.id, " +
-            "p.posterImage, " +
-            "p.title, " +
-            "h.id, " +
-            "h.name, " +
-            "h.address, "+
-            "p.reservationType, " +
-            "p.status, " +
-            "p.reservationStartDatetime, " +
-            "p.reservationEndDatetime, " +
-            "p.startDate, " +
-            "p.endDate," +
-            "s.name ) " +
-            "FROM Performance p " +
-            "JOIN p.hall h " +
-            "JOIN p.singer s "
-//            "WHERE (:status IS NULL OR p.status = :status) " +
-//            "AND (:region IS NULL OR h.name = :region) " +
-//            "AND (:sort IS NULL OR :sort = '예매일순' OR :sort = '이름순' OR :sort = '공연일순') " +
-//            "AND (:keyword IS NULL OR p.title LIKE %:keyword%) " +
-//            "AND (:searchType IS NULL OR " +
-//            "(:searchType = '가수' AND s.name LIKE %:keyword%) OR " +
-//            "(:searchType = '공연장' AND h.name LIKE %:keyword%) OR " +
-//            "(:searchType = '공연명' AND p.title LIKE %:keyword%)) " +
-//            "AND (:reservationType IS NULL OR " +
-//            "(:reservationType = 'R' AND p.reservationType = 'RANDOM') OR " +
-//            "(:reservationType = 'F' AND p.reservationType = 'FIRST_COME_FIRST_SERVED')) " +
-//            "ORDER BY " +
-//            "CASE " +
-//            "WHEN :sort = '예매일순' THEN p.reservationStartDatetime " +
-//            "WHEN :sort = '이름순' THEN p.title " +
-//            "WHEN :sort = '공연일순' THEN p.startDate " +
-//            "END"
-    )
-    Optional<List<PerformanceSearchDto>> searchShowsByDetails(
-            @Param("status") Status status,
-            @Param("region") String region,
-            @Param("sort") String sort,
-            @Param("keyword") String keyword,
-            @Param("searchType") String searchType,
-            @Param("reservationType") ReservationType reservationType
-    );
+    default List<PerformanceSearchDto> searchShowsByDetails(Status status, String region, String sort, String keyword, String searchType, ReservationType reservationType) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(getEntityManager());
 
-    private BooleanExpression statusEq(Status status) {
-        return status != null ? QPerformance.performance.status.eq(status) : null;
-    }
+        JPAQuery<PerformanceSearchDto> query = queryFactory
+                .select(new PerformanceSearchDto(
+                        performance.id,
+                        performance.posterImage,
+                        performance.title,
+                        performance.hall.id,
+                        performance.hall.name,
+                        performance.hall.address,
+                        performance.reservationType,
+                        performance.status,
+                        performance.reservationStartDatetime,
+                        performance.reservationEndDatetime,
+                        performance.startDate,
+                        performance.endDate,
+                        performance.singer.name
+                ))
+                .from(performance)
+                .leftJoin(performance.hall)
+                .leftJoin(performance.singer);
 
-    private BooleanExpression regionEq(String region) {
-        return StringUtils.hasText(region) ? QPerformance.performance.hall.address.contains(region) : null;
-    }
+        BooleanBuilder whereBuilder = new BooleanBuilder();
 
-    private BooleanExpression reservationTypeEq(ReservationType reservationType) {
-        return reservationType != null ? QPerformance.performance.reservationType.eq(reservationType) : null;
-    }
-
-    private BooleanExpression searchTypeEq(String keyword, String searchType) {
+        if (status != null) {
+            whereBuilder.and(performance.status.eq(status));
+        }
+        if (StringUtils.hasText(region)) {
+            whereBuilder.and(performance.hall.address.contains(region));
+        }
         if (StringUtils.hasText(keyword) && StringUtils.hasText(searchType)) {
             switch (searchType) {
                 case "가수":
-                    return QPerformance.performance.singer.name.contains(keyword);
+                    whereBuilder.and(performance.singer.name.contains(keyword));
+                    break;
                 case "공연장":
-                    return QPerformance.performance.hall.name.contains(keyword);
+                    whereBuilder.and(performance.hall.name.contains(keyword));
+                    break;
                 case "공연명":
-                    return QPerformance.performance.title.contains(keyword);
+                    whereBuilder.and(performance.title.contains(keyword));
+                    break;
                 default:
-                    return null;
+                    whereBuilder
+                            .or(performance.singer.name.contains(keyword))
+                            .or(performance.hall.name.contains(keyword))
+                            .or(performance.title.contains(keyword));
+                    break;
             }
         }
-        return null;
+        if (reservationType != null) {
+            whereBuilder.and(performance.reservationType.eq(reservationType));
+        }
+
+        query.where(whereBuilder);
+
+        if (StringUtils.hasText(sort)) {
+            switch (sort) {
+                case "예매일순":
+                    query.orderBy(performance.reservationStartDatetime.asc());
+                    break;
+                case "이름순":
+                    query.orderBy(performance.title.asc());
+                    break;
+                case "공연일순":
+                    query.orderBy(performance.startDate.asc());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return query.fetch();
     }
+
+    Supplier<EntityManager> getEntityManager();
+
 }
+

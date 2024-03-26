@@ -28,14 +28,14 @@ public class SearchShowServiceImpl implements SearchShowService {
             String searchType,
             ReservationType reservationType
     ) {
-        Optional<List<PerformanceSearchDto>> searchResult = searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType);
+        List<PerformanceSearchDto> searchResult = searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType);
 
         if (searchResult.isEmpty()) {
             throw new CommonException(PerformanceSearchErrorCode.NOT_FOUND_SHOW);
         }
 
         SearchShowResponse response = new SearchShowResponse();
-        response.setPerformances(searchResult);
+        response.setPerformances(Optional.of(searchResult));
         return response;
     }
 }
