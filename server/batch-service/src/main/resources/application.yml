@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: batch-service
+
+s3:
+  access-key-id: ${S3_ACCESS_KEY_ID}
+  secret-access-key: ${S3_SECRET_ACCESS_KEY}
+  region: ${S3_REGION}
+  bucket: ${S3_BUCKET}
+  endpoint: ${S3_ENDPOINT}
+  public-base-url: ${S3_PUBLIC_BASE_URL}
