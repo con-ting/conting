@@ -8,8 +8,12 @@ import {useState} from 'react';
 import BannerList from './../../components/list/BannerList';
 import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
+import {SearchBar} from '../../components/searchBar/SearchBar';
+import {CARDBASE} from '../../config/Color';
+import {useNavigation} from '@react-navigation/native';
 
 export default function MainScreen() {
+  const navigation = useNavigation();
   const [backgroundColors, setBackgroundColors] = useState([
     '#000000',
     '#000000',
@@ -88,6 +92,12 @@ export default function MainScreen() {
   const getBackgroundColors = (colors: any) => {
     setBackgroundColors(colors);
   };
+  const search = (query: string) => {
+    console.log('검색어: ', query);
+    // 검색어를 사용한 검색 로직 구현
+    navigation.navigate('SearchMain', {query});
+    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
+  };
   return (
     <LinearGradient
       start={{x: 0.0, y: 0.25}}
@@ -96,6 +106,14 @@ export default function MainScreen() {
       style={styles.container}>
       <View style={styles.container}>
         <ScrollView>
+          <View style={styles.search}>
+            <SearchBar
+              onSearch={search}
+              width={'90%'}
+              backGroundColor={CARDBASE}
+              textSize={16}
+            />
+          </View>
           <PopularConcertList
             popularConcert={concertList}
             getBackgroundColors={getBackgroundColors}
@@ -105,10 +123,10 @@ export default function MainScreen() {
               flexDirection: 'column',
               marginHorizontal: widthPercent(10),
             }}>
-            <FisrtComeList concerts={concertList} way='선착 예매' />
-            <FisrtComeList concerts={concertList} way='추첨 예매'/>
+            <FisrtComeList concerts={concertList} way="선착 예매" />
+            <FisrtComeList concerts={concertList} way="추첨 예매" />
             <BannerList banners={bannerList} />
-            <EventList/>
+            <EventList />
           </View>
         </ScrollView>
       </View>
@@ -124,5 +142,9 @@ const styles = StyleSheet.create({
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
     fontSize: 20,
     fontFamily: 'Jalnan2TTF',
+  },
+  search: {
+    marginTop: 10,
+    alignItems: 'center',
   },
 });

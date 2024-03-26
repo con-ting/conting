@@ -15,7 +15,6 @@ import {
   Notification,
 } from 'iconsax-react-native';
 
-
 const BottomTab = createBottomTabNavigator();
 const GradientIcon = ({focused}: any) => {
   return (
