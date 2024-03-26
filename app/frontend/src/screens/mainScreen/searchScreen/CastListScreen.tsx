@@ -1,11 +1,13 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {MAINBLACK} from '../../../config/Color';
+import {CARDBASE, MAINBLACK} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
+import CastList from '../../../components/list/CastList';
+import {useState} from 'react';
 
-export default function CastListScreen() {
+export default function CastListScreen({casts}) {
   return (
     <View style={styles.container}>
-      <Text style={F_SIZE_TITLE}>ddzzz</Text>
+      <CastList casts={casts} isSearch={true} />
     </View>
   );
 }
