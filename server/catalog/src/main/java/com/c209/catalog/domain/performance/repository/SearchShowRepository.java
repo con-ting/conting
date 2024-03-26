@@ -2,11 +2,14 @@ package com.c209.catalog.domain.performance.repository;
 
 import com.c209.catalog.domain.performance.dto.PerformanceSearchDto;
 import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.domain.performance.entity.QPerformance;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,4 +58,32 @@ public interface SearchShowRepository extends JpaRepository<Performance, Long> {
             @Param("searchType") String searchType,
             @Param("reservationType") ReservationType reservationType
     );
+
+    private BooleanExpression statusEq(Status status) {
+        return status != null ? QPerformance.performance.status.eq(status) : null;
+    }
+
+    private BooleanExpression regionEq(String region) {
+        return StringUtils.hasText(region) ? QPerformance.performance.hall.address.contains(region) : null;
+    }
+
+    private BooleanExpression reservationTypeEq(ReservationType reservationType) {
+        return reservationType != null ? QPerformance.performance.reservationType.eq(reservationType) : null;
+    }
+
+    private BooleanExpression searchTypeEq(String keyword, String searchType) {
+        if (StringUtils.hasText(keyword) && StringUtils.hasText(searchType)) {
+            switch (searchType) {
+                case "가수":
+                    return QPerformance.performance.singer.name.contains(keyword);
+                case "공연장":
+                    return QPerformance.performance.hall.name.contains(keyword);
+                case "공연명":
+                    return QPerformance.performance.title.contains(keyword);
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }
 }

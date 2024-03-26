@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -17,7 +18,7 @@ import java.util.List;
 public class SearchShowResponse {
     private List<PerformanceSearchDto> shows;
 
-    public void setPerformances(List<PerformanceSearchDto> performanceSearchDtos) {
+    public void setPerformances(Optional<List<PerformanceSearchDto>> performanceSearchDtos) {
         this.shows = performanceSearchDtos;
     }
 }
