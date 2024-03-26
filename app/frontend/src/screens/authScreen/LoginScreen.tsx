@@ -40,7 +40,7 @@ const LoginScreen = () => {
       email: email,
       password: password,
     });
-    console.log('loginResponse = ', loginResponse);
+    console.log('loginResponse = ', loginResponse.token);
     // 토큰 저장
     await setAsync('accessToken', loginResponse.token.accessToken);
     await setAsync('refreshToken', loginResponse.token.refreshToken);

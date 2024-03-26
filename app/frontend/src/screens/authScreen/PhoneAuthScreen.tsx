@@ -55,12 +55,13 @@ const PhoneAuthScreen = () => {
       phone_number: phoneNumber.replace(/-/g, ''),
       fcm: token,
     });
-    //인증번호 발송 api (금액 때문에 주석 지우지마세요)
+    // 인증번호 발송 api (금액 때문에 주석 지우지마세요)
     // const phoneNumberResponse = await phoneNumberCertMessageSenderApi({
     //   phone_number: phoneNumber.replace(/-/g, ''),
     //   fcm: token,
     // });
-    // setIsStart(true);
+    setIsStart(true);
+    console.log(isStart);
     // console.log('response =', phoneNumberResponse);
   };
 
@@ -93,7 +94,7 @@ const PhoneAuthScreen = () => {
         console.log('CertApiResponse=', certCodeResponse);
         setCertPass(certCodeResponse.verification_result);
       };
-      // asyncCertCodeConfirmCodeApi(); 애가 실제로 사용하는 것
+      // asyncCertCodeConfirmCodeApi(); //애가 실제로 사용하는 것
       setCertPass(true); // 금액 때문에 처리해놓은것
     }
   }, [certNumber]);

@@ -27,3 +27,9 @@ export const login = async (params: {email: string; password: string}) => {
   console.log('[login Response] = ', res.data);
   return res.data;
 };
+
+export const emailConfirm = async (params: {email: string}) => {
+  const res = await instance.get(`${authUrl}/check?email=${params.email}`);
+  console.log('[emailConfirm] = ', res.data);
+  return res.data;
+};

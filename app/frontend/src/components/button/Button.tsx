@@ -94,6 +94,7 @@ export const YellowButton = (props: ButtonProps) => {
       onPress={props.onPress}
       backgroundColor={Color.MAINYELLOW}
       borderColor={Color.MAINYELLOW}
+      disabled={props.disabled}
       borderRadius={props.isRadius ? 64 : 8}
       paddingVertical={props.paddingVertical}>
       <Text

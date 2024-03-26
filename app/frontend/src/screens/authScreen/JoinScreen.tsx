@@ -28,10 +28,16 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import {userJoin} from '../../api/auth/user.ts';
 import {useRecoilState} from 'recoil';
-import {fcmToken} from '../../utils/recoil/Atoms.ts';
-import {korDateFormat} from '../../config/TimeFormat.ts';
+import {
+  fcmToken,
+  goMainPageState,
+  userInfoState,
+} from '../../utils/recoil/Atoms.ts';
+import {korDateFormat, serverDateFormat} from '../../config/TimeFormat.ts';
 import DatePicker from 'react-native-date-picker';
 import * as Font from '../../config/Font.ts';
+import {emailConfirm, login} from '../../api/auth/auth.ts';
+import {setAsync} from '../../utils/async/asyncUtil.ts';
 
 type RootStackParamList = {
   PhoneAuthScreen: undefined;
@@ -53,41 +59,70 @@ const JoinScreen = propsData => {
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const phoneNumber = propsData.route.params.replace(/-/g, '');
+  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
   const toggleCancelModal = () => {
     setCancelModalVisible(!cancelModalVisible);
   };
   const abledButton = emailPass && password === rePassword && password !== '';
 
-  const connect = () => {
-    console.log({
+  const connect = async () => {
+    //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
+    setCryptoAddress('357H3zuHJD999vNgPBapa9c2yBy4fQnUJyxavnX57zYY');
+
+    //2. 회원가입 API 전송
+    console.log('joinUserRequst=', {
       email: email,
       password: password,
       name: userName,
       phone_number: phoneNumber,
-      birth_date: birthDate,
+      birthday: serverDateFormat(birthDate),
       fcm: token,
       wallet: cryptoAddress,
     });
-    //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
-
-    //2. API 전송
-    userJoin({
+    await userJoin({
       email: email,
       password: password,
       name: userName,
       phone_number: phoneNumber,
-      birth_date: birthDate,
+      birthday: serverDateFormat(birthDate),
       fcm: token,
       wallet: cryptoAddress,
+    });
+    console.log('회원가입 성공');
+    console.log('loginRequest=', {
+      email: email,
+      password: password,
     });
     //3. 로그인 후 토큰 저장
-
-    //4. goMainPage 수정
+    const loginResponse = await login({
+      email: email,
+      password: password,
+    });
+    console.log('loginResponse = ', loginResponse);
+    //4. 토큰 저장
+    await setAsync('accessToken', loginResponse.token.accessToken);
+    await setAsync('refreshToken', loginResponse.token.refreshToken);
+    //5. 전역 상태에 유저 정보 저장
+    setUserInfo({
+      user_id: loginResponse.user.id,
+      user_email: loginResponse.user.email,
+    });
+    //6. goMainPage 수정
+    setGoMainPage(true);
   };
 
-  const validateEmail = (): boolean => {
+  const validateEmail = async (): boolean => {
+    console.log('validateEmail request = ', {email: email});
     //이메일 검증 api 전송 후 emailPass 세팅
-    setEmailPass(!emailPass);
+    const emailVailResponse = await emailConfirm({email: email});
+    console.log('validateEmail response = ', emailVailResponse);
+    setEmailPass(!emailVailResponse.is_duplicated);
+    console.log(emailPass);
+    if (!emailVailResponse.is_duplicated)
+      Alert.alert('사용 가능한 이메일입니다.');
+    else Alert.alert('사용 불가능한 이메일입니다.');
     return emailPass;
   };
 
@@ -145,13 +180,23 @@ const JoinScreen = propsData => {
               editable={!emailPass}
               width={'70%'}
             />
-            <YellowButton
+            <BasicButton
               onPress={validateEmail}
-              btnText={'중복확인'}
-              width={'30%'}
               paddingVertical={16}
-              textSize={16}
-            />
+              disabled={email.length <= 0}
+              width={'30%'}
+              borderRadius={8}
+              backgroundColor={email.length <= 0 ? '#D0D5DD' : MAINYELLOW}
+              borderColor={email.length <= 0 ? '#D0D5DD' : MAINYELLOW}>
+              <Text
+                style={{
+                  color: email.length <= 0 ? MAINWHITE : Color.MAINBLACK,
+                  fontSize: fontPercent(16),
+                  fontFamily: Font.MAINFONT,
+                }}>
+                중복확인
+              </Text>
+            </BasicButton>
           </View>
           <Spacer space={heightPercent(20)} />
           <View
