@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Modal, TouchableOpacity, TouchableWithoutFeedback, DimensionValue } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Modal,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  DimensionValue,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import { fontPercent, widthPercent } from '../../config/Dimensions';
+import {fontPercent, widthPercent} from '../../config/Dimensions';
 
 type ModalProps = {
   isVisible: boolean;
@@ -38,10 +44,39 @@ export const SlideModal = (props: ModalProps) => {
   }, [props.isVisible]);
 
   return (
-    <Modal animationType='slide' transparent={true} visible={props.isVisible}>
-      <TouchableOpacity onPress={() => props.setIsVisible(false)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: `rgba(128, 128, 128, 0.2)` }} />
-      <View style={{ width: '100%', height: modalHeight, backgroundColor: props.backGroundColor ? props.backGroundColor : Color.CUTEYELLOW, position: 'absolute', bottom: 0, borderTopLeftRadius: 30, borderTopRightRadius: 30 , paddingHorizontal : widthPercent(20)}}>
-        <View style={{ marginLeft: '45%', marginVertical: widthPercent(12), width: widthPercent(40), borderBottomWidth: 4, borderRadius: 4, borderColor: Color.MAINBLACK}} />
+    <Modal animationType="slide" transparent={true} visible={props.isVisible}>
+      <TouchableOpacity
+        onPress={() => props.setIsVisible(false)}
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: `rgba(128, 128, 128, 0.2)`,
+        }}
+      />
+      <View
+        style={{
+          width: '100%',
+          height: modalHeight,
+          backgroundColor: props.backGroundColor
+            ? props.backGroundColor
+            : Color.CUTEYELLOW,
+          position: 'absolute',
+          bottom: 0,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          paddingHorizontal: widthPercent(20),
+        }}>
+        <View
+          style={{
+            marginLeft: '45%',
+            marginVertical: widthPercent(12),
+            width: widthPercent(40),
+            borderBottomWidth: 4,
+            borderRadius: 4,
+            borderColor: Color.MAINBLACK,
+          }}
+        />
         {props.children}
       </View>
     </Modal>
@@ -61,16 +96,28 @@ export const SlideModal = (props: ModalProps) => {
  */
 export const PopUpModal = (props: ModalProps) => {
   return (
-    <Modal animationType='fade' transparent={true} visible={props.isVisible}>
+    <Modal animationType="fade" transparent={true} visible={props.isVisible}>
       <>
         <TouchableOpacity
           onPress={() => {
             props.setIsVisible(false);
           }}
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: `rgba(128, 128, 128, 0.2)` }}
-        >
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: `rgba(128, 128, 128, 0.2)`,
+          }}>
           <TouchableWithoutFeedback>
-            <View style={{ width: '90%', padding: widthPercent(20), backgroundColor: props.backGroundColor ? props.backGroundColor : Color.CUTEYELLOW , borderRadius: 10 }}>
+            <View
+              style={{
+                width: '90%',
+                padding: widthPercent(20),
+                backgroundColor: props.backGroundColor
+                  ? props.backGroundColor
+                  : Color.CUTEYELLOW,
+                borderRadius: 10,
+              }}>
               <TouchableOpacity
                 onPress={() => {
                   props.setIsVisible(false);

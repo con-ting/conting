@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: notification
+server:
+  port: 8889
+
+fcm:
+  service-account-file: ./google-services.json # ??? ??
+  project-id: conting-d3d77

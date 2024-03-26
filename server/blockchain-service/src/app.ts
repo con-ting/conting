@@ -20,7 +20,8 @@ fastify.post<{ Body: { size: number } }>('/merkle-trees', async (request, reply)
 fastify.post<{ Body: CollectionBody }>('/collections', async (request, reply) => {
   const input: CollectionInput = {
     ...request.body,
-    creator: publicKey(request.body.creator)
+    agency: publicKey(request.body.agency),
+    singer: publicKey(request.body.singer)
   }
   const collection = await mintCollection(umi, input)
   return { collection }
@@ -29,7 +30,8 @@ fastify.post<{ Body: CollectionBody }>('/collections', async (request, reply) =>
 fastify.post<{ Body: AssetBody }>('/nfts', async (request, reply) => {
   const input: AssetInput = {
     ...request.body,
-    creator: publicKey(request.body.creator),
+    agency: publicKey(request.body.agency),
+    singer: publicKey(request.body.singer),
     collectionMint: publicKey(request.body.collectionMint)
   }
   const assetId = await mintNftToCollection(umi, input)
@@ -47,7 +49,7 @@ fastify.post<{ Params: { mint: string } }>('/nfts/:mint/use', async (request, re
   await useNft(umi, mint)
 })
 
-fastify.post<{ Params: { mint: string, collectionMint: string } }>('/nfts/:mint/verify/:collectionMint', async (request, reply) => {
+fastify.post<{ Params: { mint: string, collectionMint: string } }>('/collections/:collectionMint/verify/:mint', async (request, reply) => {
   const mint = publicKey(request.params.mint)
   const collectionMint = publicKey(request.params.collectionMint)
   await verifyCollectionNft(umi, mint, collectionMint)
@@ -56,7 +58,8 @@ fastify.post<{ Params: { mint: string, collectionMint: string } }>('/nfts/:mint/
 fastify.post<{ Body: AssetBody }>('/cnfts', async (request, reply) => {
   const input: AssetInput = {
     ...request.body,
-    creator: publicKey(request.body.creator),
+    agency: publicKey(request.body.agency),
+    singer: publicKey(request.body.singer),
     collectionMint: publicKey(request.body.collectionMint)
   }
   if (trees.length === 0) {

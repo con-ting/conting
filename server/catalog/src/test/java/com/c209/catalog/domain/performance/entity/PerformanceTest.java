@@ -10,11 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PerformanceTest {
     @Test
@@ -32,10 +28,10 @@ class PerformanceTest {
         builder.videoUrl("videoURL");
         builder.singer(Singer.builder().build());
         builder.hall(Hall.builder().build());
-        builder.viewCount(1);
+        builder.view(1);
         builder.reservationStartDatetime(TT);
         builder.reservationEndDatetime(TT.plusHours(2));
-        builder.status(Status.BeforeSale);
+        builder.status(Status.before_sale);
         builder.reservationType(ReservationType.R);
         builder.maxTicketPerPerson(1);
         builder.isAdultOnly(false);
@@ -47,7 +43,7 @@ class PerformanceTest {
         Assertions.assertThat(performance.getDescription()).isEqualTo("description");
         Assertions.assertThat(performance.getReservationStartDatetime()).isEqualTo(TT);
         Assertions.assertThat(performance.getReservationEndDatetime()).isEqualTo(TT.plusHours(2));
-        Assertions.assertThat(performance.getStatus()).isEqualTo(Status.BeforeSale);
+        Assertions.assertThat(performance.getStatus()).isEqualTo(Status.before_sale);
     }
 
 }

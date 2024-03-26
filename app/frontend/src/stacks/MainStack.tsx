@@ -1,4 +1,4 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WaitingScreen from '../screens/mainScreen/ticketingScreen/WaitingScreen';
 import SeatingAreaSelectScreen from '../screens/mainScreen/ticketingScreen/SeatingAreaSelectScreen';
 import PaymentScreen from '../screens/mainScreen/ticketingScreen/PaymentScreen';
@@ -8,7 +8,12 @@ import ResultRefundScreen from '../screens/mainScreen/ticketingScreen/ResultRefu
 import BottomTabNavigator from './../navigation/BottomTabNavigator';
 import {heightPercent} from '../config/Dimensions';
 import {MAINFONT} from '../config/Font';
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
+import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
+import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
+import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
+import ConcertRegistCastScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistCastScreen';
+import ConcertRegistCompany from '../screens/settingScreen/concertRegistScreen/ConcertRegistCompany';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -36,15 +41,68 @@ const options = (headerShown: boolean, title: string) => {
 function MainStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={BottomTabNavigator} options={{headerShown: false}}/>
-      <Stack.Screen name="Waiting" component={WaitingScreen} options={options(true, '대기열')}/>
-      <Stack.Screen name="SeatArea" component={SeatingAreaSelectScreen} options={options(true, '구역 선택')}/>
-      <Stack.Screen name="Pay" component={PaymentScreen} options={options(true, '결제하기')}/>
-      <Stack.Screen name="Result" component={ResultScreen}options={{headerShown: false}}/>
-      <Stack.Screen name="Refund" component={RefundInfoScreen} options={options(true, '구매 내역')}/>
-      <Stack.Screen name="ResultRefund" component={ResultRefundScreen} options={{headerShown: false}}/>
+      <Stack.Screen
+        name="Home"
+        component={BottomTabNavigator}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Waiting"
+        component={WaitingScreen}
+        options={options(true, '대기열')}
+      />
+      <Stack.Screen
+        name="SeatArea"
+        component={SeatingAreaSelectScreen}
+        options={options(true, '구역 선택')}
+      />
+      <Stack.Screen
+        name="Pay"
+        component={PaymentScreen}
+        options={options(true, '결제하기')}
+      />
+      <Stack.Screen
+        name="Result"
+        component={ResultScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Refund"
+        component={RefundInfoScreen}
+        options={options(true, '구매 내역')}
+      />
+      <Stack.Screen
+        name="ResultRefund"
+        component={ResultRefundScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ConcertRegist"
+        component={ConcertRegistScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistInfo"
+        component={ConcertRegistInfoScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistHall"
+        component={ConcertRegistHallScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistCast"
+        component={ConcertRegistCastScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="ConcertRegistCompany"
+        component={ConcertRegistCompany}
+        options={options(true, '')}
+      />
     </Stack.Navigator>
   );
 }
 
-export default gestureHandlerRootHOC(MainStack)
+export default gestureHandlerRootHOC(MainStack);
