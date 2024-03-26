@@ -19,8 +19,9 @@ export default function CastList({casts, isSearch}) {
 
   const handlePress = item => {
     if (isSearch) {
-      // 검색 페이지에서 사용될 때 다른 스크린으로 이동
-      navigation.navigate('AnotherScreen', {castId: item.id});
+      // 검색 페이지에서 사용될 때 클릭 시 가수 상세 페이지로 이동
+      console.log(item.id);
+      navigation.navigate('CastDetail', {castId: item.id});
     } else {
       // 검색 페이지가 아닐 때는 스타일만 변경
       setSelectedCast(item.id);
