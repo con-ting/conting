@@ -447,6 +447,7 @@ export const CertNumberInput = (props: InputProps) => {
           value={props.value}
           onChangeText={props.onChangeText}
           autoCorrect={false}
+          editable={props.editable}
           placeholder={props.placeholder}
           placeholderTextColor={borderColor}
           onFocus={() => {
@@ -476,7 +477,7 @@ export const CertNumberInput = (props: InputProps) => {
           <ICON.SecuritySafe
             size={widthPercent(14)}
             color={
-              props.isSameCertNumber && props.value != ''
+              props.isSameCertNumber && props.value !== ''
                 ? Color.MAINYELLOW
                 : Color.MAINGRAY
             }
@@ -487,7 +488,10 @@ export const CertNumberInput = (props: InputProps) => {
               fontFamily: Font.MAINFONT,
               paddingLeft: widthPercent(2),
               paddingRight: widthPercent(5),
-              color: props.isSameCertNumber ? Color.MAINYELLOW : Color.MAINGRAY,
+              color:
+                props.isSameCertNumber && props.value !== ''
+                  ? Color.MAINYELLOW
+                  : Color.MAINGRAY,
             }}>
             인증번호가 같아요
           </Text>

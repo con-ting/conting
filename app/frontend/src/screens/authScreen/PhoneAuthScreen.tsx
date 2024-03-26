@@ -1,7 +1,7 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {
   fontPercent,
   heightPercent,
@@ -50,12 +50,18 @@ const PhoneAuthScreen = () => {
   const [certPass, setCertPass] = useState(false);
   const [token, setToken] = useRecoilState(fcmToken);
 
-  const startCertTimer = () => {
-    console.log(phoneNumber);
-    //인증번호 발송 api
-    phoneNumberCertMessageSenderApi;
-
-    setIsStart(true);
+  const startCertTimer = async () => {
+    console.log('request = ', {
+      phone_number: phoneNumber.replace(/-/g, ''),
+      fcm: token,
+    });
+    //인증번호 발송 api (금액 때문에 주석 지우지마세요)
+    // const phoneNumberResponse = await phoneNumberCertMessageSenderApi({
+    //   phone_number: phoneNumber.replace(/-/g, ''),
+    //   fcm: token,
+    // });
+    // setIsStart(true);
+    // console.log('response =', phoneNumberResponse);
   };
 
   // 모달 관련
@@ -71,20 +77,24 @@ const PhoneAuthScreen = () => {
   };
 
   useEffect(() => {
-    // 인증번호가 6자리 이상일 때 API 호출 로직을 실행
-    if (certNumber.length >= 6) {
-      const timer = setTimeout(() => {
-        // API 호출 함수
-        const response = certCodeConfirmCodeApi({
+    // 인증번호가 4자리일 때 API 호출 로직을 실행
+    if (certNumber.length == 4) {
+      // API 호출 함수
+      const asyncCertCodeConfirmCodeApi = async () => {
+        console.log('CertApiRequest=', {
+          random_number: certNumber,
+          fcm: token,
+        });
+        const certCodeResponse = await certCodeConfirmCodeApi({
           random_number: certNumber,
           fcm: token,
         });
         //api 요청 후 값 세팅
-        setCertPass(response.result);
-      }, 1000); // 1초 후 실행
-      // Cleanup function을 통해 컴포넌트가 언마운트되거나 인증번호가 변경되어 다시 useEffect가 호출될 때
-      // 이전에 설정된 타이머를 제거함으로써 메모리 누수를 방지
-      return () => clearTimeout(timer);
+        console.log('CertApiResponse=', certCodeResponse);
+        setCertPass(certCodeResponse.verification_result);
+      };
+      // asyncCertCodeConfirmCodeApi(); 애가 실제로 사용하는 것
+      setCertPass(true); // 금액 때문에 처리해놓은것
     }
   }, [certNumber]);
 

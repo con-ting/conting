@@ -3,10 +3,11 @@ import tokenInstance from '../../utils/axios/axiosTokenInstance'; // token í•„ìš
 const authUrl: string = 'auth';
 
 export const phoneNumberCertMessageSenderApi = async (params: {
-  random_number: string;
+  phone_number: string;
   fcm: string;
 }) => {
   const res = await instance.post(`${authUrl}/message`, params);
+  console.log('res = ', res.data);
   return res.data;
 };
 
@@ -14,6 +15,9 @@ export const certCodeConfirmCodeApi = async (params: {
   random_number: string;
   fcm: string;
 }) => {
-  const res = await instance.get(`${authUrl}/verification?`, params);
+  const res = await instance.get(
+    `${authUrl}/verification?randomNumber=${params.random_number}&fcm=${params.fcm}`,
+  );
+  console.log('res = ', res.data);
   return res.data;
 };
