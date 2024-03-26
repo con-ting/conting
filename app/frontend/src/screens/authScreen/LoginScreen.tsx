@@ -5,9 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
-import {goMainPageState} from '../../utils/recoil/Atoms';
+import {goMainPageState, userInfoState} from '../../utils/recoil/Atoms';
 import * as Color from '../../config/Color';
-import * as Font from '../../config/Font';
 
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
 import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
@@ -16,9 +15,12 @@ import {YellowButton} from '../../components/button/Button.tsx';
 import * as Typo from '../../config/Typography.tsx';
 import {LocalImageLoader} from '../../utils/common/ImageLoader.tsx';
 import * as Animatable from 'react-native-animatable';
+import {login} from '../../api/auth/auth.ts';
+import {setAsync} from '../../utils/async/asyncUtil.ts';
 
 type RootStackParamList = {
   LoginScreen: undefined;
+  PhoneAuthScreen: undefined;
 };
 type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -27,6 +29,29 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const loginApi = async () => {
+    console.log('loginRequest=', {
+      email: email,
+      password: password,
+    });
+    //3. 로그인 후 토큰 저장
+    const loginResponse = await login({
+      email: email,
+      password: password,
+    });
+    console.log('loginResponse = ', loginResponse.token);
+    // 토큰 저장
+    await setAsync('accessToken', loginResponse.token.accessToken);
+    await setAsync('refreshToken', loginResponse.token.refreshToken);
+    //전역 상태에 유저 정보 저장
+    setUserInfo({
+      user_id: loginResponse.user.id,
+      user_email: loginResponse.user.email,
+    });
+    //4. goMainPage 수정
+    setGoMainPage(true);
+  };
 
   // @ts-ignore
   return (
@@ -36,10 +61,12 @@ const LoginScreen = () => {
         paddingHorizontal: widthPercent(10),
         backgroundColor: Color.CUTEYELLOW,
       }}>
-      <KeyboardAwareScrollView style={{flex: 1}}  contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: 'center', // 컨텐츠를 세로 방향으로 가운데 정렬
-      }}>
+      <KeyboardAwareScrollView
+        style={{flex: 1}}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center', // 컨텐츠를 세로 방향으로 가운데 정렬
+        }}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           {/* intro title 부분 */}
           <Animatable.View animation="bounceIn" duration={1500}>
@@ -66,28 +93,29 @@ const LoginScreen = () => {
           />
           <Spacer space={20} />
           {/* 로그인 버튼 부분 */}
-          <YellowButton
-            onPress={() => {
-              setGoMainPage(true);
-            }}
-            btnText={'로그인'}
-          />
+          <YellowButton onPress={loginApi} btnText={'로그인'} />
           <Spacer space={20} />
           {/* 이메일 찾기, 비밀번호 찾기, 회원가입 부분 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity
-              onPress={() => {Alert.alert("응 이메일 못찾아")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>이메일 찾기</Typo.DETAIL2>
+              onPress={() => {
+                Alert.alert('응 이메일 못찾아');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>이메일 찾기</Typo.DETAIL2>
             </TouchableOpacity>
-            <Typo.DETAIL2 color={"#98A2B3"}> | </Typo.DETAIL2>
+            <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
             <TouchableOpacity
-              onPress={() => {Alert.alert("응 비번도 내꺼야")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>비밀번호 찾기</Typo.DETAIL2>
+              onPress={() => {
+                Alert.alert('응 비번도 내꺼야');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>비밀번호 찾기</Typo.DETAIL2>
             </TouchableOpacity>
-            <Typo.DETAIL2 color={"#98A2B3"}> | </Typo.DETAIL2>
+            <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
             <TouchableOpacity
-              onPress={() => {Alert.alert("가입도 하지마")}}>
-              <Typo.DETAIL2 color={"#98A2B3"}>회원가입</Typo.DETAIL2>
+              onPress={() => {
+                navigation.navigate('PhoneAuthScreen');
+              }}>
+              <Typo.DETAIL2 color={'#98A2B3'}>회원가입</Typo.DETAIL2>
             </TouchableOpacity>
           </View>
           <Spacer space={40} />
