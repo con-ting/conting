@@ -1,5 +1,6 @@
 package com.c209.catalog.domain.performance.controller;
 
+import com.c209.catalog.domain.performance.dto.PerformanceSearchDto;
 import com.c209.catalog.domain.performance.dto.PostShowDTO;
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
@@ -22,10 +23,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PerformanceController.class)
@@ -95,10 +97,12 @@ class PerformanceControllerTest {
         String searchType = "SearchType";
         ReservationType reservationType = ReservationType.R;
 
-        // Mocking the service response
-        SearchShowResponse response = new SearchShowResponse(Collections.emptyList());
+        List<PerformanceSearchDto> searchResults = new ArrayList<>();
+
+        Optional<List<PerformanceSearchDto>> optionalSearchResults = Optional.of(searchResults);
+
         when(searchShowService.searchShows(any(), any(), any(), any(), any(), any()))
-                .thenReturn(response);
+                .thenReturn(new SearchShowResponse(optionalSearchResults));
 
         // When, then
         mockMvc.perform(MockMvcRequestBuilders.get("/show")
