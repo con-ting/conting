@@ -13,8 +13,8 @@ fastify.post<{ Body: CollectionBody }>('/collections', async (request, reply) =>
     agency: publicKey(request.body.agency),
     singer: publicKey(request.body.singer)
   }
-  const collection = await mintCollection(umi, input)
-  return { collection }
+  const collectionMint = await mintCollection(umi, input)
+  return { collectionMint }
 })
 
 fastify.post<{ Params: { mint: string, collectionMint: string } }>('/collections/:collectionMint/verify/:mint', async (request, reply) => {
@@ -30,8 +30,8 @@ fastify.post<{ Body: AssetBody }>('/nfts', async (request, reply) => {
     singer: publicKey(request.body.singer),
     collectionMint: publicKey(request.body.collectionMint)
   }
-  const assetId = await mintNftToCollection(umi, input)
-  return { assetId }
+  const mint = await mintNftToCollection(umi, input)
+  return { mint }
 })
 
 fastify.post<{ Params: { mint: string, newOwner: string } }>('/nfts/:mint/transfer/:newOwner', async (request, reply) => {
