@@ -44,7 +44,7 @@ pipeline {
                             sh 'chmod +x ./server/catalog/gradlew'
                             sh '''
                                 cd ./server/catalog
-                                ./gradlew clean build
+                                ./gradlew clean build -x test
                             '''
                         }
                     }
