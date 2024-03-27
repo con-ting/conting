@@ -104,7 +104,7 @@ const JoinScreen = propsData => {
     async (account: Account) => {
       await setCryptoAddress(account.address);
       console.log('앱 주소 =: ' + account.address);
-      await setCryptoPublicKey(account.publicKey.toString);
+      await setCryptoPublicKey(account.publicKey);
       console.log('개인 지갑 주소 =: ' + account.publicKey);
       await setCryptoLabel(account.label ? account.label : '');
       console.log('개인 지갑 앱 = ' + account.label);
@@ -147,7 +147,7 @@ const JoinScreen = propsData => {
       phone_number: phoneNumber,
       birthday: serverDateFormat(birthDate),
       fcm: token,
-      wallet: cryptoAddress,
+      wallet: cryptoPublicKey,
     });
     await userJoin({
       email: email,
@@ -156,7 +156,7 @@ const JoinScreen = propsData => {
       phone_number: phoneNumber,
       birthday: serverDateFormat(birthDate),
       fcm: token,
-      wallet: cryptoAddress,
+      wallet: cryptoPublicKey,
     });
     console.log('회원가입 성공');
     console.log('loginRequest=', {

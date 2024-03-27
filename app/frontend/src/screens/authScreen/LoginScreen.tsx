@@ -42,6 +42,7 @@ import {
   REDBASE,
   TEXTGRAY,
 } from '../../config/Color';
+import {updateUserFcmAndWallet} from '../../api/auth/user.ts';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -102,7 +103,7 @@ const LoginScreen = () => {
     async (account: Account) => {
       await setCryptoAddress(account.address);
       console.log('앱 주소 =: ' + account.address);
-      await setCryptoPublicKey(account.publicKey.toString);
+      await setCryptoPublicKey(account.publicKey);
       console.log('개인 지갑 주소 =: ' + account.publicKey);
       await setCryptoLabel(account.label ? account.label : '');
       console.log('개인 지갑 앱 = ' + account.label);
@@ -146,24 +147,30 @@ const LoginScreen = () => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
-    //3. 연결 주소 검증
+    //3. 토큰 및 userAgent 저장
+    await setAsync('accessToken', loginResponse.token.accessToken);
+    await setAsync('refreshToken', loginResponse.token.refreshToken);
+    await setAsync('userId', loginResponse.user.id);
+    //4. 연결 주소 검증
     if (cryptoPublicKey !== loginResponse.user.wallet) {
-      //3-1. 주소가 다를 시 모달 생성
+      //4-1. 주소가 다를 시 모달 생성
       await setChangeAddressModalVisible(!changeAddressModalVisible);
       if (!changeAddress) {
         //변경하지 않는다고 했을 때, 로직
         Alert.alert(
           '주의사항',
-          'solflare 이나 phantom wallet 의 지갑 주소를 바꾸고 다시 시도해주세요!',
+          'solflare, phantom wallet 의 지갑을 바꾸고 다시 시도해주세요!',
         );
         return;
       }
       //변경 한다고 했을 때, 로직
       await setCryptoAddress(cryptoPublicKey);
+      //서버에 변경 요청
+      await updateUserFcmAndWallet({wallet: cryptoPublicKey});
     }
-    //4. FCM 토큰 검증
+    //5. FCM 토큰 검증
     if (token !== loginResponse.user.fcmToken) {
-      //4-1. 토큰이 다를 시 모달 생성
+      //5-1. 토큰이 다를 시 모달 생성
       setChangeFcmModalVisible(!changeFcmModalVisible);
       if (!changeFcm) {
         //변경하지 않는다고 했을 때, 로직
@@ -171,13 +178,10 @@ const LoginScreen = () => {
       } else {
         //변경 한다고 했을 때, 로직
         await setToken(token);
+        //서버에 변경 요청
+        await updateUserFcmAndWallet({fcm: token});
       }
     }
-    //5. 토큰 및 userAgent 저장
-    await setAsync('accessToken', loginResponse.token.accessToken);
-    await setAsync('refreshToken', loginResponse.token.refreshToken);
-    await setAsync('userId', loginResponse.user.id);
-
     //6. 전역 상태에 유저 정보 저장
     await setUserInfo({
       user_id: loginResponse.user.id,
