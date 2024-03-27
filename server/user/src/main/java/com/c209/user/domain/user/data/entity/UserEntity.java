@@ -54,4 +54,11 @@ public class UserEntity {
                 .build();
     }
 
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public void setWallet(String wallet) {
+        this.wallet = wallet;
+    }
 }

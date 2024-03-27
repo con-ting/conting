@@ -5,7 +5,10 @@ import lombok.Getter;
 
 public record LoginRequest(
         String email,
-        String password
+        String password,
+        String fcm,
+        String wallet
+
 ) {
 
 }

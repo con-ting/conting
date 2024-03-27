@@ -32,6 +32,15 @@ public class UserController {
 
 
 
+    @PutMapping()
+    public ResponseEntity<UserDto> changeMyInfo(
+            @RequestBody UserDto request,
+            @RequestHeader("X-Authorization-Id")Long userId
+    ){
+        return ResponseEntity.ok(userService.changeMyInfo(request, userId));
+    }
+
+
 
 
 
