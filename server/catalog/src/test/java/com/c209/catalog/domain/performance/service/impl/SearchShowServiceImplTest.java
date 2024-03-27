@@ -45,7 +45,7 @@ class SearchShowServiceImplTest {
 
         List<PerformanceSearchDto> mockDtoList = Collections.singletonList(new PerformanceSearchDto());
         when(searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType))
-                .thenReturn(mockDtoList);
+                .thenReturn(Optional.of(mockDtoList));
 
         // when
         SearchShowResponse response = searchShowService.searchShows(status, region, sort, keyword, searchType, reservationType);
@@ -65,10 +65,10 @@ class SearchShowServiceImplTest {
         String searchType = "가수";
         ReservationType reservationType = ReservationType.R;
 
-//        when(searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType))
-//                .thenReturn(Optional.empty());
-//
-//        // when
-//        assertThrows(CommonException.class, () -> searchShowService.searchShows(status, region, sort, keyword, searchType, reservationType));
+        when(searchShowRepository.searchShowsByDetails(status, region, sort, keyword, searchType, reservationType))
+                .thenReturn(Optional.empty());
+
+        // when
+        assertThrows(CommonException.class, () -> searchShowService.searchShows(status, region, sort, keyword, searchType, reservationType));
     }
 }
