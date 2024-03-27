@@ -67,6 +67,11 @@ def enableProguardInReleaseBuilds = false
  * give correct results when using with locales other than en-US. Note that
  * this variant is about 6MiB larger per architecture than default.
  */
+//숨긴 API 키 로드
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def googleMapApiKey = properties.getProperty('google_map_api_key')
+
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
@@ -81,6 +86,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [googleMapApiKey:googleMapApiKey]  
     }
     signingConfigs {
         debug {
@@ -137,3 +143,4 @@ afterEvaluate {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply plugin: 'com.google.gms.google-services'
+

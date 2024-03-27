@@ -28,6 +28,10 @@ export const userInfoState = atom<null | UserInfoStateType>({
   },
 });
 
+export const posterColor = atom<Array<string>>({
+  key : 'posterColor',
+  default: ['#000000', '#000000', '#000000']
+})
 /**
  * FCM Token 을 담고 있는 atom입니다.
  * @author 김형민
