@@ -6,6 +6,7 @@ import {
   heightPercent,
 } from '../../config/Dimensions';
 import {Glass} from 'iconsax-react-native';
+import {CARDBASE} from '../../config/Color';
 
 type ConcertHallCardProps = {
   onPress ?: () => void;
@@ -13,6 +14,7 @@ type ConcertHallCardProps = {
   title: string;
   seat: number;
   address: string;
+  isMain: boolean;
 };
 
 /**
@@ -22,6 +24,7 @@ type ConcertHallCardProps = {
  * - title: 해당 공연장의 이름
  * - seat: 해당 공연장의 좌석
  * - address: 해당 공연장의 주소
+ * - isMain: 메인페이지인 경우 border 테두리 색상 적용
  * @returns
  * @author 전상혁
  */
@@ -59,9 +62,9 @@ const styles = StyleSheet.create({
     height: heightPercent(90),
     borderRadius: 12,
     margin: 5,
-    borderWidth: 2,
-    backgroundColor: '#261D08',
-    borderColor: '#FCC434',
+    // borderWidth: 2,
+    backgroundColor: CARDBASE,
+    // borderColor: '#FCC434',
   },
   titleContext: {
     alignItems: 'center',

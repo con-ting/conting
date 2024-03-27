@@ -12,6 +12,11 @@ export const F_SIZE_HEADER: object = {
   fontSize: fontPercent(28),
   fontFamily: MAINFONT,
 };
+export const F_SIZE_BTITLE: object = {
+  color: 'white',
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(24),
+};
 export const F_SIZE_TITLE: object = {
   color: 'white',
   fontFamily: MAINFONT,
@@ -52,6 +57,11 @@ export const F_SIZE_Y_HEADER: object = {
   color: MAINYELLOW,
   fontSize: fontPercent(28),
   fontFamily: MAINFONT,
+};
+export const F_SIZE_Y_BTITLE: object = {
+  color: MAINYELLOW,
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(24),
 };
 export const F_SIZE_Y_TITLE: object = {
   color: MAINYELLOW,

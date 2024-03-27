@@ -1,5 +1,9 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {fontPercent, heightPercent, widthPercent} from '../../config/Dimensions';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions';
 
 export type profileProps = {
   name: string;
@@ -14,25 +18,21 @@ export type profileProps = {
  * @returns
  * @author 강성권
  */
-export default function SingerProfile(props: profileProps){
+export default function SingerProfile(props: profileProps) {
   return (
-    <View
-      style={styles.container}>
+    <View style={styles.container}>
       <Image
-        style={{width: widthPercent(80), height: heightPercent(80), borderRadius: 50 }}
+        style={{
+          width: widthPercent(80),
+          height: heightPercent(80),
+          borderRadius: 50,
+        }}
         source={{uri: props.profile}}
       />
-      <Text
-      style={
-        styles.title
-      }
-      >
-        {props.name}
-      </Text>
+      <Text style={styles.title}>{props.name}</Text>
     </View>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
   container: {
