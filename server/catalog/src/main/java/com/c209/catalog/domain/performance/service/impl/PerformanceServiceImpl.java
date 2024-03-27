@@ -110,7 +110,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     public GetShowResponse getShowDetails(Long showId) {
         List<PerformanceDetailInfo> performanceDetailInfoList = performanceRepository
-                .getPerformanceByShowId((showId))
+                .getPerformanceByShowId(showId)
                 .orElseThrow(() ->
                         new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
