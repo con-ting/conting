@@ -42,6 +42,15 @@ spring:
             - Path=/seat/**
           filters:
             - AuthorizationHeaderFilter
+        - id: catalog-service
+          uri: ${CATALOG_SERVICE}
+          predicates:
+            - Path=/hall/**
+            - Path=/show/**
+            - Path=/schedule/**
+            - Path=/singer/**
+          filters:
+            - AuthorizationHeaderFilter
     default-filters:
       - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
 jwt:
