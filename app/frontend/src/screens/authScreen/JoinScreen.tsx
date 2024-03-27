@@ -1,8 +1,9 @@
-import {Alert, Text, View} from 'react-native';
+import {Alert, Platform, Text, View} from 'react-native';
 import {H3} from '../../config/Typography.tsx';
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
 import React, {useCallback, useEffect, useState} from 'react';
 import * as Color from '../../config/Color.ts';
+import {Linking} from 'react-native';
 import {
   fontPercent,
   heightPercent,
@@ -17,7 +18,7 @@ import {Spacer} from '../../utils/common/Spacer.tsx';
 import * as Typo from '../../config/Typography.tsx';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {PopUpModal} from '../../components/modal/Modal.tsx';
+import {PopUpModal, SlideModal} from '../../components/modal/Modal.tsx';
 import {
   MAINBLACK,
   MAINGRAY,
@@ -82,21 +83,24 @@ const JoinScreen = propsData => {
   const abledButton = emailPass && password === rePassword && password !== '';
 
   const handleConnectPress = useCallback(async () => {
+    let success = false; // 성공 여부를 추적하는 변수
     try {
       if (authorizationInProgress) {
-        return;
+        return false; // 진행 중이면 바로 false 반환
       }
       setAuthorizationInProgress(true);
       await transact(async wallet => {
         await authorizeSession(wallet);
       });
+      success = true; // 연결 성공
     } catch (err: any) {
-      alertAndLog(
+      console.log(
         '연결 중 에러 발생',
         err instanceof Error ? err.message : err,
       );
     } finally {
-      await setAuthorizationInProgress(false);
+      setAuthorizationInProgress(false);
+      return success; // 여기서 성공 여부 반환
     }
   }, [authorizationInProgress, authorizeSession]);
 
@@ -122,18 +126,36 @@ const JoinScreen = propsData => {
     fetchAndUpdateBalance(selectedAccount);
     console.log('balance = ', balance);
   }, [fetchAndUpdateBalance, selectedAccount]);
-
+  // 각각의 버튼에 대한 실행될 링크(url)와 링크가 실행되지 않을 때 대체 링크(alterUrl)
+  const deepLinkEvent = useCallback(async (url: string, alterUrl: string) => {
+    // 만약 어플이 설치되어 있으면 true, 없으면 false
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // 설치되어 있으면
+      await Linking.openURL(url);
+    } else {
+      // 앱이 없으면
+      await Linking.openURL(alterUrl);
+    }
+  }, []);
   const connect = async () => {
     //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
     console.log('지갑 연결 시도');
-    await handleConnectPress(); // await 추가
+    const walletPass = await handleConnectPress(); // await 추가
     console.log('개인 지갑 잔액 = ' + balance);
-    if (!authorizationInProgress) {
+    if (!walletPass) {
       //2-1. 연결 실패 시
-      console.error(
-        '지갑 연결 실패 authorizationInProgress =',
-        authorizationInProgress,
-      );
+      if (Platform.OS === 'android') {
+        deepLinkEvent(
+          'market://details?id=app.phantom',
+          'https://play.google.com/store/apps/details?id=app.phantom',
+        );
+      } else {
+        deepLinkEvent(
+          "itms-apps://itunes.apple.com/us/app/id1598432977?mt=8'",
+          'https://apps.apple.com/kr/app/phantom-crypto-wallet/id1598432977',
+        );
+      }
       return;
     }
     //2-2. 연결 성공 시
@@ -454,6 +476,7 @@ const JoinScreen = propsData => {
           </View>
         </View>
       </PopUpModal>
+
       <DatePicker
         mode="date"
         locale="ko-KR"
