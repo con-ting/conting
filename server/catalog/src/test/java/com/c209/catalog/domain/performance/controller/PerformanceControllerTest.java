@@ -3,7 +3,11 @@ package com.c209.catalog.domain.performance.controller;
 import com.c209.catalog.domain.performance.dto.PostShowDTO;
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
 import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
+import com.c209.catalog.domain.performance.dto.response.SearchShowResponse;
+import com.c209.catalog.domain.performance.enums.ReservationType;
+import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.domain.performance.service.SearchShowService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +22,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PerformanceController.class)
@@ -28,6 +35,12 @@ class PerformanceControllerTest {
 
     @MockBean
     private PerformanceService performanceService;
+
+    @MockBean
+    private SearchShowService searchShowService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     public void testGetPerformanceResponse() throws Exception {
@@ -70,5 +83,33 @@ class PerformanceControllerTest {
                 .reservationStartDatetime(LocalDateTime.now())
                 .reservationEndDatetime(LocalDateTime.now().plusDays(1))
                 .build();
+    }
+
+    @Test
+    void testSearchShows() throws Exception {
+        // Given
+        Status status = Status.on_sale;
+        String region = "Region";
+        String sort = "Sort";
+        String keyword = "Keyword";
+        String searchType = "SearchType";
+        ReservationType reservationType = ReservationType.R;
+
+        // Mocking the service response
+        SearchShowResponse response = new SearchShowResponse(Collections.emptyList());
+        when(searchShowService.searchShows(any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
+
+        // When, then
+        mockMvc.perform(MockMvcRequestBuilders.get("/show")
+                        .param("status", status.toString())
+                        .param("region", region)
+                        .param("sort", sort)
+                        .param("keyword", keyword)
+                        .param("searchType", searchType)
+                        .param("reservationType", reservationType.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 }
