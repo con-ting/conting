@@ -18,7 +18,7 @@ import java.util.Optional;
 public class SearchShowResponse {
     private Optional<List<PerformanceSearchDto>> shows;
 
-    public void setPerformances(Optional<List<PerformanceSearchDto>> performanceSearchDtos) {
-        this.shows = performanceSearchDtos;
+    public void setPerformances(List<PerformanceSearchDto> performanceSearchDtos) {
+        this.shows = Optional.ofNullable(performanceSearchDtos);
     }
 }
