@@ -30,6 +30,12 @@ public class PerformanceController {
         return ResponseEntity.ok(performanceService.getShowDetails(showId));
     }
 
+    @DeleteMapping({"{show_id}"})
+    public ResponseEntity<Void> deletePerformance(@PathVariable Long show_id) {
+        performanceService.deleteShow(show_id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping()
     public ResponseEntity<String> postShow(@RequestBody PostShowRequest postShowRequest) {
         try {
