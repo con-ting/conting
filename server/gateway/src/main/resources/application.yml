@@ -45,10 +45,7 @@ spring:
         - id: catalog-service
           uri: ${CATALOG_SERVICE}
           predicates:
-            - Path=/hall/**
             - Path=/show/**
-            - Path=/schedule/**
-            - Path=/singer/**
           filters:
             - AuthorizationHeaderFilter
     default-filters:
