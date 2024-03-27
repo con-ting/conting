@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/show")
+@RequestMapping("catalog/main")
 @RequiredArgsConstructor
 public class MainPageController {
     private final MainPageService mainPageService;
 
-    @GetMapping("main")
+    @GetMapping
     public ResponseEntity<GetMainPageResponse> getMainPage(
 //            @RequestHeader("X-Authorization-Id") Long memberId,
     ) {

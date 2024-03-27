@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function ConcertChoiceButton() {
   const [isDate, setIsDate] = useState([]);
@@ -42,59 +43,65 @@ export default function ConcertChoiceButton() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>공연 일정 선택</Text>
-      <View style={styles.list}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {dates.map(date => (
-            <TouchableOpacity
-              key={date.id}
-              style={[
-                styles.button,
-                {
-                  backgroundColor: isDate.includes(date.id)
-                    ? '#FCC434'
-                    : '#1C1C1C',
-                },
-                {borderColor: isDate.includes(date.id) ? '#FCC434' : '#000000'},
-              ]}
-              onPress={() => switchColor(date.id)}>
-              <Text
+      <LinearGradient
+        style={styles.background}
+        colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 1)']}>
+        <Text style={styles.title}>공연 일정 선택</Text>
+        <View style={styles.list}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {dates.map(date => (
+              <TouchableOpacity
+                key={date.id}
                 style={[
-                  styles.title,
-                  {color: isDate.includes(date.id) ? '#000000' : '#FFFFFF'},
-                ]}>
-                {date.title}
-              </Text>
-              <View
-                style={[
-                  styles.day,
+                  styles.button,
                   {
                     backgroundColor: isDate.includes(date.id)
-                      ? '#1C1C1C'
-                      : '#3B3B3B',
+                      ? '#FCC434'
+                      : '#1C1C1C',
                   },
-                ]}>
-                <Text style={styles.title}>{date.subtitle}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+                  {
+                    borderColor: isDate.includes(date.id)
+                      ? '#FCC434'
+                      : '#000000',
+                  },
+                ]}
+                onPress={() => switchColor(date.id)}>
+                <Text
+                  style={[
+                    styles.title,
+                    {color: isDate.includes(date.id) ? '#000000' : '#FFFFFF'},
+                  ]}>
+                  {date.title}
+                </Text>
+                <View
+                  style={[
+                    styles.day,
+                    {
+                      backgroundColor: isDate.includes(date.id)
+                        ? '#1C1C1C'
+                        : '#3B3B3B',
+                    },
+                  ]}>
+                  <Text style={styles.title}>{date.subtitle}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-      <TouchableOpacity
-        style={[styles.buttonTicketing]}
-        onPress={() => navigation.navigate('Waiting', {rank: 0})}>
-        <Text style={styles.textTicketing}>직접 예매하기</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonTicketing]}
+          onPress={() => navigation.navigate('Waiting', {rank: 0})}>
+          <Text style={styles.textTicketing}>직접 예매하기</Text>
+        </TouchableOpacity>
+      </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%',
   },
   list: {
     marginTop: 10,
@@ -131,10 +138,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 30,
     backgroundColor: '#FCC434',
+    marginBottom: 10,
   },
   textTicketing: {
     fontSize: 18,
     fontFamily: 'Jalnan2TTF',
     color: '#000000',
+  },
+  background: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // marginBottom: 10,
   },
 });

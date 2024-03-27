@@ -9,21 +9,27 @@ import BottomTabNavigator from './../navigation/BottomTabNavigator';
 import {heightPercent} from '../config/Dimensions';
 import {MAINFONT} from '../config/Font';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
+import ConcertDetailScreen from '../screens/mainScreen/ConcertDetailScreen';
+import {useRecoilValue} from 'recoil';
+import {posterColor} from '../utils/recoil/Atoms';
 import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
 import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
 import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
 import ConcertRegistCastScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistCastScreen';
 import ConcertRegistCompany from '../screens/settingScreen/concertRegistScreen/ConcertRegistCompany';
+import SearchMainScreen from '../screens/mainScreen/searchScreen/SearchMainScreen';
+import CastDetailScreen from '../screens/mainScreen/searchScreen/castDetail/CastDetailScreen';
+import EventDetailScreen from '../screens/mainScreen/searchScreen/castDetail/EventDetailScreen';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
 // header style을 위한 변수
-const options = (headerShown: boolean, title: string) => {
+const options = (headerShown: boolean, title: string, color = 'black') => {
   return {
     headerShown: headerShown,
     title: title,
     headerStyle: {
-      backgroundColor: 'black',
+      backgroundColor: color,
       borderBottomColor: 'transparent', //헤더 테두리 색 제거
       elevation: 0, //Android에서 헤더 그림자 제거
       height: heightPercent(60),
@@ -39,6 +45,7 @@ const options = (headerShown: boolean, title: string) => {
 };
 
 function MainStack() {
+  const backgroundColor = useRecoilValue(posterColor);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -76,6 +83,12 @@ function MainStack() {
         component={ResultRefundScreen}
         options={{headerShown: false}}
       />
+
+      <Stack.Screen
+        name="ConcertDetail"
+        component={ConcertDetailScreen}
+        options={options(false, '공연 상세')}
+      />
       <Stack.Screen
         name="ConcertRegist"
         component={ConcertRegistScreen}
@@ -99,6 +112,21 @@ function MainStack() {
       <Stack.Screen
         name="ConcertRegistCompany"
         component={ConcertRegistCompany}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="SearchMain"
+        component={SearchMainScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="CastDetail"
+        component={CastDetailScreen}
+        options={options(true, '')}
+      />
+      <Stack.Screen
+        name="EventDetail"
+        component={EventDetailScreen}
         options={options(true, '')}
       />
     </Stack.Navigator>

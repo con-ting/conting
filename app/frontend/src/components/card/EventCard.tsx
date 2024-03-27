@@ -1,11 +1,12 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   fontPercent,
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
-import {BLUEBASE, MAINYELLOW} from '../../config/Color';
-
+import {BLUEBASE, MAINGRAY, MAINYELLOW, TEXTGRAY} from '../../config/Color';
+import {ClipboardTick, Clock, Like} from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
 
 export type cardProps = {
   name: string;
@@ -17,13 +18,20 @@ export type cardProps = {
 /**
  * Event 카드입니다.
  * @param props
+ * - name: 이벤트의 제목입니다.
+ * - img_url: 이벤트의 이미지 주소입니다.
+ * - start_at: 이벤트의 시작 날짜입니다.
+ * - end_at: 이벤트의 종료 날짜입니다.
  * @returns
  * @author 강성권
  */
 
 export default function EventCard(props: cardProps) {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate('EventDetail')}>
       <View
         style={{
           flex: 1,
@@ -38,7 +46,7 @@ export default function EventCard(props: cardProps) {
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
           }}
-          blurRadius = {10}
+          blurRadius={10}
           source={{
             uri: props.img_url,
           }}
@@ -60,14 +68,26 @@ export default function EventCard(props: cardProps) {
           justifyContent: 'space-evenly',
         }}>
         <Text style={styles.title}>{props.name}</Text>
-        <Text style={styles.text}>실시간 응모현황 : 2500명</Text>
-        <Text style={styles.text}>상품 개수 : 100개</Text>
-        <Text style={styles.text}>응모 시작 : {props.start_at}</Text>
-        <Text style={styles.text}>응모 마감 : {props.end_at}</Text>
+        <View style={styles.row}>
+          <ClipboardTick size={16} color={TEXTGRAY} />
+          <Text style={styles.text}>실시간 응모현황 : 2500명</Text>
+        </View>
+        <View style={styles.row}>
+          <Like size={16} color={TEXTGRAY} />
+          <Text style={styles.text}>상품 개수 : 100개</Text>
+        </View>
+        <View style={styles.row}>
+          <Clock size={16} color={TEXTGRAY} />
+          <Text style={styles.text}>응모 시작 : {props.start_at}</Text>
+        </View>
+        <View style={styles.row}>
+          <Clock size={16} color={TEXTGRAY} />
+          <Text style={styles.text}>응모 마감 : {props.end_at}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C1C1C',
     borderRadius: 10,
     marginBottom: heightPercent(10),
-    height: heightPercent(180),
+    height: heightPercent(150),
   },
   title: {
     color: MAINYELLOW,
@@ -84,7 +104,11 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
-    fontSize: fontPercent(12),
+    fontSize: fontPercent(14),
     fontFamily: 'Jalnan2TTF',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: widthPercent(6),
   },
 });

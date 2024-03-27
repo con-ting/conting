@@ -41,5 +41,29 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public UserDto changeMyInfo(UserDto request, Long userId) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(()-> new CommonException(UserErrorCode.NOT_FOUND_USER));
+
+        if(request.getWallet()!=null){
+            user.setWallet(request.getWallet());
+        }
+
+        if(request.getFcmToken()!=null){
+            user.setFcmToken(request.getFcmToken());
+        }
+        
+        userRepository.save(user);
+
+        return UserDto
+                .builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .fcmToken(user.getFcmToken())
+                .wallet(user.getWallet())
+                .build();
+    }
+
 
 }

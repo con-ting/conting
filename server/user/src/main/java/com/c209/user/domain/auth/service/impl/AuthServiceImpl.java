@@ -121,8 +121,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
 
-        UserDto loginUser = userRepository.findByEmail(request.email())
-                                            .orElseThrow(()-> new CommonException(UserErrorCode.NOT_FOUND_USER)).toDto();
+        UserEntity loginUser = userRepository.findByEmail(request.email())
+                                            .orElseThrow(()-> new CommonException(UserErrorCode.NOT_FOUND_USER));
 
 
         //비밀번호가 일치하는지 확인
@@ -140,8 +140,6 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenRepository.delete(String.valueOf(loginUser.getId()));
         refreshTokenRepository.save(refreshToken, String.valueOf(loginUser.getId()));
 
-
-
         return LoginResponse.builder()
                 .token(
                         TokenDto.builder()
@@ -153,6 +151,8 @@ public class AuthServiceImpl implements AuthService {
                         UserDto.builder()
                                 .id(loginUser.getId())
                                 .email(loginUser.getEmail())
+                                .fcmToken(loginUser.getFcmToken())
+                                .wallet(loginUser.getWallet())
                                 .build()
                 )
                 .build();

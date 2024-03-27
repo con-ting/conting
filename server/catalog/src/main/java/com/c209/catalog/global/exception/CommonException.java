@@ -1,6 +1,7 @@
 package com.c209.catalog.global.exception;
 
 import com.c209.catalog.domain.hall.exception.HallErrorCode;
+import com.c209.catalog.domain.hall.exception.ViewErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
@@ -43,6 +44,11 @@ public class CommonException extends RuntimeException {
     public CommonException(ScheduleErrorCode scheduleErrorCode) {
         this.message = scheduleErrorCode.getMessage();
         this.httpStatus = scheduleErrorCode.getHttpStatus();
+    }
+
+    public CommonException(ViewErrorCode viewErrorCode) {
+        this.message = viewErrorCode.getMessage();
+        this.httpStatus = viewErrorCode.getHttpStatus();
     }
 
     public CommonException(String message, HttpStatus httpStatus) {

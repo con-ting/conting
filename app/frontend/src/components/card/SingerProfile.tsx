@@ -1,9 +1,15 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {fontPercent, heightPercent, widthPercent} from '../../config/Dimensions';
+import {
+  fontPercent,
+  heightPercent,
+  widthPercent,
+} from '../../config/Dimensions';
+import {MAINBLACK} from '../../config/Color';
 
 export type profileProps = {
   name: string;
   profile: string;
+  backgroundNone: boolean;
 };
 
 /**
@@ -14,29 +20,29 @@ export type profileProps = {
  * @returns
  * @author 강성권
  */
-export default function SingerProfile(props: profileProps){
+export default function SingerProfile(props: profileProps) {
   return (
     <View
-      style={styles.container}>
+      style={[
+        styles.container,
+        {backgroundColor: props.backgroundNone ? '' : MAINBLACK},
+      ]}>
       <Image
-        style={{width: widthPercent(80), height: heightPercent(80), borderRadius: 50 }}
+        style={{
+          width: widthPercent(80),
+          height: heightPercent(80),
+          borderRadius: 50,
+        }}
         source={{uri: props.profile}}
       />
-      <Text
-      style={
-        styles.title
-      }
-      >
-        {props.name}
-      </Text>
+      <Text style={styles.title}>{props.name}</Text>
     </View>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black', // 배경색을 검은색으로 설정
+    // backgroundColor: 'black', // 배경색을 검은색으로 설정
     alignItems: 'center',
     justifyContent: 'center',
   },

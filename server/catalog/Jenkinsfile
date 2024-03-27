@@ -1,0 +1,161 @@
+pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        CATALOG_DB_URL="${env.CATALOG_DB_URL}"
+        CATALOG_DB_USER_NAME="${env.CATALOG_DB_USER_NAME}"
+        CATALOG_DB_PASSWORD="${env.CATALOG_DB_PASSWORD}"
+    }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // 코드 체크아웃
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Confirm Echo') {
+            steps {
+                script {
+                    echo "catalog server 입니다."
+                }
+            }
+        }
+         stage('Build Catalog-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "catalog server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/catalog/gradlew'
+                            sh '''
+                                cd ./server/catalog
+                                ./gradlew clean build -x test
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Catalog-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:Catalog_${BUILD_NUMBER}", "-f server/catalog/Dockerfile ./server/catalog")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push Catalog Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:Catalog_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean Catalog Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:Catalog_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Catalog_Service",
+                                    verbose: true,
+                                    transfers: [
+//                                         sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep user | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Catalog_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f catalog"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Catalog_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8080:8080 --name catalog --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e CATALOG_DB_URL=\"${CATALOG_DB_URL}\" -e CATALOG_DB_USER_NAME=\"${CATALOG_DB_USER_NAME}\" -e CATALOG_DB_PASSWORD=\"${CATALOG_DB_PASSWORD}\" "+ repository + ":Catalog_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+    }
+
+    post {
+        success {
+           script {
+                   def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                   def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                   mattermostSend (color: 'good',
+                   message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                   endpoint: "${env.MM_WEBHOOK}",
+                   channel: 'C209_CICD'
+                   )
+                   echo "${env.MM_WEBHOOK}"
+               }
+           }
+       failure {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'danger',
+               message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+       unstable {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'good',
+               message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+    }
+}

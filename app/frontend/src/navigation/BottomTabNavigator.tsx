@@ -14,7 +14,8 @@ import {
   User,
   Notification,
 } from 'iconsax-react-native';
-
+import { useRecoilValue } from 'recoil';
+import { posterColor } from '../utils/recoil/Atoms';
 
 const BottomTab = createBottomTabNavigator();
 const GradientIcon = ({focused}: any) => {
@@ -62,6 +63,7 @@ const GradientIcon = ({focused}: any) => {
 };
 
 export default function BottomTabNavigator() {
+  const backgroundColor = useRecoilValue(posterColor)
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -79,10 +81,10 @@ export default function BottomTabNavigator() {
         component={MainScreen}
         options={{
           headerShown: true,
-          headerStyle: {backgroundColor: 'black'},
+          headerStyle: {backgroundColor: backgroundColor[0]},
           tabBarIcon: ({focused}) => (
             <Home
-              style={{color: focused ? '#FCC434' : '#CCCCCC'}}
+              color={focused ? '#FCC434' : '#CCCCCC'}
               variant="Bold"
               size={25}
             />
@@ -138,10 +140,7 @@ export default function BottomTabNavigator() {
         component={ReservationWaitingScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <CardPos
-              style={{color: focused ? '#FCC434' : '#CCCCCC'}}
-              size={25}
-            />
+            <CardPos color={focused ? '#FCC434' : '#CCCCCC'} size={25} />
           ),
           tabBarLabel: ({focused}) => (
             <Text
@@ -176,10 +175,7 @@ export default function BottomTabNavigator() {
         component={TicketApplyListScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Element3
-              style={{color: focused ? '#FCC434' : '#CCCCCC'}}
-              size={25}
-            />
+            <Element3 color={focused ? '#FCC434' : '#CCCCCC'} size={25} />
           ),
           tabBarLabel: ({focused}) => (
             <Text
@@ -198,7 +194,7 @@ export default function BottomTabNavigator() {
         component={MyPageScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <User style={{color: focused ? '#FCC434' : '#CCCCCC'}} size={25} />
+            <User color={focused ? '#FCC434' : '#CCCCCC'} size={25} />
           ),
           tabBarLabel: ({focused}) => (
             <Text
