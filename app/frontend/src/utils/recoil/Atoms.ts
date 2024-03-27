@@ -1,4 +1,7 @@
 import {atom} from 'recoil';
+import {Account} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {Base64EncodedAddress} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {PublicKey} from '@solana/web3.js';
 
 /**
  * token확인 후 main으로 갈지에 대한 정보를 저장하고 있을 상태 atom입니다.
@@ -15,6 +18,10 @@ export const goMainPageState = atom<boolean>({
 type UserInfoStateType = {
   user_id: number;
   user_email: string;
+  fcm: string;
+  cryptoAddress: Base64EncodedAddress;
+  cryptoLabel?: string;
+  cryptoPublicKey: string;
 };
 /**
  * user의 정보를 저장하고 있을 상태 atom입니다.
@@ -25,13 +32,17 @@ export const userInfoState = atom<null | UserInfoStateType>({
   default: {
     user_id: 1,
     user_email: '',
+    fcm: '',
+    cryptoAddress: '',
+    cryptoLabel: '',
+    cryptoPublicKey: '',
   },
 });
 
 export const posterColor = atom<Array<string>>({
-  key : 'posterColor',
-  default: ['#000000', '#000000', '#000000']
-})
+  key: 'posterColor',
+  default: ['#000000', '#000000', '#000000'],
+});
 /**
  * FCM Token 을 담고 있는 atom입니다.
  * @author 김형민

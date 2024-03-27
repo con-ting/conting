@@ -12,6 +12,18 @@ export const userJoin = async (params: {
   fcm: string;
   wallet: string;
 }) => {
+  console.log('[userJoinAPI request] = ', params);
   const res = await instance.post(`${authUrl}/join`, params);
+  console.log('[userJoinApi Response] = ', res.data);
+  return res.data;
+};
+
+export const updateUserFcmAndWallet = async (params: {
+  fcm?: string;
+  wallet?: string;
+}) => {
+  console.log('[updateUserFcmAndWalletAPI request] = ', params);
+  const res = await tokenInstance.put(`/users`, params);
+  console.log('[updateUserFcmAndWalletAPI Response] = ', res.data);
   return res.data;
 };

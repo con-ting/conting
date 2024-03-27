@@ -17,6 +17,7 @@ type ModalProps = {
   children: React.ReactNode;
   height?: DimensionValue;
   backGroundColor?: string;
+  disableBackdropPress?: boolean;
 };
 
 /**
@@ -91,6 +92,7 @@ export const SlideModal = (props: ModalProps) => {
  * children : 모달 영역 내 들어갈 내용입니다. <모달> children </모달> 태그안에 사용하시면 됩니다.
  * height? : 슬라이스 모달의 영역 슬라이스를 위해서 사용됩니다. (잡아끌기 등)
  * backGroundColor? : 모달영역의 백그라운드 색상
+ * disableBackdropPress? : 모달 밖의 영역을 클릭했을때 닫을지 말지 T: 밖의 영역 터치해도 안꺼짐 F: 밖의 영역 터치시 꺼짐
  * @returns
  * @authore 김형민
  */
@@ -120,7 +122,9 @@ export const PopUpModal = (props: ModalProps) => {
               }}>
               <TouchableOpacity
                 onPress={() => {
-                  props.setIsVisible(false);
+                  if (!props.disableBackdropPress) {
+                    props.setIsVisible(false);
+                  }
                 }}
               />
               {props.children}
