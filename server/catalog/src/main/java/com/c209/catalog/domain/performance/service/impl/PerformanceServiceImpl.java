@@ -2,6 +2,7 @@ package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.company.repository.CompanyRepository;
+import com.c209.catalog.domain.grade.repository.GradeRepository;
 import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
     private final CompanyRepository companyRepository;
+    private final GradeRepository gradeRepository;
+    private final ScheduleRepository scheduleRepository;
 
     private PerformanceDto getPerformanceDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
         return performanceDetailInfoList.stream()
@@ -186,5 +189,17 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .build();
 
         performanceRepository.save(performance);
+    }
+
+    @Override
+    @Transactional
+    public void deleteShow(Long show_id) {
+        Performance performance = performanceRepository.findById(show_id)
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
+
+        gradeRepository.deleteByPerformance(performance);
+        scheduleRepository.deleteByPerformance(performance);
+
+        performanceRepository.delete(performance);
     }
 }

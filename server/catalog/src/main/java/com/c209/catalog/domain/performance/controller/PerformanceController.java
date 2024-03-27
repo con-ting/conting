@@ -32,7 +32,7 @@ public class PerformanceController {
 
     @DeleteMapping({"{show_id}"})
     public ResponseEntity<Void> deletePerformance(@PathVariable Long show_id) {
-        performanceService.deletePerformance(show_id);
+        performanceService.deleteShow(show_id);
         return ResponseEntity.noContent().build();
     }
 
