@@ -1,4 +1,4 @@
-import { type Umi, type PublicKey, generateSigner, percentAmount, Signer } from '@metaplex-foundation/umi'
+import { type Umi, type PublicKey, generateSigner, percentAmount, type Signer } from '@metaplex-foundation/umi'
 import * as tokenMeta from '@metaplex-foundation/mpl-token-metadata'
 import { type AssetInput, type CollectionInput } from './types.js'
 
@@ -8,7 +8,7 @@ export const mintCollection = async (
 ) => {
   const { name, uri, sellerFeeBasisPoints, agency, singer } = input
   const server = umi.identity.publicKey
-  let mint: Signer;
+  let mint: Signer
   do {
     mint = generateSigner(umi)
   } while (!mint.publicKey.startsWith('C'))
@@ -35,7 +35,7 @@ export const mintNftToCollection = async (
 ) => {
   const { name, uri, sellerFeeBasisPoints, agency, singer, collectionMint } = input
   const server = umi.identity.publicKey
-  let mint: Signer;
+  let mint: Signer
   do {
     mint = generateSigner(umi)
   } while (!mint.publicKey.toString().startsWith('A'))

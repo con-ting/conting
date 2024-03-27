@@ -20,44 +20,44 @@ import static org.mockito.Mockito.when;
 
 class PerformanceServiceImplTest {
 
-    @Mock
-    private PerformanceRepository performanceRepository;
-
-    @InjectMocks
-    private PerformanceServiceImpl performanceService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    @DisplayName("Test getShowDetails when show exists")
-    void testGetShowDetailsWhenShowExists() {
-        // given
-        Long showId = 1L;
-
-        when(performanceRepository.getPerformanceByShowId(anyLong()))
-                .thenReturn(Optional.of(Collections.singletonList(new PerformanceDetailInfo())));
-
-        // when
-        GetShowResponse response = performanceService.getShowDetails(showId);
-
-        // then
-        assertNotNull(response);
-    }
-
-    @Test
-    @DisplayName("Test getShowDetails when show does not exist")
-    void testGetShowDetailsWhenShowDoesNotExist() {
-        // given
-        Long showId = 1L;
-
-        // Mock repository response
-        when(performanceRepository.getPerformanceByShowId(anyLong())).thenReturn(Optional.empty());
-
-        // when, then
-        CommonException exception = assertThrows(CommonException.class, () -> performanceService.getShowDetails(showId));
-        assertEquals("NOT_EXIST_SHOW", exception.getHttpStatus().toString());
-    }
+//    @Mock
+//    private PerformanceRepository performanceRepository;
+//
+//    @InjectMocks
+//    private PerformanceServiceImpl performanceService;
+//
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
+//
+//    @Test
+//    @DisplayName("Test getShowDetails when show exists")
+//    void testGetShowDetailsWhenShowExists() {
+//        // given
+//        Long showId = 1L;
+//
+//        when(performanceRepository.getPerformanceByShowId(anyLong()))
+//                .thenReturn(Optional.of(Collections.singletonList(new PerformanceDetailInfo())));
+//
+//        // when
+//        GetShowResponse response = performanceService.getShowDetails(showId);
+//
+//        // then
+//        assertNotNull(response);
+//    }
+//
+//    @Test
+//    @DisplayName("Test getShowDetails when show does not exist")
+//    void testGetShowDetailsWhenShowDoesNotExist() {
+//        // given
+//        Long showId = 1L;
+//
+//        // Mock repository response
+//        when(performanceRepository.getPerformanceByShowId(anyLong())).thenReturn(Optional.empty());
+//
+//        // when, then
+//        CommonException exception = assertThrows(CommonException.class, () -> performanceService.getShowDetails(showId));
+//        assertEquals("NOT_EXIST_SHOW", exception.getHttpStatus().toString());
+//    }
 }

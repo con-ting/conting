@@ -23,7 +23,13 @@ public class HallServiceImpl implements HallService {
 
     @Override
     public HallsResponse findHallsByKeywordAndRegion(String keyword, String region) {
-        List<Hall> halls = hallRepository.findByNameContainingAndAddressContaining(keyword, region);
+        List<Hall> halls;
+        if (keyword.isEmpty() && region.isEmpty()) {
+            halls = hallRepository.findAll();
+        } else {
+            halls = hallRepository.findByNameContainingAndAddressContaining(keyword, region);
+        }
+
         List<HallDto> hallDto = new ArrayList<>();
         for(Hall h: halls){
             hallDto.add(HallDto

@@ -9,6 +9,8 @@ import TicketInfoCard from './TicketInfoCard';
 
 type TicketEntryCardProps = {
   onPress?: () => void;
+  poster : string
+  title ?: string
   ticketId?: number;
 };
 
@@ -18,7 +20,7 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
       <View style={styles.container} onTouchEnd={props.onPress}>
         <ImageBackground
           source={{
-            uri: 'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxOTEwMjFfMjYx%2FMDAxNTcxNjQzOTQxMzY4.YolACTYNYE8yCQUDEVF9tKd-B1OOI0NPcbNjhtfsLVMg.5VdwQO9LhJPrOx-53s8BfXAdLQBshTgizcNmgDMmcysg.JPEG%2F20191021_164330.jpg&type=sc960_832',
+            uri: props.poster,
           }}
           style={styles.image}
           imageStyle={{borderRadius: 20}}>
@@ -31,8 +33,8 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(200),
-    height: heightPercent(400),
+    width: widthPercent(300),
+    height: heightPercent(500),
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'rgba(130, 156, 199, 0.6)',

@@ -9,7 +9,8 @@ import {Glass} from 'iconsax-react-native';
 import {CARDBASE} from '../../config/Color';
 
 type ConcertHallCardProps = {
-  onPress: () => void;
+  onPress ?: () => void;
+  onBtnPress ?: () => void;
   title: string;
   seat: number;
   address: string;
@@ -38,10 +39,10 @@ export default function ConcertHallCard(props: ConcertHallCardProps) {
 
   return (
     <View>
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={props.onPress}>
         <View style={styles.titleContext}>
           <Text style={styles.title}>{props.title}</Text>
-          <Glass size="24" color="#FFFFFF" />
+          <Glass onPress={props.onBtnPress} size="24" color="#FFFFFF" />
         </View>
         <View style={styles.infoContext}>
           <Text style={styles.info}>{props.seat}석</Text>

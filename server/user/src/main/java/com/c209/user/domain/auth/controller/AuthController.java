@@ -6,10 +6,7 @@ import com.c209.user.domain.auth.data.dto.request.LoginRequest;
 import com.c209.user.domain.auth.data.dto.request.TokenRefreshRequest;
 import com.c209.user.domain.auth.data.dto.request.VerificationSendRequest;
 import com.c209.user.domain.auth.data.dto.request.JoinUserRequest;
-import com.c209.user.domain.auth.data.dto.response.JoinResponse;
-import com.c209.user.domain.auth.data.dto.response.LoginResponse;
-import com.c209.user.domain.auth.data.dto.response.VerificationResponse;
-import com.c209.user.domain.auth.data.dto.response.VerificationSendResponse;
+import com.c209.user.domain.auth.data.dto.response.*;
 import com.c209.user.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +74,7 @@ public class AuthController {
     }
 
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request
     ){
@@ -90,6 +87,16 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<TokenDto> refresh(@RequestBody TokenRefreshRequest request){
         return ResponseEntity.ok().body(authService.refresh(request));
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<CheckEmailResponse> checkEmail(@RequestParam("email") String email){
+        return ResponseEntity.ok(
+                CheckEmailResponse
+                        .builder()
+                        .isDuplicated(authService.checkEmail(email))
+                        .build()
+        );
     }
 
 }
