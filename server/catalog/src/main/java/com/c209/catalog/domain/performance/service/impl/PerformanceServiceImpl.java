@@ -13,6 +13,7 @@ import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.domain.schedule.repository.ScheduleRepository;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
