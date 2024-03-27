@@ -17,10 +17,11 @@ import * as Font from '../../config/Font';
 type BasicButtonProps = {
   onPress?: () => void;
   width?: DimensionValue;
+  paddingVertical?: number;
   disabled?: boolean;
   backgroundColor: ColorValue;
   borderColor: string;
-  borderRadius: number;
+  borderRadius?: number;
   children: React.ReactNode;
 };
 /**
@@ -28,6 +29,7 @@ type BasicButtonProps = {
  * @param props
  * - onPress: 클릭 시 발생할 이벤트
  * - width: default = '100%' 원하는 크기대로 삽입 가능
+ * - paddingVertical : 상하 패딩 (기본값 12)
  * - disabled: default = false, 버튼 클릭을 막고자 할 때 사용
  * - backgroundColor: 뒷배경 색깔
  * - borderColor: 보더 색깔
@@ -50,7 +52,9 @@ export const BasicButton = (props: BasicButtonProps) => {
             borderRadius: widthPercent(props.borderRadius),
             borderWidth: widthPercent(0.8),
             borderColor: props.borderColor,
-            paddingVertical: heightPercent(12),
+            paddingVertical: props.paddingVertical
+              ? heightPercent(props.paddingVertical)
+              : heightPercent(12),
             alignItems: 'center',
           }}>
           {props.children}
@@ -67,6 +71,7 @@ type ButtonProps = {
   isRadius?: boolean;
   btnText: string;
   textSize?: number;
+  paddingVertical?: number;
 };
 
 /**
@@ -74,6 +79,7 @@ type ButtonProps = {
  * @param props
  * - onPress: 클릭 시 발생할 이벤트
  * - width?: default = '100%' 원하는 크기대로 삽입 가능
+ * - paddingVertical? : 상하 패딩 (기본값 12)
  * - disabled?: default = false, 버튼 클릭을 막고자 할 때 사용
  * - btnText: 버튼 내용
  * - textSize: 글자 크기
@@ -88,7 +94,9 @@ export const YellowButton = (props: ButtonProps) => {
       onPress={props.onPress}
       backgroundColor={Color.MAINYELLOW}
       borderColor={Color.MAINYELLOW}
-      borderRadius={props.isRadius ? 64 : 8}>
+      disabled={props.disabled}
+      borderRadius={props.isRadius ? 64 : 8}
+      paddingVertical={props.paddingVertical}>
       <Text
         style={{
           color: Color.MAINBLACK,

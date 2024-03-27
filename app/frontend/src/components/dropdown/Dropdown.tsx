@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, DimensionValue, TextStyle} from 'react-native';
+import {DimensionValue} from 'react-native';
 import DropDownPicker, {
   DropDownPickerProps,
 } from 'react-native-dropdown-picker';

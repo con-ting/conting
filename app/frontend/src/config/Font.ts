@@ -86,6 +86,12 @@ export const F_SIZE_B_BUTTON: object = {
   fontSize: fontPercent(18),
 };
 
+export const F_SIZE_B_HEADER: object = {
+  color: MAINBLACK,
+  fontFamily: MAINFONT,
+  fontSize: fontPercent(22),
+};
+
 export const F_SIZE_B_TITLE: object = {
   color: MAINBLACK,
   fontFamily: MAINFONT,
