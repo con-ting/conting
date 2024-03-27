@@ -45,7 +45,7 @@ spring:
         - id: catalog-service
           uri: ${CATALOG_SERVICE}
           predicates:
-            - Path=/show/**
+            - Path=/catalog/**
           filters:
             - AuthorizationHeaderFilter
     default-filters:
