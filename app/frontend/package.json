@@ -12,19 +12,22 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.23.1",
-    "@react-native-community/datetimepicker": "^7.6.3",
     "@react-native-community/blur": "^4.4.0",
+    "@react-native-community/datetimepicker": "^7.6.3",
     "@react-native-firebase/app": "^19.0.1",
     "@react-native-firebase/messaging": "^19.0.1",
     "@react-navigation/bottom-tabs": "^6.5.19",
     "@react-navigation/native": "^6.1.16",
     "@react-navigation/native-stack": "^6.9.24",
     "@react-navigation/stack": "^6.3.28",
+    "@solana-mobile/mobile-wallet-adapter-protocol": "^2.1.2",
+    "@solana/web3.js": "^1.91.2",
     "axios": "^1.6.8",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^50.0.13",
     "iamport-react-native": "^2.0.12",
     "iconsax-react-native": "^0.0.8",
+    "js-base64": "^3.7.7",
     "lottie-react-native": "^6.7.0",
     "react": "18.2.0",
     "react-native": "0.73.5",
@@ -53,7 +56,8 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-webview": "^13.8.2",
     "react-native-windows": "0.73.11",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "text-encoding": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

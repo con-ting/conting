@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,6 +17,13 @@ import {LocalImageLoader} from '../../utils/common/ImageLoader.tsx';
 import * as Animatable from 'react-native-animatable';
 import {login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
+import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
+import {
+  useAuthorization,
+  Account,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {alertAndLog} from '../../utils/common/alertAndLog.ts';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -30,6 +37,49 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
+  const [balance, setBalance] = useState<number | null>(null);
+  const {authorizeSession} = useAuthorization();
+  const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
+  const handleConnectPress = useCallback(async () => {
+    try {
+      if (authorizationInProgress) {
+        return;
+      }
+      setAuthorizationInProgress(true);
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+      });
+    } catch (err: any) {
+      alertAndLog(
+        '연결 중 에러 발생',
+        err instanceof Error ? err.message : err,
+      );
+    } finally {
+      setAuthorizationInProgress(false);
+    }
+  }, [authorizationInProgress, authorizeSession]);
+
+  const fetchAndUpdateBalance = useCallback(
+    async (account: Account) => {
+      console.log('개인 지갑 주소 =: ' + account.publicKey);
+      console.log('개인 지갑 앱 = ' + account.label);
+      const fetchedBalance = await connection.getBalance(account.publicKey);
+      console.log('개인 지갑 잔액 = ' + fetchedBalance);
+      setBalance(fetchedBalance);
+    },
+    [connection],
+  );
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return;
+    }
+    fetchAndUpdateBalance(selectedAccount);
+    console.log('balance = ', balance);
+  }, [fetchAndUpdateBalance, selectedAccount]);
+
   const loginApi = async () => {
     console.log('loginRequest=', {
       email: email,
@@ -49,7 +99,12 @@ const LoginScreen = () => {
       user_id: loginResponse.user.id,
       user_email: loginResponse.user.email,
     });
-    //4. goMainPage 수정
+    //4. 커넥션 연결
+    console.log('커넥션 연결 시도');
+    await handleConnectPress(); // await 추가
+    console.log('개인 지갑 잔액 = ' + balance);
+    console.log('커넥션 후');
+    //5. goMainPage 수정
     setGoMainPage(true);
   };
 
