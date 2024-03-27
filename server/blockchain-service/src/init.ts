@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 export const initUmi = () => {
-  const umi = createUmi(process.env.ENDPOINT ?? 'https://api.devnet.solana.com')
+  const umi = createUmi(process.env.RPC_ENDPOINT || 'https://api.devnet.solana.com')
   const secret = JSON.parse(process.env.WALLET_SECRET!)
   const keypair = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(secret))
   return umi
