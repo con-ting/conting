@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .fcmToken(user.getFcmToken())
                 .wallet(user.getWallet())
                 .build();
     }
