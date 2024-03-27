@@ -37,7 +37,7 @@ public class ScheduleControllerTest {
 
     @Test
     void testGetScheduleDetail() throws Exception {
-        MvcResult result = mockMvc.perform(get("/schedule")
+        MvcResult result = mockMvc.perform(get("/catalog/schedule")
                         .param("showId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
