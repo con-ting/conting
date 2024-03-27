@@ -16,6 +16,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -96,5 +97,11 @@ public class QueueController {
             return queueService.authorizeToken(scheduleId, userId, token)
                     .map(AuthorizationTokenResponse::new)
                     .map(ResponseEntity::ok);
+    }
+
+    @PostMapping("mock")
+    public Flux<Long> registerUsers() {
+        return Flux.range(100, 300)  // 1부터 1000까지의 숫자를 생성하는 Flux
+                .flatMap(userId -> queueService.registerQueue(Long.valueOf(1), Long.valueOf(userId)));  // 각 userId에 대해 registerUser 메서드 호출
     }
 }
