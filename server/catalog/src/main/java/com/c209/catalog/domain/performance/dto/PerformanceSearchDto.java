@@ -1,8 +1,13 @@
 package com.c209.catalog.domain.performance.dto;
 
 import com.c209.catalog.domain.performance.enums.ReservationType;
+<<<<<<< HEAD
 import com.c209.catalog.domain.performance.enums.Status;
 import com.querydsl.core.annotations.QueryProjection;
+=======
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+>>>>>>> parent of 7d8c4c2 ([BE]Add: 컨트롤러 추가)
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,7 +25,6 @@ public class PerformanceSearchDto {
     private String hall_name;
     private String hall_address;
     private ReservationType reservation_type;
-    private Status status;
     private LocalDateTime reservation_start_date_time;
     private LocalDateTime reservation_end_date_time;
     private Date start_date;

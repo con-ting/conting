@@ -4,6 +4,7 @@ import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.*;
 import com.c209.catalog.domain.performance.dto.response.GetMainPageResponse;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
+import com.c209.catalog.domain.performance.exception.PerformanceException;
 import com.c209.catalog.domain.performance.repository.MainPageRepository;
 import com.c209.catalog.domain.performance.service.MainPageService;
 import com.c209.catalog.domain.singer.exception.SingerErrorCode;
@@ -90,19 +91,19 @@ public class MainPageServiceImpl implements MainPageService {
         List<PShowInfo> pShowInfoList = mainPageRepository
                 .getPShowsList()
                 .orElseThrow(() ->
-                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
 
         List<FShowInfo> fShowInfoList = mainPageRepository
                 .getFShowsList()
                 .orElseThrow(() ->
-                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
 
         List<RShowInfo> rShowInfoList = mainPageRepository
                 .getRShowsList()
                 .orElseThrow(() ->
-                        new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW)
+                        new PerformanceException(PerformanceErrorCode.NOT_EXIST_SHOW)
                 );
 
         List<PSingerInfo> pSingerInfoList = mainPageRepository
