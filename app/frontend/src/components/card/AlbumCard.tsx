@@ -1,15 +1,19 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   fontPercent,
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
+import {Clock, Music} from 'iconsax-react-native';
+import {TEXTGRAY} from '../../config/Color';
+import {F_SIZE_Y_BIGTEXT} from '../../config/Font';
 
 export type albumProps = {
   name: string;
   title?: string;
   album: string;
   published_at?: string;
+  songNums: number;
 };
 
 /**
@@ -36,10 +40,24 @@ const AlbumCard = (props: albumProps) => {
         style={{
           flex: 2,
           padding: widthPercent(20),
-          justifyContent: 'space-evenly',
+          justifyContent: 'space-around',
         }}>
-        <Text style={styles.title}>{props.name}</Text>
-        <Text style={styles.text}>발매일 : {props.published_at}</Text>
+        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+          {props.name}
+        </Text>
+        <View>
+          <View style={styles.row}>
+            <Clock size={16} color={TEXTGRAY} />
+            <Text style={styles.text}>발매일 : {props.published_at}</Text>
+          </View>
+          <View style={styles.row}>
+            <Music size={16} color={TEXTGRAY} />
+            <Text style={styles.text}>{props.songNums} 곡</Text>
+          </View>
+        </View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={F_SIZE_Y_BIGTEXT}>앨범듣기</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -51,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C1C1C',
     borderRadius: 10,
     marginBottom: heightPercent(10),
-    height: heightPercent(180),
+    height: heightPercent(160),
   },
   title: {
     color: 'white',
@@ -60,8 +78,16 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
-    fontSize: fontPercent(12),
+    fontSize: fontPercent(14),
     fontFamily: 'Jalnan2TTF',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: widthPercent(6),
+  },
+  button: {
+    width: widthPercent(100),
+    height: heightPercent(16),
   },
 });
 

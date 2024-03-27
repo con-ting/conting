@@ -2,11 +2,39 @@ import {StyleSheet, Text, View} from 'react-native';
 import {F_SIZE_TITLE} from '../../../../config/Font';
 import {BasicConcertCardWide} from '../../../../components/card/ConcertCardWide';
 import AlbumCard from '../../../../components/card/AlbumCard';
+import {Dropdown} from '../../../../components/dropdown/Dropdown';
+import {useState} from 'react';
+import {widthPercent} from '../../../../config/Dimensions';
 
 export default function CastActivityScreen() {
+  // 드롭다운 오픈 상태
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  // 선택한 드롭다운 라벨
+  const [selectedDrop, setSelectedDrop] = useState(null);
+
+  const handleItemSelect = selectedValue => {
+    setSelectedDrop(selectedValue);
+  };
+
+  const drops = [
+    {label: '예매일순', value: '예매일순'},
+    {label: '공연일순', value: '공연일순'},
+  ];
+
   return (
     <View style={styles.container}>
       <Text style={[F_SIZE_TITLE, styles.title]}>출연한 콘서트</Text>
+      <View style={styles.drop}>
+        <Dropdown
+          data={drops}
+          width={widthPercent(120)}
+          textSize={14}
+          placeholder="정렬옵션"
+          open={dropDownOpen}
+          setOpen={setDropDownOpen}
+          onSelectValue={handleItemSelect}
+        />
+      </View>
       <View style={styles.card}>
         <BasicConcertCardWide
           onPress={() => console.log('히히')}
@@ -65,8 +93,15 @@ export default function CastActivityScreen() {
       <View style={styles.card}>
         <AlbumCard
           name="The Winning"
-          album="http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif"
+          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
           published_at="2024.02.20"
+          songNums={10}
+        />
+        <AlbumCard
+          name="IU 5th Album ‘LILAC’"
+          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
+          published_at="2021.03.25"
+          songNums={10}
         />
       </View>
     </View>
@@ -75,11 +110,15 @@ export default function CastActivityScreen() {
 const styles = StyleSheet.create({
   container: {
     // marginTop: 20,
-    marginBottom: 30,
+    // marginBottom: 30,
   },
   title: {
-    marginTop: 10,
+    marginTop: 15,
   },
+  drop: {
+    marginTop: 15,
+  },
+
   card: {
     marginTop: 15,
   },
