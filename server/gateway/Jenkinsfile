@@ -7,6 +7,7 @@ pipeline {
         JWT_ACCESS="${env.JWT_ACCESS}"
         AUTH_SERVICE="${env.AUTH_SERVICE}"
         USER_SERVICE="${env.USER_SERVICE}"
+        SEAT_SERVICE="${env.SEAT_SERVICE}"
     }
     agent any
 
@@ -111,7 +112,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f gateway"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\"" + repository + ":Gateway_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
