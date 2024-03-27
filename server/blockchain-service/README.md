@@ -1,12 +1,30 @@
-### cnft
+# blockchain-service
 
-1. 컬렉션을 생성합니다.
-2. 필요한 NFT 개수를 구합니다.
-3. 사용 가능한 머클트리 목록을 불러옵니다.
-4. 남은 공간이 없다면 머클트리를 생성합니다.
-5. NFT를 발행합니다.
-6. 발행이 성공했는지 확인하고 실패했을 경우 다시 시도합니다.
-7. 정해진 수의 재시도에도 발행에 실패한 NFT은 출력하고 파일에 기록합니다.
-8. 발행에 성공한 NFT의 주소를 DB에 기록합니다.
-9. 검표가 완료된 NFT는 사용자 주소로 소유권을 이전합니다.
-10. 사용자가 지갑을 연동하지 않았다면?
+### 설치
+
+```sh
+sudo corepack enable pnpm
+pnpm install
+```
+
+- `corepack`은 node와 함께 기본적으로 제공되는 명령어입니다. 별도의 설치 과정 없이 `yarn`이나 `pnpm`과 같은 node package manager를 활성화하기 위해 사용할 수 있습니다.
+
+### 환경변수
+
+`.env` 파일.
+
+```
+SERVER_PORT=3000
+RPC_ENDPOINT=https://api.devnet.solana.com
+WALLET_SECRET=[1, 2, 3, ..., 64]
+```
+
+- `SERVER_PORT` 기본값은 `3000`입니다.
+- `RPC_ENDPOINT` 기본값은 `https://api.devnet.solana.com`입니다.
+- `WALLET_SECRET`은 필수로 설정해야 합니다.
+
+### 실행
+
+```sh
+pnpm build && pnpm start
+```
