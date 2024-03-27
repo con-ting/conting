@@ -140,13 +140,6 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenRepository.delete(String.valueOf(loginUser.getId()));
         refreshTokenRepository.save(refreshToken, String.valueOf(loginUser.getId()));
 
-
-        loginUser.setFcmToken(request.fcm());
-        loginUser.setWallet(request.wallet());
-
-
-        userRepository.save(loginUser);
-
         return LoginResponse.builder()
                 .token(
                         TokenDto.builder()
