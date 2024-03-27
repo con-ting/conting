@@ -1,11 +1,12 @@
 import Fastify from 'fastify'
 import { publicKey } from '@metaplex-foundation/umi'
-import { initUmi } from './init.js'
+import { getPort, initUmi } from './init.js'
 import { type CollectionBody, type CollectionInput, type AssetBody, type AssetInput } from './types.js'
 import { mintCollection, mintNftToCollection, transferNft, useNft, verifyCollectionNft } from './nft.js'
 
 const umi = initUmi()
 const fastify = Fastify({ logger: true })
+const port = getPort()
 
 fastify.post<{ Body: CollectionBody }>('/collections', async (request, reply) => {
   const input: CollectionInput = {
@@ -47,7 +48,7 @@ fastify.post<{ Params: { mint: string } }>('/nfts/:mint/use', async (request, re
 
 const start = async () => {
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' })
+    await fastify.listen({ port, host: '0.0.0.0' })
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
