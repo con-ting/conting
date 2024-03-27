@@ -54,7 +54,7 @@ class PerformanceControllerTest {
         when(performanceService.getShowDetails(show_id)).thenReturn(response);
 
         // when, then
-        mockMvc.perform(MockMvcRequestBuilders.get("/show/{show_id}", show_id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/catalog/show/{show_id}", show_id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
@@ -66,7 +66,7 @@ class PerformanceControllerTest {
 
         doNothing().when(performanceService).createShow(any(PostShowRequest.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/show")
+        mockMvc.perform(MockMvcRequestBuilders.post("/catalog/show")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postShowRequest)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -105,7 +105,7 @@ class PerformanceControllerTest {
                 .thenReturn(new SearchShowResponse(optionalSearchResults));
 
         // When, then
-        mockMvc.perform(MockMvcRequestBuilders.get("/show")
+        mockMvc.perform(MockMvcRequestBuilders.get("/catalog/show")
                         .param("status", status.toString())
                         .param("region", region)
                         .param("sort", sort)

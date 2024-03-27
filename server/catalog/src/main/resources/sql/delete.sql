@@ -1,7 +1,10 @@
-DELETE FROM schedule;
-DELETE FROM grade;
+TRUNCATE TABLE schedule;
+TRUNCATE TABLE hall_grade;
+TRUNCATE TABLE album;
 DELETE FROM performance;
-DELETE FROM company;
 DELETE FROM hall;
-DELETE FROM album;
+DELETE FROM grade;
 DELETE FROM singer;
+DELETE FROM company;
+
+

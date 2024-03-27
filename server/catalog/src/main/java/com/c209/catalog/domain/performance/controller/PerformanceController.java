@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/show")
+@RequestMapping("catalog/show")
 @RequiredArgsConstructor
 public class PerformanceController {
     private final PerformanceService performanceService;
