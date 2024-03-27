@@ -4,10 +4,12 @@ import {
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
+import {MAINBLACK} from '../../config/Color';
 
 export type profileProps = {
   name: string;
   profile: string;
+  backgroundNone: boolean;
 };
 
 /**
@@ -20,7 +22,11 @@ export type profileProps = {
  */
 export default function SingerProfile(props: profileProps) {
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {backgroundColor: props.backgroundNone ? '' : MAINBLACK},
+      ]}>
       <Image
         style={{
           width: widthPercent(80),
@@ -36,7 +42,7 @@ export default function SingerProfile(props: profileProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black', // 배경색을 검은색으로 설정
+    // backgroundColor: 'black', // 배경색을 검은색으로 설정
     alignItems: 'center',
     justifyContent: 'center',
   },
