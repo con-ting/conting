@@ -34,13 +34,4 @@ public class S3Service {
             throw new RuntimeException();
         }
     }
-
-    public void deleteImage(String image) {
-        String key = image.replace("https://" + s3Props.publicBaseUrl() + "/", "");
-        s3Client.deleteObject(builder -> builder
-                .bucket(s3Props.bucket())
-                .key(key)
-                .build());
-    }
-
 }
