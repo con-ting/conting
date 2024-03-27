@@ -1,7 +1,7 @@
 import {Alert, Text, View} from 'react-native';
 import {H3} from '../../config/Typography.tsx';
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import * as Color from '../../config/Color.ts';
 import {
   fontPercent,
@@ -38,6 +38,13 @@ import DatePicker from 'react-native-date-picker';
 import * as Font from '../../config/Font.ts';
 import {emailConfirm, login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {alertAndLog} from '../../utils/common/alertAndLog.ts';
+import {
+  Account,
+  useAuthorization,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 
 type RootStackParamList = {
   PhoneAuthScreen: undefined;
@@ -55,21 +62,82 @@ const JoinScreen = propsData => {
   const [rePassword, setRePassword] = useState('');
   const [token, setToken] = useRecoilState(fcmToken);
   const [cryptoAddress, setCryptoAddress] = useState('');
+  const [cryptoLabel, setCryptoLabel] = useState('');
+  const [cryptoPublicKey, setCryptoPublicKey] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const phoneNumber = propsData.route.params.replace(/-/g, '');
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
+  const [balance, setBalance] = useState<number | null>(null);
+  const {authorizeSession} = useAuthorization();
+  const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
 
   const toggleCancelModal = () => {
     setCancelModalVisible(!cancelModalVisible);
   };
   const abledButton = emailPass && password === rePassword && password !== '';
 
+  const handleConnectPress = useCallback(async () => {
+    try {
+      if (authorizationInProgress) {
+        return;
+      }
+      setAuthorizationInProgress(true);
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+      });
+    } catch (err: any) {
+      alertAndLog(
+        '연결 중 에러 발생',
+        err instanceof Error ? err.message : err,
+      );
+    } finally {
+      await setAuthorizationInProgress(false);
+    }
+  }, [authorizationInProgress, authorizeSession]);
+
+  const fetchAndUpdateBalance = useCallback(
+    async (account: Account) => {
+      await setCryptoAddress(account.address);
+      console.log('앱 주소 =: ' + account.address);
+      await setCryptoPublicKey(account.publicKey.toString);
+      console.log('개인 지갑 주소 =: ' + account.publicKey);
+      await setCryptoLabel(account.label ? account.label : '');
+      console.log('개인 지갑 앱 = ' + account.label);
+      const fetchedBalance = await connection.getBalance(account.publicKey);
+      console.log('개인 지갑 잔액 = ' + fetchedBalance);
+      await setBalance(fetchedBalance);
+    },
+    [connection],
+  );
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return;
+    }
+    fetchAndUpdateBalance(selectedAccount);
+    console.log('balance = ', balance);
+  }, [fetchAndUpdateBalance, selectedAccount]);
+
   const connect = async () => {
     //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
-    setCryptoAddress('357H3zuHJD999vNgPBapa9c2yBy4fQnUJyxavnX57zYY');
+    console.log('지갑 연결 시도');
+    await handleConnectPress(); // await 추가
+    console.log('개인 지갑 잔액 = ' + balance);
+    if (!authorizationInProgress) {
+      //2-1. 연결 실패 시
+      console.error(
+        '지갑 연결 실패 authorizationInProgress =',
+        authorizationInProgress,
+      );
+      return;
+    }
+    //2-2. 연결 성공 시
+    console.log('지갑 연결 성공');
 
     //2. 회원가입 API 전송
     console.log('joinUserRequst=', {
@@ -95,19 +163,24 @@ const JoinScreen = propsData => {
       email: email,
       password: password,
     });
-    //3. 로그인 후 토큰 저장
+    //3. 로그인 API
     const loginResponse = await login({
       email: email,
       password: password,
     });
     console.log('loginResponse = ', loginResponse);
-    //4. 토큰 저장
+    //4. 토큰 및 userAgent 저장
     await setAsync('accessToken', loginResponse.token.accessToken);
     await setAsync('refreshToken', loginResponse.token.refreshToken);
+    await setAsync('userId', loginResponse.user.id);
     //5. 전역 상태에 유저 정보 저장
-    setUserInfo({
+    await setUserInfo({
       user_id: loginResponse.user.id,
       user_email: loginResponse.user.email,
+      fcm: token,
+      cryptoAddress: cryptoAddress,
+      cryptoLabel: cryptoLabel,
+      cryptoPublicKey: cryptoPublicKey,
     });
     //6. goMainPage 수정
     setGoMainPage(true);
