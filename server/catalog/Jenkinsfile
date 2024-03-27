@@ -111,7 +111,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f catalog"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Catalog_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8080:8080 --name catalog --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e CATALOG_DB_URL=\"${CATALOG_DB_URL}\" -e CATALOG_DB_USER_NAME=\"${CATALOG_DB_USER_NAME}\" -e CATALOG_DB_PASSWORD=\"${CATALOG_DB_PASSWORD}\" "+ repository + ":CATALOG_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8080:8080 --name catalog --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e CATALOG_DB_URL=\"${CATALOG_DB_URL}\" -e CATALOG_DB_USER_NAME=\"${CATALOG_DB_USER_NAME}\" -e CATALOG_DB_PASSWORD=\"${CATALOG_DB_PASSWORD}\" "+ repository + ":Catalog_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
