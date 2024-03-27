@@ -16,14 +16,14 @@ spring:
       max-lifetime: 160000
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-    generate-ddl: true
+    generate-ddl: false
   data:
     redis:
       host: ${REDIS_HOST}

@@ -32,7 +32,7 @@ public class MainPageControllerTest {
 
         when(mainPageService.getMainPage()).thenReturn(response);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/show/main")
+        mockMvc.perform(MockMvcRequestBuilders.get("/catalog/main")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));

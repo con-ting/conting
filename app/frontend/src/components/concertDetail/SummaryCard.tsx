@@ -12,14 +12,17 @@ const Info = ({title, content}: {title: string; content: any}) => {
 };
 
 export default function SummaryCard({info}: {info: any}) {
-  console.log(info);
+  console.log('info: ', info);
   return (
     <View style={styles.container}>
       <View style={styles.cardContainer}>
         <Image style={styles.image} source={{uri: info.poster}} />
       </View>
-      <View style={{...styles.cardContainer, alignItems: 'center'}}>
-        <Info title="장소" content={info.address} />
+      <View style={styles.cardContainer}>
+        <View style={styles.row}>
+          <Info title="장소" content={info.address} />
+          <Info title="공연일" content={info.date} />
+        </View>
       </View>
     </View>
   );
@@ -32,15 +35,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     borderRadius: widthPercent(16),
     width: widthPercent(380),
-    height: heightPercent(350),
+    height: heightPercent(300),
   },
   cardContainer: {
     flex: 1,
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
+  },
+  row: {
+    // backgroundColor: 'white',
+    // flexDirection: 'row',
+    gap: widthPercent(10),
+    margin: 20,
   },
   image: {
-    resizeMode: 'stretch',
-    borderRadius: widthPercent(16),
-    height: heightPercent(350),
+    // resizeMode: 'stretch',
+    resizeMode: 'cover',
+    // resizeMode: 'stretch',
+    borderTopLeftRadius: widthPercent(16),
+    borderBottomLeftRadius: widthPercent(16),
+    height: heightPercent(300),
   },
 });

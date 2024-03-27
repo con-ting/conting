@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/singer")
+@RequestMapping("catalog/singer")
 @RequiredArgsConstructor
 public class SingerController {
 
@@ -22,10 +22,6 @@ public class SingerController {
 //            @RequestHeader("X-Authorization-Id") Long memberId,
             @PathVariable("singer_id") Long singerId
     ){
-//        Singer singer = singerService.getSingerDetails(singerId);
-//        singer.setView(singer.getView() + 1); // Incrementing the view count
-//        singerService.saveSinger(singer); // Assuming you have a method to save the Singer in your service
-//        return ResponseEntity.ok(singer);
         return ResponseEntity.ok(singerService.getSingerDetails(singerId));
     }
 

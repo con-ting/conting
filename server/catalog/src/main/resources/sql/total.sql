@@ -74,3 +74,15 @@ VALUES (1,	'2024.03.09.18:00',	'2024.03.09.20:30'),
        (2,	'2024.05.02.15:00',	'2024.05.02.16:00'),
        (2,	'2024.05.03.11:00',	'2024.05.03.12:00'),
        (2,	'2024.05.03.15:00',	'2024.05.03.16:00');
+
+ALTER TABLE hall_grade
+    MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+INSERT INTO hall_grade (view_url, grade_id)
+VALUES ('1', 1),
+       ('2', 2),
+       ('3', 3),
+       ('4', 4),
+       ('5', 5),
+       ('6', 6);
