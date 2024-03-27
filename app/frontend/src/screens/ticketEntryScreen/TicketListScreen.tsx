@@ -1,20 +1,18 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
-import TicketQrCard from '../../components/card/TicketQrCard';
-import {YellowButton} from '../../components/button/Button';
 import {useNavigation} from '@react-navigation/native';
-import {MAINBLACK} from '../../config/Color';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
 import LinearGradient from 'react-native-linear-gradient';
 import {getColors} from 'react-native-image-colors';
 
-
 export default function TicketListScreen() {
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [posterColors, setPosterColors] = useState(['#000000', '#000000']);
+
+  // 기기가 생체 인식이 가능한지 확인하는
   useEffect(() => {
     getColors(concertList[currentIndex].poster, {
       cache: true,
@@ -23,6 +21,7 @@ export default function TicketListScreen() {
       setPosterColors([res?.dominant, res.muted, res.average]);
     });
   }, [currentIndex]);
+
   const concertList = [
     {
       show_id: 2,
@@ -85,7 +84,7 @@ export default function TicketListScreen() {
   const renderItem = ({item, index}) => {
     return (
       <View style={styles.ticketContainer}>
-        <TicketEntryCard poster={item.poster} />
+        <TicketEntryCard poster={item.poster} colors={posterColors}/>
       </View>
     );
   };
@@ -97,7 +96,7 @@ export default function TicketListScreen() {
         width={widthPercent(400)}
         mode="horizontal-stack"
         modeConfig={{
-          moveSize: 200,
+          moveSize: 100,
           stackInterval: 50,
           scaleInterval: 0.1,
           rotateZDeg: 80,
@@ -111,20 +110,13 @@ export default function TicketListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  context: {
-    flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    // padding: 10,
   },
   ticketContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonContainer: {
     width: '100%',
     height: 100,

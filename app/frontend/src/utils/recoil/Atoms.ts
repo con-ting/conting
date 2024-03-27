@@ -28,6 +28,11 @@ export const userInfoState = atom<null | UserInfoStateType>({
   },
 });
 
+/**
+ * 포스터 별 뒷 배경을 바꾸기 위해 전역으로 관리하는 색상입니다.
+ * @author 강성권
+ */
+
 export const posterColor = atom<Array<string>>({
   key : 'posterColor',
   default: ['#000000', '#000000', '#000000']

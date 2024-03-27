@@ -93,7 +93,7 @@ const LoginScreen = () => {
           />
           <Spacer space={20} />
           {/* 로그인 버튼 부분 */}
-          <YellowButton onPress={loginApi} btnText={'로그인'} />
+          <YellowButton onPress={setGoMainPage(true)} btnText={'로그인'} />
           <Spacer space={20} />
           {/* 이메일 찾기, 비밀번호 찾기, 회원가입 부분 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
