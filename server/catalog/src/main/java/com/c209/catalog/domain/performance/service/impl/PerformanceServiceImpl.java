@@ -18,7 +18,6 @@ import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.domain.schedule.repository.ScheduleRepository;
-import com.c209.catalog.domain.seller.entity.QSeller;
 import com.c209.catalog.domain.seller.entity.Seller;
 import com.c209.catalog.domain.seller.repository.SellerRepository;
 import com.c209.catalog.domain.singer.entity.Singer;
@@ -204,25 +203,18 @@ public class PerformanceServiceImpl implements PerformanceService {
     public void deleteShow(Long show_id, Long member_id) {
         Performance performance = performanceRepository.findById(show_id)
                 .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
-        Long performance_id = performance.getId();
 
-        if (member_id == null) {
-            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
-        } else {
-            sellerRepository.deleteByPerformance(performance_id);
+        sellerRepository.findByUserIdAndShowId(member_id, show_id)
+                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER));
 
-            Seller seller = sellerRepository.findByUserId(member_id);
-            if (seller == null) {
-                throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
-            }
+        sellerRepository.deleteByPerformance(show_id);
 
-            List<Grade> grades = gradeRepository.findByPerformance(performance.getId());
-            for (Grade grade : grades) {
-                hallGradeRepository.deleteByGrade(grade.getId());
-            }
-            gradeRepository.deleteByPerformance(performance_id);
-            scheduleRepository.deleteByPerformance(performance_id);
-            performanceRepository.delete(performance);
+        List<Grade> grades = gradeRepository.findByPerformance(performance.getId());
+        for (Grade grade : grades) {
+            hallGradeRepository.deleteByGrade(grade.getId());
         }
+        gradeRepository.deleteByPerformance(show_id);
+        scheduleRepository.deleteByPerformance(show_id);
+        performanceRepository.delete(performance);
     }
 }
