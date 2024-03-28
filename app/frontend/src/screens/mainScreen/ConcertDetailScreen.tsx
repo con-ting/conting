@@ -53,7 +53,6 @@ export default function ConcertDetailScreen({route}) {
         end={{x: 1.0, y: 1.0}}
         style={{
           flex: 1,
-
           // marginTop: 50,
         }}
         colors={backgroundColor}>
@@ -64,7 +63,7 @@ export default function ConcertDetailScreen({route}) {
           )}
           scrollEventThrottle={16}
           style={{
-            padding: widthPercent(15),
+            padding:10
           }}>
           <SummaryCard info={info} />
           <Outline content="내용" />
@@ -154,15 +153,15 @@ export default function ConcertDetailScreen({route}) {
           <View
             style={{
               marginTop: widthPercent(20),
-              width: widthPercent(400),
+              width: 'auto',
               height: heightPercent(5000),
             }}>
             <View style={{padding: 10}}>
               <Text style={F_SIZE_BTITLE}>작품 설명</Text>
             </View>
             <FastImage
-              resizeMode={FastImage.resizeMode.stretch}
-              style={{width: 400, height: '100%', marginTop: 20}}
+              resizeMode={FastImage.resizeMode.contain}
+              style={{width: "100%", height: '100%', marginTop: 20}}
               source={{uri: concertInfo}}
             />
           </View>
@@ -268,7 +267,6 @@ const styles = StyleSheet.create({
     gap: widthPercent(10),
     justifyContent: 'space-between',
   },
-
   priceInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -280,7 +278,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   hall: {
-    alignItems: 'center',
     marginTop: widthPercent(20),
   },
   title: {
