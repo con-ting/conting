@@ -1,13 +1,13 @@
-package com.c209.seat;
+package com.c209.ticket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SeatApplication {
+public class TicketApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SeatApplication.class, args);
+        SpringApplication.run(TicketApplication.class, args);
     }
 
 }
