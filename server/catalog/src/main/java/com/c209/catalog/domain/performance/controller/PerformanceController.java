@@ -31,10 +31,10 @@ public class PerformanceController {
 
     @DeleteMapping({"{show_id}"})
     public ResponseEntity<Void> deletePerformance(
-//            @RequestHeader("X-Authorization-Id") Long memberId,
+            @RequestHeader("X-Authorization-Id") Long memberId,
             @PathVariable(value = "show_id") Long show_id
     ) {
-        performanceService.deleteShow(show_id);
+        performanceService.deleteShow(show_id, memberId);
         return ResponseEntity.noContent().build();
     }
 

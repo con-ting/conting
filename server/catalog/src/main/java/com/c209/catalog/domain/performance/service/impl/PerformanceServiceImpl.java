@@ -14,10 +14,12 @@ import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
+import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.domain.schedule.repository.ScheduleRepository;
 import com.c209.catalog.domain.seller.entity.QSeller;
+import com.c209.catalog.domain.seller.entity.Seller;
 import com.c209.catalog.domain.seller.repository.SellerRepository;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.exception.CommonException;
@@ -199,17 +201,27 @@ public class PerformanceServiceImpl implements PerformanceService {
 
     @Override
     @Transactional
-    public void deleteShow(Long show_id) {
+    public void deleteShow(Long show_id, Long member_id) {
         Performance performance = performanceRepository.findById(show_id)
                 .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
 
-        List<Grade> grades = gradeRepository.findByPerformance(performance);
-        for (Grade grade : grades) {
-            hallGradeRepository.deleteByGrade(grade);
+        if (member_id == null) {
+            CommonException commonException = new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+        } else {
+            sellerRepository.deleteByPerformance(performance);
+
+            Seller seller = sellerRepository.findByUserId(member_id);
+            if (seller == null) {
+                throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+            }
+
+            List<Grade> grades = gradeRepository.findByPerformance(performance);
+            for (Grade grade : grades) {
+                hallGradeRepository.deleteByGrade(grade);
+            }
+            gradeRepository.deleteByPerformance(performance);
+            scheduleRepository.deleteByPerformance(performance);
+            performanceRepository.delete(performance);
         }
-        gradeRepository.deleteByPerformance(performance);
-        scheduleRepository.deleteByPerformance(performance);
-        sellerRepository.deleteByPerformance(performance);
-        performanceRepository.delete(performance);
     }
 }

@@ -7,5 +7,5 @@ public interface PerformanceService {
     GetShowResponse getShowDetails(Long showId);
 
     void createShow(PostShowRequest postShowRequest);
-    void deleteShow(Long show_id);
+    void deleteShow(Long show_id, Long member_id);
 }
