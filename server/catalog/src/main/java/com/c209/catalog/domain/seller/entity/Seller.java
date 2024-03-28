@@ -1,0 +1,33 @@
+package com.c209.catalog.domain.seller.entity;
+
+import com.c209.catalog.domain.performance.entity.Performance;
+import com.c209.catalog.global.common.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Entity
+public class Seller extends BaseEntity {
+    @GeneratedValue(strategy=IDENTITY)
+    @Column(name="seller_id")
+    @Id
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="performance_id", nullable = false)
+    private Performance performance;
+
+    @Column(name = "user_id")
+    private Long UserId;
+
+    @Column
+    private String wallet;
+}
