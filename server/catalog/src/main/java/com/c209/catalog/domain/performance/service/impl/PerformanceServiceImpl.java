@@ -204,23 +204,24 @@ public class PerformanceServiceImpl implements PerformanceService {
     public void deleteShow(Long show_id, Long member_id) {
         Performance performance = performanceRepository.findById(show_id)
                 .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
+        Long performance_id = performance.getId();
 
         if (member_id == null) {
-            CommonException commonException = new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
         } else {
-            sellerRepository.deleteByPerformance(performance);
+            sellerRepository.deleteByPerformance(performance_id);
 
             Seller seller = sellerRepository.findByUserId(member_id);
             if (seller == null) {
                 throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
             }
 
-            List<Grade> grades = gradeRepository.findByPerformance(performance);
+            List<Grade> grades = gradeRepository.findByPerformance(performance.getId());
             for (Grade grade : grades) {
-                hallGradeRepository.deleteByGrade(grade);
+                hallGradeRepository.deleteByGrade(grade.getId());
             }
-            gradeRepository.deleteByPerformance(performance);
-            scheduleRepository.deleteByPerformance(performance);
+            gradeRepository.deleteByPerformance(performance_id);
+            scheduleRepository.deleteByPerformance(performance_id);
             performanceRepository.delete(performance);
         }
     }

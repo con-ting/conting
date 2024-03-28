@@ -13,5 +13,7 @@ public interface SellerRepository extends JpaRepository<Seller, Long> {
             "where s.UserId = :user_id")
     Seller findByUserId(Long user_id);
 
-    void deleteByPerformance(Performance performance);
+    @Query("DELETE FROM Seller " +
+            "WHERE performance.id = :performance_id")
+    void deleteByPerformance(Long performance_id);
 }

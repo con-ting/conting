@@ -10,10 +10,13 @@ import java.util.List;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {
-    void deleteByPerformance(Performance performance);
+
+    @Query("DELETE FROM Grade " +
+            "WHERE performance.id = :performance_id")
+    void deleteByPerformance(Long performance_id);
 
     @Query("SELECT g " +
             "FROM Grade g " +
-            "WHERE g.performance = :performance")
-    List<Grade> findByPerformance(Performance performance);
+            "WHERE g.performance.id = :performance_id")
+    List<Grade> findByPerformance(Long performance_id);
 }

@@ -20,5 +20,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             "WHERE p.id =:showId")
     Optional<List<ScheduleInfo>> getSchedulesByShowId(@Param("showId")Long showId);
 
-    void deleteByPerformance(Performance performance);
+    @Query("DELETE FROM Schedule " +
+            "WHERE performance.id = :performance_id")
+    void deleteByPerformance(Long performance_id);
 }
