@@ -37,17 +37,17 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
         log.debug("[QueueServiceReactiveRedisImpl :: registerQueue] time : {}", unixTimeStamp);
 
         return reactiveRedisTemplate.opsForZSet()
-                .add(USER_QUEUE_WAIT_KEY.name().formatted(scheduleId), userId.toString(), unixTimeStamp)
+                .add("users:queue:%s:wait".formatted(scheduleId), userId.toString(), unixTimeStamp)
                 .filter(i->i)
                 .switchIfEmpty(Mono.error(QueueErrorCode.QUEUE_ALREADY_REGISTERED_USER.build()))
-                .flatMap(i->reactiveRedisTemplate.opsForZSet().rank(USER_QUEUE_WAIT_KEY.name().formatted(scheduleId), userId.toString()))
+                .flatMap(i->reactiveRedisTemplate.opsForZSet().rank("users:queue:%s:wait".formatted(scheduleId), userId.toString()))
                 .map(i-> i>=0 ? i+1 : i);
     }
 
     @Override
     public Mono<Long> getRank(Long scheduleId, Long userId) {
         return reactiveRedisTemplate.opsForZSet()
-                .rank(USER_QUEUE_WAIT_KEY.name()
+                .rank("users:queue:%s:wait"
                 .formatted(scheduleId),userId.toString())
                 .defaultIfEmpty(-1L)
                 .map(rank->rank>=0? rank+1 : rank);
@@ -55,8 +55,8 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
 
     @Override
     public Mono<Long> allowOrder(Long scheduleId) {
-        return reactiveRedisTemplate.opsForZSet().popMin(USER_QUEUE_WAIT_KEY.name().formatted(scheduleId), 1)
-                .flatMap(member -> reactiveRedisTemplate.opsForZSet().add(USER_QUEUE_PROCEED_KEY.name().formatted(scheduleId), member.getValue(), Instant.now().getEpochSecond()))
+        return reactiveRedisTemplate.opsForZSet().popMin("users:queue:%s:wait".formatted(scheduleId), 1)
+                .flatMap(member -> reactiveRedisTemplate.opsForZSet().add("users:queue:%s:proceed".formatted(scheduleId), member.getValue(), Instant.now().getEpochSecond()))
                 .count();
     }
 
@@ -72,7 +72,7 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
 
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            String input = USER_QUEUE_TOKEN.getName().formatted(scheduleId, userId);
+            String input = "user-queue-%s-token".formatted(scheduleId, userId);
             byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hexString = new StringBuilder();
@@ -98,17 +98,21 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
                 .defaultIfEmpty(false);
     }
 
-    @Scheduled(initialDelay=5000, fixedDelay = 10000)
+    @Scheduled(initialDelay=100, fixedDelay = 100)
     public void scheduleAllowUSer(){
 
 
-        log.info("스케줄링 동작");
 
         reactiveRedisTemplate.scan(ScanOptions.scanOptions()
-                .match(USER_QUEUE_WAIT_KEY_FOR_SCAN.name())
+                .match("users:queue:*:wait")
                 .count(100)
                 .build())
-                .map(key-> key.split(":")[2])
+                .map(key-> {
+                    String scheduleId = key.split(":")[2];
+                    log.info("키: {}, scheduleId: {}", key, scheduleId); // 로깅 추가
+                    return scheduleId;
+                })
+                //.map(key-> key.split(":")[2])
                 .flatMap(scheduleId -> allowOrder(Long.valueOf(scheduleId))
                 .map(allowed -> Tuples.of(scheduleId, allowed)))
                 .doOnNext(tuple -> log.info("{}의 공연대기줄에서 {} 명이 빠졌습니다.", tuple.getT1(), tuple.getT2()))
