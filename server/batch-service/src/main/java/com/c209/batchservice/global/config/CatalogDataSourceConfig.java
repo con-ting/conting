@@ -1,4 +1,4 @@
-package com.c209.batchservice.config;
+package com.c209.batchservice.global.config;
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,17 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-public class SeatDataSourceConfig {
+public class CatalogDataSourceConfig {
     @Bean
-    @ConfigurationProperties("spring.datasource.seat")
-    public DataSourceProperties seatDataSourceProperties() {
+    @ConfigurationProperties("spring.datasource.catalog")
+    public DataSourceProperties catalogDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @ConfigurationProperties("spring.datasource.seat.hikari")
-    public DataSource seatDataSource() {
-        return seatDataSourceProperties()
+    @ConfigurationProperties("spring.datasource.catalog.hikari")
+    public DataSource catalogDataSource() {
+        return catalogDataSourceProperties()
                 .initializeDataSourceBuilder()
                 .build();
     }

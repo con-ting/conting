@@ -1,4 +1,4 @@
-package com.c209.batchservice.config;
+package com.c209.batchservice.global.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
@@ -19,30 +19,31 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.c209.batchservice.domain.seat.repository",
-        entityManagerFactoryRef = "seatEntityManagerFactory",
-        transactionManagerRef = "seatTransactionManager"
+        basePackages = "com.c209.batchservice.domain.catalog.repository",
+        entityManagerFactoryRef = "catalogEntityManagerFactory",
+        transactionManagerRef = "catalogTransactionManager"
 )
-public class SeatJpaConfig {
+public class CatalogJpaConfig {
     @Bean
-    public LocalContainerEntityManagerFactoryBean seatEntityManagerFactory(
-            final @Qualifier("seatDataSource") DataSource seatDataSource,
+    public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(
+            final @Qualifier("catalogDataSource") DataSource catalogDataSource,
             final EntityManagerFactoryBuilder builder,
             final JpaProperties jpaProperties,
             final HibernateProperties hibernateProperties
+
     ) {
         return builder
-                .dataSource(seatDataSource)
-                .packages("com.c209.batchservice.domain.seat.entity")
-                .persistenceUnit("seatEntityManager")
+                .dataSource(catalogDataSource)
+                .packages("com.c209.batchservice.domain.catalog.entity")
+                .persistenceUnit("catalogEntityManager")
                 .properties(hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings()))
                 .build();
     }
 
     @Bean
-    public PlatformTransactionManager seatTransactionManager(
-            final @Qualifier("seatEntityManagerFactory") LocalContainerEntityManagerFactoryBean seatEntityManagerFactory
+    public PlatformTransactionManager catalogTransactionManager(
+            final @Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory
     ) {
-        return new JpaTransactionManager(Objects.requireNonNull(seatEntityManagerFactory.getObject()));
+        return new JpaTransactionManager(Objects.requireNonNull(catalogEntityManagerFactory.getObject()));
     }
 }

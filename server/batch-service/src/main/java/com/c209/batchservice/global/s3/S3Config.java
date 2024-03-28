@@ -1,4 +1,4 @@
-package com.c209.batchservice.s3;
+package com.c209.batchservice.global.s3;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

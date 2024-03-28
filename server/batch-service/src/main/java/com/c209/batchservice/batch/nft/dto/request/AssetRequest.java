@@ -1,6 +1,6 @@
-package com.c209.batchservice.batch.nft.dto;
+package com.c209.batchservice.batch.nft.dto.request;
 
-public record AssetMetadata(
+public record AssetRequest(
         String name,
         String uri,
         int sellerFeeBasisPoints,

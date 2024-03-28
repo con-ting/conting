@@ -18,3 +18,6 @@ s3:
   bucket: ${S3_BUCKET}
   endpoint: ${S3_ENDPOINT}
   public-base-url: ${S3_PUBLIC_BASE_URL}
+
+web3:
+  wrapper-base-url: ${WEB3_WRAPPER_BASE_URL}

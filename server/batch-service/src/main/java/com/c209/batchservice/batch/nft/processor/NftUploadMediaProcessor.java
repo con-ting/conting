@@ -1,12 +1,12 @@
 package com.c209.batchservice.batch.nft.processor;
 
-import com.c209.batchservice.batch.nft.dto.AssetMetadata;
+import com.c209.batchservice.batch.nft.dto.request.AssetRequest;
 import org.springframework.batch.item.ItemProcessor;
 
-public class NftUploadMediaProcessor implements ItemProcessor<AssetMetadata, String> {
+public class NftUploadMediaProcessor implements ItemProcessor<AssetRequest, String> {
 
     @Override
-    public String process(final AssetMetadata assetMetadata) {
+    public String process(final AssetRequest assetRequest) {
         return null;
     }
 }

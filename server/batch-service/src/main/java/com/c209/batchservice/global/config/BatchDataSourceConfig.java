@@ -1,4 +1,4 @@
-package com.c209.batchservice.config;
+package com.c209.batchservice.global.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.batch.BatchDataSource;
