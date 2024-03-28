@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import java.io.FileInputStream;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ public class  AsyncFcmServiceImpl implements FcmService{
         FirebaseOptions options = null;
         try {
             options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(serviceAccountFilePath).getInputStream()))
+                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream(serviceAccountFilePath)))
                     .setProjectId(projectId)
                     .build();
         } catch (IOException e) {
