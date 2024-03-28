@@ -211,9 +211,8 @@ public class PerformanceServiceImpl implements PerformanceService {
             throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
         }
 
-        if (sellerRepository.findByUserId(member_id) == null ) {
-            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
-        }
+        Optional<Seller> existingSellerOptional = Optional.of(Optional.ofNullable(sellerRepository.findByUserId(member_id)))
+                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER));
 
         sellerRepository.deleteByUser(member_id);
 
