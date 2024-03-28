@@ -108,7 +108,7 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
             log.info("passed scheduling...");
             return;
         }
-        log.info("called scheduling...");
+        //log.info("called scheduling...");
 
         reactiveRedisTemplate.scan(ScanOptions.scanOptions()
                 .match("users:queue:*:wait")
@@ -116,7 +116,7 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
                 .build())
                 .map(key-> {
                     String scheduleId = key.split(":")[2];
-                    log.info("키: {}, scheduleId: {}", key, scheduleId); // 로깅 추가
+                    //log.info("키: {}, scheduleId: {}", key, scheduleId); // 로깅 추가
                     return scheduleId;
                 })
                 //.map(key-> key.split(":")[2])
