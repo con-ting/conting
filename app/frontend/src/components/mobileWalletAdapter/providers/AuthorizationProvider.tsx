@@ -20,7 +20,7 @@ export type Account = Readonly<{
   publicKey: PublicKey;
 }>;
 
-type Authorization = Readonly<{
+export type Authorization = Readonly<{
   accounts: Account[];
   authToken: AuthToken;
   selectedAccount: Account;
@@ -148,6 +148,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
             `${nextSelectedAccount.address} 는 사용 가능한 주소가 아닙니다.`,
           );
         }
+
         return {
           ...currentAuthorization,
           selectedAccount: nextSelectedAccount,
