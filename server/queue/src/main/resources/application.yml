@@ -67,7 +67,7 @@ spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${QUEUE_DB_URL}
-    username: ${QUEUE_USER_NAME}
+    username: ${QUEUE_DB_USER_NAME}
     password: ${QUEUE_DB_PASSWORD}
     hikari:
       max-lifetime: 160000
