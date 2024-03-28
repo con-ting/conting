@@ -9,9 +9,11 @@ import {
   ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {queuePostApi} from '../../api/queue/queue';
 
 export default function ConcertChoiceButton({schedule}) {
   const [selectedDateId, setSelectedDateId] = useState(null);
+  const [postDateId, setPostDateId] = useState({});
 
   const navigation = useNavigation();
 
@@ -23,6 +25,27 @@ export default function ConcertChoiceButton({schedule}) {
     } else {
       // 선택되지 않은 경우, 선택
       setSelectedDateId(id);
+    }
+  };
+
+  const postWaiting = async () => {
+    if (selectedDateId !== null) {
+      console.log(selectedDateId);
+      // 대기열 등록 API 호출 시, 바로 schedule_id를 포함한 객체를 인자로 전달
+      try {
+        const queueData = await queuePostApi({schedule_id: selectedDateId});
+        console.log('대기열 등록 완료:', queueData);
+        // 대기열 페이지로 이동, queueData에는 대기열 정보 가져옴
+        navigation.navigate('Waiting', {
+          rank: queueData.rank,
+          id: selectedDateId,
+        });
+      } catch (error) {
+        console.error('대기열 등록 실패:', error);
+        // 오류 처리 로직, 예: 에러 메시지 표시
+      }
+    } else {
+      alert('날짜를 선택해주세요.');
     }
   };
 
@@ -92,16 +115,7 @@ export default function ConcertChoiceButton({schedule}) {
 
         <TouchableOpacity
           style={[styles.buttonTicketing]}
-          onPress={() => {
-            if (selectedDateId !== null) {
-              // 여기서는 단순화를 위해 첫 번째 선택된 날짜의 ID만을 사용합니다.
-              // 실제 사용 사례에 따라 이 로직을 조정할 수 있습니다.
-              navigation.navigate('Waiting', {selectedDateId: selectedDateId});
-            } else {
-              alert('날짜를 선택해주세요.');
-            }
-            // navigation.navigate('Waiting', {rank: 0});
-          }}>
+          onPress={() => postWaiting()}>
           <Text style={styles.textTicketing}>직접 예매하기</Text>
         </TouchableOpacity>
       </LinearGradient>
