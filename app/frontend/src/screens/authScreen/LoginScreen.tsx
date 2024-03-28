@@ -1,12 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {Linking} from 'react-native';
-import {
-  Alert,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Platform, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -16,6 +10,9 @@ import {
   fcmToken,
   goMainPageState,
   userInfoState,
+  walletAdress,
+  walletLabel,
+  walletPublicKey,
 } from '../../utils/recoil/Atoms';
 import * as Color from '../../config/Color';
 
@@ -33,22 +30,10 @@ import {
   useAuthorization,
   Account,
 } from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
-import {
-  Base64EncodedAddress,
-  transact,
-} from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {alertAndLog} from '../../utils/common/alertAndLog.ts';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+
 import {PopUpModal} from '../../components/modal/Modal.tsx';
-import {
-  BLUEBASE,
-  CUTEYELLOW,
-  MAINBLACK,
-  MAINGRAY,
-  MAINWHITE,
-  MAINYELLOW,
-  REDBASE,
-  TEXTGRAY,
-} from '../../config/Color';
+import {MAINBLACK, MAINWHITE, MAINYELLOW, REDBASE} from '../../config/Color';
 import {updateUserFcmAndWallet} from '../../api/auth/user.ts';
 
 type RootStackParamList = {
@@ -61,9 +46,16 @@ const LoginScreen = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [cryptoAddress, setCryptoAddress] = useState('');
-  const [cryptoLabel, setCryptoLabel] = useState('');
-  const [cryptoPublicKey, setCryptoPublicKey] = useState('');
+
+  const [cryptoAddress, setCryptoAddress] = useRecoilState(walletAdress);
+  const [cryptoLabel, setCryptoLabel] = useRecoilState(walletLabel);
+  const [cryptoPublicKey, setCryptoPublicKey] = useRecoilState(walletPublicKey);
+  // const [cryptoAddress, setCryptoAddress] = useState('init walletAdress');
+  // const [cryptoLabel, setCryptoLabel] = useState('init walletLabel');
+  // const [cryptoPublicKey, setCryptoPublicKey] = useState(
+  //   'init walletPublicKey',
+  // );
+
   const [token, setToken] = useRecoilState(fcmToken);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
@@ -75,16 +67,22 @@ const LoginScreen = () => {
   // 모달 관련
   const [changeAddressModalVisible, setChangeAddressModalVisible] =
     useState(false); //체인 주소 변경 감지 모달
-  const [changeAddress, setChangeAddress] = useState(false); //사용자가 주소를 변경하고 싶은지
   const [changeFcmModalVisible, setChangeFcmModalVisible] = useState(false); //FCM 변경 감지 모달
-  const [changeFcm, setChangeFcm] = useState(false); //사용자가 주 사용 핸드폰을 바꾸고 싶은지
 
-  const toggleChangeAddressModal = () => {
-    setChangeAddressModalVisible(!changeAddressModalVisible);
+  useEffect(() => {
+    console.log('---------USE EFFECT------');
+    console.log('cryptoAddress=', cryptoAddress);
+    console.log('cryptoLabel=', cryptoLabel);
+    console.log('cryptoPublicKey=', cryptoPublicKey);
+    console.log('-------------------------');
+  }, [cryptoAddress, cryptoLabel, cryptoPublicKey]);
+
+  const toggleChangeAddressModal = async () => {
+    await setChangeAddressModalVisible(!changeAddressModalVisible);
   };
 
-  const toggleChangeFcmModal = () => {
-    setChangeFcmModalVisible(!changeFcmModalVisible);
+  const toggleChangeFcmModal = async () => {
+    await setChangeFcmModalVisible(!changeFcmModalVisible);
   };
 
   const handleConnectPress = useCallback(async () => {
@@ -95,7 +93,11 @@ const LoginScreen = () => {
       }
       setAuthorizationInProgress(true);
       await transact(async wallet => {
-        await authorizeSession(wallet);
+        const selectedAccount = await authorizeSession(wallet);
+        console.log('selectedAccount = ', selectedAccount);
+        setCryptoAddress(selectedAccount.address);
+        setCryptoLabel(selectedAccount.label);
+        setCryptoPublicKey(selectedAccount.publicKey);
       });
       success = true; // 연결 성공
     } catch (err: any) {
@@ -111,15 +113,9 @@ const LoginScreen = () => {
 
   const fetchAndUpdateBalance = useCallback(
     async (account: Account) => {
-      await setCryptoAddress(account.address);
-      console.log('앱 주소 =: ' + account.address);
-      await setCryptoPublicKey(account.publicKey);
-      console.log('개인 지갑 주소 =: ' + account.publicKey);
-      await setCryptoLabel(account.label ? account.label : '');
       console.log('개인 지갑 앱 = ' + account.label);
       const fetchedBalance = await connection.getBalance(account.publicKey);
-      console.log('개인 지갑 잔액 = ' + fetchedBalance);
-      await setBalance(fetchedBalance);
+      setBalance(fetchedBalance);
     },
     [connection],
   );
@@ -131,6 +127,7 @@ const LoginScreen = () => {
     fetchAndUpdateBalance(selectedAccount);
     console.log('balance = ', balance);
   }, [fetchAndUpdateBalance, selectedAccount]);
+
   // 각각의 버튼에 대한 실행될 링크(url)와 링크가 실행되지 않을 때 대체 링크(alterUrl)
   const deepLinkEvent = useCallback(async (url: string, alterUrl: string) => {
     // 만약 어플이 설치되어 있으면 true, 없으면 false
@@ -143,18 +140,18 @@ const LoginScreen = () => {
       await Linking.openURL(alterUrl);
     }
   }, []);
-  const loginApi = async () => {
-    //1. 로그인 API 요청
-    console.log('loginRequest=', {
-      email: email,
-      password: password,
-    });
+
+  //1. 로그인 API 요청
+  const loginApiSender = async () => {
     const loginResponse = await login({
       email: email,
       password: password,
     });
-    console.log('loginResponse = ', loginResponse);
-    //2. 지갑 앱과 연결 시도
+    return loginResponse;
+  };
+
+  //2. 지갑 앱과 연결 시도
+  const walletConnetor = async () => {
     console.log('지갑 연결 시도');
     const walletPass = await handleConnectPress(); // await 추가
     console.log('개인 지갑 잔액 = ' + balance);
@@ -171,77 +168,87 @@ const LoginScreen = () => {
           'https://apps.apple.com/kr/app/phantom-crypto-wallet/id1598432977',
         );
       }
-
-      return;
+      return new Error('연결 실패, deeplink 연결');
     }
     //2-2. 연결 성공 시
+    console.log('cryptoAddress=', cryptoAddress);
+    console.log('cryptoLabel=', cryptoLabel);
+    console.log('cryptoPublicKey=', cryptoPublicKey);
+    console.log('selectedAccount=', selectedAccount);
     console.log('지갑 연결 성공');
-    //3. 토큰 및 userAgent 저장
-    await setAsync('accessToken', loginResponse.token.accessToken);
-    await setAsync('refreshToken', loginResponse.token.refreshToken);
-    await setAsync('userId', loginResponse.user.id);
-    //4. 연결 주소 검증
-    if (cryptoPublicKey != loginResponse.user.wallet) {
+  };
+
+  //3. 토큰 및 userAgent 저장
+  const userDataSetting = async (props: any) => {
+    console.log('loginUserResponseData.token = ', props.token);
+    console.log('loginUserResponseData.user = ', props.user);
+    await setAsync('accessToken', props.token.accessToken);
+    await setAsync('refreshToken', props.token.refreshToken);
+    await setAsync('userId', props.user.id);
+  };
+
+  //4. 연결 주소 검증
+  const validationAddress = async (props: any) => {
+    console.log('cryptoAddress=', cryptoAddress);
+    console.log('cryptoLabel=', cryptoLabel);
+    console.log('cryptoPublicKey=', cryptoPublicKey);
+    console.log('selectedAccount=', selectedAccount);
+    if (cryptoPublicKey != props.user.wallet) {
       console.log('월렛주소가 다름');
       console.log('cryptoPublicKey = ', cryptoPublicKey);
-      console.log('cryptoPublicKey type= ', typeof cryptoPublicKey);
-      console.log('loginResponse.user.wallet = ', loginResponse.user.wallet);
-      console.log(
-        'loginResponse.user.wallet Type= ',
-        typeof loginResponse.user.wallet,
-      );
+      console.log('loginResponse.user.wallet = ', props.user.wallet);
       //4-1. 주소가 다를 시 모달 생성
-      await setChangeAddressModalVisible(!changeAddressModalVisible);
-      if (!changeAddress) {
-        //변경하지 않는다고 했을 때, 로직
-        Alert.alert(
-          '주의사항',
-          'solflare, phantom wallet 의 지갑을 바꾸고 다시 시도해주세요!',
-        );
-        return;
-      }
-      //변경 한다고 했을 때, 로직
-      await setCryptoAddress(cryptoPublicKey);
-      //서버에 변경 요청
-      await updateUserFcmAndWallet({wallet: cryptoPublicKey});
+      await toggleChangeAddressModal();
     }
-    //5. FCM 토큰 검증
-    if (token != loginResponse.user.fcmToken) {
+  };
+
+  //5. FCM 토큰 검증
+  const validationFcm = async (props: any) => {
+    if (token != props.user.fcmToken) {
       console.log('FCM 토큰이 다름');
       console.log('token = ', token);
-      console.log('token type= ', typeof token);
-      console.log(
-        'loginResponse.user.fcmToken = ',
-        loginResponse.user.fcmToken,
-      );
-      console.log(
-        'loginResponse.user.fcmToken Type= ',
-        typeof loginResponse.user.fcmToken,
-      );
+      console.log('loginResponse.user.fcmToken = ', props.user.fcmToken);
       //5-1. 토큰이 다를 시 모달 생성
-      setChangeFcmModalVisible(!changeFcmModalVisible);
-      if (!changeFcm) {
-        //변경하지 않는다고 했을 때, 로직
-        await setToken(loginResponse.user.fcmToken);
-      } else {
-        //변경 한다고 했을 때, 로직
-        await setToken(token);
-        //서버에 변경 요청
-        await updateUserFcmAndWallet({fcm: token});
-      }
+
+      await toggleChangeFcmModal();
     }
+  };
+  const loginButtonPress = async () => {
+    //promise all 사용해서 순서대로 수행, 수행중 에러가 1개라도 있다면 종료
+    const userResponse = await loginApiSender(); //1. 로그인 API 요청
+    console.log('로그인 API 요청 끝');
+    await walletConnetor(); //2. 지갑 앱과 연결 시도
+    console.log('지갑 앱과 연결 시도 끝');
+    console.log('토큰 및 userAgent 저장 시작');
+    await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+    console.log('cryptoAddress=', cryptoAddress);
+    console.log('cryptoLabel=', cryptoLabel);
+    console.log('cryptoPublicKey=', cryptoPublicKey);
+    console.log('selectedAccount=', selectedAccount);
+    console.log('토큰 및 userAgent 저장 끝');
+
+    console.log('연결 주소 검증 시작');
+    await validationAddress(userResponse); //4. 연결 주소 검증
+    console.log('연결 주소 검증 끝');
+    console.log('FCM 토큰 검증 시작');
+    await validationFcm(userResponse); //5. FCM 토큰 검증
+    console.log('FCM 토큰 검증 끝');
+
     //6. 전역 상태에 유저 정보 저장
+    console.log('전역 상태에 유저 정보 저장 시작');
     await setUserInfo({
-      user_id: loginResponse.user.id,
-      user_email: loginResponse.user.email,
+      user_id: userResponse.user.id,
+      user_email: userResponse.user.email,
       fcm: token,
       cryptoAddress: cryptoAddress,
       cryptoLabel: cryptoLabel,
       cryptoPublicKey: cryptoPublicKey,
     });
-
+    console.log('전역 상태에 유저 정보 저장 끝');
     //7. goMainPage 수정
+    console.log('goMainPage 수정 시작');
     await setGoMainPage(true);
+    console.log('goMainPage 수정 끝');
   };
 
   // @ts-ignore
@@ -284,7 +291,7 @@ const LoginScreen = () => {
           />
           <Spacer space={20} />
           {/* 로그인 버튼 부분 */}
-          <YellowButton onPress={loginApi} btnText={'로그인'} />
+          <YellowButton onPress={loginButtonPress} btnText={'로그인'} />
           <Spacer space={20} />
           {/* 이메일 찾기, 비밀번호 찾기, 회원가입 부분 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -410,8 +417,9 @@ const LoginScreen = () => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <BasicButton
               onPress={async () => {
-                await setChangeFcm(false);
-                toggleChangeFcmModal();
+                //변경하지 않는다고 했을 때, 로직
+                await setToken(loginUserResponseData.user.fcmToken);
+                await toggleChangeFcmModal();
               }}
               width="50%"
               borderRadius={8}
@@ -421,8 +429,10 @@ const LoginScreen = () => {
             </BasicButton>
             <YellowButton
               onPress={async () => {
-                await setChangeFcm(true);
-                toggleChangeFcmModal();
+                //변경 한다고 했을 때, 로직
+                //서버에 변경 요청
+                await updateUserFcmAndWallet({fcm: token});
+                await toggleChangeFcmModal();
               }}
               isRadius={false}
               btnText={'등록하기'}
@@ -462,8 +472,10 @@ const LoginScreen = () => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <BasicButton
               onPress={async () => {
-                await setChangeAddress(false);
-                toggleChangeAddressModal();
+                new Error(
+                  '가입 시 등록된 지갑 주소와, 연결된 지갑 주소가 일치하지 않음',
+                );
+                await toggleChangeAddressModal();
               }}
               width="50%"
               borderRadius={8}
@@ -473,8 +485,11 @@ const LoginScreen = () => {
             </BasicButton>
             <YellowButton
               onPress={async () => {
-                await setChangeAddress(true);
-                toggleChangeAddressModal();
+                //변경 한다고 했을 때, 로직
+                await setCryptoAddress(cryptoPublicKey);
+                //서버에 변경 요청
+                await updateUserFcmAndWallet({wallet: cryptoPublicKey});
+                await toggleChangeAddressModal();
               }}
               isRadius={false}
               btnText={'지갑 변경'}
