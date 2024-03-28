@@ -34,6 +34,7 @@ public class  AsyncFcmServiceImpl implements FcmService{
 
     @PostConstruct
     public void initialize() {
+        log.info("{}", serviceAccountFilePath);
         FirebaseOptions options = null;
         try {
             options = FirebaseOptions.builder()
