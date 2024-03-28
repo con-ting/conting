@@ -4,12 +4,10 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
         DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
-        JWT_ACCESS="${env.JWT_ACCESS}"
-        AUTH_SERVICE="${env.AUTH_SERVICE}"
-        USER_SERVICE="${env.USER_SERVICE}"
-        SEAT_SERVICE="${env.SEAT_SERVICE}"
-        NOTIFICATION_SERVICE="${env.NOTIFICATION_SERVICE}"
-        CATALOG_SERVICE="${env.CATALOG_SERVICE}"
+        QUEUE_DB_URL="${env.QUEUE_DB_URL}"
+        QUEUE_DB_USER_NAME="${env.QUEUE_DB_USER_NAME}"
+        QUEUE_DB_PASSWORD="${env.QUEUE_DB_PASSWORD}"
+        QUEUE_HOST="${env.QUEUE_HOST}"
     }
     agent any
 
@@ -26,11 +24,11 @@ pipeline {
         stage('Confirm Echo') {
             steps {
                 script {
-                    echo "discovery server 입니다."
+                    echo "queue server 입니다."
                 }
             }
         }
-         stage('Build Discovery-Server .JAR') {
+         stage('Build Queue-Server .JAR') {
                     steps {
                         script {
                             // 변경된 브랜치와 머지 대상 브랜치 출력
@@ -39,24 +37,24 @@ pipeline {
                             echo "Merge Target Branch : \${CHANGE_TARGET}"
                             echo "Current Branch: \${currentBranch}"
 
-                            echo "discovery server 입니다."
+                            echo "queue server 입니다."
                             sh 'pwd'
                             sh 'ls -al'
                             //gradlew 빌드
                             sh 'java --version'
-                            sh 'chmod +x ./server/gateway/gradlew'
+                            sh 'chmod +x ./server/queue/gradlew'
                             sh '''
-                                cd ./server/gateway
+                                cd ./server/queue
                                 ./gradlew clean build
                             '''
                         }
                     }
                 }
 
-                stage('Build Discovery-Server Image'){
+                stage('Build Catalog-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Gateway_${BUILD_NUMBER}", "-f server/gateway/Dockerfile ./server/gateway")
+                            dockerImage = docker.build("${repository}:Queue_${BUILD_NUMBER}", "-f server/queue/Dockerfile ./server/queue")
                         }
                     }
                 }
@@ -69,18 +67,18 @@ pipeline {
                     }
                 }
 
-                stage('Push Gateway Image to DockerHub'){
+                stage('Push Queue Image to DockerHub'){
                     steps {
                         script {
-                            sh "docker push \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker push \${repository}:Queue_\${BUILD_NUMBER}"
                         }
                     }
                 }
 
-                stage('Clean Gateway Image'){
+                stage('Clean Queue Image'){
                     steps{
                         script{
-                            sh "docker rmi \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker rmi \${repository}:Queue_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -91,10 +89,10 @@ pipeline {
                             continueOnError: true, failOnError: false,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Queue_Service",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
+//                                         sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep user | tr ' ' '\t' | cut -f1)"),
                                         sshTransfer(execCommand: "sudo docker system prune -af")
                                     ]
                                 )
@@ -109,12 +107,12 @@ pipeline {
                             continueOnError: false, failOnError: true,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Queue_Service",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker rm -f gateway"),
-                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" -e CATALOG_SERVICE=\"${CATALOG_SERVICE}\" -e NOTIFICATION_SERVICE=\"${NOTIFICATION_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker rm -f queue"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Queue_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8881:8881 --name queue --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e QUEUE_DB_URL=\"${QUEUE_DB_URL}\" -e QUEUE_DB_USER_NAME=\"${QUEUE_DB_USER_NAME}\" -e QUEUE_DB_PASSWORD=\"${QUEUE_DB_PASSWORD}\" -e QUEUE_HOST=\"${QUEUE_HOST}\" "+ repository + ":Catalog_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]

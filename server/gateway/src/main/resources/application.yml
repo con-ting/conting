@@ -30,6 +30,10 @@ spring:
           uri: ${AUTH_SERVICE}
           predicates:
             - Path=/auth/**
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE}
+          predicates:
+            - Path=/fcm/**
         - id: user-service
           uri: ${USER_SERVICE}
           predicates:
