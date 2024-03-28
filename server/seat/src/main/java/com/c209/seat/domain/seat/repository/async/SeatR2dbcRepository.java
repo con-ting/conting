@@ -1,4 +1,4 @@
-package com.c209.seat.domain.seat.repository;
+package com.c209.seat.domain.seat.repository.async;
 
 import com.c209.seat.domain.seat.dto.response.SeatStatusResponse;
 import com.c209.seat.domain.seat.entity.Seat;
@@ -10,14 +10,19 @@ import reactor.core.publisher.Flux;
 import org.springframework.data.r2dbc.repository.Query;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 
 public interface SeatR2dbcRepository extends ReactiveCrudRepository<Seat, Long> {
 
     @Query("SELECT seat_id, schedule_id, is_available, row, col, grade, grade_price, nft_url, sector FROM seat WHERE schedule_id = :scheduleId AND sector = :sector")
     Flux<Seat> findAllByScheduleIdAndSector(Long scheduleId, Sector sector);
 
-    @Query("SELECT seat_id, is_available FROM seat WHERE seat_id = :seatID")
+    @Query("SELECT is_available FROM seat WHERE seat_id = :seatID")
     Mono<SeatStatusResponse> findBySeatId(Long seatId);
+
+    @Query("SELECT * FROM seat WHERE seat_id IN (:seatIds)")
+    Flux<Seat> findBySeatIdIn(List<Long> seatIds);
 
 
 }

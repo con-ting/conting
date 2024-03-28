@@ -1,2 +1,3 @@
-FROM mysql:latest
+FROM mariadb:10
+
 ENV TZ=Asia/Seoul
