@@ -27,7 +27,7 @@ import FastImage from 'react-native-fast-image';
 import {useEffect, useRef, useState} from 'react';
 import ConcertBottomButtons from '../../components/button/ConcertBottomButtons';
 import SingerProfile from '../../components/card/SingerProfile';
-import {ConcertDetailApi} from '../../api/concert/concert';
+import {ConcertDetailApi} from '../../api/catalog/concert';
 
 export default function ConcertDetailScreen({route}) {
   // 배경색을 recoil에서 받아오기

@@ -23,6 +23,8 @@ export default function WaitingScreen({route}: any) {
   const navigation = useNavigation(); // 네비게이션 객체 사용
 
   useEffect(() => {
+    console.log(route);
+
     // 3초마다 rank 값을 확인하는 인터벌 설정
     const interval = setInterval(() => {
       if (rank === 0) {
