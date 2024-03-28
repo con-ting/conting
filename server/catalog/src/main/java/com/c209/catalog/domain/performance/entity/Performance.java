@@ -89,6 +89,9 @@ public class Performance extends BaseEntity {
     @Column(columnDefinition = "integer default 0")
     private Integer view;
 
+    @Column(name = "is_minted", columnDefinition = "boolean default false")
+    private Boolean isMinted;
+
     // status 자동 계산
     // PrePersist 어노테이션으로 엔티티 영속화 전의 메서드 정의해줌
     @PrePersist
