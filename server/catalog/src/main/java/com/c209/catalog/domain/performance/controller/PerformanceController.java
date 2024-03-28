@@ -40,18 +40,14 @@ public class PerformanceController {
 
     @PostMapping()
     public ResponseEntity<String> postShow(
-//            @RequestHeader("X-Authorization-Id") Long memberId,
+            @RequestHeader("X-Authorization-Id") Long memberId,
             @RequestBody PostShowRequest postShowRequest
     ) {
-        try {
-            performanceService.createShow(postShowRequest);
+        performanceService.createShow(postShowRequest, memberId);
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Show Created");
-        } catch (CommonException e) {
-            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
-        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Show Created");
     }
 
     @GetMapping

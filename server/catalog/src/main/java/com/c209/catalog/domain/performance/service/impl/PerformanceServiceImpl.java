@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -148,11 +149,9 @@ public class PerformanceServiceImpl implements PerformanceService {
 
     @Override
     @Transactional
-    public void createShow(PostShowRequest postShowRequest) {
-        Optional<Performance> existingPerformanceOptional = performanceRepository.findByTitle(postShowRequest.getShow().getTitle());
-        if (existingPerformanceOptional.isPresent()) {
-            throw new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST);
-        }
+    public void createShow(PostShowRequest postShowRequest, Long member_id) {
+        Optional<Performance> existingPerformanceOptional = Optional.ofNullable(performanceRepository.findByTitle(postShowRequest.getShow().getTitle())
+                .orElseThrow(() -> new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST)));
 
         Optional<Company> existingCompanyOptional = companyRepository.findByCompanyName(postShowRequest.getCompany().getCompanyName());
         Company company;
@@ -192,6 +191,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .status(status)
                 .isAdultOnly(false)
                 .view(0)
+                .seller(sellerRepository.findByUserId(member_id))
                 .build();
 
         performanceRepository.save(performance);
@@ -203,10 +203,15 @@ public class PerformanceServiceImpl implements PerformanceService {
         Performance performance = performanceRepository.findById(show_id)
                 .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
 
-        sellerRepository.findByUserIdAndShowId(member_id, show_id)
-                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER));
+        if(!Objects.equals(performance.getSeller().getId(), member_id)) {
+            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+        }
 
-        sellerRepository.deleteByPerformance(show_id);
+        if (sellerRepository.findByUserId(member_id) == null ) {
+            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+        }
+
+        sellerRepository.deleteByUser(member_id);
 
         List<Grade> grades = gradeRepository.findByPerformance(performance.getId());
         for (Grade grade : grades) {

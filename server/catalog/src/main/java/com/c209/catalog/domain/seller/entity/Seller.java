@@ -19,10 +19,6 @@ public class Seller extends BaseEntity {
     @Id
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="performance_id", nullable = false)
-    private Performance performance;
-
     @Column(name = "user_id")
     private Long UserId;
 
