@@ -7,5 +7,3 @@ DELETE FROM hall;
 DELETE FROM grade;
 DELETE FROM singer;
 DELETE FROM company;
-
-
