@@ -1,9 +1,10 @@
 package com.c209.payment.domain.order.service;
 
-import reactor.core.publisher.Mono;
+import com.c209.payment.domain.order.dto.request.CreateOrderRequest;
+import com.c209.payment.domain.order.dto.response.CreateOrderResponse;
 
 public interface OrderService {
 
-    Mono<?> createOrder();
+    CreateOrderResponse createOrder(CreateOrderRequest request, Long userId);
 
 }

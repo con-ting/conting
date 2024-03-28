@@ -1,7 +1,6 @@
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
 import FisrtComeList from '../../components/list/FirstComeList';
-import {ScrollView} from 'react-native';
 import PopularConcertList from './../../components/list/PopularConcertList';
 import LinearGradient from 'react-native-linear-gradient';
 import {useState} from 'react';
@@ -13,6 +12,7 @@ import {CARDBASE} from '../../config/Color';
 import {useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
 import {posterColor} from '../../utils/recoil/Atoms';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function MainScreen() {
   const navigation = useNavigation();

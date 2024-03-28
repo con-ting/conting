@@ -112,7 +112,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f queue"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Queue_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8881:8881 --name queue --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e QUEUE_DB_URL=\"${QUEUE_DB_URL}\" -e QUEUE_DB_USER_NAME=\"${QUEUE_DB_USER_NAME}\" -e QUEUE_DB_PASSWORD=\"${QUEUE_DB_PASSWORD}\" -e QUEUE_HOST=\"${QUEUE_HOST}\" "+ repository + ":Catalog_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8881:8881 --name queue --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e QUEUE_DB_URL=\"${QUEUE_DB_URL}\" -e QUEUE_DB_USER_NAME=\"${QUEUE_DB_USER_NAME}\" -e QUEUE_DB_PASSWORD=\"${QUEUE_DB_PASSWORD}\" -e QUEUE_HOST=\"${QUEUE_HOST}\" "+ repository + ":Queue_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]

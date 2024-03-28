@@ -6,7 +6,6 @@ import {
 } from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import React from 'react';
 import {IconTextBox} from './IconTextBox.tsx';
 import * as ICON from 'iconsax-react-native';
 import {formatDateWithDay} from '../../config/TimeFormat.ts';

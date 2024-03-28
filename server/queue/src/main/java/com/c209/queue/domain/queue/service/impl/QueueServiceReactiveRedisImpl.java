@@ -6,6 +6,7 @@ import com.c209.queue.domain.queue.exception.QueueErrorCode;
 import com.c209.queue.domain.queue.service.QueueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -26,6 +27,8 @@ import static com.c209.queue.domain.queue.service.QueueKey.*;
 @RequiredArgsConstructor
 public class QueueServiceReactiveRedisImpl implements QueueService {
 
+    @Value("${scheduler.enabled}")
+    private Boolean scheduling;
 
     private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
 
@@ -101,7 +104,11 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
     @Scheduled(initialDelay=100, fixedDelay = 100)
     public void scheduleAllowUSer(){
 
-
+        if (!scheduling) {
+            log.info("passed scheduling...");
+            return;
+        }
+        //log.info("called scheduling...");
 
         reactiveRedisTemplate.scan(ScanOptions.scanOptions()
                 .match("users:queue:*:wait")
@@ -109,7 +116,7 @@ public class QueueServiceReactiveRedisImpl implements QueueService {
                 .build())
                 .map(key-> {
                     String scheduleId = key.split(":")[2];
-                    log.info("키: {}, scheduleId: {}", key, scheduleId); // 로깅 추가
+                    //log.info("키: {}, scheduleId: {}", key, scheduleId); // 로깅 추가
                     return scheduleId;
                 })
                 //.map(key-> key.split(":")[2])

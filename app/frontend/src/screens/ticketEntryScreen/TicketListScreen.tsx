@@ -12,7 +12,7 @@ export default function TicketListScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [posterColors, setPosterColors] = useState(['#000000', '#000000']);
 
-  // 기기가 생체 인식이 가능한지 확인하는
+  // 배경색 가져오기
   useEffect(() => {
     getColors(concertList[currentIndex].poster, {
       cache: true,
