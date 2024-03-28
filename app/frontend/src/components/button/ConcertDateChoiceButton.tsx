@@ -36,7 +36,10 @@ export default function ConcertChoiceButton({schedule}) {
         const queueData = await queuePostApi({schedule_id: selectedDateId});
         console.log('대기열 등록 완료:', queueData);
         // 대기열 페이지로 이동, queueData에는 대기열 정보 가져옴
-        navigation.navigate('Waiting', {rank: queueData.rank});
+        navigation.navigate('Waiting', {
+          rank: queueData.rank,
+          id: selectedDateId,
+        });
       } catch (error) {
         console.error('대기열 등록 실패:', error);
         // 오류 처리 로직, 예: 에러 메시지 표시

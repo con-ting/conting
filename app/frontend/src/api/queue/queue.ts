@@ -11,7 +11,7 @@ export const queuePostApi = async (params: {schedule_id: string}) => {
 
 export const queueGetApi = async (schedule_id: string) => {
   console.log('[queueGetAPI request] = ', schedule_id);
-  const res = await tokenInstance.get(`${queUrl}`);
+  const res = await tokenInstance.get(`${queUrl}?schedule_id=${schedule_id}`);
   console.log('[queueGetAPI response] = ', res.data);
   return res.data;
 };
