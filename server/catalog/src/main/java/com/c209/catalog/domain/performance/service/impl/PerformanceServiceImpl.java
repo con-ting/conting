@@ -18,6 +18,7 @@ import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
 import com.c209.catalog.domain.schedule.repository.ScheduleRepository;
+import com.c209.catalog.domain.seller.entity.Seller;
 import com.c209.catalog.domain.seller.repository.SellerRepository;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.exception.CommonException;
@@ -152,6 +153,9 @@ public class PerformanceServiceImpl implements PerformanceService {
     public void createShow(PostShowRequest postShowRequest, Long member_id) {
         Optional<Performance> existingPerformanceOptional = Optional.ofNullable(performanceRepository.findByTitle(postShowRequest.getShow().getTitle())
                 .orElseThrow(() -> new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST)));
+
+        Optional<Seller> existingSellerOptional = Optional.ofNullable(Optional.ofNullable(sellerRepository.findByUserId(member_id))
+                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER)));
 
         Optional<Company> existingCompanyOptional = companyRepository.findByCompanyName(postShowRequest.getCompany().getCompanyName());
         Company company;
