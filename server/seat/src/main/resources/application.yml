@@ -58,12 +58,12 @@ spring:
     activate:
       on-profile: prod
   r2dbc:
-    url: r2dbc:mariadb://${SEAT_HOST}:9999/seat?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    url: ${SEAT_ASYNC_DB_URL}
     username: ${SEAT_DB_USER_NAME}
     password: ${SEAT_DB_PASSWORD}
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${SEAT_HOST}:9999/seat?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    url: ${SEAT_SYNC_DB_URL}
     username: ${SEAT_DB_USER_NAME}
     password: ${SEAT_DB_PASSWORD}
     hikari:
