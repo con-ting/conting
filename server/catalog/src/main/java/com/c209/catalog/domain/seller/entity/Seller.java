@@ -3,10 +3,7 @@ package com.c209.catalog.domain.seller.entity;
 import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -15,6 +12,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Getter
 @Entity
+@Setter
 public class Seller extends BaseEntity {
     @GeneratedValue(strategy=IDENTITY)
     @Column(name="seller_id")

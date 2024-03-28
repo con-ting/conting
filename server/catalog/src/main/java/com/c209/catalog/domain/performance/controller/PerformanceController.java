@@ -40,7 +40,7 @@ public class PerformanceController {
 
     @PostMapping()
     public ResponseEntity<String> postShow(
-            @RequestHeader("X-Authorization-Id") Long memberId,
+//            @RequestHeader("X-Authorization-Id") Long memberId,
             @RequestBody PostShowRequest postShowRequest
     ) {
         try {
