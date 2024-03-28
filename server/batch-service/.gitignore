@@ -37,4 +37,5 @@ out/
 .vscode/
 
 ## Environment Variables ##
-.env
+*.env
+data/

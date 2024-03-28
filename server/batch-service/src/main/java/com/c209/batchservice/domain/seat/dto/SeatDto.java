@@ -4,8 +4,6 @@
 package com.c209.batchservice.domain.seat.dto;
 
 import com.c209.batchservice.domain.seat.entity.Seat;
-import com.c209.batchservice.domain.seat.enums.Grade;
-import com.c209.batchservice.domain.seat.enums.Sector;
 import lombok.Builder;
 
 @Builder
@@ -14,10 +12,10 @@ public record SeatDto(
         Long scheduleId,
         String row,
         String col,
-        Grade grade,
+        String grade,
         Integer gradePrice,
         String ntfUrl,
-        Sector sector
+        String sector
 ) {
     public static SeatDto of(Seat seat) {
         return SeatDto.builder()
@@ -26,7 +24,7 @@ public record SeatDto(
                 .row(seat.getRow())
                 .col(seat.getCol())
                 .grade(seat.getGrade())
-                .ntfUrl(seat.getNtfUrl())
+                .ntfUrl(seat.getNftUrl())
                 .gradePrice(seat.getGradePrice())
                 .sector(seat.getSector())
                 .build();

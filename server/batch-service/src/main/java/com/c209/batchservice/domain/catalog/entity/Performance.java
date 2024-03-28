@@ -7,7 +7,7 @@ import com.c209.batchservice.domain.catalog.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -24,6 +24,6 @@ public class Performance {
     private String videoUrl;
     @Enumerated(value = EnumType.STRING)
     private Status status;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

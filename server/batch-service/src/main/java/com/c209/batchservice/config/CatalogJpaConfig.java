@@ -26,7 +26,6 @@ import java.util.Objects;
 )
 public class CatalogJpaConfig {
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(
             final @Qualifier("catalogDataSource") DataSource catalogDataSource,
             final EntityManagerFactoryBuilder builder,

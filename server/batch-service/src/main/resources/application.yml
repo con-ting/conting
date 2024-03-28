@@ -7,7 +7,7 @@ spring:
       username: ${CATALOG_DB_USER_NAME:root}
       password: ${CATALOG_DB_PASSWORD:1234}
     seat:
-      url: ${SEAT_DB_URL:jdbc:mariadb://localhost:9999/test}
+      url: ${SEAT_DB_URL:jdbc:mariadb://localhost:7777/test}
       username: ${SEAT_DB_USER_NAME:root}
       password: ${SEAT_DB_PASSWORD:1234}
 

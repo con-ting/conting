@@ -3,8 +3,6 @@
  */
 package com.c209.batchservice.domain.seat.entity;
 
-import com.c209.batchservice.domain.seat.enums.Grade;
-import com.c209.batchservice.domain.seat.enums.Sector;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,8 +21,8 @@ public class Seat {
     private Long scheduleId;
     private String row;
     private String col;
-    private Grade grade;
+    private String grade;
     private Integer gradePrice;
-    private String ntfUrl;
-    private Sector sector;
+    private String nftUrl;
+    private String sector;
 }

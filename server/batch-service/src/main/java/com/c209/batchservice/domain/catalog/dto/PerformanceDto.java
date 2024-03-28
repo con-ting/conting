@@ -4,8 +4,6 @@ import com.c209.batchservice.domain.catalog.entity.Performance;
 import com.c209.batchservice.domain.catalog.enums.Status;
 import lombok.Builder;
 
-import java.util.Date;
-
 @Builder
 public record PerformanceDto(
         Long id,
@@ -14,8 +12,8 @@ public record PerformanceDto(
         String description,
         String videoUrl,
         Status status,
-        Date startDate,
-        Date endDate
+        String startDate,
+        String endDate
 ) {
     public static PerformanceDto of(Performance performance) {
         return PerformanceDto.builder()
@@ -25,8 +23,8 @@ public record PerformanceDto(
                 .description(performance.getDescription())
                 .videoUrl(performance.getVideoUrl())
                 .status(performance.getStatus())
-                .startDate(performance.getStartDate())
-                .endDate(performance.getEndDate())
+                .startDate(performance.getStartDate().toString())
+                .endDate(performance.getEndDate().toString())
                 .build();
     }
 }
