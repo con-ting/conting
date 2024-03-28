@@ -22,32 +22,36 @@ import {queueGetApi} from '../../../api/queue/queue';
 export default function WaitingScreen({route}: any) {
   const rank = route.params.rank;
   const id = route.params.id;
-  const [currentRank, setCurrentRank] = useState(null);
+  const [currentRank, setCurrentRank] = useState(route.params.rank);
   const navigation = useNavigation(); // 네비게이션 객체 사용
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
-  const fetchQueueStatus = async () => {
-    try {
-      const status = await queueGetApi(id);
-      setCurrentRank(status.rank);
-
-      // 대기열 순위가 0보다 작거나 같으면 좌석 선택 페이지로 이동
-      if (status.rank <= 0) {
-        navigation.navigate('SeatArea');
-      } else {
-        console.log('대기열 조회 완료:', status);
-      }
-    } catch (error) {
-      console.error('대기열 조회 실패: ', error);
-    }
-  };
-
   useEffect(() => {
-    fetchQueueStatus(); // 첫 렌더링에서 대기열 상태 조회
-    // intervalId.current = setInterval(fetchQueueStatus, 3000); // intervalId에 인터벌 ID 저장
+    const fetchQueueStatus = async () => {
+      try {
+        const status = await queueGetApi(id);
+        if (status.rank <= 0) {
+          setCurrentRank(0);
+          clearInterval(intervalId.current);
+          navigation.navigate('SeatArea');
+        } else {
+          setCurrentRank(status.rank);
+          console.log('대기열 조회 완료:', status);
+        }
+      } catch (error) {
+        console.error('대기열 조회 실패: ', error);
+      }
+    };
 
-    return () => clearInterval(intervalId.current); // 컴포넌트 언마운트 시 인터벌 정리
-  }, [id, navigation]); // 의존성 배열에 id와 navigation 추가
+    // fetchQueueStatus(); // 컴포넌트가 마운트될 때 한 번 호출
+    intervalId.current = setInterval(fetchQueueStatus, 3000); // 3초마다 반복
+
+    return () => {
+      if (intervalId.current) {
+        clearInterval(intervalId.current); // 컴포넌트가 언마운트될 때 인터벌 제거
+      }
+    };
+  }, [id, navigation]); // id와 navigation이 변경될 때 useEffect를 다시 실행
 
   return (
     <View style={styles.container}>
@@ -55,7 +59,7 @@ export default function WaitingScreen({route}: any) {
         <Text style={F_SIZE_HEADER}>현재 대기 인원</Text>
       </View>
       <View style={styles.context}>
-        <Text style={F_SIZE_Y_HEADER}>{rank} 명</Text>
+        <Text style={F_SIZE_Y_HEADER}>{currentRank} 명</Text>
       </View>
       <View style={styles.context}>
         <Text style={F_SIZE_BIGTEXT}>
