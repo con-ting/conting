@@ -52,6 +52,12 @@ spring:
             - Path=/catalog/**
           filters:
             - AuthorizationHeaderFilter
+        - id: queue-service
+          uri: ${QUEUE_SERVICE}
+          predicates:
+            - Path=/queue/**
+          filters:
+            - AuthorizationHeaderFilter
     default-filters:
       - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
 jwt:
