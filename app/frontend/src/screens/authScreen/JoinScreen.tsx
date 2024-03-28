@@ -138,6 +138,23 @@ const JoinScreen = propsData => {
       await Linking.openURL(alterUrl);
     }
   }, []);
+  //1. 로그인 API 요청
+  const loginApiSender = async () => {
+    const loginResponse = await login({
+      email: email,
+      password: password,
+    });
+    return loginResponse;
+  };
+
+  //3. 토큰 및 userAgent 저장
+  const userDataSetting = async (props: any) => {
+    console.log('loginUserResponseData.token = ', props.token);
+    console.log('loginUserResponseData.user = ', props.user);
+    await setAsync('accessToken', props.token.accessToken);
+    await setAsync('refreshToken', props.token.refreshToken);
+    await setAsync('userId', props.user.id);
+  };
   const connect = async () => {
     //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
     console.log('지갑 연결 시도');
@@ -160,52 +177,39 @@ const JoinScreen = propsData => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
-
+    console.log('cryptoPublicKey=', cryptoPublicKey);
     //2. 회원가입 API 전송
-    console.log('joinUserRequst=', {
-      email: email,
-      password: password,
-      name: userName,
-      phone_number: phoneNumber,
-      birthday: serverDateFormat(birthDate),
-      fcm: token,
-      wallet: cryptoPublicKey,
-    });
-    await userJoin({
-      email: email,
-      password: password,
-      name: userName,
-      phone_number: phoneNumber,
-      birthday: serverDateFormat(birthDate),
-      fcm: token,
-      wallet: cryptoPublicKey,
-    });
-    console.log('회원가입 성공');
-    console.log('loginRequest=', {
-      email: email,
-      password: password,
-    });
-    //3. 로그인 API
-    const loginResponse = await login({
-      email: email,
-      password: password,
-    });
-    console.log('loginResponse = ', loginResponse);
-    //4. 토큰 및 userAgent 저장
-    await setAsync('accessToken', loginResponse.token.accessToken);
-    await setAsync('refreshToken', loginResponse.token.refreshToken);
-    await setAsync('userId', loginResponse.user.id);
-    //5. 전역 상태에 유저 정보 저장
+    if (cryptoPublicKey !== '') {
+      await userJoin({
+        email: email,
+        password: password,
+        name: userName,
+        phone_number: phoneNumber,
+        birthday: serverDateFormat(birthDate),
+        fcm: token,
+        wallet: cryptoPublicKey,
+      });
+      console.log('회원가입 성공');
+    } else {
+      Alert.alert('오류', '지갑 연동 실패.', [{text: '닫기', style: 'cancel'}]);
+      Error('주소 가져오기 실패');
+    }
+
+    const userResponse = await loginApiSender(); //1. 로그인 API 요청
+    // console.log('로그인 API 요청 끝');
+    await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+    //4. 전역 상태에 유저 정보 저장
+    console.log('전역 상태에 유저 정보 저장 시작');
     await setUserInfo({
-      user_id: loginResponse.user.id,
-      user_email: loginResponse.user.email,
-      fcm: token,
-      cryptoAddress: cryptoAddress,
-      cryptoLabel: cryptoLabel,
-      cryptoPublicKey: cryptoPublicKey,
+      user_id: userResponse.user.id,
+      user_email: userResponse.user.email,
+      walletAddress: userResponse.user.wallet,
     });
-    //6. goMainPage 수정
-    setGoMainPage(true);
+    console.log('전역 상태에 유저 정보 저장 끝');
+    //5. goMainPage 수정
+    console.log('goMainPage 수정 시작');
+    await setGoMainPage(true);
+    console.log('goMainPage 수정 끝');
   };
 
   const validateEmail = async (): boolean => {
@@ -216,8 +220,13 @@ const JoinScreen = propsData => {
     setEmailPass(!emailVailResponse.is_duplicated);
     console.log(emailPass);
     if (!emailVailResponse.is_duplicated)
-      Alert.alert('사용 가능한 이메일입니다.');
-    else Alert.alert('사용 불가능한 이메일입니다.');
+      Alert.alert('중복확인', '사용 가능한 이메일입니다.', [
+        {text: '닫기', style: 'cancel'},
+      ]);
+    else
+      Alert.alert('중복확인', '사용 불가능한 이메일입니다.', [
+        {text: '닫기', style: 'cancel'},
+      ]);
     return emailPass;
   };
 

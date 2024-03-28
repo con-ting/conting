@@ -1,9 +1,8 @@
-import {View, Text, StyleSheet, ImageBackground} from 'react-native';
-import ConcertHallCard from '../../components/card/ConcertHallCard';
+import {View, StyleSheet} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
 import LinearGradient from 'react-native-linear-gradient';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import BannerList from './../../components/list/BannerList';
 import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
@@ -12,70 +11,33 @@ import {CARDBASE} from '../../config/Color';
 import {useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
 import {posterColor} from '../../utils/recoil/Atoms';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
+import {MainApi} from '../../api/concert/concert';
 
 export default function MainScreen() {
   const navigation = useNavigation();
   const backgroundColor = useRecoilValue(posterColor);
-  const concertList = [
-    {
-      show_id: 2,
-      poster:
-        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxNzEwMTFfMjY3%2FMDAxNTA3NzIzNjU0MjM1.kTHfzzQ5oZEEl0cUUpEwsklfZq_HhzfOckVtOspfVwEg._0FoK4KQ6_eqwt7vRGVLNcZ90leatv1A_QiPL7mD-Cgg.JPEG.yun1202%2FexternalFile.jpg&type=a340',
-      title: '아이유 콘서트',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 3,
-      poster:
-        'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDAyMjdfNDAg%2FMDAxNzA5MDAyNzcyNjkz.WDAo2Onr02R_VYBwY1biISc9F534ufC9TpUbzsWzYeIg.G6Qq_-fvzXSbUKmoSjgcmiAsAuA2DX_7jcBUskT_5bog.JPEG%2FIMG_5589.jpg&type=a340',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 4,
-      poster:
-        'https://shopping-phinf.pstatic.net/main_4466065/44660653345.1.jpg?type=f300',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 5,
-      poster:
-        'https://search.pstatic.net/common?type=f&size=224x338&quality=100&direct=true&src=https%3A%2F%2Fcsearch-phinf.pstatic.net%2F20231213_263%2F1702439479789j6cid_JPEG%2F269_image_url_1702439479766.jpg',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 6,
-      poster:
-        'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2FMjAxODExMTlfOTgg%2FMDAxNTQyNjE0ODMwMzY0.yvRdj5mecR1HfyCf-ND24sGy4Nvwoao4BKu9kV97y60g.r2LZzxYHnBWEtgkMGWSNPq8SbM0Cmf8uRviYXpPqCZUg.JPEG.dmsejrl1%2F6.jpg&type=a340',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 7,
-      poster:
-        'https://search.pstatic.net/common?type=f&size=224x338&quality=100&direct=true&src=https%3A%2F%2Fcsearch-phinf.pstatic.net%2F20240219_172%2F17083253988697c6a1_JPEG%2F269_33689747_image_url_1708325398852.jpg',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-    {
-      show_id: 8,
-      poster:
-        'https://search.pstatic.net/common?type=f&size=224x338&quality=100&direct=true&src=https%3A%2F%2Fcsearch-phinf.pstatic.net%2F20240131_125%2F1706681961365GvH5L_PNG%2F269_image_url_1706681961328.png',
-      title: '임영웅 콘서트 IM HERO TOUR 2023',
-      address: '서울•킨텍스 1전시장',
-      date: '2024.04.22(월) 13:00',
-    },
-  ];
+  const [popular, setPopular] = useState([]);
+  const [first, setFirst] = useState([]);
+  const [deadline, setDeadline] = useState([]);
+  const [popularSinger, setPopularSinger] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('API 요청');
+      try {
+        const data = await MainApi();
+        console.log('API 응답: ', data);
+        setPopular(data.popular_shows)
+        setFirst(data.f_shows)
+        setDeadline(data.r_shows)
+        setPopularSinger(data.popularsingers)
+      } catch (error) {
+        console.log('API 호출 중 오류 발생: ', error);
+      }
+    };
+    fetchData()
+  }, []);
   const bannerList = [
     {
       imageUrl:
@@ -117,14 +79,14 @@ export default function MainScreen() {
               textSize={16}
             />
           </View>
-          <PopularConcertList popularConcert={concertList} />
+          <PopularConcertList popularConcert={popular} />
           <View
             style={{
               flexDirection: 'column',
               marginHorizontal: widthPercent(10),
             }}>
-            <FisrtComeList concerts={concertList} way="선착 예매" />
-            <FisrtComeList concerts={concertList} way="추첨 예매" />
+            <FisrtComeList concerts={first} way="선착 예매" />
+            <FisrtComeList concerts={deadline} way="추첨 예매" />
             <BannerList banners={bannerList} />
             <EventList />
           </View>
@@ -137,11 +99,6 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  text: {
-    color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
-    fontSize: 20,
-    fontFamily: 'Jalnan2TTF',
   },
   search: {
     marginTop: 10,

@@ -1,6 +1,12 @@
 import {atom} from 'recoil';
-import {Account} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
-import {Base64EncodedAddress} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {
+  Account,
+  Authorization,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {
+  AuthToken,
+  Base64EncodedAddress,
+} from '@solana-mobile/mobile-wallet-adapter-protocol';
 import {PublicKey} from '@solana/web3.js';
 
 /**
@@ -18,10 +24,7 @@ export const goMainPageState = atom<boolean>({
 type UserInfoStateType = {
   user_id: number;
   user_email: string;
-  fcm: string;
-  cryptoAddress: Base64EncodedAddress;
-  cryptoLabel?: string;
-  cryptoPublicKey: string;
+  walletAddress: string;
 };
 /**
  * user의 정보를 저장하고 있을 상태 atom입니다.
@@ -32,10 +35,7 @@ export const userInfoState = atom<null | UserInfoStateType>({
   default: {
     user_id: 1,
     user_email: '',
-    fcm: '',
-    cryptoAddress: '',
-    cryptoLabel: '',
-    cryptoPublicKey: '',
+    walletAddress: '',
   },
 });
 
@@ -54,5 +54,32 @@ export const posterColor = atom<Array<string>>({
  */
 export const fcmToken = atom<string>({
   key: 'fcmToken',
+  default: '',
+});
+
+/**
+ * walletAdress 을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletAdress = atom<string>({
+  key: 'walletAdress',
+  default: '',
+});
+
+/**
+ * walletLabel 을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletLabel = atom<string>({
+  key: 'walletLabel',
+  default: '',
+});
+
+/**
+ * walletPublicKey을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletPublicKey = atom<string>({
+  key: 'walletPublicKey',
   default: '',
 });
