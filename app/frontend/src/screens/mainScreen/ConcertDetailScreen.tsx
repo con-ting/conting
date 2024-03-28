@@ -209,7 +209,10 @@ export default function ConcertDetailScreen({route}) {
           </View>
         </Animated.ScrollView>
       </LinearGradient>
-      <ConcertBottomButtons scrollY={scrollY} />
+      <ConcertBottomButtons
+        scrollY={scrollY}
+        schedule={[concertDetail.schedule]}
+      />
     </ImageBackground>
   );
 }
