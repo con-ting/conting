@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record PerformanceDto(
-        Long performanceId,
+        Long id,
         String title,
         String posterImage,
         String description,
@@ -17,7 +17,7 @@ public record PerformanceDto(
 ) {
     public static PerformanceDto of(Performance performance) {
         return PerformanceDto.builder()
-                .performanceId(performance.getPerformanceId())
+                .id(performance.getId())
                 .title(performance.getTitle())
                 .posterImage(performance.getPosterImage())
                 .description(performance.getDescription())

@@ -14,8 +14,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Performance {
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "performance_id")
     @Id
-    private Long performanceId;
+    private Long id;
     private String title;
     private String posterImage;
     private String description;

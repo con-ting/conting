@@ -5,12 +5,12 @@ import lombok.Builder;
 
 @Builder
 public record SellerDto(
-        Long singerId,
+        Long id,
         String wallet
 ) {
     public static SellerDto of(Seller seller) {
         return SellerDto.builder()
-                .singerId(seller.getSellerId())
+                .id(seller.getId())
                 .wallet(seller.getWallet())
                 .build();
     }

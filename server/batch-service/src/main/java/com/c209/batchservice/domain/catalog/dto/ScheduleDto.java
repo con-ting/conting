@@ -5,14 +5,14 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleDto(
-        Long scheduleId,
+        Long id,
         String startTime,
         String endTime,
         PerformanceDto performance
 ) {
     public static ScheduleDto of(Schedule schedule) {
         return ScheduleDto.builder()
-                .scheduleId(schedule.getScheduleId())
+                .id(schedule.getId())
                 .startTime(schedule.getStartTime().toString())
                 .endTime(schedule.getEndTime().toString())
                 .performance(PerformanceDto.of(schedule.getPerformance()))

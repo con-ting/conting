@@ -14,8 +14,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Schedule {
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "schedule_id")
     @Id
-    private Long scheduleId;
+    private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 

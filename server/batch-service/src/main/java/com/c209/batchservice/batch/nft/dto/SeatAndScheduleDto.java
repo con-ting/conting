@@ -5,7 +5,7 @@ import com.c209.batchservice.domain.seat.dto.SeatDto;
 import lombok.Builder;
 
 @Builder
-public record SeatExtendDto(
+public record SeatAndScheduleDto(
         SeatDto seat,
         ScheduleDto schedule
 ) {
