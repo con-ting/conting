@@ -1,10 +1,13 @@
 package com.c209.catalog.domain.performance.entity;
 
 import com.c209.catalog.domain.company.entity.Company;
+import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.domain.hall.entity.Hall;
+import com.c209.catalog.domain.performance.dto.PerformanceDto;
 import com.c209.catalog.domain.performance.enums.Genre;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
+import com.c209.catalog.domain.seller.entity.Seller;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.common.BaseEntity;
 import com.querydsl.core.annotations.QueryEntity;
@@ -88,6 +91,13 @@ public class Performance extends BaseEntity {
     @Setter
     @Column(columnDefinition = "integer default 0")
     private Integer view;
+
+    @Column(name = "is_minted", columnDefinition = "boolean default false")
+    private Boolean isMinted;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
     // status 자동 계산
     // PrePersist 어노테이션으로 엔티티 영속화 전의 메서드 정의해줌

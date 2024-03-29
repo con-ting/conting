@@ -2,7 +2,10 @@ package com.c209.catalog.domain.performance.service.impl;
 
 import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.company.repository.CompanyRepository;
+import com.c209.catalog.domain.grade.entity.Grade;
+import com.c209.catalog.domain.grade.repository.GradeRepository;
 import com.c209.catalog.domain.hall.entity.Hall;
+import com.c209.catalog.domain.hall.repository.HallGradeRepository;
 import com.c209.catalog.domain.performance.dto.*;
 import com.c209.catalog.domain.performance.dto.info.PerformanceDetailInfo;
 import com.c209.catalog.domain.performance.dto.request.PostShowRequest;
@@ -11,8 +14,12 @@ import com.c209.catalog.domain.performance.entity.Performance;
 import com.c209.catalog.domain.performance.enums.Status;
 import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
+import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
 import com.c209.catalog.domain.performance.repository.PerformanceRepository;
 import com.c209.catalog.domain.performance.service.PerformanceService;
+import com.c209.catalog.domain.schedule.repository.ScheduleRepository;
+import com.c209.catalog.domain.seller.entity.Seller;
+import com.c209.catalog.domain.seller.repository.SellerRepository;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,6 +37,10 @@ import java.util.stream.Collectors;
 public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceRepository performanceRepository;
     private final CompanyRepository companyRepository;
+    private final GradeRepository gradeRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final HallGradeRepository hallGradeRepository;
+    private final SellerRepository sellerRepository;
 
     private PerformanceDto getPerformanceDtoFromPerformanceDetailInfoList(List<PerformanceDetailInfo> performanceDetailInfoList){
         return performanceDetailInfoList.stream()
@@ -80,6 +92,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .seat_total(info.getHallSeatTotal())
                         .x(info.getHallX())
                         .y(info.getHallY())
+                        .hall_webview_url(info.getHallWebviewUrl())
                         .build())
                 .findFirst()
                 .orElseThrow();
@@ -138,11 +151,12 @@ public class PerformanceServiceImpl implements PerformanceService {
 
     @Override
     @Transactional
-    public void createShow(PostShowRequest postShowRequest) {
-        Optional<Performance> existingPerformanceOptional = performanceRepository.findByTitle(postShowRequest.getShow().getTitle());
-        if (existingPerformanceOptional.isPresent()) {
-            throw new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST);
-        }
+    public void createShow(PostShowRequest postShowRequest, Long member_id) {
+        Optional<Performance> existingPerformanceOptional = Optional.ofNullable(performanceRepository.findByTitle(postShowRequest.getShow().getTitle())
+                .orElseThrow(() -> new CommonException(PerformancePostErrorCode.SHOW_ALREADY_EXIST)));
+
+        Optional<Seller> existingSellerOptional = Optional.ofNullable(Optional.ofNullable(sellerRepository.findByUserId(member_id))
+                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER)));
 
         Optional<Company> existingCompanyOptional = companyRepository.findByCompanyName(postShowRequest.getCompany().getCompanyName());
         Company company;
@@ -182,8 +196,33 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .status(status)
                 .isAdultOnly(false)
                 .view(0)
+                .seller(sellerRepository.findByUserId(member_id))
                 .build();
 
         performanceRepository.save(performance);
+    }
+
+    @Override
+    @Transactional
+    public void deleteShow(Long show_id, Long member_id) {
+        Performance performance = performanceRepository.findById(show_id)
+                .orElseThrow(() -> new CommonException(PerformanceErrorCode.NOT_EXIST_SHOW));
+
+        if(!Objects.equals(performance.getSeller().getId(), member_id)) {
+            throw new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER);
+        }
+
+        Optional<Seller> existingSellerOptional = Optional.of(Optional.ofNullable(sellerRepository.findByUserId(member_id)))
+                .orElseThrow(() -> new CommonException(PerformancerErrorCode.NOT_SHOW_MANAGER));
+
+        sellerRepository.deleteByUser(member_id);
+
+        List<Grade> grades = gradeRepository.findByPerformance(performance.getId());
+        for (Grade grade : grades) {
+            hallGradeRepository.deleteByGrade(grade.getId());
+        }
+        gradeRepository.deleteByPerformance(show_id);
+        scheduleRepository.deleteByPerformance(show_id);
+        performanceRepository.delete(performance);
     }
 }

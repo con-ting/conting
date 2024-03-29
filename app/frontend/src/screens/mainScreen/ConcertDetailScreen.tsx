@@ -90,7 +90,6 @@ export default function ConcertDetailScreen({route}) {
         end={{x: 1.0, y: 1.0}}
         style={{
           flex: 1,
-
           // marginTop: 50,
         }}
         colors={backgroundColor}>
@@ -101,7 +100,7 @@ export default function ConcertDetailScreen({route}) {
           )}
           scrollEventThrottle={16}
           style={{
-            padding: widthPercent(15),
+            padding:10
           }}>
           <SummaryCard info={concertDetail} />
           {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
@@ -116,10 +115,10 @@ export default function ConcertDetailScreen({route}) {
                 setIsRender(true);
                 setIsVisible(!isVisible);
               }}
-              onBtnPress={() => console.log('공연장 시야 보기로 이동')}
-              title="KSPO DOME"
+              onBtnPress={() => navigation.navigate("hallDetail", {hallName: concertDetail.hall.name})}
+              title={concertDetail.hall.name}
               seat={14730}
-              address="서울특별시 송파구 올림픽로 424"
+              address={concertDetail.hall.address}
             />
           </View>
           {isRender ? (
@@ -127,8 +126,8 @@ export default function ConcertDetailScreen({route}) {
               style={isVisible ? {width: 400, height: 400} : false}
               provider={PROVIDER_GOOGLE}
               initialRegion={{
-                latitude: 37.520555375455,
-                longitude: 127.11505129348,
+                latitude: concertDetail.hall.x,
+                longitude: concertDetail.hall.y,
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
               }}>
@@ -192,7 +191,7 @@ export default function ConcertDetailScreen({route}) {
           <View
             style={{
               marginTop: widthPercent(20),
-              width: widthPercent(400),
+              width: 'auto',
               height: heightPercent(5000),
             }}>
             <View style={{padding: 10}}>
@@ -200,7 +199,7 @@ export default function ConcertDetailScreen({route}) {
             </View>
             <FastImage
               resizeMode={FastImage.resizeMode.stretch}
-              style={{width: 400, height: '100%', marginTop: 20}}
+              style={{width: "100%", height: '100%', marginTop: 20}}
               source={{uri: concertDetail.show.description_image}}
             />
           </View>
@@ -306,7 +305,6 @@ const styles = StyleSheet.create({
     gap: widthPercent(10),
     justifyContent: 'space-between',
   },
-
   priceInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -318,7 +316,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   hall: {
-    alignItems: 'center',
     marginTop: widthPercent(20),
   },
   title: {

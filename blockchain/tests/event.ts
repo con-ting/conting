@@ -134,7 +134,7 @@ describe('event', async () => {
   })
 
   it('Pick Winner', async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 3500))
     const participants = [par1.publicKey]
 
     const tx = await program.methods.pickWinner(
