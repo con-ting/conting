@@ -25,7 +25,7 @@ export default function TicketQrCard(props: TicketCardProps) {
   const handlePass = async () => {
     const key = await biometricsAuth();
     if (key.result === true) {
-      console.log('QR 생성');
+      console.log('QR 생성:', key);
       setIspass(!isPass);
     }
   };

@@ -22,6 +22,7 @@ import CastDetailScreen from '../screens/mainScreen/searchScreen/castDetail/Cast
 import EventDetailScreen from '../screens/mainScreen/searchScreen/castDetail/EventDetailScreen';
 import TicketCheckScreen from '../screens/settingScreen/ticketCheckScreen/TicketCheckListScreen';
 import CameraScreen from '../screens/settingScreen/ticketCheckScreen/CameraScreen';
+import HallViewScreen from '../screens/mainScreen/hallViewScreen/HallViewScreen';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -85,11 +86,15 @@ function MainStack() {
         component={ResultRefundScreen}
         options={{headerShown: false}}
       />
-
       <Stack.Screen
         name="ConcertDetail"
         component={ConcertDetailScreen}
         options={options(false, '공연 상세')}
+      />
+      <Stack.Screen
+        name="hallDetail"
+        component={HallViewScreen}
+        options={options(true, '')}
       />
       <Stack.Screen
         name="ConcertRegist"

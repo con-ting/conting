@@ -3,7 +3,7 @@ import tokenInstance from '../../utils/axios/axiosTokenInstance';
 const concertUrl: string = 'catalog';
 
 export const MainApi = async () => {
-  const res = await tokenInstance.get(`${concertUrl}/show/main`);
+  const res = await tokenInstance.get(`${concertUrl}/main`);
   return res.data;
 };
 

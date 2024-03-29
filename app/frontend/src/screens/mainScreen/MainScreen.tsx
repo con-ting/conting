@@ -1,4 +1,4 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
 import LinearGradient from 'react-native-linear-gradient';
@@ -38,6 +38,7 @@ export default function MainScreen() {
     };
     fetchData()
   }, []);
+
   const bannerList = [
     {
       imageUrl:
@@ -63,6 +64,10 @@ export default function MainScreen() {
     navigation.navigate('SearchMain', {query});
     // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
   };
+  
+  if( popular.length === 0){
+    return <Text>...로딩</Text>
+  }
   return (
     <LinearGradient
       start={{x: 0.0, y: 0.0}}
@@ -70,7 +75,9 @@ export default function MainScreen() {
       colors={backgroundColor}
       style={styles.container}>
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView
+        nestedScrollEnabled
+        >
           <View style={styles.search}>
             <SearchBar
               onSearch={search}
@@ -86,7 +93,6 @@ export default function MainScreen() {
               marginHorizontal: widthPercent(10),
             }}>
             <FisrtComeList concerts={first} way="선착 예매" />
-            <FisrtComeList concerts={deadline} way="추첨 예매" />
             <BannerList banners={bannerList} />
             <EventList />
           </View>
