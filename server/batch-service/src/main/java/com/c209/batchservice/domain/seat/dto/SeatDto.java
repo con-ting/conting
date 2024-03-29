@@ -5,12 +5,12 @@ import lombok.Builder;
 
 @Builder
 public record SeatDto(
-        long id,
-        long scheduleId,
+        Long id,
+        Long scheduleId,
         String row,
         String col,
         String grade,
-        int gradePrice,
+        Integer gradePrice,
         String ntfUrl,
         String sector
 ) {

@@ -2,53 +2,46 @@ package com.c209.batchservice.batch.nft;
 
 import com.c209.batchservice.batch.nft.dto.MediaDto;
 import com.c209.batchservice.batch.nft.dto.PerformanceAndSeatsDto;
-import com.c209.batchservice.batch.nft.service.ProcessService;
+import com.c209.batchservice.batch.nft.dto.SeatAndScheduleDto;
+import com.c209.batchservice.global.process.ProcessService;
+import com.c209.batchservice.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonFileItemWriter;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.HexFormat;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class NftMediaStepConfig {
-    private static final String MEDIA_DIR = NftJobConfig.BASE_DIR + "/media";
+    private static final String MEDIA_DIR = NftBatchConfig.BASE_DIR + "/media";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     private final ProcessService processService;
+    private final S3Service s3Service;
 
     @Bean
     public Step downloadMediaStep() {
         return new StepBuilder("downloadMediaStep", jobRepository)
                 .<PerformanceAndSeatsDto, Void>chunk(100, batchTransactionManager)
-                .reader(downloadMediaReader())
+                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(downloadMediaProcessor())
                 .writer(Void -> {
                 })
-                .build();
-    }
-
-    @Bean
-    public JsonItemReader<PerformanceAndSeatsDto> downloadMediaReader() {
-        return new JsonItemReaderBuilder<PerformanceAndSeatsDto>()
-                .name("downloadMediaReader")
-                .jsonObjectReader(new JacksonJsonObjectReader<>(PerformanceAndSeatsDto.class))
-                .resource(new FileSystemResource(NftJobConfig.getPath(PerformanceAndSeatsDto.class)))
                 .build();
     }
 
@@ -64,26 +57,17 @@ public class NftMediaStepConfig {
     }
 
     @Bean
-    public Step mediaInfoStep() {
-        return new StepBuilder("mediaInfoStep", jobRepository)
+    public Step mediaDtoStep() {
+        return new StepBuilder("mediaDtoStep", jobRepository)
                 .<PerformanceAndSeatsDto, MediaDto>chunk(100, batchTransactionManager)
-                .reader(mediaInfoReader())
-                .processor(mediaInfoProcessor())
-                .writer(mediaInfoWriter())
+                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .processor(mediaDtoProcessor())
+                .writer(NftBatchConfig.createJsonFileItemWriter(MediaDto.class))
                 .build();
     }
 
     @Bean
-    public JsonItemReader<PerformanceAndSeatsDto> mediaInfoReader() {
-        return new JsonItemReaderBuilder<PerformanceAndSeatsDto>()
-                .name("mediaInfoReader")
-                .jsonObjectReader(new JacksonJsonObjectReader<>(PerformanceAndSeatsDto.class))
-                .resource(new FileSystemResource(NftJobConfig.getPath(PerformanceAndSeatsDto.class)))
-                .build();
-    }
-
-    @Bean
-    public ItemProcessor<PerformanceAndSeatsDto, MediaDto> mediaInfoProcessor() {
+    public ItemProcessor<PerformanceAndSeatsDto, MediaDto> mediaDtoProcessor() {
         return performanceAndSeatsDto -> {
             String videoPath = MEDIA_DIR + "/" + performanceAndSeatsDto.performance().id() + ".webm";
             int duration = processService.getVideoDuration(videoPath);
@@ -96,31 +80,13 @@ public class NftMediaStepConfig {
     }
 
     @Bean
-    public JsonFileItemWriter<MediaDto> mediaInfoWriter() {
-        return new JsonFileItemWriterBuilder<MediaDto>()
-                .name("mediaInfoWriter")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(NftJobConfig.getPath(MediaDto.class)))
-                .build();
-    }
-
-    @Bean
     public Step createMediaStep() {
         return new StepBuilder("createMediaStep", jobRepository)
                 .<MediaDto, Void>chunk(100, batchTransactionManager)
-                .reader(createMediaReader())
+                .reader(NftBatchConfig.createJsonItemReader(MediaDto.class))
                 .processor(createMediaProcessor())
                 .writer(Void -> {
                 })
-                .build();
-    }
-
-    @Bean
-    public JsonItemReader<MediaDto> createMediaReader() {
-        return new JsonItemReaderBuilder<MediaDto>()
-                .name("createMediaReader")
-                .jsonObjectReader(new JacksonJsonObjectReader<>(MediaDto.class))
-                .resource(new FileSystemResource(NftJobConfig.getPath(MediaDto.class)))
                 .build();
     }
 
@@ -133,5 +99,53 @@ public class NftMediaStepConfig {
             processService.splitWebm(inputPath, outputDir, media.seatCount(), media.duration(), 3);
             return null;
         };
+    }
+
+    @Bean
+    public Step uploadMediaStep() {
+        return new StepBuilder("uploadMediaStep", jobRepository)
+                .<SeatAndScheduleDto, List<Path>>chunk(100, batchTransactionManager)
+                .reader(NftBatchConfig.createJsonItemReader(SeatAndScheduleDto.class))
+                .processor(uploadMediaProcessor())
+                .writer(uploadMediaWriter())
+                .build();
+    }
+
+    @Bean
+    public ItemProcessor<SeatAndScheduleDto, List<Path>> uploadMediaProcessor() {
+        return seatAndSchedule -> List.of(
+                Path.of(MEDIA_DIR,
+                        seatAndSchedule.schedule().performance().id().toString(),
+                        seatAndSchedule.seat().id() + ".webm"),
+                Path.of(MEDIA_DIR,
+                        seatAndSchedule.schedule().performance().id().toString(),
+                        seatAndSchedule.seat().id() + ".jpg"));
+    }
+
+    @Bean
+    public ItemWriter<List<Path>> uploadMediaWriter() {
+        return pairs -> pairs.forEach(pair -> pair.forEach(path -> {
+            String fileName = path.getFileName().toString();
+            int lastDotIndex = fileName.lastIndexOf('.');
+            String baseName = fileName.substring(0, lastDotIndex);
+            String extension = fileName.substring(lastDotIndex + 1);
+            String parentName = path.getParent().getFileName().toString();
+            String hash = calculateSha256(path);
+            String key = parentName + "/" + baseName + "/" + hash + "." + extension;
+            s3Service.pubMediaIfNotExists(key, path);
+        }));
+    }
+
+    @SneakyThrows
+    private String calculateSha256(Path path) {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (InputStream is = Files.newInputStream(path)) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) != -1) {
+                digest.update(buffer, 0, read);
+            }
+        }
+        return HexFormat.of().formatHex(digest.digest());
     }
 }

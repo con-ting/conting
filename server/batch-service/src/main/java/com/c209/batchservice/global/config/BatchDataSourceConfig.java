@@ -40,7 +40,6 @@ public class BatchDataSourceConfig {
         return new JdbcTransactionManager(batchDataSource);
     }
 
-
     @Bean
     @Primary
     public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(

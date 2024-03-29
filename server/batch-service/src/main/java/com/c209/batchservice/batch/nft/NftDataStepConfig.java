@@ -20,12 +20,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonFileItemWriter;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -58,7 +52,7 @@ public class NftDataStepConfig {
                 .<Performance, PerformanceDto>chunk(100, batchTransactionManager)
                 .reader(performanceReader())
                 .processor(PerformanceDto::of)
-                .writer(performanceWriter())
+                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceDto.class))
                 .build();
     }
 
@@ -67,17 +61,8 @@ public class NftDataStepConfig {
         return new JpaPagingItemReaderBuilder<Performance>()
                 .name("performanceReader")
                 .entityManagerFactory(catalogEntityManagerFactory)
-                .queryString("SELECT p FROM Performance p" +
-                             " WHERE p.isMinted IS NULL OR p.isMinted = false")
-                .build();
-    }
-
-    @Bean
-    public JsonFileItemWriter<PerformanceDto> performanceWriter() {
-        return new JsonFileItemWriterBuilder<PerformanceDto>()
-                .name("performanceWriter")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(NftJobConfig.getPath(PerformanceDto.class)))
+                .queryString("SELECT p FROM Performance p " +
+                             "WHERE p.isMinted IS NULL OR p.isMinted = false")
                 .build();
     }
 
@@ -87,7 +72,7 @@ public class NftDataStepConfig {
                 .<Schedule, ScheduleDto>chunk(100, batchTransactionManager)
                 .reader(scheduleReader())
                 .processor(ScheduleDto::of)
-                .writer(scheduleWriter())
+                .writer(NftBatchConfig.createJsonFileItemWriter(ScheduleDto.class))
                 .build();
     }
 
@@ -96,18 +81,9 @@ public class NftDataStepConfig {
         return new JpaPagingItemReaderBuilder<Schedule>()
                 .name("scheduleReader")
                 .entityManagerFactory(catalogEntityManagerFactory)
-                .queryString("SELECT s FROM Schedule s" +
-                             " LEFT JOIN FETCH s.performance p" +
-                             " WHERE p.isMinted IS NULL OR p.isMinted = false")
-                .build();
-    }
-
-    @Bean
-    public JsonFileItemWriter<ScheduleDto> scheduleWriter() {
-        return new JsonFileItemWriterBuilder<ScheduleDto>()
-                .name("scheduleWriter")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(NftJobConfig.getPath(ScheduleDto.class)))
+                .queryString("SELECT s FROM Schedule s " +
+                             "LEFT JOIN FETCH s.performance p " +
+                             "WHERE p.isMinted IS NULL OR p.isMinted = false")
                 .build();
     }
 
@@ -120,7 +96,7 @@ public class NftDataStepConfig {
                 .<Seat, SeatDto>chunk(100, batchTransactionManager)
                 .reader(seatReader())
                 .processor(SeatDto::of)
-                .writer(seatWriter())
+                .writer(NftBatchConfig.createJsonFileItemWriter(SeatDto.class))
                 .build();
     }
 
@@ -135,30 +111,12 @@ public class NftDataStepConfig {
     }
 
     @Bean
-    public JsonFileItemWriter<SeatDto> seatWriter() {
-        return new JsonFileItemWriterBuilder<SeatDto>()
-                .name("seatWriter")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(NftJobConfig.getPath(SeatDto.class)))
-                .build();
-    }
-
-    @Bean
     public Step seatAndScheduleStep() {
         return new StepBuilder("seatAndScheduleStep", jobRepository)
                 .<SeatDto, SeatAndScheduleDto>chunk(100, batchTransactionManager)
-                .reader(seatAndScheduleReader())
+                .reader(NftBatchConfig.createJsonItemReader(SeatDto.class))
                 .processor(seatAndScheduleProcessor())
-                .writer(SeatAndScheduleWriter())
-                .build();
-    }
-
-    @Bean
-    public JsonItemReader<SeatDto> seatAndScheduleReader() {
-        return new JsonItemReaderBuilder<SeatDto>()
-                .name("seatAndScheduleReader")
-                .jsonObjectReader(new JacksonJsonObjectReader<>(SeatDto.class))
-                .resource(new FileSystemResource(NftJobConfig.getPath(SeatDto.class)))
+                .writer(NftBatchConfig.createJsonFileItemWriter(SeatAndScheduleDto.class))
                 .build();
     }
 
@@ -170,7 +128,7 @@ public class NftDataStepConfig {
                 if (map == null) {
                     try {
                         return new ObjectMapper().readValue(
-                                        new FileSystemResource(NftJobConfig.getPath(ScheduleDto.class)).getInputStream(),
+                                        new FileSystemResource(NftBatchConfig.getPath(ScheduleDto.class)).getInputStream(),
                                         new TypeReference<List<ScheduleDto>>() {
                                         }).stream()
                                 .collect(Collectors.toMap(ScheduleDto::id, Function.identity()));
@@ -188,15 +146,6 @@ public class NftDataStepConfig {
     }
 
     @Bean
-    public JsonFileItemWriter<SeatAndScheduleDto> SeatAndScheduleWriter() {
-        return new JsonFileItemWriterBuilder<SeatAndScheduleDto>()
-                .name("SeatAndScheduleWriter")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(NftJobConfig.getPath(SeatAndScheduleDto.class)))
-                .build();
-    }
-
-    @Bean
     public Step PerformanceAndSeatsStep() {
         return new StepBuilder("PerformanceAndSeatsStep", jobRepository)
                 .tasklet(PerformanceAndSeatsTasklet(), batchTransactionManager)
@@ -208,7 +157,7 @@ public class NftDataStepConfig {
         return (contribution, chunkContext) -> {
             ObjectMapper mapper = new ObjectMapper();
             List<SeatAndScheduleDto> seatExtends = Arrays.asList(mapper.readValue(
-                    new FileSystemResource(NftJobConfig.getPath(SeatAndScheduleDto.class)).getFile(),
+                    new FileSystemResource(NftBatchConfig.getPath(SeatAndScheduleDto.class)).getFile(),
                     SeatAndScheduleDto[].class));
             Map<Long, PerformanceDto> performanceMap = seatExtends.stream()
                     .collect(Collectors.toMap(
@@ -225,7 +174,7 @@ public class NftDataStepConfig {
                             .seats(seatsMap.get(performance.id()))
                             .build())
                     .toList();
-            mapper.writeValue(new FileSystemResource(NftJobConfig.getPath(PerformanceAndSeatsDto.class)).getFile(),
+            mapper.writeValue(new FileSystemResource(NftBatchConfig.getPath(PerformanceAndSeatsDto.class)).getFile(),
                     performanceAndSeatsList);
             return RepeatStatus.FINISHED;
         };

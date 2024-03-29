@@ -1,4 +1,4 @@
-package com.c209.batchservice.batch.nft.service;
+package com.c209.batchservice.global.process;
 
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class ProcessService {
 
     public void splitWebm(String inputPath, String outputDir, int splits, int duration, int time) throws IOException, InterruptedException {
         int interval = duration / splits;
-        for (int i = 0; i < splits; i++) {
+        for (int i = 1; i <= splits; i++) {
             String outputVideoPath = outputDir + "/" + i + ".webm";
             executeCommand(
                     "ffmpeg",

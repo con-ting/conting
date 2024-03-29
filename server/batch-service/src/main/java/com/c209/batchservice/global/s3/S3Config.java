@@ -14,7 +14,6 @@ import java.net.URI;
 @Configuration
 @RequiredArgsConstructor
 public class S3Config {
-
     private final S3Props s3Props;
 
     @Bean
