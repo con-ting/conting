@@ -1,30 +1,31 @@
 package com.c209.batchservice.domain.catalog.dto;
 
 import com.c209.batchservice.domain.catalog.entity.Performance;
-import com.c209.batchservice.domain.catalog.enums.Status;
 import lombok.Builder;
 
 @Builder
 public record PerformanceDto(
-        Long id,
+        Long performanceId,
         String title,
         String posterImage,
         String description,
         String videoUrl,
-        Status status,
         String startDate,
-        String endDate
+        String endDate,
+        SellerDto seller,
+        SingerDto singer
 ) {
     public static PerformanceDto of(Performance performance) {
         return PerformanceDto.builder()
-                .id(performance.getId())
+                .performanceId(performance.getPerformanceId())
                 .title(performance.getTitle())
                 .posterImage(performance.getPosterImage())
                 .description(performance.getDescription())
                 .videoUrl(performance.getVideoUrl())
-                .status(performance.getStatus())
                 .startDate(performance.getStartDate().toString())
                 .endDate(performance.getEndDate().toString())
+                .seller(SellerDto.of(performance.getSeller()))
+                .singer(SingerDto.of(performance.getSinger()))
                 .build();
     }
 }

@@ -1,6 +1,3 @@
-/**
- * This code was COPIED from "com.c209.seat" package.
- */
 package com.c209.batchservice.domain.seat.service.impl;
 
 import com.c209.batchservice.domain.seat.dto.SeatDto;

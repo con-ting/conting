@@ -1,6 +1,3 @@
-/**
- * This code was COPIED from "com.c209.seat" package.
- */
 package com.c209.batchservice.domain.seat.dto;
 
 import com.c209.batchservice.domain.seat.entity.Seat;
@@ -8,12 +5,12 @@ import lombok.Builder;
 
 @Builder
 public record SeatDto(
-        Long id,
-        Long scheduleId,
+        long id,
+        long scheduleId,
         String row,
         String col,
         String grade,
-        Integer gradePrice,
+        int gradePrice,
         String ntfUrl,
         String sector
 ) {

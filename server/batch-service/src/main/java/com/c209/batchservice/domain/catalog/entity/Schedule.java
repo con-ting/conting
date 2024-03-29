@@ -3,10 +3,7 @@
  */
 package com.c209.batchservice.domain.catalog.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -17,9 +14,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Schedule {
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "schedule_id")
     @Id
-    private Long id;
+    private Long scheduleId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
+    @ManyToOne
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
 }

@@ -4,16 +4,17 @@ import com.c209.batchservice.batch.nft.dto.request.AssetRequest;
 import com.c209.batchservice.batch.nft.dto.request.CollectionRequest;
 import com.c209.batchservice.batch.nft.dto.response.AssetResponse;
 import com.c209.batchservice.batch.nft.dto.response.CollectionResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
-@RequiredArgsConstructor
 public class Web3Service {
-    private final Web3Props web3Props;
-    private final RestClient restClient = RestClient.create(web3Props.WrapperBaseUrl());
+    private final RestClient restClient;
+
+    public Web3Service(Web3Props web3Props) {
+        this.restClient = RestClient.create(web3Props.wrapperBaseUrl());
+    }
 
     public CollectionResponse createCollection(CollectionRequest collectionRequest) {
         return restClient.post()

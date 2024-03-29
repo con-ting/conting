@@ -3,7 +3,6 @@
  */
 package com.c209.batchservice.domain.catalog.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,9 +14,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 public class Singer {
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "singer_id")
     @Id
-    private Long id;
+    private Long singerId;
     private String name;
     private String wallet;
 }
