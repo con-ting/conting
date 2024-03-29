@@ -26,9 +26,22 @@ export const ConcertSearchApi = async (params: {
   return res.data;
 };
 
-// 출연진 검색 시 사용하는 API
+// 출연진 상세 조회 시 사용하는 API
 export const CastSearchApi = async (singer_id: number) => {
   const res = await tokenInstance.get(`${concertUrl}/singer/${singer_id}`);
   console.log('[CastSearchApi Response] = ', res.data);
+  return res.data;
+};
+
+// 공연장 조회 시 사용하는 API
+export const HallSearchApi = async (params: {
+  keyword: string;
+  region: string;
+}) => {
+  console.log('[HallSearchApi Request] = ', params);
+  const res = await tokenInstance.get(
+    `${concertUrl}/hall?keyword=${params.keyword}&region=${params.region}`,
+  );
+  console.log('[HallSearch Response] = ', res.data);
   return res.data;
 };
