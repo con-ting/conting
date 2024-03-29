@@ -28,6 +28,7 @@ export default function ConcertListScreen({concerts}) {
             img_tag={
               concert.reservation_type === 'F' ? '선착순 예매중' : '추첨 예매중'
             }
+            img_tag_disabled={false}
             img_tag_color={concert.status === 'on_sale' ? MINTBASE : ''}
             sido={concert.hall_address.slice(0, 2)} // 앞 두글자 sido로 사용
             concert_hall={concert.hall_name}

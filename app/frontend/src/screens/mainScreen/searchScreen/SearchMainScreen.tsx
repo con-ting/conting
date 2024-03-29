@@ -69,7 +69,7 @@ export default function SearchMainScreen() {
     };
 
     fetchConcerts(); // API 호출
-  }, [searchQuery, selectedTab]); // searchQuery가 변경될 때마다 API를 호출
+  }, [searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
   // 검색 쿼리에 따라 출연진 필터링
   const filteredCast = casts.filter(cast =>
