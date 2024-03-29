@@ -4,14 +4,11 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
         DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
-        JWT_ACCESS="${env.JWT_ACCESS}"
-        AUTH_SERVICE="${env.AUTH_SERVICE}"
-        USER_SERVICE="${env.USER_SERVICE}"
-        SEAT_SERVICE="${env.SEAT_SERVICE}"
-        NOTIFICATION_SERVICE="${env.NOTIFICATION_SERVICE}"
-        CATALOG_SERVICE="${env.CATALOG_SERVICE}"
-        QUEUE_SERVICE="${env.QUEUE_SERVICE}"
-        TICKET_SERVICE="${env.TICKET_SERVICE}"
+        TICKET_HOST="${env.TICKET_HOST}"
+        TICKET_DB_PORT="${env.TICKET_DB_PORT}"
+        TICKET_DB_USERNAME="${env.TICKET_DB_USERNAME}"
+        TICKET_DB_PASSWORD="${env.TICKET_DB_PASSWORD}"
+
     }
     agent any
 
@@ -28,11 +25,11 @@ pipeline {
         stage('Confirm Echo') {
             steps {
                 script {
-                    echo "discovery server 입니다."
+                    echo "ticket server 입니다."
                 }
             }
         }
-         stage('Build Discovery-Server .JAR') {
+         stage('Build Ticket-Server .JAR') {
                     steps {
                         script {
                             // 변경된 브랜치와 머지 대상 브랜치 출력
@@ -46,19 +43,19 @@ pipeline {
                             sh 'ls -al'
                             //gradlew 빌드
                             sh 'java --version'
-                            sh 'chmod +x ./server/gateway/gradlew'
+                            sh 'chmod +x ./server/ticket/gradlew'
                             sh '''
-                                cd ./server/gateway
+                                cd ./server/ticket
                                 ./gradlew clean build
                             '''
                         }
                     }
                 }
 
-                stage('Build Discovery-Server Image'){
+                stage('Build Ticket-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Gateway_${BUILD_NUMBER}", "-f server/gateway/Dockerfile ./server/gateway")
+                            dockerImage = docker.build("${repository}:Ticket_${BUILD_NUMBER}", "-f server/ticket/Dockerfile ./server/ticket")
                         }
                     }
                 }
@@ -74,7 +71,7 @@ pipeline {
                 stage('Push Gateway Image to DockerHub'){
                     steps {
                         script {
-                            sh "docker push \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker push \${repository}:Ticket_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -82,7 +79,7 @@ pipeline {
                 stage('Clean Gateway Image'){
                     steps{
                         script{
-                            sh "docker rmi \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker rmi \${repository}:Ticket_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -93,7 +90,7 @@ pipeline {
                             continueOnError: true, failOnError: false,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Ticket_Service",
                                     verbose: true,
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
@@ -111,12 +108,12 @@ pipeline {
                             continueOnError: false, failOnError: true,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Ticket_Service",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker rm -f gateway"),
-                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" -e CATALOG_SERVICE=\"${CATALOG_SERVICE}\" -e NOTIFICATION_SERVICE=\"${NOTIFICATION_SERVICE}\" -e QUEUE_SERVICE=\"${QUEUE_SERVICE}\" -e TICKET_SERVICE=\"${TICKET_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker rm -f ticket"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Ticket_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name ticket --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e TICKET_HOST=\"${TICKET_HOST}\" -e TICKET_DB_PORT=\"${TICKET_DB_PORT}\" -e TICKET_DB_PASSWORD=\"${TICKET_DB_PASSWORD}\"  " + repository + ":Gateway_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
@@ -169,3 +166,4 @@ pipeline {
        }
     }
 }
+
