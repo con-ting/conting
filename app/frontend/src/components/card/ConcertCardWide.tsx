@@ -129,13 +129,13 @@ export const BasicConcertCardWide = (props: basicProps) => {
                 uri: props.img_url,
               }}
             />
-            {!props.img_tag_disabled && (
+            {/* {!props.img_tag_disabled && (
               <BlurView
                 style={StyleSheet.absoluteFill} // BlurView를 FastImage 커버하도록 함
                 blurType="dark" //안드로이드는 light , dark만 제공 ...
                 blurAmount={2} // blur 효과 강도 설정
               />
-            )}
+            )} */}
             {props.img_tag && (
               <Text
                 style={{
@@ -208,5 +208,8 @@ const styles = StyleSheet.create({
     color: Color.MAINYELLOW,
     fontSize: fontPercent(20),
     fontFamily: Font.MAINFONT,
+  },
+  box: {
+    position: 'absolute',
   },
 });
