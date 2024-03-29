@@ -11,7 +11,7 @@ public interface TicketService {
 
     Mono<TicketDto> getTicketDetail(Long userId, Long ticketId, String fingerPrint);
 
-    Mono<Void> extendQRExpTime(Long userId, String qrUUID);
+    Mono<Boolean> extendQRExpTime(Long userId, String qrUUID);
 
-    Mono<Void> verifyQR(Long userId, String qrUUID, Long ticketId);
+    Mono<Boolean> verifyQR(Long userId, String qrUUID, Long ticketId);
 }

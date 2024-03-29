@@ -21,7 +21,7 @@ public class Ticket {
     private Long ownerId;
     private Long buyerId;
     private Long scheduleId;
-    private Long fingerprintKey;
+    private String fingerprintKey;
     private Long orderId;
     private String row;
     private String col;
