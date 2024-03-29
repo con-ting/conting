@@ -44,6 +44,7 @@ const options = (headerShown: boolean, title: string, color = 'black') => {
     // options에서 타입 호환성 문제 발생하여 명시적으로 타입 지정
     headerTitleAlign: 'center' as 'center',
     // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
+    animation : 'slide_from_right'
   };
 };
 
