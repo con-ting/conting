@@ -30,7 +30,6 @@ export type basicProps = {
   swipe_btn_onPress?: () => void;
 };
 
-
 /**
  * BasicConcertCardWide
  * BasicConcertCardWide 컴포넌트입니다.
@@ -89,7 +88,7 @@ export const BasicConcertCardWide = (props: basicProps) => {
         style={{
           position: 'absolute',
           color: props.img_tag_color,
-          fontSize: fontPercent(20),
+          fontSize: fontPercent(18),
           fontFamily: Font.MAINFONT,
         }}>
         {props.img_tag}
@@ -180,7 +179,6 @@ export const BasicConcertCardWide = (props: basicProps) => {
     </Swipeout>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
