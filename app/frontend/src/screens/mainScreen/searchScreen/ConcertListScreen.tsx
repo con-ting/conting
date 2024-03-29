@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {MAINBLACK, MINTBASE} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {BasicConcertCardWide} from '../../../components/card/ConcertCardWide';
+import formatSido from '../../../utils/common/SidoFormat';
 
 const formatDateWithTime = dateString => {
   const date = new Date(dateString);
@@ -30,7 +31,7 @@ export default function ConcertListScreen({concerts}) {
             }
             img_tag_disabled={false}
             img_tag_color={concert.status === 'on_sale' ? MINTBASE : ''}
-            sido={concert.hall_address.slice(0, 2)} // 앞 두글자 sido로 사용
+            sido={formatSido(concert.hall_address)}
             concert_hall={concert.hall_name}
             date_tag={'예매일'}
             date={formatDateWithTime(concert.reservation_start_date_time)}

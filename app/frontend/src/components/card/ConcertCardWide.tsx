@@ -9,7 +9,7 @@ import * as Font from '../../config/Font';
 import React from 'react';
 import {IconTextBox} from './IconTextBox.tsx';
 import * as ICON from 'iconsax-react-native';
-import {formatDateWithDay} from '../../config/TimeFormat.ts';
+import {formatDateWithDay} from '../../utils/common/TimeFormat.ts';
 import Swipeout from 'react-native-swipeout';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
