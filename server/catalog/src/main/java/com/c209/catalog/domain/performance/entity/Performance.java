@@ -1,7 +1,9 @@
 package com.c209.catalog.domain.performance.entity;
 
 import com.c209.catalog.domain.company.entity.Company;
+import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.domain.hall.entity.Hall;
+import com.c209.catalog.domain.performance.dto.PerformanceDto;
 import com.c209.catalog.domain.performance.enums.Genre;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
