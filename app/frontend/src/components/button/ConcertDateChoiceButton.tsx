@@ -55,16 +55,18 @@ export default function ConcertChoiceButton({schedule}) {
   useEffect(() => {
     // 주어진 schedule 데이터가 배열 안에 배열 형태로 들어있는 것을 확인하고 바깥쪽 배열을 제거합니다.
     const scheduleData = schedule[0]; // schedule 데이터 수정
-    const processedDates = scheduleData.map(date => {
-      const startDate = new Date(date.start_datetime);
-      const month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
-      const day = startDate.getDate().toString().padStart(2, '0'); // 일 정보를 2자리 문자열로 변환
-      return {
-        id: date.id,
-        month: month.toString(), // 월 정보를 문자열로 저장
-        day: day.toString(), // 일 정보를 문자열로 저장
-      };
-    });
+    const processedDates = scheduleData.map(
+      (date: {start_datetime: string | number | Date; id: any}) => {
+        const startDate = new Date(date.start_datetime);
+        const month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+        const day = startDate.getDate().toString().padStart(2, '0'); // 일 정보를 2자리 문자열로 변환
+        return {
+          id: date.id,
+          month: month.toString(), // 월 정보를 문자열로 저장
+          day: day.toString(), // 일 정보를 문자열로 저장
+        };
+      },
+    );
     setDates(processedDates);
   }, [schedule]);
 

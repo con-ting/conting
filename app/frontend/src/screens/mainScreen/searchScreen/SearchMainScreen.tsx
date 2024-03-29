@@ -25,7 +25,6 @@ const Tabs = ['공연', '출연진', '공연장'];
 
 export default function SearchMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
-  const [result, setResult] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [concerts, setConcerts] = useState([]); // 공연 데이터 상태
   const [casts, setCasts] = useState([]); // 출연진 데이터 상태
@@ -43,18 +42,18 @@ export default function SearchMainScreen() {
     }
   }, [searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
-  const fetchConcerts = async () => {
+  const fetchConcerts = async (query: string) => {
     console.log('fetchConcertsRequest=', {
       status: '', // 상태 (예: '예매중')
       region: '', // 지역
       sort: '', // 정렬 기준
-      keyword: searchQuery, // 검색 쿼리
+      keyword: query, // 검색 쿼리
       searchType: '공연명', // 검색 타입
       reservation_type: '', // 예매 방식
     });
 
     // 검색 조건에 따른 API 호출 (여기서는 예시로 몇 가지 조건만 설정)
-    console.log('검색어: ', searchQuery);
+    // console.log('검색어: ', searchQuery);
     const response = await ConcertSearchApi({
       status: '', // 상태 (예: '예매중')
       region: '', // 지역
@@ -67,10 +66,10 @@ export default function SearchMainScreen() {
     setConcerts(response.shows); // 응답 데이터로 공연 데이터 상태 업데이트
   };
 
-  const fetchHalls = async () => {
+  const fetchHalls = async (query: string) => {
     console.log('공연장 조회');
     const response = await HallSearchApi({
-      keyword: searchQuery,
+      keyword: query,
       region: '',
     });
     console.log('fetchHallsResponse=', response);
@@ -79,8 +78,8 @@ export default function SearchMainScreen() {
 
   const fetchCasts = async () => {
     console.log('출연진 조회');
-    const respose = await CastSearchApi();
-    console.log('fetchCastResponse=', respose);
+    const response = await CastSearchApi();
+    console.log('fetchCastResponse=', response);
     setCasts(response.singers);
   };
 
