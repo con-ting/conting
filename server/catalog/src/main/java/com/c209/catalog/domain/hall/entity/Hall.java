@@ -74,4 +74,7 @@ public class Hall extends BaseEntity {
 
     @Column
     private Integer total_seat_count;
+
+    @Column
+    private String hall_webview_url;
 }

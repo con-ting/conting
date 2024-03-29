@@ -92,6 +92,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                         .seat_total(info.getHallSeatTotal())
                         .x(info.getHallX())
                         .y(info.getHallY())
+                        .hall_webview_url(info.getHallWebviewUrl())
                         .build())
                 .findFirst()
                 .orElseThrow();
