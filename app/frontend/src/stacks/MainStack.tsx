@@ -20,6 +20,7 @@ import ConcertRegistCompany from '../screens/settingScreen/concertRegistScreen/C
 import SearchMainScreen from '../screens/mainScreen/searchScreen/SearchMainScreen';
 import CastDetailScreen from '../screens/mainScreen/searchScreen/castDetail/CastDetailScreen';
 import EventDetailScreen from '../screens/mainScreen/searchScreen/castDetail/EventDetailScreen';
+import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -81,6 +82,11 @@ function MainStack() {
       <Stack.Screen
         name="ResultRefund"
         component={ResultRefundScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'ResultMainScreen'}
+        component={ResultMainScreen}
         options={{headerShown: false}}
       />
 

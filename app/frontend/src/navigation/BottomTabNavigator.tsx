@@ -16,10 +16,10 @@ import {
   SearchNormal,
   SearchNormal1,
 } from 'iconsax-react-native';
-import { useRecoilValue } from 'recoil';
-import { posterColor } from '../utils/recoil/Atoms';
-import { useNavigation } from '@react-navigation/native';
-
+import {useRecoilValue} from 'recoil';
+import {posterColor} from '../utils/recoil/Atoms';
+import {useNavigation} from '@react-navigation/native';
+import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen.tsx';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -68,7 +68,7 @@ const GradientIcon = ({focused}: any) => {
 };
 
 export default function BottomTabNavigator() {
-  const backgroundColor = useRecoilValue(posterColor)
+  const backgroundColor = useRecoilValue(posterColor);
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -133,22 +133,25 @@ export default function BottomTabNavigator() {
               </View>
             </View>
           ),
-          headerRight: () =>{
+          headerRight: () => {
             const navigation = useNavigation();
-            return(
-
-            <View style={{marginRight: 10}}>
-              <TouchableOpacity>
-              <SearchNormal color="#FFFFFF" size={30} onPress={() => navigation.navigate('SearchMain')}/>
-              </TouchableOpacity>
-            </View>
-            )
-            },
+            return (
+              <View style={{marginRight: 10}}>
+                <TouchableOpacity>
+                  <SearchNormal
+                    color="#FFFFFF"
+                    size={30}
+                    onPress={() => navigation.navigate('SearchMain')}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          },
         }}
       />
       <BottomTab.Screen
         name={'추첨결과'}
-        component={ReservationWaitingScreen}
+        component={ResultMainScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <CardPos color={focused ? '#FCC434' : '#CCCCCC'} size={25} />
