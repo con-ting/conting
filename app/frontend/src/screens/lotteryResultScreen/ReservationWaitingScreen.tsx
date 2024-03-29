@@ -6,8 +6,7 @@ import {widthPercent} from '../../config/Dimensions';
 import {CheckBox} from '../../components/checkbox/CheckBox';
 import {PopUpModal, SlideModal} from '../../components/modal/Modal';
 import {GrayButton} from '../../components/button/Button';
-import {SearchBar} from '../../components/searchBar/SearchBar.tsx';
-import {BasicConcertCardWide} from '../../components/card/ConcertCardWide.tsx';
+import {BasicConcertCardWide} from '../../components/card/ConcertCardWide';
 
 export default function ReservationWaitingScreen() {
   const [empId, setEmpId] = useState('');
@@ -44,7 +43,6 @@ export default function ReservationWaitingScreen() {
 
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={search}></SearchBar>
       <Text style={styles.text}>환불대기중 페이지</Text>
       <Text style={styles.text}>메인 페이지</Text>
       <GrayButton
@@ -55,8 +53,7 @@ export default function ReservationWaitingScreen() {
         btnText="슬라이스 모달테스트"></GrayButton>
       <BasicConcertCardWide
         onPress={() => console.log("히히")}
-        disabled={true}
-        img_tag_disabled={true}
+        // img_tag_disabled={true}
         title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
         img_url={
           'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
@@ -68,7 +65,7 @@ export default function ReservationWaitingScreen() {
         }
         date_tag={'예매시작일'}
         date={'2024.07.05'}
-        swipe_btn_disabled={true}
+
       />
       <PopUpModal isVisible={popUpModalTest} setIsVisible={setPopUpModalTest}>
         <View style={{padding: widthPercent(4)}}>
