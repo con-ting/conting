@@ -18,7 +18,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "p.startDate, p.endDate, " +
             "g.id, g.grade, g.price, " +
             "s.id, s.startTime, s.endTime, " +
-            "h.id, h.name, h.address, h.total_seat_count, h.latitude, h.longitude, " +
+            "h.id, h.name, h.address, h.total_seat_count, h.latitude, h.longitude, h.hall_webview_url, " +
             "si.id, si.name, si.image, " +
             "c.id, c.companyName, c.companyCall) " +
             "FROM Performance p " +
