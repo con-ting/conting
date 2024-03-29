@@ -127,6 +127,8 @@ public class NftMediaStepConfig {
                 return s3Service.putMediaIfNotExists(key, path);
             }).toList();
             return SeatAndScheduleAndMediaDto.builder()
+                    .seat(seatAndSchedule.seat())
+                    .schedule(seatAndSchedule.schedule())
                     .mediaUrl(keys.get(0))
                     .thumbUrl(keys.get(1))
                     .build();

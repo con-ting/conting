@@ -85,7 +85,7 @@ public class NftMetadataConfig {
                                                 .build(),
                                         JsonMetadataRequest.Property.File.builder()
                                                 .uri(dto.thumbUrl())
-                                                .type("image/png")
+                                                .type("image/jpeg")
                                                 .build(),
                                         JsonMetadataRequest.Property.File.builder()
                                                 .uri(dto.schedule().performance().posterImage())
