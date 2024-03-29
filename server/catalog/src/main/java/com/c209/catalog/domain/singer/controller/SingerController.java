@@ -3,6 +3,7 @@ package com.c209.catalog.domain.singer.controller;
 
 
 import com.c209.catalog.domain.singer.dto.response.GetSingerResponse;
+import com.c209.catalog.domain.singer.dto.response.SingerListResponse;
 import com.c209.catalog.domain.singer.entity.Singer;
 import com.c209.catalog.domain.singer.service.SingerService;
 import com.c209.catalog.domain.singer.service.impl.SingerServiceImpl;
@@ -16,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class SingerController {
 
     private final SingerService singerService;
+
+    @GetMapping
+    public ResponseEntity<SingerListResponse> getSinger() {
+//        return ResponseEntity.ok(singerService.getSinger());
+    }
 
     @GetMapping("{singer_id}")
     public ResponseEntity<GetSingerResponse> getSingerDetail(
