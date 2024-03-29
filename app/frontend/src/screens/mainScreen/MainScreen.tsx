@@ -6,13 +6,11 @@ import {useEffect, useState} from 'react';
 import BannerList from './../../components/list/BannerList';
 import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
-import {SearchBar} from '../../components/searchBar/SearchBar';
-import {CARDBASE} from '../../config/Color';
 import {useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
 import {posterColor} from '../../utils/recoil/Atoms';
 import {ScrollView} from 'react-native-gesture-handler';
-import { MainApi } from '../../api/concert/concert';
+import {MainApi} from '../../api/concert/concert';
 
 export default function MainScreen() {
   const navigation = useNavigation();
@@ -28,15 +26,15 @@ export default function MainScreen() {
       try {
         const data = await MainApi();
         console.log('API 응답: ', data);
-        setPopular(data.popular_shows)
-        setFirst(data.f_shows)
-        setDeadline(data.r_shows)
-        setPopularSinger(data.popularsingers)
+        setPopular(data.popular_shows);
+        setFirst(data.f_shows);
+        setDeadline(data.r_shows);
+        setPopularSinger(data.popularsingers);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
       }
     };
-    fetchData()
+    fetchData();
   }, []);
 
   const bannerList = [
@@ -64,9 +62,9 @@ export default function MainScreen() {
     navigation.navigate('SearchMain', {query});
     // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
   };
-  
-  if( popular.length === 0){
-    return <Text>...로딩</Text>
+
+  if (popular.length === 0) {
+    return <Text>...로딩</Text>;
   }
   return (
     <LinearGradient
@@ -75,12 +73,8 @@ export default function MainScreen() {
       colors={backgroundColor}
       style={styles.container}>
       <View style={styles.container}>
-        <ScrollView
-        nestedScrollEnabled
-        >
-          <View style={styles.search}>
-            
-          </View>
+        <ScrollView>
+          <View style={styles.search}></View>
           <PopularConcertList popularConcert={popular} />
           <View
             style={{
