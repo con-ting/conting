@@ -72,14 +72,14 @@ export default function ConcertBottomButtons({scrollY, schedule}) {
           <View style={styles.buttonGroup}>
             <YellowButton
               onPress={onRequestPress}
-              width={widthPercent(194)}
+              width={widthPercent(160)}
               btnText="예매 부탁하기"
               textSize={16}
               isRadius
             />
             <YellowButton
               onPress={onDirectTicketingPress}
-              width={widthPercent(194)}
+              width={widthPercent(160)}
               btnText="직접 예매하기"
               textSize={16}
               isRadius
@@ -103,16 +103,18 @@ export default function ConcertBottomButtons({scrollY, schedule}) {
 
 const styles = StyleSheet.create({
   container: {
+    width:"100%",
     backgroundColor: 'transparent',
     position: 'absolute',
     bottom: 0,
   },
   background: {
     width: '100%',
+    alignItems:'center'
   },
 
   buttonGroup: {
-    margin: widthPercent(12),
+    marginVertical: widthPercent(12),
     flexDirection: 'row',
   },
 });

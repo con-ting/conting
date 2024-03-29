@@ -20,7 +20,7 @@ export default function ConcertListScreen({concerts}) {
   return (
     <View style={styles.container}>
       {concerts.map(concert => (
-        <View style={styles.card}>
+        <View style={styles.card} key={concert.show_id}>
           <BasicConcertCardWide
             onPress={() => console.log('히히')}
             disabled={concert.status !== 'on_sale'}

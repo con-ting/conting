@@ -1,39 +1,45 @@
-import {View, StyleSheet, ImageBackground, Text} from 'react-native';
 import {
-  fontPercent,
+  StyleSheet,
+} from 'react-native';
+import {
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
-import {Shadow} from 'react-native-shadow-2';
-import TicketInfoCard from './TicketInfoCard';
+import {useState} from 'react';
+import TicketQrCard from './TicketQrCard';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import TicketFront from '../ticketEntry/TicketFront';
+import { getColors } from 'react-native-image-colors';
 
 type TicketEntryCardProps = {
   onPress?: () => void;
-  poster : string
-  title ?: string
+  colors : Array<string>
+  poster: string;
+  title?: string;
   ticketId?: number;
 };
 
 export default function TicketEntryCard(props: TicketEntryCardProps) {
+  const [isBack, setIsBack] = useState(true);
+
+  const backHandler = () => {
+    console.log("앞뒤 전환")
+    setIsBack(!isBack);
+  };
   return (
-    <Shadow startColor="#829cc7" distance={1}>
-      <View style={styles.container} onTouchEnd={props.onPress}>
-        <ImageBackground
-          source={{
-            uri: props.poster,
-          }}
-          style={styles.image}
-          imageStyle={{borderRadius: 20}}>
-          <TicketInfoCard />
-        </ImageBackground>
-      </View>
-    </Shadow>
+    <TouchableOpacity activeOpacity={1} onPress={backHandler}>
+      {isBack ? (
+        <TicketFront poster={props.poster}/>
+      ) : (
+        <TicketQrCard colors={props.colors}/>
+      )}
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(300),
+    width: widthPercent(250),
     height: heightPercent(500),
     borderWidth: 1,
     borderStyle: 'solid',
