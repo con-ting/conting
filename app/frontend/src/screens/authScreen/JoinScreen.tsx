@@ -34,7 +34,10 @@ import {
   goMainPageState,
   userInfoState,
 } from '../../utils/recoil/Atoms.ts';
-import {korDateFormat, serverDateFormat} from '../../config/TimeFormat.ts';
+import {
+  korDateFormat,
+  serverDateFormat,
+} from '../../utils/common/TimeFormat.ts';
 import DatePicker from 'react-native-date-picker';
 import * as Font from '../../config/Font.ts';
 import {emailConfirm, login} from '../../api/auth/auth.ts';
