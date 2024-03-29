@@ -20,11 +20,11 @@ export default function CastList({casts, isSearch}) {
   const handlePress = item => {
     if (isSearch) {
       // 검색 페이지에서 사용될 때 클릭 시 가수 상세 페이지로 이동
-      console.log(item.id);
-      navigation.navigate('CastDetail', {castId: item.id});
+      console.log(item.singer_id);
+      navigation.navigate('CastDetail', {castId: item.singer_id});
     } else {
       // 검색 페이지가 아닐 때는 스타일만 변경
-      setSelectedCast(item.id);
+      setSelectedCast(item.singer_id);
     }
   };
 
@@ -36,27 +36,27 @@ export default function CastList({casts, isSearch}) {
         numColumns={3}
         renderItem={({item, index}) => (
           <TouchableOpacity
-            key={item.id}
+            key={item.singer_id}
             style={[styles.member]}
             onPress={() => handlePress(item)}>
             <Image
-              source={{uri: item.image}}
+              source={{uri: item.singer_profile_image}}
               style={[
                 styles.castImage,
-                selectedCast === item.id && styles.selectedMember,
+                selectedCast === item.singer_id && styles.selectedMember,
               ]}
             />
             <Text
               style={[
                 F_SIZE_TITLE,
                 styles.name,
-                selectedCast === item.id && styles.selectedName,
+                selectedCast === item.singer_id && styles.selectedName,
               ]}>
-              {item.name}
+              {item.singer_name}
             </Text>
           </TouchableOpacity>
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.singer_id}
       />
     </View>
   );

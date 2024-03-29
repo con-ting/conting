@@ -15,7 +15,11 @@ import ConcertListScreen from './ConcertListScreen';
 import CastListScreen from './CastListScreen';
 import ConcertHallScreen from './ConcertHallScreen';
 import casts from '../../../components/data/casts';
-import {ConcertSearchApi, HallSearchApi} from '../../../api/catalog/concert';
+import {
+  CastSearchApi,
+  ConcertSearchApi,
+  HallSearchApi,
+} from '../../../api/catalog/concert';
 
 const Tabs = ['공연', '출연진', '공연장'];
 
@@ -24,6 +28,7 @@ export default function SearchMainScreen() {
   const [result, setResult] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [concerts, setConcerts] = useState([]); // 공연 데이터 상태
+  const [casts, setCasts] = useState([]); // 출연진 데이터 상태
   const [halls, setHalls] = useState([]); // 공연장 데이터 상태
 
   // 검색 쿼리 변경 시 호출되는 useEffect
@@ -31,12 +36,12 @@ export default function SearchMainScreen() {
     console.log('검색 페이지 진입');
     if (selectedTab === '공연') {
       fetchConcerts(searchQuery);
+    } else if (selectedTab === '출연진') {
+      fetchCasts();
     } else if (selectedTab === '공연장') {
       fetchHalls(searchQuery);
-    } else if (selectedTab === '출연진') {
-      // fetchCasts();
     }
-  }, [fetchConcerts, fetchHalls, searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
+  }, [searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
   const fetchConcerts = async () => {
     console.log('fetchConcertsRequest=', {
@@ -63,7 +68,6 @@ export default function SearchMainScreen() {
   };
 
   const fetchHalls = async () => {
-    // console.log('검색어: ', searchQuery);
     console.log('공연장 조회');
     const response = await HallSearchApi({
       keyword: searchQuery,
@@ -73,17 +77,24 @@ export default function SearchMainScreen() {
     setHalls(response.halls);
   };
 
+  const fetchCasts = async () => {
+    console.log('출연진 조회');
+    const respose = await CastSearchApi();
+    console.log('fetchCastResponse=', respose);
+    setCasts(response.singers);
+  };
+
   // 검색 쿼리에 따라 출연진 필터링
-  const filteredCast = casts.filter(cast =>
-    cast.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  // const filteredCast = casts.filter(cast =>
+  //   cast.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  // );
 
   const renderTabs = () => {
     switch (selectedTab) {
       case '공연':
         return <ConcertListScreen concerts={concerts} />;
       case '출연진':
-        return <CastListScreen casts={filteredCast} />;
+        return <CastListScreen casts={casts} />;
       case '공연장':
         return <ConcertHallScreen halls={halls} />;
       default:
