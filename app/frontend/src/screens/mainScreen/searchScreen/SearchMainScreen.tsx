@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import ConcertListScreen from './ConcertListScreen';
 import CastListScreen from './CastListScreen';
 import ConcertHallScreen from './ConcertHallScreen';
 import casts from '../../../components/data/casts';
+import {ConcertSearchApi} from '../../../api/catalog/concert';
 
 const Tabs = ['공연', '출연진', '공연장'];
 
@@ -22,6 +23,53 @@ export default function SearchMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [result, setResult] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [concerts, setConcerts] = useState([]); // 공연 데이터
+
+  // 검색 쿼리 변경 시 호출되는 useEffect
+  useEffect(() => {
+    console.log('검색 페이지 진입');
+    const fetchConcerts = async () => {
+      // 선택된 탭에 따른 searchType 값 설정
+      let searchType = '';
+      switch (selectedTab) {
+        case '공연':
+          searchType = '공연명';
+          break;
+        case '출연진':
+          searchType = '가수';
+          break;
+        case '공연장':
+          searchType = '공연장';
+          break;
+        default:
+          break;
+      }
+
+      console.log('fetchConcertsRequest=', {
+        status: '', // 상태 (예: '예매중')
+        region: '', // 지역
+        sort: '', // 정렬 기준
+        keyword: searchQuery, // 검색 쿼리
+        searchType, // 검색 타입
+        reservation_type: '', // 예매 방식
+      });
+
+      // 검색 조건에 따른 API 호출 (여기서는 예시로 몇 가지 조건만 설정)
+      console.log('검색어: ', searchQuery);
+      const response = await ConcertSearchApi({
+        status: '', // 상태 (예: '예매중')
+        region: '', // 지역
+        sort: '', // 정렬 기준
+        keyword: searchQuery, // 검색 쿼리
+        searchType, // 검색 타입
+        reservation_type: '', // 예매 방식
+      });
+      console.log('fetchConcertsResponse=', response);
+      setConcerts(response.shows); // 응답 데이터로 공연 데이터 상태 업데이트
+    };
+
+    fetchConcerts(); // API 호출
+  }, [searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
   // 검색 쿼리에 따라 출연진 필터링
   const filteredCast = casts.filter(cast =>
@@ -31,7 +79,7 @@ export default function SearchMainScreen() {
   const renderTabs = () => {
     switch (selectedTab) {
       case '공연':
-        return <ConcertListScreen />;
+        return <ConcertListScreen concerts={concerts} />;
       case '출연진':
         return <CastListScreen casts={filteredCast} />;
       case '공연장':

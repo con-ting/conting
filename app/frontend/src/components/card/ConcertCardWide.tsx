@@ -11,6 +11,8 @@ import {IconTextBox} from './IconTextBox.tsx';
 import * as ICON from 'iconsax-react-native';
 import {formatDateWithDay} from '../../config/TimeFormat.ts';
 import Swipeout from 'react-native-swipeout';
+import FastImage from 'react-native-fast-image';
+import {BlurView} from '@react-native-community/blur';
 
 export type basicProps = {
   onPress?: () => void;
@@ -29,7 +31,6 @@ export type basicProps = {
   swipe_btn_disabled?: boolean;
   swipe_btn_onPress?: () => void;
 };
-
 
 /**
  * BasicConcertCardWide
@@ -83,13 +84,12 @@ export const BasicConcertCardWide = (props: basicProps) => {
   ];
 
   const imgTagProps = {
-    blur: props.img_tag_disabled ? 0 : 6,
     tag: props.img_tag_disabled ? null : (
       <Text
         style={{
           position: 'absolute',
           color: props.img_tag_color,
-          fontSize: fontPercent(20),
+          fontSize: fontPercent(18),
           fontFamily: Font.MAINFONT,
         }}>
         {props.img_tag}
@@ -119,19 +119,35 @@ export const BasicConcertCardWide = (props: basicProps) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Image
+            <FastImage
               style={{
                 width: '100%',
                 height: '100%',
                 borderTopLeftRadius: 10,
                 borderBottomLeftRadius: 10,
               }}
-              blurRadius={imgTagProps.blur}
               source={{
                 uri: props.img_url,
               }}
             />
-            {imgTagProps.tag}
+            {!props.img_tag_disabled && (
+              <BlurView
+                style={StyleSheet.absoluteFill} // BlurView를 FastImage 커버하도록 함
+                blurType="dark" //안드로이드는 light , dark만 제공 ...
+                blurAmount={2} // blur 효과 강도 설정
+              />
+            )}
+            {props.img_tag && (
+              <Text
+                style={{
+                  position: 'absolute',
+                  color: props.img_tag_color,
+                  fontSize: fontPercent(18),
+                  fontFamily: Font.MAINFONT,
+                }}>
+                {props.img_tag}
+              </Text>
+            )}
           </View>
           <View
             style={{
@@ -180,7 +196,6 @@ export const BasicConcertCardWide = (props: basicProps) => {
     </Swipeout>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
