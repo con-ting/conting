@@ -18,9 +18,9 @@ public class SingerController {
 
     private final SingerService singerService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<SingerListResponse> getSinger() {
-//        return ResponseEntity.ok(singerService.getSinger());
+        return ResponseEntity.ok(singerService.getSingerList());
     }
 
     @GetMapping("{singer_id}")
