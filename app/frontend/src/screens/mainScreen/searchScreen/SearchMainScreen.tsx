@@ -29,22 +29,39 @@ export default function SearchMainScreen() {
   useEffect(() => {
     console.log('검색 페이지 진입');
     const fetchConcerts = async () => {
+      // 선택된 탭에 따른 searchType 값 설정
+      let searchType = '';
+      switch (selectedTab) {
+        case '공연':
+          searchType = '공연명';
+          break;
+        case '출연진':
+          searchType = '가수';
+          break;
+        case '공연장':
+          searchType = '공연장';
+          break;
+        default:
+          break;
+      }
+
       console.log('fetchConcertsRequest=', {
         status: '', // 상태 (예: '예매중')
         region: '', // 지역
-        sort: 'date', // 정렬 기준
+        sort: '', // 정렬 기준
         keyword: searchQuery, // 검색 쿼리
-        searchType: '', // 검색 타입
+        searchType, // 검색 타입
         reservation_type: '', // 예매 방식
       });
 
       // 검색 조건에 따른 API 호출 (여기서는 예시로 몇 가지 조건만 설정)
+      console.log('검색어: ', searchQuery);
       const response = await ConcertSearchApi({
         status: '', // 상태 (예: '예매중')
         region: '', // 지역
         sort: '', // 정렬 기준
         keyword: searchQuery, // 검색 쿼리
-        searchType: '', // 검색 타입
+        searchType, // 검색 타입
         reservation_type: '', // 예매 방식
       });
       console.log('fetchConcertsResponse=', response);
@@ -52,7 +69,7 @@ export default function SearchMainScreen() {
     };
 
     fetchConcerts(); // API 호출
-  }, [searchQuery]); // searchQuery가 변경될 때마다 API를 호출
+  }, [searchQuery, selectedTab]); // searchQuery가 변경될 때마다 API를 호출
 
   // 검색 쿼리에 따라 출연진 필터링
   const filteredCast = casts.filter(cast =>
