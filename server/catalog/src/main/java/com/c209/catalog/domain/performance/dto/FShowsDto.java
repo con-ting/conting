@@ -28,6 +28,8 @@ public class FShowsDto {
     @NotNull
     private String hall_name;
     @NotNull
+    private String hall_address;
+    @NotNull
     private String reservation_type;
     @FutureOrPresent
     private LocalDateTime reservation_start_date_time;

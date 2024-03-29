@@ -29,6 +29,8 @@ public class PShowsDto {
     @NotNull
     private String hall_name;
     @NotNull
+    private String hall_address;
+    @NotNull
     private String reservation_type;
     private LocalDateTime reservation_start_date_time;
     private LocalDateTime reservation_end_date_time;
