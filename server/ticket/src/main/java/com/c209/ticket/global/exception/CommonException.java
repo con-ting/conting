@@ -1,5 +1,7 @@
 package com.c209.ticket.global.exception;
 
+import com.c209.ticket.domain.ticket.exception.QRErrorCode;
+import com.c209.ticket.domain.ticket.exception.TicketErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -16,4 +18,13 @@ public class CommonException extends RuntimeException {
     }
 
 
+    public CommonException(QRErrorCode errorCode) {
+        this.message = errorCode.getMessage();
+        this.httpStatus = errorCode.getHttpStatus();
+    }
+
+    public CommonException(TicketErrorCode errorCode) {
+        this.message = errorCode.getMessage();
+        this.httpStatus = errorCode.getHttpStatus();
+    }
 }

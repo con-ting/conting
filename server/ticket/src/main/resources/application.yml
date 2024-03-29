@@ -17,3 +17,4 @@ spring:
 logging:
   level:
     com.c209.ticket: DEBUG
+    io.lettuce.core: DEBUG

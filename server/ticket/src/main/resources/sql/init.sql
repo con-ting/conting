@@ -4,7 +4,7 @@ CREATE TABLE ticket (
     owner_id BIGINT,
     buyer_id BIGINT,
     schedule_id BIGINT,
-    fingerprint_key BIGINT,
+    fingerprint_key VARCHAR(255),
     order_id BIGINT,
     row VARCHAR(255),
     col VARCHAR(255),
