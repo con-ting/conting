@@ -26,7 +26,7 @@ public class HallGrade extends BaseEntity {
     @Column(name = "view_url")
     private String viewUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "grade_id")
     private Grade grade;
 }
