@@ -7,7 +7,7 @@ services:
       context: ./database
     image: 1w2k/pay-db
     environment:
-      - MYSQL_DATABASE=pay
+      - MYSQL_DATABASE=payment
       - MYSQL_ROOT_PASSWORD=1234
     volumes:
       - ./database/config:/etc/mysql/conf.d

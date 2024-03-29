@@ -13,3 +13,8 @@ spring:
       ddl-auto: create-drop
       dialect: MariaDBDialect
     database-platform: H2Dialect
+
+
+
+scheduler:
+  enabled: false

@@ -13,7 +13,7 @@ services:
       - ./database/config:/etc/mysql/conf.d
       - ./database/init:/docker-entrypoint-initdb.d
     ports:
-      - "9999:3306"
+      - "9997:3306"
 #    logging: # 로깅 옵션 추가
 #      driver: syslog
 

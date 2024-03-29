@@ -5,5 +5,12 @@ server:
   port: 8889
 
 fcm:
-  service-account-file: ./google-services.json # ??? ??
+  service-account-file: /home/ec2-user/infra/google-services.json
   project-id: conting-d3d77
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER}

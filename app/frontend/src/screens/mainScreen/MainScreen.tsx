@@ -95,12 +95,6 @@ export default function MainScreen() {
     },
   ];
 
-  const search = (query: string) => {
-    console.log('검색어: ', query);
-    // 검색어를 사용한 검색 로직 구현
-    navigation.navigate('SearchMain', {query});
-    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
-  };
   return (
     <LinearGradient
       start={{x: 0.0, y: 0.0}}
@@ -110,12 +104,7 @@ export default function MainScreen() {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.search}>
-            <SearchBar
-              onSearch={search}
-              width={'90%'}
-              backGroundColor={CARDBASE}
-              textSize={16}
-            />
+            
           </View>
           <PopularConcertList popularConcert={concertList} />
           <View

@@ -4,7 +4,7 @@ import ReservationWaitingScreen from '../screens/lotteryResultScreen/Reservation
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
 import {TicketApplyListScreen} from '../screens/ticketApplyScreen/TicketApplyListScreen';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   Home,
@@ -13,11 +13,16 @@ import {
   Element3,
   User,
   Notification,
+  SearchNormal,
+  SearchNormal1,
 } from 'iconsax-react-native';
 import { useRecoilValue } from 'recoil';
 import { posterColor } from '../utils/recoil/Atoms';
+import { useNavigation } from '@react-navigation/native';
+
 
 const BottomTab = createBottomTabNavigator();
+
 const GradientIcon = ({focused}: any) => {
   return (
     <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -128,11 +133,17 @@ export default function BottomTabNavigator() {
               </View>
             </View>
           ),
-          headerRight: () => (
+          headerRight: () =>{
+            const navigation = useNavigation();
+            return(
+
             <View style={{marginRight: 10}}>
-              <Notification color="#FFFFFF" size={30} variant="Bold" />
+              <TouchableOpacity>
+              <SearchNormal color="#FFFFFF" size={30} onPress={() => navigation.navigate('SearchMain')}/>
+              </TouchableOpacity>
             </View>
-          ),
+            )
+            },
         }}
       />
       <BottomTab.Screen
