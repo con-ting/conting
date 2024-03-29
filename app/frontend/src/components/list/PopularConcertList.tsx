@@ -46,12 +46,13 @@ export default function PopularConcertList({
   }) => {
     return (
       <TouchableWithoutFeedback
-        onPress={() =>
-          navigation.navigate('ConcertDetail', {
-            showID: item.show_id,
-            item: item,
-          })
-        }>
+        onPress={() => {
+          console.log('상세 페이지로 이동', item.show_id),
+            navigation.navigate('ConcertDetail', {
+              showID: item.show_id,
+              item: item,
+            });
+        }}>
         <View
           style={{
             justifyContent: 'center',

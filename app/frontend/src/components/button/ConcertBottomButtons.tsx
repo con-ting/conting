@@ -7,7 +7,7 @@ import {widthPercent} from '../../config/Dimensions';
 import ConcertDateChoiceButton from './ConcertDateChoiceButton';
 import FamilySelectButton from './FamilySelectButton';
 
-export default function ConcertBottomButtons({scrollY}: any) {
+export default function ConcertBottomButtons({scrollY, schedule}) {
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
 
@@ -25,6 +25,8 @@ export default function ConcertBottomButtons({scrollY}: any) {
 
   // 직접 예매하기 버튼 누른 경우 호출될 함수
   const onDirectTicketingPress = () => {
+    console.log('dd', scrollY);
+    console.log('ㅇ?', schedule);
     // 기존 버튼을 숨기는 애니메이션
     Animated.timing(buttonOpacity, {
       toValue: 0,
@@ -92,7 +94,7 @@ export default function ConcertBottomButtons({scrollY}: any) {
       )}
       {showDateSelector && (
         <Animated.View style={{transform: [{translateY: dateSelectorY}]}}>
-          <ConcertDateChoiceButton />
+          <ConcertDateChoiceButton schedule={schedule} />
         </Animated.View>
       )}
     </View>

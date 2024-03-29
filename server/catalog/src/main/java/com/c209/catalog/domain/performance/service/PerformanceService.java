@@ -6,5 +6,6 @@ import com.c209.catalog.domain.performance.dto.response.GetShowResponse;
 public interface PerformanceService {
     GetShowResponse getShowDetails(Long showId);
 
-    void createShow(PostShowRequest postShowRequest);
+    void createShow(PostShowRequest postShowRequest, Long member_id);
+    void deleteShow(Long show_id, Long member_id);
 }

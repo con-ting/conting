@@ -18,36 +18,76 @@ import {
   F_SIZE_HEADER,
   F_SIZE_Y_TITLE,
 } from '../../config/Font';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import SummaryCard from '../../components/concertDetail/SummaryCard';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import FastImage from 'react-native-fast-image';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import ConcertBottomButtons from '../../components/button/ConcertBottomButtons';
 import SingerProfile from '../../components/card/SingerProfile';
+import {ConcertDetailApi} from '../../api/catalog/concert';
 
 export default function ConcertDetailScreen({route}) {
   // 배경색을 recoil에서 받아오기
   const [isRender, setIsRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [concertDetail, setConcertDetail] = useState(null);
   const backgroundColor = useRecoilValue(posterColor);
   const navigation = useNavigation();
   const concertInfo =
     'https://ticketimage.interpark.com/Play/image/etc/24/24002190-04.jpg';
   const info = route.params.item;
+  const showID = info.show_id;
   // 스크롤 위치 추적을 위한 Animated.Value
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  // 컴포넌트가 마운트되었는지 추적하기 위한 ref
+  const isMounted = useRef(false);
+  const isFocused = useIsFocused();
+
+  // fetchData 함수는 이제 useEffect 바깥에서 정의되며, 필요한 값을 파라미터로 받는다.
+  const fetchData = async (showID, isMounted) => {
+    console.log('API 요청: ', {show_id: showID});
+    try {
+      const data = await ConcertDetailApi(showID);
+      console.log('API 응답: ', data);
+      // isMounted를 파라미터로 받아, 함수 내에서 직접 접근한다.
+      if (isMounted.current) {
+        setConcertDetail(data);
+      }
+    } catch (error) {
+      console.error('API 호출 중 오류 발생: ', error);
+      // 에러 처리 로직 추가...
+    }
+  };
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    if (isFocused) {
+      fetchData(showID, isMounted); // showID와 isMounted를 파라미터로 전달
+    }
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, [isFocused, showID]); // 의존성 배열에 showID 추가
+
+  if (!concertDetail) {
+    // concertDetail 데이터가 아직 로드되지 않았을 때의 대체 컨텐츠 (예: 로딩 스피너)
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <ImageBackground
       blurRadius={2}
       resizeMode="stretch"
       style={{flex: 1, justifyContent: 'space-between'}}
-      source={{uri: info.poster}}>
+      source={{uri: concertDetail.show.poster}}>
       <ArrowLeft onPress={() => navigation.goBack()} color="white" size={48} />
-      <Text style={F_SIZE_HEADER}>{info.title}</Text>
+      <Text style={F_SIZE_HEADER}>{concertDetail.show.title}</Text>
       <LinearGradient
         start={{x: 0.0, y: 0.0}}
         end={{x: 1.0, y: 1.0}}
@@ -66,8 +106,9 @@ export default function ConcertDetailScreen({route}) {
           style={{
             padding: widthPercent(15),
           }}>
-          <SummaryCard info={info} />
-          <Outline content="내용" />
+          <SummaryCard info={concertDetail} />
+          {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
+          <Outline content={concertDetail.show.description} />
           <Price />
           {/* <View style={styles.title}>
             <Text style={F_SIZE_BTITLE}>공연장</Text>
@@ -163,24 +204,24 @@ export default function ConcertDetailScreen({route}) {
             <FastImage
               resizeMode={FastImage.resizeMode.stretch}
               style={{width: 400, height: '100%', marginTop: 20}}
-              source={{uri: concertInfo}}
+              source={{uri: concertDetail.show.description_image}}
             />
           </View>
         </Animated.ScrollView>
       </LinearGradient>
-      <ConcertBottomButtons scrollY={scrollY} />
+      <ConcertBottomButtons
+        scrollY={scrollY}
+        schedule={[concertDetail.schedule]}
+      />
     </ImageBackground>
   );
 }
-const Outline = ({content}: {content: string}) => {
+const Outline = ({content}) => {
   return (
     <View>
       <View style={styles.outline}>
         <Text style={F_SIZE_BTITLE}>개요</Text>
-        <Text style={F_SIZE_BBIGTEXT}>
-          태양을 머금고 날아든 온기 새로이 움트는 모든 이들을 향해 2024년의
-          아이유&장기하 O. U. R. Tour를 시작합니다.
-        </Text>
+        <Text style={F_SIZE_BBIGTEXT}>{content}</Text>
       </View>
       <View style={styles.outline}>
         <Text style={F_SIZE_BTITLE}>시간</Text>

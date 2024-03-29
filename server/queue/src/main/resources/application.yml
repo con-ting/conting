@@ -5,7 +5,7 @@ server:
 
 spring:
   profiles:
-    active: local
+    active: prod
     group:
       local:
         - common
@@ -20,6 +20,12 @@ spring:
       on-profile: common
   application:
     name: queue-service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER}
 
 
 ---
@@ -36,14 +42,14 @@ spring:
       max-lifetime: 160000
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-    generate-ddl: true
+    generate-ddl: false
   data:
     redis:
       host: 127.0.0.1
@@ -53,33 +59,65 @@ spring:
 logging:
   level:
     com.c209.queue: DEBUG
-
 ---
 spring:
   config:
     activate:
-      on-profile: local-cluster
+      on-profile: prod
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: ${USER_DB_URL}
-    username: root
-    password: 1234
+    url: ${QUEUE_DB_URL}
+    username: ${QUEUE_DB_USER_NAME}
+    password: ${QUEUE_DB_PASSWORD}
     hikari:
       max-lifetime: 160000
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-    generate-ddl: true
+    generate-ddl: false
+  data:
+    redis:
+      host: ${QUEUE_HOST}
+      port: 6380
+
+
+logging:
+  level:
+    com.c209.queue: INFO
+scheduler:
+  enabled: true
+---
+spring:
+  config:
+    activate:
+      on-profile: prod-cluster
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${QUEUE_DB_URL}
+    username: ${QUEUE_USER_NAME}
+    password: ${QUEUE_DB_PASSWORD}
+    hikari:
+      max-lifetime: 160000
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: false
   data:
     redis:
       cluster:
-        nodes: 172.17.0.1:6371,172.17.0.1:6372,172.17.0.1:6373,172.17.0.1:6374,172.17.0.1:6375,172.17.0.1:6376
+        nodes: ${QUEUE_HOST}:6371,${QUEUE_HOST}:6372,${QUEUE_HOST}:6373,${QUEUE_HOST}:6374,${QUEUE_HOST}:6375,${QUEUE_HOST}:6376
         max-redirects: 3
       password: bitnami
       connect-timeout: 500ms
@@ -90,9 +128,10 @@ spring:
 
 logging:
   level:
-    com.c209.queue: DEBUG
+    com.c209.queue: INFO
 
-
+scheduler:
+  enabled: true
 ---
 
 spring:
@@ -111,11 +150,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-#    database-platform: H2Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
   data:
     redis:
       host: 127.0.0.1
       port: 6380
+
+scheduler:
+  enabled: false
 
 
 logging:

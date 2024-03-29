@@ -43,6 +43,7 @@ public class PerformanceDetailInfo {
     private Integer hallSeatTotal;
     private Float hallX;
     private Float hallY;
+    private String hallWebviewUrl;
 
     private Long singerId;
     private String singerName;
