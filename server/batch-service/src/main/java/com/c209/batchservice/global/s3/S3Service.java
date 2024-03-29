@@ -13,7 +13,7 @@ public class S3Service {
     private final S3Props s3Props;
     private final S3Client s3Client;
 
-    public String pubMediaIfNotExists(String key, Path path) {
+    public String putMediaIfNotExists(String key, Path path) {
         try {
             s3Client.headObject(builder -> builder
                     .bucket(s3Props.bucket())

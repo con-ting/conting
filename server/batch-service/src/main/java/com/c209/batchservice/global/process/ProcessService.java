@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class ProcessService {
@@ -44,10 +46,14 @@ public class ProcessService {
         )).intValue();
     }
 
-    public void splitWebm(String inputPath, String outputDir, int splits, int duration, int time) throws IOException, InterruptedException {
+    public void splitToWebmThumb(String inputPath, String outputDir, int splits, int duration, int time) throws IOException, InterruptedException {
         int interval = duration / splits;
         for (int i = 1; i <= splits; i++) {
             String outputVideoPath = outputDir + "/" + i + ".webm";
+            String thumbPath = outputDir + "/" + i + ".jpg";
+            if (Files.exists(Path.of(thumbPath))) {
+                continue;
+            }
             executeCommand(
                     "ffmpeg",
                     "-y",
@@ -60,13 +66,28 @@ public class ProcessService {
                     "-an",
                     outputVideoPath
             );
-            String thumbnailPath = outputDir + "/" + i + ".jpg";
+//            executeCommand(
+//                    "ffmpeg",
+//                    "-y",
+//                    "-ss", String.valueOf(interval * i),
+//                    "-i", inputPath,
+//                    "-t", String.valueOf(time),
+//                    "-c:v", "libwebp",
+//                    "-lossless", "0",
+//                    "-compression_level", "6",
+//                    "-q:v", "60",
+//                    "-loop", "0",
+//                    "-preset", "default",
+//                    "-an",
+//                    "-vsync", "0",
+//                    outputVideoPath
+//            );
             executeCommand(
                     "ffmpeg",
                     "-y",
                     "-i", outputVideoPath,
                     "-vframes", "1",
-                    thumbnailPath
+                    thumbPath
             );
         }
     }

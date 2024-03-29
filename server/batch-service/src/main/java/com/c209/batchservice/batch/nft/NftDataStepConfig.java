@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -37,7 +36,6 @@ import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
-@Slf4j
 public class NftDataStepConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
