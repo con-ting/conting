@@ -17,9 +17,7 @@ public class MainPageController {
     private final MainPageService mainPageService;
 
     @GetMapping
-    public ResponseEntity<GetMainPageResponse> getMainPage(
-//            @RequestHeader("X-Authorization-Id") Long memberId,
-    ) {
+    public ResponseEntity<GetMainPageResponse> getMainPage() {
         return ResponseEntity.ok(mainPageService.getMainPage());
     }
 }
