@@ -21,6 +21,7 @@ public class RShowInfo {
     private String rShowTitle;
     private Long rShowHallId;
     private String rShowHallName;
+    private String rShowHallAddress;
     private ReservationType rShowReservationType;
     private LocalDateTime rShowTicketOpenDate;
     private LocalDateTime rShowTicketCloseDate;

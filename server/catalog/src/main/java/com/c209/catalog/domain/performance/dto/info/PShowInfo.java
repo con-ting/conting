@@ -21,6 +21,7 @@ public class PShowInfo {
     private String pShowTitle;
     private Long pShowHallId;
     private String pShowHallName;
+    private String pShowHallAddress;
     private ReservationType pShowReservationType;
     private LocalDateTime pShowTicketOpenDate;
     private LocalDateTime pShowTicketCloseDate;
