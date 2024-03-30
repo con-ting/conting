@@ -1,39 +1,34 @@
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import {heightPercent, widthPercent} from '../../config/Dimensions.tsx';
-
 import * as Color from '../../config/Color';
 import {LocalImageLoader} from '../../utils/common/ImageLoader.tsx';
-import messaging from '@react-native-firebase/messaging';
 import {useRecoilState} from 'recoil';
 import {fcmToken} from '../../utils/recoil/Atoms.ts';
+import {fetchFCMToken} from '../../utils/fcm/FcmUtils.ts';
+import {saveDataToRealm} from '../../utils/realm/dao/SplashCacheTable.tsx';
+import {splashCacheSave} from '../../api/cache/cache.ts';
 
-type RootStackParamList = {
-  LoginScreen: undefined;
-  SplashScreen: undefined;
-};
-
-type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 const SplashScreen = () => {
-  const navigation = useNavigation<RootStackNavigationProp>();
+  const navigation = useNavigation();
   const [token, setToken] = useRecoilState(fcmToken);
 
   useEffect(() => {
-    const fetchFCMToken = async () => {
-      const token = await messaging().getToken();
-      setToken(token);
-      console.log('FCM Token:', token);
-    };
+    const initialize = async () => {
+      // FCM 토큰 가져오기
+      console.log('스플레쉬 실행');
+      //fcm 토큰 세팅
+      await fetchFCMToken(setToken);
+      //api
+      const apiData = await splashCacheSave();
+      // 데이터를 Realm DB에 저장하는 로직
+      await saveDataToRealm(apiData); // 이 함수는 실제 로직에 맞게 구현해야 합니다.
 
-    fetchFCMToken();
-
-    const timeoutId = setTimeout(() => {
+      // 모든 초기화 로직이 완료되면 로그인 화면으로 네비게이션
       navigation.navigate('LoginScreen');
-    }, 2000);
-    return () => clearTimeout(timeoutId);
+    };
+    initialize();
   }, []);
 
   return (
@@ -52,8 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Color.CUTEYELLOW,
   },
-  logoContainer: {alignItems: 'center', flexDirection: 'row', columnGap: 5},
-  logoImage: {height: heightPercent(30), aspectRatio: 1.0},
+  // 스타일 정의 생략
 });
 
 export default SplashScreen;

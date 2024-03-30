@@ -3,24 +3,24 @@ import Hall from '../schema/Hall.ts';
 import Performance from '../schema/Performance.ts';
 import Schedule from '../schema/Schedule.ts';
 type PerformanceApi = {
-  performance_id: number;
+  performance_id: string;
   title: string;
   poster_image: string;
   description_image: string;
-  hall_id: number;
+  hall_id: string;
   reservation_start_datetime: string;
   reservation_end_datetime: string;
   start_date: string;
   end_date: string;
 };
 type HallApi = {
-  id: number;
+  id: string;
   name: string;
   address: string;
 };
 type ScheduleApi = {
-  schedule_id: number;
-  performance_id: number;
+  schedule_id: string;
+  performance_id: string;
   start_time: string;
   end_time: string;
 };
@@ -32,6 +32,7 @@ type ApiData = {
 };
 
 export async function saveDataToRealm(data: ApiData) {
+  console.log('캐쉬데이터 저장 시작');
   const realm = await Realm.open({
     schema: [Hall.schema, Performance.schema, Schedule.schema],
     path: 'myRealm.realm', // 데이터베이스 파일명 지정 (옵션)
@@ -41,6 +42,7 @@ export async function saveDataToRealm(data: ApiData) {
     realm.write(() => {
       // 홀 데이터 저장
       data.halls.forEach(hall => {
+        console.log('hall 저장 = ', hall);
         realm.create('Hall', {
           _id: new Realm.BSON.ObjectId(),
           hall_id: String(hall.id),
@@ -75,6 +77,7 @@ export async function saveDataToRealm(data: ApiData) {
           'Performance',
           String(schedule.performance_id),
         );
+        console.log('Performance 저장 = ', Performance);
         realm.create('Schedule', {
           _id: new Realm.BSON.ObjectId(),
           schedule_id: String(schedule.schedule_id),
@@ -84,6 +87,7 @@ export async function saveDataToRealm(data: ApiData) {
         });
       });
     });
+    console.log('캐쉬데이터 저장 끝');
   } catch (e) {
     console.error('realm 에러', e);
   } finally {
