@@ -102,7 +102,7 @@ export default function SearchMainScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.context}>
         <View style={styles.search}>
           <SearchBar
@@ -127,7 +127,7 @@ export default function SearchMainScreen() {
         </View>
         {renderTabs()}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
