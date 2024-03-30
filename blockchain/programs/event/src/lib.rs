@@ -45,6 +45,7 @@ pub mod event {
         event.singer = ctx.accounts.singer.key();
         event.start_timestamp = start_timestamp;
         event.end_timestamp = end_timestamp;
+        event.participants = 0;
         event.winners_total = winners_total;
         event.winners = Vec::new();
         event.singer_name = singer_name;
@@ -56,7 +57,7 @@ pub mod event {
     }
 
     pub fn entry_event(ctx: Context<EntryEvent>) -> Result<()> {
-        let event = &ctx.accounts.event;
+        let event = &mut ctx.accounts.event;
 
         let clock = Clock::get()?;
         let now = clock.unix_timestamp;
@@ -87,6 +88,8 @@ pub mod event {
         let entry = &mut ctx.accounts.entry;
         entry.event = event.key();
         entry.participant = participant.key();
+        
+        event.participants += 1;
         Ok(())
     }
 
@@ -113,6 +116,7 @@ pub struct Event {
     pub singer: Pubkey,
     pub start_timestamp: i64,
     pub end_timestamp: i64,
+    pub participants: u32,
     pub winners_total: u16,
     pub winners: Vec<Pubkey>,
 
@@ -138,7 +142,7 @@ pub struct CreateEvent<'info> {
     #[account(
         init,
         payer = agency,
-        space = 8 + 40 + 32 + 32 + 8 + 8 + 2 + (4 + 32 * 100) + (4 + 20) + (4 + 40) + (4 + 256) + (4 + 40) + (4 + 20),
+        space = 8 + 40 + 32 + 32 + 8 + 8 + 2 + 4 + (4 + 32 * 100) + (4 + 20) + (4 + 40) + (4 + 256) + (4 + 40) + (4 + 20),
     )]
     pub event: Account<'info, Event>,
 
