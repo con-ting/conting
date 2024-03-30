@@ -26,8 +26,8 @@ class Performance extends Realm.Object<Performance> {
       reservation_end_datetime: 'string',
       start_date: 'string',
       end_date: 'string',
-      primaryKey: '_id',
     },
+    primaryKey: '_id',
   };
 }
 
