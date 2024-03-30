@@ -24,7 +24,7 @@ public class S3Service {
                     .bucket(s3Props.bucket())
                     .key(key)
                     .build());
-            return "https://" + s3Props.publicBaseUrl() + "/" + key;
+            return s3Props.publicBaseUrl() + "/" + key;
         } catch (NoSuchKeyException e) {
             return putMedia(key, path);
         }

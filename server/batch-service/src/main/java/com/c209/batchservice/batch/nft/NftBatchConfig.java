@@ -64,22 +64,28 @@ public class NftBatchConfig {
             final @Qualifier("assetMetadataStep") Step assetMetadataStep,
             // mint
             final @Qualifier("mintCollectionStep") Step mintCollectionStep,
-            final @Qualifier("mintAssetStep") Step mintAssetStep
+            final @Qualifier("mintAssetStep") Step mintAssetStep,
+            final @Qualifier("verifyAssetAndUpdateSeatStep") Step verifyAssetStep
     ) {
         return new JobBuilder("nftJob", jobRepository)
+                // data
                 .start(performanceStep)
                 .next(scheduleStep)
                 .next(seatStep)
                 .next(seatAndScheduleStep)
                 .next(PerformanceAndSeatsStep)
+                // media
                 .next(downloadMediaStep)
                 .next(performanceAndMediaStep)
                 .next(createMediaStep)
                 .next(uploadMediaStep)
+                // metadata
                 .next(collectionMetadataStep)
                 .next(assetMetadataStep)
+                // mint
                 .next(mintCollectionStep)
                 .next(mintAssetStep)
+                .next(verifyAssetStep)
                 .build();
     }
 }

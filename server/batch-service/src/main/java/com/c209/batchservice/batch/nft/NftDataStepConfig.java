@@ -123,7 +123,6 @@ public class NftDataStepConfig {
     }
 
     @Bean
-    @StepScope
     public ItemProcessor<SeatDto, SeatAndScheduleDto> seatAndScheduleProcessor() {
         final AtomicReference<Map<Long, ScheduleDto>> scheduleMapRef = new AtomicReference<>();
         return seat -> {

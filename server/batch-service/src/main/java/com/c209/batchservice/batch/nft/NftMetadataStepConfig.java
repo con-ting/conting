@@ -5,7 +5,6 @@ import com.c209.batchservice.global.s3.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
@@ -39,17 +38,20 @@ public class NftMetadataStepConfig {
     }
 
     @Bean
-    @StepScope
     public ItemProcessor<PerformanceAndSeatsDto, PerformanceAndMetadataDto> collectionMetadataProcessor() {
         return dto -> {
             JsonMetadataDto jsonMetadata = JsonMetadataDto.builder()
-                    .name(dto.performance().title())
+                    .name(dto.performance().title().trim())
                     .symbol("CONTING")
                     .description(dto.performance().description())
                     .sellerFeeBasisPoints(750)
                     .image(dto.performance().posterImage())
                     .externalUrl(dto.performance().videoUrl())
                     .attributes(List.of(
+                            JsonMetadataDto.Attribute.builder()
+                                    .traitType("Singer")
+                                    .value(dto.performance().singer().name())
+                                    .build(),
                             JsonMetadataDto.Attribute.builder()
                                     .traitType("Location")
                                     .value(dto.performance().hall().name())
@@ -99,19 +101,22 @@ public class NftMetadataStepConfig {
     }
 
     @Bean
-    @StepScope
     public ItemProcessor<SeatAndScheduleAndMediaDto, SeatAndScheduleAndMetadataDto> assetMetadataProcessor() {
         AtomicInteger counter = new AtomicInteger(1);
         return dto -> {
             int count = counter.getAndIncrement();
             JsonMetadataDto jsonMetadata = JsonMetadataDto.builder()
-                    .name(dto.schedule().performance().title() + " #" + count)
+                    .name(dto.schedule().performance().title().trim() + " #" + count)
                     .symbol("CONTING")
                     .description(dto.schedule().performance().description())
                     .sellerFeeBasisPoints(750)
                     .image(dto.mediaUrl())
                     .externalUrl(dto.schedule().performance().videoUrl())
                     .attributes(List.of(
+                            JsonMetadataDto.Attribute.builder()
+                                    .traitType("Singer")
+                                    .value(dto.schedule().performance().singer().name())
+                                    .build(),
                             JsonMetadataDto.Attribute.builder()
                                     .traitType("Location")
                                     .value(dto.schedule().performance().hall().name())
@@ -147,6 +152,10 @@ public class NftMetadataStepConfig {
                             JsonMetadataDto.Attribute.builder()
                                     .traitType("Grade")
                                     .value(dto.seat().grade())
+                                    .build(),
+                            JsonMetadataDto.Attribute.builder()
+                                    .traitType("Count")
+                                    .value(Integer.toString(count))
                                     .build()
                     ))
                     .properties(List.of(
