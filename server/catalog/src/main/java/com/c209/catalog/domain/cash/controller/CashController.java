@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("catalog/cash")
+@RequestMapping("cache")
 @RequiredArgsConstructor
 public class CashController {
     private final CashService cashService;
