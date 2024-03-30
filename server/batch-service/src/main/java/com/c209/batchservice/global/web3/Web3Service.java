@@ -34,6 +34,17 @@ public class Web3Service {
                 .body(AssetResponse.class);
     }
 
+    public boolean updateAsset(String mint, AssetRequest assetRequest) {
+        return restClient.put()
+                .uri("/nfts/{mint}", mint)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(assetRequest)
+                .retrieve()
+                .toBodilessEntity()
+                .getStatusCode()
+                .is2xxSuccessful();
+    }
+
     public boolean verifyAsset(String collectionMint, String mint) {
         return restClient.post()
                 .uri("/collections/{collectionMint}/verify/{mint}", collectionMint, mint)

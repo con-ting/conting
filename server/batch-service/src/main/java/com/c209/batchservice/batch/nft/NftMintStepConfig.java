@@ -59,7 +59,7 @@ public class NftMintStepConfig {
                                 .name(dto.performance().singer().name() +
                                       " " + dto.performance().startDate())
                                 .symbol(dto.jsonMetadata().symbol())
-                                .uri(dto.jsonMetadata().externalUrl())
+                                .uri(dto.jsonUrl())
                                 .sellerFeeBasisPoints(dto.jsonMetadata().sellerFeeBasisPoints())
                                 .agency(dto.performance().seller().wallet())
                                 .singer(dto.performance().singer().wallet())
@@ -99,15 +99,16 @@ public class NftMintStepConfig {
                 mint = web3Service.createAsset(AssetRequest.builder()
                                 .name(dto.schedule().performance().singer().name() +
                                       " " + dto.schedule().performance().startDate() +
-                                      suffix)
+                                      " 티켓 " + suffix)
                                 .symbol(dto.jsonMetadata().symbol())
-                                .uri(dto.jsonMetadata().externalUrl())
+                                .uri(dto.jsonUrl())
                                 .sellerFeeBasisPoints(dto.jsonMetadata().sellerFeeBasisPoints())
                                 .agency(dto.schedule().performance().seller().wallet())
                                 .singer(dto.schedule().performance().singer().wallet())
                                 .collectionMint(collectionMint)
                                 .build())
                         .mint();
+                Files.writeString(path, mint, StandardOpenOption.CREATE);
             }
             return SeatIdAndMintDto.builder()
                     .seatId(dto.seat().id())

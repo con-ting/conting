@@ -65,7 +65,8 @@ public class NftBatchConfig {
             // mint
             final @Qualifier("mintCollectionStep") Step mintCollectionStep,
             final @Qualifier("mintAssetStep") Step mintAssetStep,
-            final @Qualifier("verifyAssetAndUpdateSeatStep") Step verifyAssetStep
+            final @Qualifier("verifyAssetAndUpdateSeatStep") Step verifyAssetStep,
+            final @Qualifier("updatePerformanceStep") Step updatePerformanceStep
     ) {
         return new JobBuilder("nftJob", jobRepository)
                 // data
@@ -86,6 +87,7 @@ public class NftBatchConfig {
                 .next(mintCollectionStep)
                 .next(mintAssetStep)
                 .next(verifyAssetStep)
+                .next(updatePerformanceStep)
                 .build();
     }
 }
