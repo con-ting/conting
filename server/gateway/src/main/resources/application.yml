@@ -52,6 +52,10 @@ spring:
             - Path=/catalog/**
           filters:
             - AuthorizationHeaderFilter
+        - id: cache-service
+          uri: ${CATALOG_SERVICE}
+          predicates:
+            - Path=/cache
         - id: queue-service
           uri: ${QUEUE_SERVICE}
           predicates:
