@@ -110,7 +110,8 @@ public class NftMetadataStepConfig {
                     .symbol("CONTING")
                     .description(dto.schedule().performance().description())
                     .sellerFeeBasisPoints(750)
-                    .image(dto.mediaUrl())
+                    .image(dto.thumbUrl())
+                    .animationUrl(dto.mediaUrl())
                     .externalUrl(dto.schedule().performance().videoUrl())
                     .attributes(List.of(
                             JsonMetadataDto.Attribute.builder()
@@ -154,7 +155,7 @@ public class NftMetadataStepConfig {
                                     .value(dto.seat().grade())
                                     .build(),
                             JsonMetadataDto.Attribute.builder()
-                                    .traitType("Count")
+                                    .traitType("Number")
                                     .value(Integer.toString(count))
                                     .build()
                     ))
@@ -174,7 +175,7 @@ public class NftMetadataStepConfig {
                                                     .type("image/jpeg")
                                                     .build()
                                     ))
-                                    .category("image")
+                                    .category("video")
                                     .build()
                     ))
                     .build();

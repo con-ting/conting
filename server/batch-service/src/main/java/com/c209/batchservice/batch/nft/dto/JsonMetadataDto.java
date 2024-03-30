@@ -14,6 +14,7 @@ public record JsonMetadataDto(
         String description,
         Integer sellerFeeBasisPoints,
         String image,
+        String animationUrl,
         String externalUrl,
         List<Attribute> attributes,
         List<Property> properties
