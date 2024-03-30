@@ -13,8 +13,11 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -53,14 +56,14 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Mono<TicketDto> getTicketDetail(Long userId, Long ticketId, String fingerPrint) {
-        log.info("티켓 아이디로 조회");
+
         Mono<Ticket> ticketMono = ticketRepository.findByTicketId(ticketId)
                 .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND)));
 
         //티켓의 isUsed 여부 판단
         //?
 
-        log.info("티켓 아이디로 조회2");
+
         Mono<Long> ownerIdMono = ticketMono.map(Ticket::getOwnerId);
 
 
@@ -68,14 +71,22 @@ public class TicketServiceImpl implements TicketService {
         Mono<Boolean> isUsedMono = ticketMono.map(Ticket::getIsUsed);
 
 
+
         Mono<Boolean> isFingerPrintMatchedMono = ticketMono.map(Ticket::getFingerprintKey)
-                .map(storedFingerPrint -> storedFingerPrint.equals(fingerPrint));
+                .map(storedFingerPrint -> {
+                    try {
+                        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                        byte[] hashedStoredFingerPrint = digest.digest(storedFingerPrint.getBytes());
+                        byte[] hashedFingerPrint = digest.digest(fingerPrint.replace(" ", "+").getBytes()); // 공백 제거
 
+                        return MessageDigest.isEqual(hashedStoredFingerPrint, hashedFingerPrint);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                });
 
-        log.info("{}", ticketMono);
-
-
-        return Mono.zip(isOwnerMatchedMono.log(), isFingerPrintMatchedMono.log(), ticketMono.log(), isUsedMono.log())
+        return Mono.zip(isOwnerMatchedMono, isFingerPrintMatchedMono, ticketMono, isUsedMono)
                 .flatMap(tuple -> {
                     boolean isOwnerMatched = tuple.getT1();
                     boolean isFingerPrintMatched = tuple.getT2();
