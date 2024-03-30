@@ -8,6 +8,7 @@ import com.c209.batchservice.global.process.ProcessService;
 import com.c209.batchservice.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
@@ -41,6 +42,7 @@ public class NftMediaStepConfig {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<PerformanceAndSeatsDto, Void> downloadMediaProcessor() {
         return performanceAndSeatsDto -> {
             processService.downloadWebmVideoOnly(
@@ -62,6 +64,7 @@ public class NftMediaStepConfig {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<PerformanceAndSeatsDto, PerformanceIdAndMediaDto> performanceAndMediaProcessor() {
         return dto -> {
             String videoPath = NFT_MEDIA_DIR + "/" + dto.performance().id() + ".webm";
@@ -86,6 +89,7 @@ public class NftMediaStepConfig {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<PerformanceIdAndMediaDto, Void> createMediaProcessor() {
         return dto -> {
             String inputPath = NFT_MEDIA_DIR + "/" + dto.performanceId() + ".webm";
@@ -107,6 +111,7 @@ public class NftMediaStepConfig {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<SeatAndScheduleDto, SeatAndScheduleAndMediaDto> uploadMediaProcessor() {
         return dto -> {
             List<String> keys = Stream.of("webm", "jpg").map(extension -> {

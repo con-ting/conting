@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -55,6 +56,7 @@ public class NftDataStepConfig {
     }
 
     @Bean
+    @StepScope
     public JpaPagingItemReader<Performance> performanceReader() {
         return new JpaPagingItemReaderBuilder<Performance>()
                 .name("performanceReader")
@@ -75,6 +77,7 @@ public class NftDataStepConfig {
     }
 
     @Bean
+    @StepScope
     public JpaPagingItemReader<Schedule> scheduleReader() {
         return new JpaPagingItemReaderBuilder<Schedule>()
                 .name("scheduleReader")
@@ -99,6 +102,7 @@ public class NftDataStepConfig {
     }
 
     @Bean
+    @StepScope
     public JpaPagingItemReader<Seat> seatReader() {
         return new JpaPagingItemReaderBuilder<Seat>()
                 .name("seatReader")
@@ -119,6 +123,7 @@ public class NftDataStepConfig {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<SeatDto, SeatAndScheduleDto> seatAndScheduleProcessor() {
         final AtomicReference<Map<Long, ScheduleDto>> scheduleMapRef = new AtomicReference<>();
         return seat -> {
@@ -151,6 +156,7 @@ public class NftDataStepConfig {
     }
 
     @Bean
+    @StepScope
     public Tasklet PerformanceAndSeatsTasklet() {
         return (contribution, chunkContext) -> {
             ObjectMapper mapper = new ObjectMapper();

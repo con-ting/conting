@@ -2,6 +2,7 @@ package com.c209.batchservice.batch.nft;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
@@ -24,6 +25,8 @@ public class NftBatchConfig {
         return NFT_DIR + "/" + itemType.getSimpleName() + ".json";
     }
 
+    @Bean
+    @StepScope
     public static <T> JsonItemReader<T> createJsonItemReader(Class<? extends T> itemType) {
         return new JsonItemReaderBuilder<T>()
                 .name(itemType.getSimpleName() + "Reader")
@@ -32,6 +35,8 @@ public class NftBatchConfig {
                 .build();
     }
 
+    @Bean
+    @StepScope
     public static <T> JsonFileItemWriter<T> createJsonFileItemWriter(Class<? extends T> itemType) {
         return new JsonFileItemWriterBuilder<T>()
                 .name(itemType.getSimpleName() + "Writer")
@@ -54,9 +59,12 @@ public class NftBatchConfig {
             final @Qualifier("performanceAndMediaStep") Step performanceAndMediaStep,
             final @Qualifier("createMediaStep") Step createMediaStep,
             final @Qualifier("uploadMediaStep") Step uploadMediaStep,
-            // jsonMetadata
+            // metadata
             final @Qualifier("collectionMetadataStep") Step collectionMetadataStep,
-            final @Qualifier("assetMetadataStep") Step assetMetadataStep
+            final @Qualifier("assetMetadataStep") Step assetMetadataStep,
+            // mint
+            final @Qualifier("mintCollectionStep") Step mintCollectionStep,
+            final @Qualifier("mintAssetStep") Step mintAssetStep
     ) {
         return new JobBuilder("nftJob", jobRepository)
                 .start(performanceStep)
@@ -70,6 +78,8 @@ public class NftBatchConfig {
                 .next(uploadMediaStep)
                 .next(collectionMetadataStep)
                 .next(assetMetadataStep)
+                .next(mintCollectionStep)
+                .next(mintAssetStep)
                 .build();
     }
 }
