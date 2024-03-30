@@ -10,7 +10,7 @@ public enum Grades {
     S("S"), // Special
     A("A"),
     B("B"),
-    C("C")
+    C("C"),
     STAND("STAND");
 
 
