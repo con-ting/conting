@@ -126,7 +126,7 @@ public class NftDataStepConfig {
                 if (map == null) {
                     try {
                         return new ObjectMapper().readValue(
-                                        new FileSystemResource(NftBatchConfig.getPath(ScheduleDto.class)).getInputStream(),
+                                        new FileSystemResource(NftBatchConfig.getJsonPath(ScheduleDto.class)).getInputStream(),
                                         new TypeReference<List<ScheduleDto>>() {
                                         }).stream()
                                 .collect(Collectors.toMap(ScheduleDto::id, Function.identity()));
@@ -155,7 +155,7 @@ public class NftDataStepConfig {
         return (contribution, chunkContext) -> {
             ObjectMapper mapper = new ObjectMapper();
             List<SeatAndScheduleDto> seatExtends = Arrays.asList(mapper.readValue(
-                    new FileSystemResource(NftBatchConfig.getPath(SeatAndScheduleDto.class)).getFile(),
+                    new FileSystemResource(NftBatchConfig.getJsonPath(SeatAndScheduleDto.class)).getFile(),
                     SeatAndScheduleDto[].class));
             Map<Long, PerformanceDto> performanceMap = seatExtends.stream()
                     .collect(Collectors.toMap(
@@ -172,7 +172,7 @@ public class NftDataStepConfig {
                             .seats(seatsMap.get(performance.id()))
                             .build())
                     .toList();
-            mapper.writeValue(new FileSystemResource(NftBatchConfig.getPath(PerformanceAndSeatsDto.class)).getFile(),
+            mapper.writeValue(new FileSystemResource(NftBatchConfig.getJsonPath(PerformanceAndSeatsDto.class)).getFile(),
                     performanceAndSeatsList);
             return RepeatStatus.FINISHED;
         };

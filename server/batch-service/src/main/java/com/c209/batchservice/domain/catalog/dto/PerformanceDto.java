@@ -12,6 +12,7 @@ public record PerformanceDto(
         String videoUrl,
         String startDate,
         String endDate,
+        HallDto hall,
         SellerDto seller,
         SingerDto singer
 ) {
@@ -24,6 +25,7 @@ public record PerformanceDto(
                 .videoUrl(performance.getVideoUrl())
                 .startDate(performance.getStartDate().toString())
                 .endDate(performance.getEndDate().toString())
+                .hall(HallDto.of(performance.getHall()))
                 .seller(SellerDto.of(performance.getSeller()))
                 .singer(SingerDto.of(performance.getSinger()))
                 .build();

@@ -1,13 +1,12 @@
 package com.c209.batchservice.batch.nft;
 
-import com.c209.batchservice.batch.nft.dto.PerformanceAndMediaDto;
 import com.c209.batchservice.batch.nft.dto.PerformanceAndSeatsDto;
+import com.c209.batchservice.batch.nft.dto.PerformanceIdAndMediaDto;
 import com.c209.batchservice.batch.nft.dto.SeatAndScheduleAndMediaDto;
 import com.c209.batchservice.batch.nft.dto.SeatAndScheduleDto;
 import com.c209.batchservice.global.process.ProcessService;
 import com.c209.batchservice.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -16,18 +15,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor
 public class NftMediaStepConfig {
-    private static final String MEDIA_DIR = NftBatchConfig.BASE_DIR + "/media";
+    private static final String NFT_MEDIA_DIR = NftBatchConfig.NFT_DIR + "/media";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     private final ProcessService processService;
@@ -49,7 +45,7 @@ public class NftMediaStepConfig {
         return performanceAndSeatsDto -> {
             processService.downloadWebmVideoOnly(
                     performanceAndSeatsDto.performance().videoUrl(),
-                    MEDIA_DIR + "/" + performanceAndSeatsDto.performance().id() + ".webm"
+                    NFT_MEDIA_DIR + "/" + performanceAndSeatsDto.performance().id() + ".webm"
             );
             return null;
         };
@@ -58,21 +54,21 @@ public class NftMediaStepConfig {
     @Bean
     public Step performanceAndMediaStep() {
         return new StepBuilder("performanceAndMediaStep", jobRepository)
-                .<PerformanceAndSeatsDto, PerformanceAndMediaDto>chunk(100, batchTransactionManager)
+                .<PerformanceAndSeatsDto, PerformanceIdAndMediaDto>chunk(100, batchTransactionManager)
                 .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(performanceAndMediaProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceAndMediaDto.class))
+                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceIdAndMediaDto.class))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<PerformanceAndSeatsDto, PerformanceAndMediaDto> performanceAndMediaProcessor() {
-        return performanceAndSeatsDto -> {
-            String videoPath = MEDIA_DIR + "/" + performanceAndSeatsDto.performance().id() + ".webm";
+    public ItemProcessor<PerformanceAndSeatsDto, PerformanceIdAndMediaDto> performanceAndMediaProcessor() {
+        return dto -> {
+            String videoPath = NFT_MEDIA_DIR + "/" + dto.performance().id() + ".webm";
             int duration = processService.getVideoDuration(videoPath);
-            return PerformanceAndMediaDto.builder()
-                    .performanceId(performanceAndSeatsDto.performance().id())
-                    .seatCount(performanceAndSeatsDto.seats().size())
+            return PerformanceIdAndMediaDto.builder()
+                    .performanceId(dto.performance().id())
+                    .seatCount(dto.seats().size())
                     .mediaDuration(duration)
                     .build();
         };
@@ -81,8 +77,8 @@ public class NftMediaStepConfig {
     @Bean
     public Step createMediaStep() {
         return new StepBuilder("createMediaStep", jobRepository)
-                .<PerformanceAndMediaDto, Void>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndMediaDto.class))
+                .<PerformanceIdAndMediaDto, Void>chunk(100, batchTransactionManager)
+                .reader(NftBatchConfig.createJsonItemReader(PerformanceIdAndMediaDto.class))
                 .processor(createMediaProcessor())
                 .writer(Void -> {
                 })
@@ -90,12 +86,12 @@ public class NftMediaStepConfig {
     }
 
     @Bean
-    public ItemProcessor<PerformanceAndMediaDto, Void> createMediaProcessor() {
-        return media -> {
-            String inputPath = MEDIA_DIR + "/" + media.performanceId() + ".webm";
-            String outputDir = MEDIA_DIR + "/" + media.performanceId();
+    public ItemProcessor<PerformanceIdAndMediaDto, Void> createMediaProcessor() {
+        return dto -> {
+            String inputPath = NFT_MEDIA_DIR + "/" + dto.performanceId() + ".webm";
+            String outputDir = NFT_MEDIA_DIR + "/" + dto.performanceId();
             Files.createDirectories(Path.of(outputDir));
-            processService.splitToWebmThumb(inputPath, outputDir, media.seatCount(), media.mediaDuration(), 3);
+            processService.splitToWebmThumb(inputPath, outputDir, dto.seatCount(), dto.mediaDuration(), 3);
             return null;
         };
     }
@@ -112,39 +108,21 @@ public class NftMediaStepConfig {
 
     @Bean
     public ItemProcessor<SeatAndScheduleDto, SeatAndScheduleAndMediaDto> uploadMediaProcessor() {
-        return seatAndSchedule -> {
-            List<String> keys = Stream.of(
-                    Path.of(MEDIA_DIR, seatAndSchedule.schedule().performance().id().toString(), seatAndSchedule.seat().id() + ".webm"),
-                    Path.of(MEDIA_DIR, seatAndSchedule.schedule().performance().id().toString(), seatAndSchedule.seat().id() + ".jpg")
-            ).map(path -> {
-                String fileName = path.getFileName().toString();
-                int lastDotIndex = fileName.lastIndexOf('.');
-                String baseName = fileName.substring(0, lastDotIndex);
-                String extension = fileName.substring(lastDotIndex + 1);
-                String parentName = path.getParent().getFileName().toString();
-                String hash = calculateSha256(path);
-                String key = parentName + "/" + baseName + "/" + hash + "." + extension;
+        return dto -> {
+            List<String> keys = Stream.of("webm", "jpg").map(extension -> {
+                Long performanceId = dto.schedule().performance().id();
+                Long seatId = dto.seat().id();
+                Path path = Path.of(NFT_MEDIA_DIR, performanceId.toString(), seatId + "." + extension);
+                String hash = s3Service.calculateSha256(path);
+                String key = performanceId + "/" + seatId + "/" + hash + "." + extension;
                 return s3Service.putMediaIfNotExists(key, path);
             }).toList();
             return SeatAndScheduleAndMediaDto.builder()
-                    .seat(seatAndSchedule.seat())
-                    .schedule(seatAndSchedule.schedule())
+                    .seat(dto.seat())
+                    .schedule(dto.schedule())
                     .mediaUrl(keys.get(0))
                     .thumbUrl(keys.get(1))
                     .build();
         };
-    }
-
-    @SneakyThrows
-    private String calculateSha256(Path path) {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        try (InputStream is = Files.newInputStream(path)) {
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = is.read(buffer)) != -1) {
-                digest.update(buffer, 0, read);
-            }
-        }
-        return HexFormat.of().formatHex(digest.digest());
     }
 }

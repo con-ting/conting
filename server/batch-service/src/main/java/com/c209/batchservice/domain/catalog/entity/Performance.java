@@ -26,6 +26,9 @@ public class Performance {
     private Boolean isMinted;
 
     @ManyToOne
+    @JoinColumn(name = "hall_id")
+    private Hall hall;
+    @ManyToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
     @ManyToOne

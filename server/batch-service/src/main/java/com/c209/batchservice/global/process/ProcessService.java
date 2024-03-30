@@ -54,34 +54,12 @@ public class ProcessService {
             if (Files.exists(Path.of(thumbPath))) {
                 continue;
             }
-            executeCommand(
-                    "ffmpeg",
-                    "-y",
-                    "-ss", String.valueOf(interval * i),
-                    "-i", inputPath,
-                    "-t", String.valueOf(time),
-                    "-c:v", "libvpx-vp9",
-                    "-crf", "35",
-                    "-b:v", "0",
-                    "-an",
+            splitToWebm(
+                    String.valueOf(interval * i),
+                    inputPath,
+                    String.valueOf(time),
                     outputVideoPath
             );
-//            executeCommand(
-//                    "ffmpeg",
-//                    "-y",
-//                    "-ss", String.valueOf(interval * i),
-//                    "-i", inputPath,
-//                    "-t", String.valueOf(time),
-//                    "-c:v", "libwebp",
-//                    "-lossless", "0",
-//                    "-compression_level", "6",
-//                    "-q:v", "60",
-//                    "-loop", "0",
-//                    "-preset", "default",
-//                    "-an",
-//                    "-vsync", "0",
-//                    outputVideoPath
-//            );
             executeCommand(
                     "ffmpeg",
                     "-y",
@@ -90,5 +68,39 @@ public class ProcessService {
                     thumbPath
             );
         }
+    }
+
+    private void splitToWebm(String ss, String i, String t, String output) throws IOException, InterruptedException {
+        executeCommand(
+                "ffmpeg",
+                "-y",
+                "-ss", ss,
+                "-i", i,
+                "-t", t,
+                "-c:v", "libvpx-vp9",
+                "-crf", "35",
+                "-b:v", "0",
+                "-an",
+                output
+        );
+    }
+
+    private void splitToWebp(String ss, String i, String t, String output) throws IOException, InterruptedException {
+        executeCommand(
+                "ffmpeg",
+                "-y",
+                "-ss", ss,
+                "-i", i,
+                "-t", t,
+                "-c:v", "libwebp",
+                "-lossless", "0",
+                "-compression_level", "6",
+                "-q:v", "60",
+                "-loop", "0",
+                "-preset", "default",
+                "-an",
+                "-vsync", "0",
+                output
+        );
     }
 }
