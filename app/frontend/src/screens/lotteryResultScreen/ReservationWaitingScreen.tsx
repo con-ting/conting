@@ -4,7 +4,10 @@ import {View, Text, StyleSheet} from 'react-native';
 import {MAINBLACK, MINTBASE} from '../../config/Color.ts';
 import {consertCardData} from './ResultMainScreen.tsx';
 import {BasicConcertCardWide} from '../../components/card/ConcertCardWide.tsx';
-import {korDateFormat} from '../../utils/common/TimeFormat.ts';
+import {
+  korDateFormat,
+  korDateFormatString,
+} from '../../utils/common/TimeFormat.ts';
 import formatSido from '../../utils/common/SidoFormat.ts';
 
 export type consertCardData = {
@@ -43,7 +46,7 @@ export default function ReservationWaitingScreen({concerts}) {
             sido={formatSido(props.hall_location)}
             concert_hall={props.hall_name}
             date_tag={props.date_tag}
-            date={korDateFormat(props.time)}
+            date={korDateFormatString(props.time)}
             swipe_btn_disabled={props.swipe_btn_disabled}
             swipe_btn_text={props.swipe_btn_text}
             swipe_btn_color={props.swipe_btn_color}
