@@ -63,6 +63,28 @@ export const mintNftToCollection = async (
   return mint.publicKey
 }
 
+export const updateNft = async (
+  umi: Umi,
+  mint: PublicKey,
+  input: AssetInput
+) => {
+  const { name, symbol, uri, sellerFeeBasisPoints, agency, singer } = input
+  await tokenMeta.updateV1(umi, {
+    mint,
+    data: {
+      name,
+      symbol,
+      uri,
+      sellerFeeBasisPoints,
+      creators: [
+        { address: umi.identity.publicKey, verified: true, share: 10 },
+        { address: agency, verified: false, share: 90 },
+        { address: singer, verified: false, share: 0 }
+      ]
+    }
+  }).sendAndConfirm(umi)
+}
+
 export const verifyCollectionNft = async (
   umi: Umi,
   assetMint: PublicKey,

@@ -2,7 +2,7 @@ import Fastify from 'fastify'
 import { publicKey } from '@metaplex-foundation/umi'
 import { getPort, initUmi } from './init.js'
 import { type CollectionBody, type CollectionInput, type AssetBody, type AssetInput } from './types.js'
-import { mintCollection, mintNftToCollection, transferNft, useNft, verifyCollectionNft } from './nft.js'
+import { burnNft, mintCollection, mintNftToCollection, transferNft, updateNft, useNft, verifyCollectionNft } from './nft.js'
 
 const umi = initUmi()
 const fastify = Fastify({ logger: true })
@@ -35,6 +35,17 @@ fastify.post<{ Body: AssetBody }>('/nfts', async (request, reply) => {
   return { mint }
 })
 
+fastify.put<{ Params: { mint: string }, Body: AssetBody }>('/nfts/:mint', async (request, reply) => {
+  const mint = publicKey(request.params.mint)
+  const input: AssetInput = {
+    ...request.body,
+    agency: publicKey(request.body.agency),
+    singer: publicKey(request.body.singer),
+    collectionMint: publicKey(request.body.collectionMint)
+  }
+  await updateNft(umi, mint, input)
+})
+
 fastify.post<{ Params: { mint: string, newOwner: string } }>('/nfts/:mint/transfer/:newOwner', async (request, reply) => {
   const mint = publicKey(request.params.mint)
   const newOwner = publicKey(request.params.newOwner)
@@ -44,6 +55,11 @@ fastify.post<{ Params: { mint: string, newOwner: string } }>('/nfts/:mint/transf
 fastify.post<{ Params: { mint: string } }>('/nfts/:mint/use', async (request, reply) => {
   const mint = publicKey(request.params.mint)
   await useNft(umi, mint)
+})
+
+fastify.delete<{ Params: { mint: string } }>('/nfts/:mint', async (request, reply) => {
+  const mint = publicKey(request.params.mint)
+  await burnNft(umi, mint)
 })
 
 const start = async () => {
