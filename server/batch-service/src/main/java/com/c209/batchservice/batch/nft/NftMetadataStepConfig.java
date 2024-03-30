@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class NftMetadataConfig {
+public class NftMetadataStepConfig {
     private static final String NFT_METADATA_DIR = NftBatchConfig.NFT_DIR + "/jsonMetadata";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
