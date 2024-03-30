@@ -14,12 +14,31 @@ import CastInfo from '../../../../components/infos/CastInfo';
 import CastActivityScreen from './CastActivityScreen';
 import CastEventScreen from './CastEventScreen';
 import {widthPercent} from '../../../../config/Dimensions';
+import { CastDetailSearchApi } from '../../../../api/catalog/concert';
 
 const Tabs = ['활동', '이벤트'];
 
 export default function CastDetailScreen({route}: any) {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const {castId} = route.params; // 네비게이션 파라미터에서 castId를 추출
+  const [castInfo, setCastInfo] = useState({});
+
+  useEffect(() => {
+    fetchCast(castId);
+  }, [castId]);
+
+  const fetchCast = async (id: number) => {
+    console.log('fetchCastRequest =', {
+      singer_id: id,
+    });
+
+    const response = await CastDetailSearchApi(id);
+    console.log('fetchCastResponse =', response);
+    setCastInfo(response.singer);
+    
+    console.log('dd',castInfo.name);
+  }
+
 
   // 주어진 castId와 일치하는 출연진 찾기
   const cast = casts.find(cast => cast.id === castId);
@@ -39,7 +58,7 @@ export default function CastDetailScreen({route}: any) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.context}>
-        {cast && <CastInfo name={cast.name} img={cast.image} />}
+        <CastInfo name={castInfo.name} img={castInfo.profile} instagram={castInfo.instagram}/>
         <View style={styles.tabsContainer}>
           {Tabs.map(tab => (
             <TouchableOpacity
