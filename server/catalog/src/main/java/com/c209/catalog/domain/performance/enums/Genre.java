@@ -4,17 +4,17 @@ import lombok.Getter;
 
 @Getter
 public enum Genre {
-    BA("발라드"),
-    RO("락/메탈"),
-    RA("랩/힙합"),
-    JA("재즈/소울"),
-    FO("포크"),
-    TR("트로트"),
     CO("내한"),
-    IN("인디"),
     FE("페스티벌"),
     FA("팬클럽"),
-    KP("케이팝");
+    KP("케이팝")
+    MU("뮤지컬"),
+    KO("국악"),
+    CL("클래식"),
+    DA("무용"),
+    DR("연극"),
+    CI("서커스/마술"),
+    MI("복합");
 
     private final String selectGenre;
 
