@@ -3,10 +3,10 @@ import {F_SIZE_TITLE} from '../../../../config/Font';
 import {BasicConcertCardWide} from '../../../../components/card/ConcertCardWide';
 import AlbumCard from '../../../../components/card/AlbumCard';
 import {Dropdown} from '../../../../components/dropdown/Dropdown';
-import {useState} from 'react';
+import {Key, useState} from 'react';
 import {widthPercent} from '../../../../config/Dimensions';
 
-export default function CastActivityScreen() {
+export default function CastActivityScreen({albums}) {
   // 드롭다운 오픈 상태
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
@@ -91,18 +91,16 @@ export default function CastActivityScreen() {
       </View>
       <Text style={[F_SIZE_TITLE, styles.title]}>발매한 앨범</Text>
       <View style={styles.card}>
+        {albums.map((album: { title: string; image: string; published_at: string | undefined; }, index: Key | null | undefined) => (
         <AlbumCard
-          name="The Winning"
-          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
-          published_at="2024.02.20"
-          songNums={10}
+        key={index}
+          name={album.title}
+          album={album.image}
+          published_at={album.published_at}
+          songNums={10} //데이터 없음
         />
-        <AlbumCard
-          name="IU 5th Album ‘LILAC’"
-          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
-          published_at="2021.03.25"
-          songNums={10}
-        />
+        ))}
+        
       </View>
     </View>
   );

@@ -21,7 +21,8 @@ const Tabs = ['활동', '이벤트'];
 export default function CastDetailScreen({route}: any) {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const {castId} = route.params; // 네비게이션 파라미터에서 castId를 추출
-  const [castInfo, setCastInfo] = useState({});
+  const [castInfo, setCastInfo] = useState([]); //가수 프로필  정보
+  const [castAlbum, setCastAlbum] = useState([]);
 
   useEffect(() => {
     fetchCast(castId);
@@ -35,18 +36,17 @@ export default function CastDetailScreen({route}: any) {
     const response = await CastDetailSearchApi(id);
     console.log('fetchCastResponse =', response);
     setCastInfo(response.singer);
-    
-    console.log('dd',castInfo.name);
+    setCastAlbum(response.albums);
   }
 
 
   // 주어진 castId와 일치하는 출연진 찾기
-  const cast = casts.find(cast => cast.id === castId);
+  // const cast = casts.find(cast => cast.id === castId);
 
   const renderTabs = () => {
     switch (selectedTab) {
       case '활동':
-        return <CastActivityScreen />;
+        return <CastActivityScreen albums={castAlbum}/>;
       case '이벤트':
         return <CastEventScreen />;
       default:
