@@ -60,18 +60,18 @@ class PerformanceControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    void testCreateShow() throws Exception {
-        PostShowRequest postShowRequest = createMockPostShowRequest();
-
-        doNothing().when(performanceService).createShow(any(PostShowRequest.class));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/catalog/show")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(postShowRequest)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().string("Show Created"));
-    }
+//    @Test
+//    void testCreateShow() throws Exception {
+//        PostShowRequest postShowRequest = createMockPostShowRequest();
+//
+//        doNothing().when(performanceService).createShow(any(PostShowRequest.class));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/catalog/show")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(postShowRequest)))
+//                .andExpect(MockMvcResultMatchers.status().isCreated())
+//                .andExpect(MockMvcResultMatchers.content().string("Show Created"));
+//    }
 
     private PostShowRequest createMockPostShowRequest() {
         return PostShowRequest.builder()

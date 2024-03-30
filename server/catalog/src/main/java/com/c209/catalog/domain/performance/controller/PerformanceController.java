@@ -24,28 +24,34 @@ public class PerformanceController {
 
     @GetMapping("{show_id}")
     public ResponseEntity<GetShowResponse> getSingerDetail(
-//            @RequestHeader("X-Authorization-Id") Long memberId,
             @PathVariable(value = "show_id") Long showId
     ){
         return ResponseEntity.ok(performanceService.getShowDetails(showId));
     }
 
-    @PostMapping()
-    public ResponseEntity<String> postShow(@RequestBody PostShowRequest postShowRequest) {
-        try {
-            performanceService.createShow(postShowRequest);
+    @DeleteMapping({"{show_id}"})
+    public ResponseEntity<Void> deletePerformance(
+            @RequestHeader("X-Authorization-Id") Long memberId,
+            @PathVariable(value = "show_id") Long show_id
+    ) {
+        performanceService.deleteShow(show_id, memberId);
+        return ResponseEntity.noContent().build();
+    }
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Show Created");
-        } catch (CommonException e) {
-            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
-        }
+    @PostMapping()
+    public ResponseEntity<String> postShow(
+            @RequestHeader("X-Authorization-Id") Long memberId,
+            @RequestBody PostShowRequest postShowRequest
+    ) {
+        performanceService.createShow(postShowRequest, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Show Created");
     }
 
     @GetMapping
     public ResponseEntity<SearchShowResponse> searchShows(
-//            @RequestHeader("X-Authorization-Id") Long memberId,
             @RequestParam(value = "status", required = false, defaultValue = "") Status status,
             @RequestParam(value = "region", required = false, defaultValue = "") String region,
             @RequestParam(value = "sort", required = false, defaultValue = "") String sort,

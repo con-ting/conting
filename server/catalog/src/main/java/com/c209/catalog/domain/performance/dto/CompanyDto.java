@@ -16,6 +16,5 @@ public class CompanyDto {
     private Long id;
     @NotNull
     private String name;
-    @NotNull
     private String call;
 }

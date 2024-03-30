@@ -24,6 +24,7 @@ const getAuthorizationHeader = async (tokenKey: string) => {
 const setCommonHeaders = async (config: any) => {
   config.headers['Content-Type'] = CONTENT_TYPE;
   config.headers['Authorization'] = await getAuthorizationHeader('accessToken');
+  config.headers['User-Agent'] = await getValueFor('userId');
   return config;
 };
 

@@ -20,6 +20,9 @@ import ConcertRegistCompany from '../screens/settingScreen/concertRegistScreen/C
 import SearchMainScreen from '../screens/mainScreen/searchScreen/SearchMainScreen';
 import CastDetailScreen from '../screens/mainScreen/searchScreen/castDetail/CastDetailScreen';
 import EventDetailScreen from '../screens/mainScreen/searchScreen/castDetail/EventDetailScreen';
+import TicketCheckScreen from '../screens/settingScreen/ticketCheckScreen/TicketCheckListScreen';
+import CameraScreen from '../screens/settingScreen/ticketCheckScreen/CameraScreen';
+import HallViewScreen from '../screens/mainScreen/hallViewScreen/HallViewScreen';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -41,6 +44,7 @@ const options = (headerShown: boolean, title: string, color = 'black') => {
     // options에서 타입 호환성 문제 발생하여 명시적으로 타입 지정
     headerTitleAlign: 'center' as 'center',
     // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
+    animation : 'slide_from_right'
   };
 };
 
@@ -83,11 +87,15 @@ function MainStack() {
         component={ResultRefundScreen}
         options={{headerShown: false}}
       />
-
       <Stack.Screen
         name="ConcertDetail"
         component={ConcertDetailScreen}
         options={options(false, '공연 상세')}
+      />
+      <Stack.Screen
+        name="hallDetail"
+        component={HallViewScreen}
+        options={options(true, '')}
       />
       <Stack.Screen
         name="ConcertRegist"
@@ -128,6 +136,16 @@ function MainStack() {
         name="EventDetail"
         component={EventDetailScreen}
         options={options(true, '')}
+      />
+      <Stack.Screen
+        name="TicketCheck"
+        component={TicketCheckScreen}
+        options={options(true, '검표 가능 목록')}
+      />
+      <Stack.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={options(true,'')}
       />
     </Stack.Navigator>
   );

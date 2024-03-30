@@ -1,4 +1,13 @@
 import {atom} from 'recoil';
+import {
+  Account,
+  Authorization,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {
+  AuthToken,
+  Base64EncodedAddress,
+} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {PublicKey} from '@solana/web3.js';
 
 /**
  * token확인 후 main으로 갈지에 대한 정보를 저장하고 있을 상태 atom입니다.
@@ -15,6 +24,7 @@ export const goMainPageState = atom<boolean>({
 type UserInfoStateType = {
   user_id: number;
   user_email: string;
+  walletAddress: string;
 };
 /**
  * user의 정보를 저장하고 있을 상태 atom입니다.
@@ -25,18 +35,51 @@ export const userInfoState = atom<null | UserInfoStateType>({
   default: {
     user_id: 1,
     user_email: '',
+    walletAddress: '',
   },
 });
 
+/**
+ * 포스터 별 뒷 배경을 바꾸기 위해 전역으로 관리하는 색상입니다.
+ * @author 강성권
+ */
+
 export const posterColor = atom<Array<string>>({
-  key : 'posterColor',
-  default: ['#000000', '#000000', '#000000']
-})
+  key: 'posterColor',
+  default: ['#000000', '#000000', '#000000'],
+});
 /**
  * FCM Token 을 담고 있는 atom입니다.
  * @author 김형민
  */
 export const fcmToken = atom<string>({
   key: 'fcmToken',
+  default: '',
+});
+
+/**
+ * walletAdress 을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletAdress = atom<string>({
+  key: 'walletAdress',
+  default: '',
+});
+
+/**
+ * walletLabel 을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletLabel = atom<string>({
+  key: 'walletLabel',
+  default: '',
+});
+
+/**
+ * walletPublicKey을 담고 있는 atom입니다.
+ * @author 김형민
+ */
+export const walletPublicKey = atom<string>({
+  key: 'walletPublicKey',
   default: '',
 });

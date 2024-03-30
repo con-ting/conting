@@ -12,16 +12,16 @@ const Info = ({title, content}: {title: string; content: any}) => {
 };
 
 export default function SummaryCard({info}: {info: any}) {
-  console.log('info: ', info);
+  // console.log('info: ', info);
   return (
     <View style={styles.container}>
       <View style={styles.cardContainer}>
-        <Image style={styles.image} source={{uri: info.poster}} />
+        <Image style={styles.image} source={{uri: info.show.poster}} />
       </View>
       <View style={styles.cardContainer}>
         <View style={styles.row}>
-          <Info title="장소" content={info.address} />
-          <Info title="공연일" content={info.date} />
+          <Info title="장소" content={info.hall.address} />
+          <Info title="공연일" content={info.schedule[0].start_datetime} />
         </View>
       </View>
     </View>

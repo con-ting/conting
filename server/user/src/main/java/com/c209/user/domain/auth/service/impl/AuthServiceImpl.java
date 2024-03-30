@@ -67,9 +67,9 @@ public class AuthServiceImpl implements AuthService {
         };
 
         //중복된 fcm 있는지 조회하기
-        if(userRepository.existsByFcmToken(request.fcm())){
-            throw new CommonException(AuthErrorCode.DUPLICATE_FCM_ERROR);
-        }
+//        if(userRepository.existsByFcmToken(request.fcm())){
+//            throw new CommonException(AuthErrorCode.DUPLICATE_FCM_ERROR);
+//        }
 
         String encodedPassword = passwordEncoder.encode(request.password());
         UserEntity user = request.toEntity(encodedPassword);

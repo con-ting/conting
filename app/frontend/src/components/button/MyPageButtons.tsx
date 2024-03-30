@@ -18,7 +18,7 @@ export default function MyPageButtons({onPress}: any){
             <ArrowRight2 style={styles.icon}/>
         </TouchableOpacity>
         <View style={styles.line}/>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate('TicketCheck')} style={styles.button}>
             <View style={styles.name}>
             <ShoppingCart style={styles.icon}/>
             <Text style={F_SIZE_BUTTON}>검표하기</Text>

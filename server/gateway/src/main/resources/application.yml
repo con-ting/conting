@@ -30,6 +30,10 @@ spring:
           uri: ${AUTH_SERVICE}
           predicates:
             - Path=/auth/**
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE}
+          predicates:
+            - Path=/fcm/**
         - id: user-service
           uri: ${USER_SERVICE}
           predicates:
@@ -46,6 +50,18 @@ spring:
           uri: ${CATALOG_SERVICE}
           predicates:
             - Path=/catalog/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: queue-service
+          uri: ${QUEUE_SERVICE}
+          predicates:
+            - Path=/queue/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: ticket-service
+          uri: ${TICKET_SERVICE}
+          predicates:
+            - Path=/ticket/**
           filters:
             - AuthorizationHeaderFilter
     default-filters:

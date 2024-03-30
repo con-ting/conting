@@ -1,31 +1,48 @@
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {Shadow} from 'react-native-shadow-2';
 import TicketInfoCard from './TicketInfoCard';
 import {F_SIZE_TEXT} from '../../config/Font';
 import LinearGradient from 'react-native-linear-gradient';
+import {useState} from 'react';
+import CreateQR from '../ticketEntry/CreateQR';
+import {biometricsAuth} from '../../utils/biometric/Biometrics';
 
 type TicketCardProps = {
-  onPress: () => void;
-}
+  onPress?: () => void;
+  colors: Array<string>;
+};
 
 export default function TicketQrCard(props: TicketCardProps) {
+  const [isPass, setIspass] = useState(false);
+  const handlePass = async () => {
+    const key = await biometricsAuth();
+    if (key.result === true) {
+      console.log('QR 생성:', key);
+      setIspass(!isPass);
+    }
+  };
   return (
-    <Shadow startColor="#829cc7" distance={1}>
-      <LinearGradient
-        style={{
-          borderRadius: 20,
-        }}
-        colors={['#829cc7', '#1d3053', '#e4cdd9']}>
-        <View style={styles.container} onTouchEnd={props.onPress}>
+    <LinearGradient
+      style={{
+        borderRadius: 20,
+      }}
+      colors={props.colors}>
+      <View style={styles.container}>
+        {isPass ? (
           <View style={styles.QrCard}>
             <Text style={F_SIZE_TEXT}>캡쳐 방지 기능이 활성화 상태입니다</Text>
             <View
-            style={{
-              marginVertical: 20
-            }}
-            >
+              style={{
+                marginVertical: 20,
+              }}>
               <QRCode
                 size={widthPercent(150)}
                 color="black"
@@ -35,17 +52,18 @@ export default function TicketQrCard(props: TicketCardProps) {
             </View>
             <Text style={F_SIZE_TEXT}>QR코드 유효시간 15초</Text>
           </View>
-          <TicketInfoCard />
-        </View>
-      </LinearGradient>
-    </Shadow>
+        ) : (
+          <CreateQR onPress={handlePass} />
+        )}
+        <TicketInfoCard />
+      </View>
+    </LinearGradient>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(200),
-    height: heightPercent(400),
+    width: widthPercent(250),
+    height: heightPercent(500),
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'rgba(130, 156, 199, 0.6)',

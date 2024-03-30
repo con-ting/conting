@@ -21,4 +21,5 @@ public class HallDto {
     private Integer seat_total;
     private Float x;
     private Float y;
+    private String hall_webview_url;
 }

@@ -1,8 +1,9 @@
-import {Alert, Text, View} from 'react-native';
+import {Alert, Platform, Text, View} from 'react-native';
 import {H3} from '../../config/Typography.tsx';
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import * as Color from '../../config/Color.ts';
+import {Linking} from 'react-native';
 import {
   fontPercent,
   heightPercent,
@@ -17,7 +18,7 @@ import {Spacer} from '../../utils/common/Spacer.tsx';
 import * as Typo from '../../config/Typography.tsx';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {PopUpModal} from '../../components/modal/Modal.tsx';
+import {PopUpModal, SlideModal} from '../../components/modal/Modal.tsx';
 import {
   MAINBLACK,
   MAINGRAY,
@@ -33,11 +34,21 @@ import {
   goMainPageState,
   userInfoState,
 } from '../../utils/recoil/Atoms.ts';
-import {korDateFormat, serverDateFormat} from '../../config/TimeFormat.ts';
+import {
+  korDateFormat,
+  serverDateFormat,
+} from '../../utils/common/TimeFormat.ts';
 import DatePicker from 'react-native-date-picker';
 import * as Font from '../../config/Font.ts';
 import {emailConfirm, login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {alertAndLog} from '../../utils/common/alertAndLog.ts';
+import {
+  Account,
+  useAuthorization,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 
 type RootStackParamList = {
   PhoneAuthScreen: undefined;
@@ -55,62 +66,153 @@ const JoinScreen = propsData => {
   const [rePassword, setRePassword] = useState('');
   const [token, setToken] = useRecoilState(fcmToken);
   const [cryptoAddress, setCryptoAddress] = useState('');
+  const [cryptoLabel, setCryptoLabel] = useState('');
+  const [cryptoPublicKey, setCryptoPublicKey] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const phoneNumber = propsData.route.params.replace(/-/g, '');
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
+  const [balance, setBalance] = useState<number | null>(null);
+  const {authorizeSession} = useAuthorization();
+  const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
 
   const toggleCancelModal = () => {
     setCancelModalVisible(!cancelModalVisible);
   };
   const abledButton = emailPass && password === rePassword && password !== '';
 
-  const connect = async () => {
-    //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
-    setCryptoAddress('357H3zuHJD999vNgPBapa9c2yBy4fQnUJyxavnX57zYY');
+  const handleConnectPress = useCallback(async () => {
+    let success = false; // 성공 여부를 추적하는 변수
+    try {
+      if (authorizationInProgress) {
+        return false; // 진행 중이면 바로 false 반환
+      }
+      setAuthorizationInProgress(true);
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+      });
+      success = true; // 연결 성공
+    } catch (err: any) {
+      console.log(
+        '연결 중 에러 발생',
+        err instanceof Error ? err.message : err,
+      );
+    } finally {
+      setAuthorizationInProgress(false);
+      return success; // 여기서 성공 여부 반환
+    }
+  }, [authorizationInProgress, authorizeSession]);
 
-    //2. 회원가입 API 전송
-    console.log('joinUserRequst=', {
-      email: email,
-      password: password,
-      name: userName,
-      phone_number: phoneNumber,
-      birthday: serverDateFormat(birthDate),
-      fcm: token,
-      wallet: cryptoAddress,
-    });
-    await userJoin({
-      email: email,
-      password: password,
-      name: userName,
-      phone_number: phoneNumber,
-      birthday: serverDateFormat(birthDate),
-      fcm: token,
-      wallet: cryptoAddress,
-    });
-    console.log('회원가입 성공');
-    console.log('loginRequest=', {
-      email: email,
-      password: password,
-    });
-    //3. 로그인 후 토큰 저장
+  const fetchAndUpdateBalance = useCallback(
+    async (account: Account) => {
+      await setCryptoAddress(account.address);
+      console.log('앱 주소 =: ' + account.address);
+      await setCryptoPublicKey(account.publicKey);
+      console.log('개인 지갑 주소 =: ' + account.publicKey);
+      await setCryptoLabel(account.label ? account.label : '');
+      console.log('개인 지갑 앱 = ' + account.label);
+      const fetchedBalance = await connection.getBalance(account.publicKey);
+      console.log('개인 지갑 잔액 = ' + fetchedBalance);
+      await setBalance(fetchedBalance);
+    },
+    [connection],
+  );
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return;
+    }
+    fetchAndUpdateBalance(selectedAccount);
+    console.log('balance = ', balance);
+  }, [fetchAndUpdateBalance, selectedAccount]);
+  // 각각의 버튼에 대한 실행될 링크(url)와 링크가 실행되지 않을 때 대체 링크(alterUrl)
+  const deepLinkEvent = useCallback(async (url: string, alterUrl: string) => {
+    // 만약 어플이 설치되어 있으면 true, 없으면 false
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // 설치되어 있으면
+      await Linking.openURL(url);
+    } else {
+      // 앱이 없으면
+      await Linking.openURL(alterUrl);
+    }
+  }, []);
+  //1. 로그인 API 요청
+  const loginApiSender = async () => {
     const loginResponse = await login({
       email: email,
       password: password,
     });
-    console.log('loginResponse = ', loginResponse);
-    //4. 토큰 저장
-    await setAsync('accessToken', loginResponse.token.accessToken);
-    await setAsync('refreshToken', loginResponse.token.refreshToken);
-    //5. 전역 상태에 유저 정보 저장
-    setUserInfo({
-      user_id: loginResponse.user.id,
-      user_email: loginResponse.user.email,
+    return loginResponse;
+  };
+
+  //3. 토큰 및 userAgent 저장
+  const userDataSetting = async (props: any) => {
+    console.log('loginUserResponseData.token = ', props.token);
+    console.log('loginUserResponseData.user = ', props.user);
+    await setAsync('accessToken', props.token.accessToken);
+    await setAsync('refreshToken', props.token.refreshToken);
+    await setAsync('userId', props.user.id);
+  };
+  const connect = async () => {
+    //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
+    console.log('지갑 연결 시도');
+    const walletPass = await handleConnectPress(); // await 추가
+    console.log('개인 지갑 잔액 = ' + balance);
+    if (!walletPass) {
+      //2-1. 연결 실패 시
+      if (Platform.OS === 'android') {
+        deepLinkEvent(
+          'market://details?id=app.phantom',
+          'https://play.google.com/store/apps/details?id=app.phantom',
+        );
+      } else {
+        deepLinkEvent(
+          "itms-apps://itunes.apple.com/us/app/id1598432977?mt=8'",
+          'https://apps.apple.com/kr/app/phantom-crypto-wallet/id1598432977',
+        );
+      }
+      return;
+    }
+    //2-2. 연결 성공 시
+    console.log('지갑 연결 성공');
+    console.log('cryptoPublicKey=', cryptoPublicKey);
+    //2. 회원가입 API 전송
+    if (cryptoPublicKey !== '') {
+      await userJoin({
+        email: email,
+        password: password,
+        name: userName,
+        phone_number: phoneNumber,
+        birthday: serverDateFormat(birthDate),
+        fcm: token,
+        wallet: cryptoPublicKey,
+      });
+      console.log('회원가입 성공');
+    } else {
+      Alert.alert('오류', '지갑 연동 실패.', [{text: '닫기', style: 'cancel'}]);
+      Error('주소 가져오기 실패');
+    }
+
+    const userResponse = await loginApiSender(); //1. 로그인 API 요청
+    // console.log('로그인 API 요청 끝');
+    await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+    //4. 전역 상태에 유저 정보 저장
+    console.log('전역 상태에 유저 정보 저장 시작');
+    await setUserInfo({
+      user_id: userResponse.user.id,
+      user_email: userResponse.user.email,
+      walletAddress: userResponse.user.wallet,
     });
-    //6. goMainPage 수정
-    setGoMainPage(true);
+    console.log('전역 상태에 유저 정보 저장 끝');
+    //5. goMainPage 수정
+    console.log('goMainPage 수정 시작');
+    await setGoMainPage(true);
+    console.log('goMainPage 수정 끝');
   };
 
   const validateEmail = async (): boolean => {
@@ -121,8 +223,13 @@ const JoinScreen = propsData => {
     setEmailPass(!emailVailResponse.is_duplicated);
     console.log(emailPass);
     if (!emailVailResponse.is_duplicated)
-      Alert.alert('사용 가능한 이메일입니다.');
-    else Alert.alert('사용 불가능한 이메일입니다.');
+      Alert.alert('중복확인', '사용 가능한 이메일입니다.', [
+        {text: '닫기', style: 'cancel'},
+      ]);
+    else
+      Alert.alert('중복확인', '사용 불가능한 이메일입니다.', [
+        {text: '닫기', style: 'cancel'},
+      ]);
     return emailPass;
   };
 
@@ -381,6 +488,7 @@ const JoinScreen = propsData => {
           </View>
         </View>
       </PopUpModal>
+
       <DatePicker
         mode="date"
         locale="ko-KR"

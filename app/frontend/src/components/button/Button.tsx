@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   ColorValue,
   DimensionValue,
@@ -13,6 +13,9 @@ import {
 } from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
+import {useAuthorization} from '../mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {alertAndLog} from '../../utils/common/alertAndLog.ts';
 
 type BasicButtonProps = {
   onPress?: () => void;
@@ -224,3 +227,45 @@ export const BlueButton = (props: ButtonProps) => {
     </BasicButton>
   );
 };
+
+export function ConnectButton(props: ButtonProps) {
+  const {authorizeSession} = useAuthorization();
+  const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
+  const handleConnectPress = useCallback(async () => {
+    try {
+      if (authorizationInProgress) {
+        return;
+      }
+      setAuthorizationInProgress(true);
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+      });
+    } catch (err: any) {
+      alertAndLog(
+        '연결 중 에러 발생',
+        err instanceof Error ? err.message : err,
+      );
+    } finally {
+      setAuthorizationInProgress(false);
+    }
+  }, [authorizationInProgress, authorizeSession]);
+  return (
+    <BasicButton
+      width={props.width}
+      backgroundColor={Color.MAINYELLOW}
+      borderColor={Color.MAINYELLOW}
+      disabled={authorizationInProgress}
+      onPress={handleConnectPress}
+      borderRadius={props.isRadius ? 64 : 8}
+      paddingVertical={props.paddingVertical}>
+      <Text
+        style={{
+          color: Color.MAINBLACK,
+          fontSize: fontPercent(props.textSize ? props.textSize : 12),
+          fontFamily: Font.MAINFONT,
+        }}>
+        {props.btnText}
+      </Text>
+    </BasicButton>
+  );
+}

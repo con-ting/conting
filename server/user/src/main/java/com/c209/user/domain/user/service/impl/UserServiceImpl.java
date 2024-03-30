@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if(request.getFcmToken()!=null){
             user.setFcmToken(request.getFcmToken());
         }
-        
+
         userRepository.save(user);
 
         return UserDto

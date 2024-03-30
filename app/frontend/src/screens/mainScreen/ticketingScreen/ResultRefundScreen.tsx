@@ -29,6 +29,7 @@ export default function ResultRefundScreen({route}) {
             width={'90%'}
             btnText="메인 페이지로"
             textSize={20}
+            
             isRadius
           />
         </View>

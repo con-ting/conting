@@ -21,6 +21,7 @@ public class FShowInfo {
     private String fShowTitle;
     private Long fShowHallId;
     private String fShowHallName;
+    private String fShowHallAddress;
     private ReservationType fShowReservationType;
     private LocalDateTime fShowTicketOpenDate;
     private LocalDateTime fShowTicketCloseDate;

@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -28,29 +28,44 @@ const LoginScreen = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-  const loginApi = async () => {
-    console.log('loginRequest=', {
-      email: email,
-      password: password,
-    });
-    //3. 로그인 후 토큰 저장
+  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
+
+  //1. 로그인 API 요청
+  const loginApiSender = async () => {
     const loginResponse = await login({
       email: email,
       password: password,
     });
-    console.log('loginResponse = ', loginResponse.token);
-    // 토큰 저장
-    await setAsync('accessToken', loginResponse.token.accessToken);
-    await setAsync('refreshToken', loginResponse.token.refreshToken);
-    //전역 상태에 유저 정보 저장
-    setUserInfo({
-      user_id: loginResponse.user.id,
-      user_email: loginResponse.user.email,
+    return loginResponse;
+  };
+
+  //3. 토큰 및 userAgent 저장
+  const userDataSetting = async (props: any) => {
+    console.log('loginUserResponseData.token = ', props.token);
+    console.log('loginUserResponseData.user = ', props.user);
+    await setAsync('accessToken', props.token.accessToken);
+    await setAsync('refreshToken', props.token.refreshToken);
+    await setAsync('userId', props.user.id);
+  };
+
+  const loginButtonPress = async () => {
+    //promise all 사용해서 순서대로 수행, 수행중 에러가 1개라도 있다면 종료
+    const userResponse = await loginApiSender(); //1. 로그인 API 요청
+    // console.log('로그인 API 요청 끝');
+    await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+    //4. 전역 상태에 유저 정보 저장
+    console.log('전역 상태에 유저 정보 저장 시작');
+    await setUserInfo({
+      user_id: userResponse.user.id,
+      user_email: userResponse.user.email,
+      walletAddress: userResponse.user.wallet,
     });
-    //4. goMainPage 수정
-    setGoMainPage(true);
+    console.log('전역 상태에 유저 정보 저장 끝');
+    //5. goMainPage 수정
+    console.log('goMainPage 수정 시작');
+    await setGoMainPage(true);
+    console.log('goMainPage 수정 끝');
   };
 
   // @ts-ignore
@@ -93,21 +108,15 @@ const LoginScreen = () => {
           />
           <Spacer space={20} />
           {/* 로그인 버튼 부분 */}
-          <YellowButton onPress={loginApi} btnText={'로그인'} />
+          <YellowButton onPress={loginButtonPress} btnText={'로그인'} />
           <Spacer space={20} />
           {/* 이메일 찾기, 비밀번호 찾기, 회원가입 부분 */}
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert('응 이메일 못찾아');
-              }}>
+            <TouchableOpacity onPress={() => Alert.alert('후순위')}>
               <Typo.DETAIL2 color={'#98A2B3'}>이메일 찾기</Typo.DETAIL2>
             </TouchableOpacity>
             <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert('응 비번도 내꺼야');
-              }}>
+            <TouchableOpacity onPress={() => Alert.alert('후순위')}>
               <Typo.DETAIL2 color={'#98A2B3'}>비밀번호 찾기</Typo.DETAIL2>
             </TouchableOpacity>
             <Typo.DETAIL2 color={'#98A2B3'}> | </Typo.DETAIL2>

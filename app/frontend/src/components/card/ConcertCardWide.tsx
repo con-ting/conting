@@ -1,4 +1,11 @@
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import {
   fontPercent,
   heightPercent,
@@ -6,11 +13,12 @@ import {
 } from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import React from 'react';
-import {IconTextBox} from './IconTextBox.tsx';
+import {IconTextBox} from './IconTextBox';
 import * as ICON from 'iconsax-react-native';
-import {formatDateWithDay} from '../../config/TimeFormat.ts';
+import {formatDateWithDay} from '../../utils/common/TimeFormat';
 import Swipeout from 'react-native-swipeout';
+import FastImage from 'react-native-fast-image';
+import {BlurView} from '@react-native-community/blur';
 
 export type basicProps = {
   onPress?: () => void;
@@ -29,7 +37,6 @@ export type basicProps = {
   swipe_btn_disabled?: boolean;
   swipe_btn_onPress?: () => void;
 };
-
 
 /**
  * BasicConcertCardWide
@@ -83,13 +90,12 @@ export const BasicConcertCardWide = (props: basicProps) => {
   ];
 
   const imgTagProps = {
-    blur: props.img_tag_disabled ? 0 : 6,
     tag: props.img_tag_disabled ? null : (
       <Text
         style={{
           position: 'absolute',
           color: props.img_tag_color,
-          fontSize: fontPercent(20),
+          fontSize: fontPercent(18),
           fontFamily: Font.MAINFONT,
         }}>
         {props.img_tag}
@@ -115,23 +121,45 @@ export const BasicConcertCardWide = (props: basicProps) => {
           <View
             style={{
               flex: 1,
-              position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Image
+            <ImageBackground
               style={{
                 width: '100%',
                 height: '100%',
                 borderTopLeftRadius: 10,
                 borderBottomLeftRadius: 10,
               }}
-              blurRadius={imgTagProps.blur}
               source={{
                 uri: props.img_url,
-              }}
-            />
-            {imgTagProps.tag}
+              }}>
+              {!props.img_tag_disabled && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    zIndex: 1,
+                    backgroundColor: 'rgba(0 , 0 , 0 , 0.7)',
+                    width: '100%',
+                    height: '100%',
+                    borderTopLeftRadius: 10,
+                    borderBottomLeftRadius: 10,
+                  }}
+                />
+              )}
+            </ImageBackground>
+            {!props.img_tag_disabled && (
+              <Text
+                style={{
+                  position: 'absolute',
+                  zIndex: 10,
+                  color: props.img_tag_color,
+                  fontSize: fontPercent(18),
+                  fontFamily: Font.MAINFONT,
+                }}>
+                {props.img_tag}
+              </Text>
+            )}
           </View>
           <View
             style={{
@@ -181,7 +209,6 @@ export const BasicConcertCardWide = (props: basicProps) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -194,5 +221,8 @@ const styles = StyleSheet.create({
     color: Color.MAINYELLOW,
     fontSize: fontPercent(20),
     fontFamily: Font.MAINFONT,
+  },
+  box: {
+    position: 'absolute',
   },
 });
