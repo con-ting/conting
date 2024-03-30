@@ -1,13 +1,13 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {F_SIZE_HEADER, F_SIZE_TITLE} from '../../config/Font';
+import {F_SIZE_BBIGTEXT, F_SIZE_HEADER, F_SIZE_TITLE} from '../../config/Font';
 import {MAINBLACK, MAINWHITE} from '../../config/Color';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {Sms} from 'iconsax-react-native';
+import {Instagram, Sms} from 'iconsax-react-native';
 
 export type CastInfoProps = {
   name: string;
   img: string;
-  email: string;
+  instagram: string;
 };
 
 /**
@@ -15,7 +15,7 @@ export type CastInfoProps = {
  * @param props
  * - name: 출연진 이름입니다.
  * - img: 출연진 프로필 사진 uri가 들어갑니다.
- * - email: 출연진 이메일이 들어갑니다.
+ * - instagram: 출연진 인스타그램 주소가 들어갑니다.
  * @returns
  * @author 전상혁
  */
@@ -34,8 +34,8 @@ export default function CastInfo(props: CastInfoProps) {
         <View style={styles.castBox}>
           <Text style={F_SIZE_HEADER}>{props.name}</Text>
           <View style={styles.row}>
-            <Sms style={styles.icon} />
-            <Text style={F_SIZE_TITLE}>ssafy@ssafy.com</Text>
+            <Instagram style={styles.icon} />
+            {/* <Text style={F_SIZE_BBIGTEXT}>{props.instagram}</Text> */}
           </View>
         </View>
       </View>

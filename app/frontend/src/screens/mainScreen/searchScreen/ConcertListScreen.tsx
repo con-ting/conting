@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {MAINBLACK, MINTBASE} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {BasicConcertCardWide} from '../../../components/card/ConcertCardWide';
@@ -22,7 +22,7 @@ export default function ConcertListScreen({concerts}: any) {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {concerts.map(
         (concert: {
           show_id: Key | null | undefined;
@@ -61,13 +61,12 @@ export default function ConcertListScreen({concerts}: any) {
           </View>
         ),
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: MAINBLACK,
   },
   card: {

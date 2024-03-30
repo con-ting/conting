@@ -28,6 +28,7 @@ export const ConcertSearchApi = async (params: {
 
 // 출연진 상세 조회 시 사용하는 API
 export const CastDetailSearchApi = async (singer_id: number) => {
+  console.log('[CastDetailSearchApi Request] = ', singer_id);
   const res = await tokenInstance.get(`${concertUrl}/singer/${singer_id}`);
   console.log('[CastSearchApi Response] = ', res.data);
   return res.data;

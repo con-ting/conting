@@ -14,7 +14,7 @@ export default function CastListScreen({casts}: any) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: MAINBLACK,
   },
 });
