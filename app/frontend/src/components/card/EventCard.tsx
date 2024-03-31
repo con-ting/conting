@@ -11,7 +11,7 @@ import {
   heightPercent,
   widthPercent,
 } from '../../config/Dimensions';
-import {BLUEBASE, MAINGRAY, MAINYELLOW, TEXTGRAY} from '../../config/Color';
+import {MAINYELLOW, TEXTGRAY} from '../../config/Color';
 import {ClipboardTick, Clock, Like} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
@@ -27,21 +27,34 @@ export type cardProps = {
   img_tag_disabled?: boolean;
   img_tag?: string;
   img_tag_color?: string;
-  start_at?: string;
-  end_at?: string;
+  start_at: string;
+  end_at: string;
+  participants: number;
+  winnersTotal: number;
+  swipe_btn_abled?: boolean;
   swipe_btn_text?: string;
   swipe_btn_color?: string;
-  swipe_btn_abled?: boolean;
   swipe_btn_onPress?: () => void;
 };
 
 /**
  * Event 카드입니다.
  * @param props
+ * - onPress?: 이벤트 카드를 누르면 실행할 함수
+ * - disabled?: 클릭 이벤트 사용 여부
  * - name: 이벤트의 제목입니다.
  * - img_url: 이벤트의 이미지 주소입니다.
+ * - img_tag_disabled?: 이미지 태그 사용 여부
+ * - img_tag?: 이미지 태그 내용
+ * - img_tag_color?: 이미지 태그 색상
  * - start_at: 이벤트의 시작 날짜입니다.
  * - end_at: 이벤트의 종료 날짜입니다.
+ * - participants: 이벤트 응모 지원자 현황
+ * - winnersTotal: 당첨 개수
+ * - swipe_btn_abled?: 스위프트 버튼 사용 여부
+ * - swipe_btn_text?: 스위프트 버튼 텍스트
+ * - swipe_btn_color?: 스위프트 버튼 색상
+ * - swipe_btn_onPress?: 스위프트 버튼 클릭 이벤트 함수
  * @returns
  * @author 강성권, 김형민
  */
@@ -171,13 +184,13 @@ export default function EventCard(props: cardProps) {
             <View style={styles.row}>
               <ClipboardTick size={16} color={TEXTGRAY} />
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
-                응모현황 🔥 : 2500명
+                응모현황 🔥 : {props.participants} 명
               </Text>
             </View>
             <View style={styles.row}>
               <Like size={16} color={TEXTGRAY} />
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
-                상품 개수 : 100개
+                상품 개수 : {props.winnersTotal} 개
               </Text>
             </View>
             <View style={styles.row}>

@@ -29,27 +29,6 @@ import {orderResult} from '../../api/ticket/order.ts';
 
 const Tabs = ['결제 내역', '이벤트 내역'];
 
-export type concertCardData = {
-  ticket_id: number;
-  order_id: number;
-  schedule_id: string;
-  performance_id: number; //local DB
-  img: string; //local DB
-  title: string; // local DB
-  hall_location: string; //local DB
-  hall_name: string; //local DB
-  time: string;
-  running_time: string;
-  tag_type: string; // '예매완료, 환불대기, 결제대기, 기한경과', 예매 실패
-  tag_color: string;
-  date_tag: string;
-  date_tag_color: string;
-  swipe_btn_disabled?: boolean;
-  btn_onPress?: () => void;
-  swipe_btn_onPress?: () => void;
-  swipe_btn_text?: string; // 스와이프 버튼에 들어갈 텍스트
-  swipe_btn_color?: string; //스와이프 버튼의 백그라운드 색상
-};
 export type orderResultApiData = {
   ticket_id: number; //'티켓 이슈 ID';
   order_id: number; //'주문 내역 id';
@@ -219,8 +198,8 @@ function MakeConsertCardObject(
         performance_id: localData.performance_id,
         img: localData.img,
         title: localData.title,
-        img_tag_type: apiData.status,
-        img_tag_color: MINTBASE,
+        img_tag_type: '환불완료',
+        img_tag_color: MAINGRAY,
         hall_location: localData.hall_location,
         hall_name: localData.hall_name,
         running_time: getDifferenceInMinutes(
