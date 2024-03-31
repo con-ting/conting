@@ -41,7 +41,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
     realm.write(() => {
       // 홀 데이터 저장
       data.halls.forEach(hall => {
-        console.log('hall 저장 = ', hall);
         realm.create(
           'Hall',
           {
@@ -55,7 +54,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
 
       // 공연 데이터 저장
       data.performances.forEach(performance => {
-        console.log('performance 저장 = ', performance);
         realm.create(
           'Performance',
           {
@@ -75,7 +73,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
 
       // 스케줄 데이터 저장
       data.schedules.forEach(schedule => {
-        console.log('Performance 저장 = ', Performance);
         realm.create(
           'Schedule',
           {

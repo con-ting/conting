@@ -77,7 +77,7 @@ function MakeConsertCardObject(
   localData: localData,
 ) {
   switch (apiData.status) {
-    case '순번대기':
+    case '환불대기':
       if (isReservationAvailable(localData.reservation_end_datetime)) {
         return {
           ticket_id: apiData.ticket_id,
@@ -210,6 +210,30 @@ function MakeConsertCardObject(
         },
         swipe_btn_text: '결제하기', // 스와이프 버튼에 들어갈 텍스트
         swipe_btn_color: MAINYELLOW, //스와이프 버튼의 백그라운드 색상
+      };
+    case '환불됨':
+      return {
+        ticket_id: apiData.ticket_id,
+        order_id: apiData.order_id,
+        schedule_id: apiData.schedule_id,
+        performance_id: localData.performance_id,
+        img: localData.img,
+        title: localData.title,
+        img_tag_type: apiData.status,
+        img_tag_color: MINTBASE,
+        hall_location: localData.hall_location,
+        hall_name: localData.hall_name,
+        running_time: getDifferenceInMinutes(
+          localData.start_time,
+          localData.end_time,
+        ),
+        date_tag: '예매종료일',
+        time: localData.reservation_end_datetime,
+        btn_onPress: () => {
+          //콘서트 상세 이동 로직
+          Alert.alert('콘서트 상세로 이동');
+        },
+        swipe_btn_disabled: true,
       };
   }
 }
