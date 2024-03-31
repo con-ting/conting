@@ -2,6 +2,12 @@ import instance from '../../utils/axios/axiosInstance';
 import tokenInstance from '../../utils/axios/axiosTokenInstance';
 const concertUrl: string = 'catalog';
 
+// 메인 페이지에서 처음 들어갈 시 사용하는 API
+export const MainApi = async () => {
+  const res = await tokenInstance.get(`${concertUrl}/main`);
+  return res.data;
+};
+
 // 공연 상세 조회 시 사용하는 API
 export const ConcertDetailApi = async (show_id: string) => {
   const res = await tokenInstance.get(`${concertUrl}/show/${show_id}`);

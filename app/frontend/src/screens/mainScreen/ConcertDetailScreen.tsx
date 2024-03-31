@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useRecoilValue} from 'recoil';
-import {posterColor} from '../../utils/recoil/Atoms';
+import {currentColor} from '../../utils/recoil/Atoms';
 import {ArrowLeft, Back} from 'iconsax-react-native';
 import {
   F_SIZE_BBIGTEXT,
@@ -34,7 +34,7 @@ export default function ConcertDetailScreen({route}) {
   const [isRender, setIsRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [concertDetail, setConcertDetail] = useState(null);
-  const backgroundColor = useRecoilValue(posterColor);
+  const backgroundColor = useRecoilValue(currentColor);
   const navigation = useNavigation();
   const showID = route.params.showID;
   // 스크롤 위치 추적을 위한 Animated.Value

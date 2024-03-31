@@ -17,7 +17,7 @@ import {
   SearchNormal1,
 } from 'iconsax-react-native';
 import { useRecoilValue } from 'recoil';
-import { posterColor } from '../utils/recoil/Atoms';
+import { currentColor} from '../utils/recoil/Atoms';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -68,7 +68,7 @@ const GradientIcon = ({focused}: any) => {
 };
 
 export default function BottomTabNavigator() {
-  const backgroundColor = useRecoilValue(posterColor)
+  const backgroundColor = useRecoilValue(currentColor)
   return (
     <BottomTab.Navigator
       screenOptions={{

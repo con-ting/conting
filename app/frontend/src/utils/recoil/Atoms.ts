@@ -1,13 +1,4 @@
 import {atom} from 'recoil';
-import {
-  Account,
-  Authorization,
-} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
-import {
-  AuthToken,
-  Base64EncodedAddress,
-} from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {PublicKey} from '@solana/web3.js';
 
 /**
  * token확인 후 main으로 갈지에 대한 정보를 저장하고 있을 상태 atom입니다.
@@ -44,8 +35,13 @@ export const userInfoState = atom<null | UserInfoStateType>({
  * @author 강성권
  */
 
-export const posterColor = atom<Array<string>>({
-  key: 'posterColor',
+export const currentColor = atom<Array<string>>({
+  key: 'currentColor',
+  default: ['#000000', '#000000', '#000000'],
+});
+
+export const pastColor = atom<Array<string>>({
+  key: 'pastColor',
   default: ['#000000', '#000000', '#000000'],
 });
 /**

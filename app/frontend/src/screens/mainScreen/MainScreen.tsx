@@ -8,13 +8,14 @@ import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
 import {useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
-import {posterColor} from '../../utils/recoil/Atoms';
+import {currentColor, pastColor} from '../../utils/recoil/Atoms';
 import {ScrollView} from 'react-native-gesture-handler';
-import {MainApi} from '../../api/concert/concert';
+import { MainApi } from '../../api/catalog/concert';
 
 export default function MainScreen() {
   const navigation = useNavigation();
-  const backgroundColor = useRecoilValue(posterColor);
+  const pastColors = useRecoilValue(pastColor)
+  const currentColors = useRecoilValue(currentColor);
   const [popular, setPopular] = useState([]);
   const [first, setFirst] = useState([]);
   const [deadline, setDeadline] = useState([]);
@@ -70,14 +71,14 @@ export default function MainScreen() {
     <LinearGradient
       start={{x: 0.0, y: 0.0}}
       end={{x: 1.0, y: 1.0}}
-      colors={backgroundColor}
+      colors={currentColors}
       style={styles.container}>
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.search}></View>
           <PopularConcertList popularConcert={popular} />
           <View
-            style={{
+          style={{
               flexDirection: 'column',
               marginHorizontal: widthPercent(10),
             }}>

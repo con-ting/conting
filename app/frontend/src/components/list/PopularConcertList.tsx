@@ -13,7 +13,7 @@ import {getColors} from 'react-native-image-colors';
 import Carousel from 'react-native-reanimated-carousel';
 import {useNavigation} from '@react-navigation/native';
 import {useRecoilState, useSetRecoilState} from 'recoil';
-import {posterColor} from '../../utils/recoil/Atoms';
+import {currentColor, pastColor} from '../../utils/recoil/Atoms';
 import {ScrollView} from 'react-native-gesture-handler';
 import { Spacer } from '../../utils/common/Spacer';
 
@@ -26,7 +26,9 @@ export default function PopularConcertList({
   popularConcert,
 }: PopularConcertListProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const setPosterColors = useSetRecoilState(posterColor);
+  const [currentColors , setCurrentColors] = useRecoilState(currentColor);
+  const [pastcolors, setPastColors] = useRecoilState(pastColor)
+  
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,8 +36,8 @@ export default function PopularConcertList({
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      console.log(res);
-      setPosterColors([res?.dominant, res.muted, res.average]);
+      setPastColors(currentColors)
+      setCurrentColors([res?.dominant, res.muted, res.average]);
     });
   }, [currentIndex]);
 

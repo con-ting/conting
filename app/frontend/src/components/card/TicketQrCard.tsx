@@ -11,9 +11,16 @@ import {Shadow} from 'react-native-shadow-2';
 import TicketInfoCard from './TicketInfoCard';
 import {F_SIZE_TEXT} from '../../config/Font';
 import LinearGradient from 'react-native-linear-gradient';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import CreateQR from '../ticketEntry/CreateQR';
-import {biometricsAuth} from '../../utils/biometric/Biometrics';
+import {
+  biometricsAuth,
+  checkKey,
+  createKey,
+  deleteKey,
+} from '../../utils/biometric/Biometrics';
+import {ticketQRAPI} from '../../api/ticket/ticket';
+import {BASE_URL} from '../../config/AxiosConfig';
 
 type TicketCardProps = {
   onPress?: () => void;
@@ -22,13 +29,53 @@ type TicketCardProps = {
 
 export default function TicketQrCard(props: TicketCardProps) {
   const [isPass, setIspass] = useState(false);
+  const [qrURL, setQrURL] = useState('');
+  const [timeLeft, setTimeLeft] = useState(30);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setIspass(false);
+    }
+    let interval: any;
+    if (isPass) {
+      interval = setInterval(() => {
+        setTimeLeft(prevTime => prevTime - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval); // 타이머 중지
+      setTimeLeft(30); // 시간 초기화
+    }
+
+    return () => clearInterval(interval);
+  }, [isPass, timeLeft]);
+
+  // 입장권 터치시 지문 인식하는 과정
   const handlePass = async () => {
-    const key = await biometricsAuth();
-    if (key.result === true) {
-      console.log('QR 생성:', key);
-      setIspass(!isPass);
+    // 키가 존재하는지 확인
+    const keyExist = await checkKey();
+    // 없다면 키 생성
+    if (!keyExist) {
+      await createKey();
+    } else {
+      // 지문 인식을 하는데 새로운 지문을 등록했을 경우 키 삭제 후 새로운 키 발급
+      const {result, key, msg} = await biometricsAuth();
+      console.log(key);
+      if (msg === '지문 재등록 필요') {
+        console.log('지문 재등록 실행');
+        await deleteKey();
+        await createKey();
+        // 새로운 키 생성 후 함수 재실행
+        handlePass();
+      } else {
+        // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
+        console.log('정상 실행');
+        const res = await ticketQRAPI({ticket_id: '2', finger_print: key});
+        setQrURL(`${BASE_URL}/ticket/qr/${res.uuid}`);
+        setIspass(true);
+      }
     }
   };
+
   return (
     <LinearGradient
       style={{
@@ -47,10 +94,10 @@ export default function TicketQrCard(props: TicketCardProps) {
                 size={widthPercent(150)}
                 color="black"
                 backgroundColor="white"
-                value="https://www.naver.com"
+                value={qrURL}
               />
             </View>
-            <Text style={F_SIZE_TEXT}>QR코드 유효시간 15초</Text>
+            <Text style={F_SIZE_TEXT}>QR코드 유효시간 {timeLeft}초</Text>
           </View>
         ) : (
           <CreateQR onPress={handlePass} />

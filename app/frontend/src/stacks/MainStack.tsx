@@ -11,7 +11,6 @@ import {MAINFONT} from '../config/Font';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 import ConcertDetailScreen from '../screens/mainScreen/ConcertDetailScreen';
 import {useRecoilValue} from 'recoil';
-import {posterColor} from '../utils/recoil/Atoms';
 import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
 import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
 import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
@@ -23,6 +22,7 @@ import EventDetailScreen from '../screens/mainScreen/searchScreen/castDetail/Eve
 import TicketCheckScreen from '../screens/settingScreen/ticketCheckScreen/TicketCheckListScreen';
 import CameraScreen from '../screens/settingScreen/ticketCheckScreen/CameraScreen';
 import HallViewScreen from '../screens/mainScreen/hallViewScreen/HallViewScreen';
+import { currentColor, pastColor } from '../utils/recoil/Atoms';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -49,7 +49,6 @@ const options = (headerShown: boolean, title: string, color = 'black') => {
 };
 
 function MainStack() {
-  const backgroundColor = useRecoilValue(posterColor);
   return (
     <Stack.Navigator>
       <Stack.Screen
