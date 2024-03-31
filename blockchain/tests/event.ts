@@ -122,8 +122,9 @@ describe('event', async () => {
         mint: par1sMint,
         token: par1sToken,
         metadataPda: par1sMetadataPda,
-        // metadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
-        sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY
+        // delegate: server.publicKey,
+        // tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
+        // sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY
       })
       .signers([par1, entry])
       .rpc()
