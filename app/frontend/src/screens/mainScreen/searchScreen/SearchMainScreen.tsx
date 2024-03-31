@@ -10,7 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {CARDBASE, MAINBLACK, MAINYELLOW} from '../../../config/Color';
 import {SearchBar} from '../../../components/searchBar/SearchBar';
-import {widthPercent} from '../../../config/Dimensions';
+import {heightPercent, widthPercent} from '../../../config/Dimensions';
 import ConcertListScreen from './ConcertListScreen';
 import CastListScreen from './CastListScreen';
 import ConcertHallScreen from './ConcertHallScreen';

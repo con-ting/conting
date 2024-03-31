@@ -9,8 +9,8 @@ import {Glass} from 'iconsax-react-native';
 import {CARDBASE} from '../../config/Color';
 
 type ConcertHallCardProps = {
-  onPress ?: () => void;
-  onBtnPress ?: () => void;
+  onPress?: () => void;
+  onBtnPress?: () => void;
   title: string;
   seat: number;
   address: string;

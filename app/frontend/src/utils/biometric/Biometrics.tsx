@@ -20,7 +20,7 @@ export const createKey = () => {
     .createKeys()
     .then(resultObject => {
       const {publicKey} = resultObject;
-      console.log(publicKey)
+      console.log(publicKey);
       return {result: true, key: publicKey};
     })
     .catch(error => {
