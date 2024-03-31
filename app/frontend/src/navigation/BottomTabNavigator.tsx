@@ -1,8 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/mainScreen/MainScreen';
-import ReservationWaitingScreen from '../screens/lotteryResultScreen/ReservationWaitingScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
-import {TicketApplyListScreen} from '../screens/ticketApplyScreen/TicketApplyListScreen';
+import TicketApplyListScreen from '../screens/ticketApplyScreen/TicketApplyListScreen';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
