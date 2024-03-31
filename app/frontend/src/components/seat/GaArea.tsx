@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 import {MAINBLACK, MAINYELLOW} from '../../config/Color';
-import {F_SIZE_BIGTEXT, F_SIZE_TEXT, F_SIZE_TITLE} from '../../config/Font';
+import {F_SIZE_BIGTEXT, F_SIZE_B_TITLE, F_SIZE_TEXT, F_SIZE_TITLE, F_SIZE_Y_BIGTEXT} from '../../config/Font';
 import {
   fontPercent,
   heightPercent,
@@ -10,6 +10,7 @@ import {
 import SeatCompetition from './SeatCompetition';
 import SeatSum from './SeatSum';
 import { Dropdown } from '../dropdown/Dropdown';
+import { PopUpModal } from '../modal/Modal';
 
 export default function GaArea({seatsData}: any) {
   const [selectedSeats, setSelectedSeats] = useState({});
@@ -18,6 +19,7 @@ export default function GaArea({seatsData}: any) {
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
   const [selectedDrop, setSelectedDrop] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
     { label: '본인', value: '본인' },
@@ -37,6 +39,7 @@ export default function GaArea({seatsData}: any) {
   const handleSeatPress = (seatId: string, seatRow: string, seatCol: string) => {
     if (!selectedDrop || isSeatSelectedByOthers(seatId)) {
       // 드롭다운 미선택 상태이거나 다른 구성원이 이미 선택한 좌석인 경우
+      setIsModalVisible(true);
       return;
     }
 
@@ -98,6 +101,24 @@ const renderSelectedSeats = () => {
 
   return (
     <>
+    <PopUpModal
+    children={
+      <View style={styles.modal}>
+      <View style={styles.modalView}>
+        <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
+        <TouchableOpacity
+          
+          onPress={() => setIsModalVisible(!isModalVisible)}
+        >
+          <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    }
+  isVisible={isModalVisible}  
+  setIsVisible={setIsModalVisible}
+  />
+
       <View style={styles.container}>
       <Dropdown 
       data={familyMembers}
@@ -209,5 +230,19 @@ const styles = StyleSheet.create({
     height: heightPercent(30),
     borderRadius: 4,
     backgroundColor: MAINYELLOW,
+  },
+  modal: {
+    height: heightPercent(50),
+  },
+  close:{
+    textAlign: 'right'
+  },
+  alert:{
+    textAlign: 'center'
+  },
+  modalView: {
+    gap: 20,
+    // alignItems: "center",
+    
   },
 });
