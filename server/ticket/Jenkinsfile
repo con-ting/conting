@@ -114,7 +114,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f ticket"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Ticket_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name ticket --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e TICKET_HOST=\"${TICKET_HOST}\" -e TICKET_DB_PORT=\"${TICKET_DB_PORT}\" -e TICKET_DB_PASSWORD=\"${TICKET_DB_PASSWORD}\" -e TICKET_DB_USERNAME=\"${TICKET_DB_USERNAME}\" -e KAFKA_URL=\"${KAFKA_URL}\"  " + repository + ":Ticket_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8883:8883 --name ticket --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e TICKET_HOST=\"${TICKET_HOST}\" -e TICKET_DB_PORT=\"${TICKET_DB_PORT}\" -e TICKET_DB_PASSWORD=\"${TICKET_DB_PASSWORD}\" -e TICKET_DB_USERNAME=\"${TICKET_DB_USERNAME}\" -e KAFKA_URL=\"${KAFKA_URL}\"  " + repository + ":Ticket_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
