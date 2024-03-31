@@ -11,4 +11,6 @@ public interface UserService  {
     public UserDto getUserDetailsById(Long userId);
 
     UserDto changeMyInfo(UserDto request, Long userId);
+
+    UserDto getUserDetailByWallet(String wallet);
 }

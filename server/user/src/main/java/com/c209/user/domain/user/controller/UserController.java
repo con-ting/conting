@@ -41,6 +41,15 @@ public class UserController {
     }
 
 
+    @GetMapping("byWallet")
+    public ResponseEntity<UserDto> getUserByWallet(
+            @RequestParam String wallet,
+            @RequestHeader("X-Authorization-Id")Long userId
+    ){
+        return ResponseEntity.ok(userService.getUserDetailByWallet(wallet));
+    }
+
+
 
 
 
