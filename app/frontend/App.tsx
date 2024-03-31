@@ -9,9 +9,8 @@ import {
   RPC_ENDPOINT,
 } from './src/components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {AuthorizationProvider} from './src/components/mobileWalletAdapter/providers/AuthorizationProvider';
-import RealmContext from './src/components/realm/RealmContext.ts';
+import {RealmProvider} from './src/components/realm/RealmContext.ts';
 
-const {RealmProvider} = RealmContext;
 const App = () => {
   return (
     <RealmProvider>

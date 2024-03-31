@@ -9,10 +9,12 @@ import {fcmToken} from '../../utils/recoil/Atoms.ts';
 import {fetchFCMToken} from '../../utils/fcm/FcmUtils.ts';
 import {saveDataToRealm} from '../../utils/realm/dao/SplashCacheTable.tsx';
 import {splashCacheSave} from '../../api/cache/cache.ts';
+import {useRealm} from '../../components/realm/RealmContext.ts';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
   const [token, setToken] = useRecoilState(fcmToken);
+  const realm = useRealm();
 
   useEffect(() => {
     const initialize = async () => {
@@ -23,7 +25,8 @@ const SplashScreen = () => {
       //api
       const apiData = await splashCacheSave();
       // 데이터를 Realm DB에 저장하는 로직
-      await saveDataToRealm(apiData); // 이 함수는 실제 로직에 맞게 구현해야 합니다.
+
+      await saveDataToRealm(realm, apiData); // 이 함수는 실제 로직에 맞게 구현해야 합니다.
 
       // 모든 초기화 로직이 완료되면 로그인 화면으로 네비게이션
       navigation.navigate('LoginScreen');
