@@ -1,7 +1,9 @@
 package com.c209.ticket.domain.ticket.service.impl;
 
 import com.c209.ticket.domain.ticket.dto.TicketDto;
+import com.c209.ticket.domain.ticket.dto.TicketPaymentsDto;
 import com.c209.ticket.domain.ticket.dto.response.TicketListResponse;
+import com.c209.ticket.domain.ticket.dto.response.TicketPaymentsListResponse;
 import com.c209.ticket.domain.ticket.entity.Ticket;
 import com.c209.ticket.domain.ticket.exception.QRErrorCode;
 import com.c209.ticket.domain.ticket.repository.TicketRepository;
@@ -204,5 +206,10 @@ public class TicketServiceImpl implements TicketService {
                             })
                             .defaultIfEmpty(false);
                 });
+    }
+
+    @Override
+    public Mono<TicketPaymentsListResponse> getTicketPaymentsList(Long userId) {
+        return ticketRepository.findAllTicketPayments(userId).collectList().map(TicketPaymentsListResponse::new);
     }
 }

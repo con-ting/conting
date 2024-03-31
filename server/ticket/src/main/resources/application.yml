@@ -1,5 +1,5 @@
 server:
-  port: 8882
+  port: 8883
 
 spring:
   application:
@@ -15,5 +15,7 @@ spring:
 
 logging:
   level:
-    com.c209.ticket: INFO
-    io.lettuce.core: INFO
+    com.c209.ticket: debug
+    io.lettuce.core: debug
+kafka:
+  url: ${KAFKA_URL}
