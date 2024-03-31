@@ -50,6 +50,14 @@ public class UserController {
     }
 
 
+    @GetMapping("/{user_id}/fcm")
+    public ResponseEntity<UserDto> getUserFcm(
+            @PathVariable("user_id") Long userId
+    ){
+        return ResponseEntity.ok(userService.getUserFcmByUserId(userId));
+    }
+
+
 
 
 

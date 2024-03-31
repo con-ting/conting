@@ -81,5 +81,20 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public UserDto getUserFcmByUserId(Long userId) {
+        UserEntity findUser = userRepository.findById(userId)
+                .orElseThrow(()->
+                            new CommonException(UserErrorCode.NOT_FOUND_USER)
+                        );
+
+
+
+        return UserDto
+                .builder()
+                .fcmToken(findUser.getFcmToken())
+                .build();
+    }
+
 
 }
