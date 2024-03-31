@@ -118,11 +118,7 @@ export const useNft = async (
 ) => {
   await tokenMeta.updateV1(umi, {
     mint,
-    uses: tokenMeta.usesToggle('Set', [{
-      useMethod: tokenMeta.UseMethod.Single,
-      remaining: 0n,
-      total: 1n
-    }])
+    uses: tokenMeta.usesToggle('Clear')
   }).sendAndConfirm(umi)
 }
 
