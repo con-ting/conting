@@ -3,6 +3,7 @@ package com.c209.ticket.domain.ticket.entity;
 
 import com.c209.ticket.domain.ticket.dto.TicketDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Ticket {
 
     @Id
@@ -23,8 +25,9 @@ public class Ticket {
     private Long ownerId;
     private Long buyerId;
     private Long scheduleId;
+    private Long seatId;
     private String fingerprintKey;
-    private Long orderId;
+    private String impUid;
     private String row;
     private String col;
     private String nftUrl;
@@ -62,7 +65,7 @@ public class Ticket {
                 ", buyerId=" + buyerId +
                 ", scheduleId=" + scheduleId +
                 ", fingerprintKey='" + fingerprintKey + '\'' +
-                ", orderId=" + orderId +
+                ", impUid=" + impUid +
                 ", row='" + row + '\'' +
                 ", col='" + col + '\'' +
                 ", nftUrl='" + nftUrl + '\'' +

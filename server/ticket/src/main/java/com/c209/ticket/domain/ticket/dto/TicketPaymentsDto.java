@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record TicketPaymentsDto(
         Long ticketId,
-        Long orderId,
+        String impUid,
         Long scheduleId,
         Status status,
         LocalDateTime payDueDate

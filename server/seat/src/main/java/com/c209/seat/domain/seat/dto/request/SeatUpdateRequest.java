@@ -1,4 +1,4 @@
-package com.c209.payment.domain.seat.dto.request;
+package com.c209.seat.domain.seat.dto.request;
 
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

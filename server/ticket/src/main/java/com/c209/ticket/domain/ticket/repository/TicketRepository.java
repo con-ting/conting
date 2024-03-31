@@ -19,6 +19,6 @@ public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
 
     Mono<Ticket> findByTicketId(Long ticketId);
 
-    @Query("SELECT ticket_id, order_id, schedule_id,status, pay_due_date FROM ticket WHERE owner_id= :ownerId ")
+    @Query("SELECT ticket_id, imp_uid, schedule_id,status, pay_due_date FROM ticket WHERE owner_id= :ownerId ")
     Flux<TicketPaymentsDto> findAllTicketPayments(Long ownerId);
 }
