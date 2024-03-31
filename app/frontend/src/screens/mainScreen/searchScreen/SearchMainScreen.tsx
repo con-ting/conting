@@ -99,16 +99,16 @@ export default function SearchMainScreen() {
   };
 
   // 검색 쿼리에 따라 출연진 필터링
-  // const filteredCast = casts.filter(cast =>
-  //   cast.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  // );
+  const filteredCast = casts.filter(cast =>
+    cast.singer_name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   const renderTabs = () => {
     switch (selectedTab) {
       case '공연':
         return <ConcertListScreen concerts={concerts} />;
       case '출연진':
-        return <CastListScreen casts={casts} />;
+        return <CastListScreen casts={filteredCast} />;
       case '공연장':
         return <ConcertHallScreen halls={halls} />;
       default:
