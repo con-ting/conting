@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MAINYELLOW} from '../../config/Color';
 import {F_SIZE_B_BUTTON} from '../../config/Font';
@@ -45,7 +45,8 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.button}
@@ -67,7 +68,8 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
         {renderArea()}
         {/* {selectedArea && <SeatMap seatsData={mockSeatsData[selectedArea]} />} */}
       </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 

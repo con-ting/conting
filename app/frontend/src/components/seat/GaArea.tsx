@@ -16,7 +16,7 @@ export default function GaArea({seatsData}: any) {
     null,
   );
 
-  const handleSeatPress = (seatId: never, isAvailable: any) => {
+  const handleSeatPress = (seatId: number, isAvailable: any) => {
     if (isAvailable) {
       setLastSelectedSeatId(seatId); // 함수 호출 시 가장 최근 선택한 좌석의 아이디가 들어감
       setSelectedSeats(prevSelectedSeats => {
@@ -62,17 +62,17 @@ export default function GaArea({seatsData}: any) {
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,
-              selectedSeats.includes(seat.id) && styles.selectedSeat,
+              selectedSeats.includes(seat.seat_id) && styles.selectedSeat,
             ]}
             disabled={!seat.is_available}
-            onPress={() => handleSeatPress(seat.id, seat.is_available)}>
+            onPress={() => handleSeatPress(seat.seat_id, seat.is_available)}>
             <Text
               style={[
                 styles.seatText,
-                selectedSeats.includes(seat.id) && styles.selectedSeatText,
+                selectedSeats.includes(seat.seat_id) && styles.selectedSeatText,
                 !seat.is_available && styles.reservedSeatText,
               ]}>
-              {seat.column}
+              {seat.col}
             </Text>
           </TouchableOpacity>
         ))}
@@ -96,12 +96,12 @@ export default function GaArea({seatsData}: any) {
         <View style={styles.selected} />
         <Text style={F_SIZE_BIGTEXT}>Selected</Text>
       </View>
-      <View>
+      {/* <View>
         <SeatCompetition
           lastSelectedSeatId={lastSelectedSeatId}
           seatsData={seatsData}
         />
-      </View>
+      </View> */}
       <View>
         <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
       </View>

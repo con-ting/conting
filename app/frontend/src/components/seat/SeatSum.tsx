@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import seatsData from '../data/seatsData';
+// import seatsData from '../data/seatsData';
 import {F_SIZE_TITLE, F_SIZE_Y_HEADER} from '../../config/Font';
 import {YellowButton} from '../button/Button';
 import {useNavigation} from '@react-navigation/native';
@@ -17,8 +17,8 @@ export default function SeatSum(props: SeatSumProps) {
 
   const calTotalPrice = () => {
     return props.selectedSeats.reduce((total, seatId) => {
-      const seat = props.seatsData.find(s => s.id === seatId);
-      return total + (seat ? seat.price : 0);
+      const seat = props.seatsData.find(s => s.seat_id === seatId);
+      return total + (seat ? seat.grade_price : 0);
     }, 0);
   };
 
@@ -29,8 +29,8 @@ export default function SeatSum(props: SeatSumProps) {
 
   const selectedSeatsInfo = props.selectedSeats
     .map(seatId => {
-      const seat = props.seatsData.find(s => s.id === seatId);
-      return seat ? {seat_id: seat.id, price: seat.price} : null;
+      const seat = props.seatsData.find(s => s.seat_id === seatId);
+      return seat ? {seat_id: seat.seat_id, price: seat.grade_price} : null;
     })
     .filter(info => info !== null); // 필터링하여 null 제거
 
