@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Configuration
 @RequiredArgsConstructor
 public class NftMetadataStepConfig {
-    private static final String NFT_METADATA_DIR = NftBatchConfig.NFT_DIR + "/metadata";
+    private static final String NFT_METADATA_DIR = NftJobConfig.NFT_DIR + "/metadata";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     private final S3Service s3Service;
@@ -31,9 +31,9 @@ public class NftMetadataStepConfig {
     public Step collectionMetadataStep() {
         return new StepBuilder("collectionMetadataStep", jobRepository)
                 .<PerformanceAndSeatsDto, PerformanceAndMetadataDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(collectionMetadataProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceAndMetadataDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceAndMetadataDto.class))
                 .build();
     }
 
@@ -94,9 +94,9 @@ public class NftMetadataStepConfig {
     public Step assetMetadataStep() {
         return new StepBuilder("assetMetadataStep", jobRepository)
                 .<SeatAndScheduleAndMediaDto, SeatAndScheduleAndMetadataDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(SeatAndScheduleAndMediaDto.class))
+                .reader(NftJobConfig.createJsonItemReader(SeatAndScheduleAndMediaDto.class))
                 .processor(assetMetadataProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(SeatAndScheduleAndMetadataDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(SeatAndScheduleAndMetadataDto.class))
                 .build();
     }
 

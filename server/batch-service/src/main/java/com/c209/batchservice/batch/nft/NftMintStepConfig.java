@@ -28,7 +28,7 @@ import java.nio.file.StandardOpenOption;
 @RequiredArgsConstructor
 @Slf4j
 public class NftMintStepConfig {
-    public static final String NFT_MINT_DIR = NftBatchConfig.NFT_DIR + "/mint";
+    public static final String NFT_MINT_DIR = NftJobConfig.NFT_DIR + "/mint";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     @Qualifier("catalogEntityManagerFactory")
@@ -41,9 +41,9 @@ public class NftMintStepConfig {
     public Step mintCollectionStep() {
         return new StepBuilder("mintCollectionStep", jobRepository)
                 .<PerformanceAndMetadataDto, PerformanceIdAndCollectionMintDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndMetadataDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceAndMetadataDto.class))
                 .processor(mintCollectionProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceIdAndCollectionMintDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceIdAndCollectionMintDto.class))
                 .build();
     }
 
@@ -79,9 +79,9 @@ public class NftMintStepConfig {
     public Step mintAssetStep() {
         return new StepBuilder("mintAssetStep", jobRepository)
                 .<SeatAndScheduleAndMetadataDto, SeatIdAndMintDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(SeatAndScheduleAndMetadataDto.class))
+                .reader(NftJobConfig.createJsonItemReader(SeatAndScheduleAndMetadataDto.class))
                 .processor(mintAssetMintProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(SeatIdAndMintDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(SeatIdAndMintDto.class))
                 .build();
     }
 
@@ -123,7 +123,7 @@ public class NftMintStepConfig {
     public Step verifyAssetAndUpdateSeatStep() {
         return new StepBuilder("verifyAssetAndUpdateSeatStep", jobRepository)
                 .<SeatIdAndMintDto, SeatIdAndMintDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(SeatIdAndMintDto.class))
+                .reader(NftJobConfig.createJsonItemReader(SeatIdAndMintDto.class))
                 .processor(verifyAssetMintProcessor())
                 .writer(seatNftUrlUpdater())
                 .build();
@@ -165,7 +165,7 @@ public class NftMintStepConfig {
     public Step updatePerformanceStep() {
         return new StepBuilder("updatePerformanceStep", jobRepository)
                 .<PerformanceAndSeatsDto, PerformanceAndSeatsDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(updatePerformanceProcessor())
                 .writer(performanceIsMintedUpdater())
                 .build();

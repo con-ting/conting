@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @Configuration
 @RequiredArgsConstructor
 public class NftMediaStepConfig {
-    private static final String NFT_MEDIA_DIR = NftBatchConfig.NFT_DIR + "/media";
+    private static final String NFT_MEDIA_DIR = NftJobConfig.NFT_DIR + "/media";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     private final ProcessService processService;
@@ -33,7 +33,7 @@ public class NftMediaStepConfig {
     public Step downloadMediaStep() {
         return new StepBuilder("downloadMediaStep", jobRepository)
                 .<PerformanceAndSeatsDto, Void>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(downloadMediaProcessor())
                 .writer(Void -> {
                 })
@@ -55,9 +55,9 @@ public class NftMediaStepConfig {
     public Step performanceAndMediaStep() {
         return new StepBuilder("performanceAndMediaStep", jobRepository)
                 .<PerformanceAndSeatsDto, PerformanceIdAndMediaDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(performanceAndMediaProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceIdAndMediaDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceIdAndMediaDto.class))
                 .build();
     }
 
@@ -78,7 +78,7 @@ public class NftMediaStepConfig {
     public Step createMediaStep() {
         return new StepBuilder("createMediaStep", jobRepository)
                 .<PerformanceIdAndMediaDto, Void>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(PerformanceIdAndMediaDto.class))
+                .reader(NftJobConfig.createJsonItemReader(PerformanceIdAndMediaDto.class))
                 .processor(createMediaProcessor())
                 .writer(Void -> {
                 })
@@ -100,9 +100,9 @@ public class NftMediaStepConfig {
     public Step uploadMediaStep() {
         return new StepBuilder("uploadMediaStep", jobRepository)
                 .<SeatAndScheduleDto, SeatAndScheduleAndMediaDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(SeatAndScheduleDto.class))
+                .reader(NftJobConfig.createJsonItemReader(SeatAndScheduleDto.class))
                 .processor(uploadMediaProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(SeatAndScheduleAndMediaDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(SeatAndScheduleAndMediaDto.class))
                 .build();
     }
 

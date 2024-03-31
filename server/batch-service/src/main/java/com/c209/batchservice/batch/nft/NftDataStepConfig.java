@@ -51,7 +51,7 @@ public class NftDataStepConfig {
                 .<Performance, PerformanceDto>chunk(100, batchTransactionManager)
                 .reader(performanceReader())
                 .processor(PerformanceDto::of)
-                .writer(NftBatchConfig.createJsonFileItemWriter(PerformanceDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceDto.class))
                 .build();
     }
 
@@ -72,7 +72,7 @@ public class NftDataStepConfig {
                 .<Schedule, ScheduleDto>chunk(100, batchTransactionManager)
                 .reader(scheduleReader())
                 .processor(ScheduleDto::of)
-                .writer(NftBatchConfig.createJsonFileItemWriter(ScheduleDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(ScheduleDto.class))
                 .build();
     }
 
@@ -97,7 +97,7 @@ public class NftDataStepConfig {
                 .<Seat, SeatDto>chunk(100, batchTransactionManager)
                 .reader(seatReader())
                 .processor(SeatDto::of)
-                .writer(NftBatchConfig.createJsonFileItemWriter(SeatDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(SeatDto.class))
                 .build();
     }
 
@@ -116,9 +116,9 @@ public class NftDataStepConfig {
     public Step seatAndScheduleStep() {
         return new StepBuilder("seatAndScheduleStep", jobRepository)
                 .<SeatDto, SeatAndScheduleDto>chunk(100, batchTransactionManager)
-                .reader(NftBatchConfig.createJsonItemReader(SeatDto.class))
+                .reader(NftJobConfig.createJsonItemReader(SeatDto.class))
                 .processor(seatAndScheduleProcessor())
-                .writer(NftBatchConfig.createJsonFileItemWriter(SeatAndScheduleDto.class))
+                .writer(NftJobConfig.createJsonFileItemWriter(SeatAndScheduleDto.class))
                 .build();
     }
 
@@ -130,7 +130,7 @@ public class NftDataStepConfig {
                 if (map == null) {
                     try {
                         return new ObjectMapper().readValue(
-                                        new FileSystemResource(NftBatchConfig.getJsonPath(ScheduleDto.class)).getInputStream(),
+                                        new FileSystemResource(NftJobConfig.getJsonPath(ScheduleDto.class)).getInputStream(),
                                         new TypeReference<List<ScheduleDto>>() {
                                         }).stream()
                                 .collect(Collectors.toMap(ScheduleDto::id, Function.identity()));
@@ -160,7 +160,7 @@ public class NftDataStepConfig {
         return (contribution, chunkContext) -> {
             ObjectMapper mapper = new ObjectMapper();
             List<SeatAndScheduleDto> seatExtends = Arrays.asList(mapper.readValue(
-                    new FileSystemResource(NftBatchConfig.getJsonPath(SeatAndScheduleDto.class)).getFile(),
+                    new FileSystemResource(NftJobConfig.getJsonPath(SeatAndScheduleDto.class)).getFile(),
                     SeatAndScheduleDto[].class));
             Map<Long, PerformanceDto> performanceMap = seatExtends.stream()
                     .collect(Collectors.toMap(
@@ -177,7 +177,7 @@ public class NftDataStepConfig {
                             .seats(seatsMap.get(performance.id()))
                             .build())
                     .toList();
-            mapper.writeValue(new FileSystemResource(NftBatchConfig.getJsonPath(PerformanceAndSeatsDto.class)).getFile(),
+            mapper.writeValue(new FileSystemResource(NftJobConfig.getJsonPath(PerformanceAndSeatsDto.class)).getFile(),
                     performanceAndSeatsList);
             return RepeatStatus.FINISHED;
         };
