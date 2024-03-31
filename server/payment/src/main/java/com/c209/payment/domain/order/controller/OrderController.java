@@ -34,14 +34,15 @@ public class OrderController {
     @PostMapping("/success")
     ResponseEntity<PayAuthResponse> paySucceed(PayAuthRequest request){
 
-        //아이엠포트 결제 단건 api를 조회해 db값과 비교한다.
+        //아이엠포트 결제 단건 api를 조회해 db값과 비교한다.z
             //아이엠포트 통신시 에러가 났을 경우 최대 3회 더 수행하고 만료한다.
         //payService.capture(request);
 
 
 
         //issue 발행
-        seatProducer.send("reservation-seat-topic", SeatUpdateRequest.builder().seatId(1L).build());
+        seatProducer.send("test", SeatUpdateRequest.builder().seatId(1L).build());
+        seatProducer.send("test2", SeatUpdateRequest.builder().seatId(1L).build());
         return null;
     }
 

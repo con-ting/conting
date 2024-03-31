@@ -4,6 +4,7 @@ package com.c209.ticket.domain.ticket.controller;
 import com.c209.ticket.domain.ticket.dto.TicketDto;
 import com.c209.ticket.domain.ticket.dto.response.ResultResponse;
 import com.c209.ticket.domain.ticket.dto.response.TicketListResponse;
+import com.c209.ticket.domain.ticket.dto.response.TicketPaymentsListResponse;
 import com.c209.ticket.domain.ticket.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,7 @@ public class TicketController {
             @PathVariable("ticket_id")Long ticketId,
             @RequestParam("finger_print")String fingerPrint
     ){
-
-        log.info("{} {} {}", userId, ticketId, fingerPrint);
+        log.info(fingerPrint);
         return ticketService.getTicketDetail(userId, ticketId, fingerPrint)
                 .map(ResponseEntity::ok);
     }
@@ -62,6 +62,14 @@ public class TicketController {
                 .map(ResultResponse::new)
                 .map(ResponseEntity::ok);
 
+    }
+
+    @GetMapping("/payments")
+    public Mono<ResponseEntity<TicketPaymentsListResponse>> getTicketPayments(
+            @RequestHeader("X-Authorization-Id")Long userId
+    ){
+        return ticketService.getTicketPaymentsList(userId)
+                .map(ResponseEntity::ok);
     }
 
 

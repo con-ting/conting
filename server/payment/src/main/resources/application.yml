@@ -39,6 +39,8 @@ eureka:
 
 
 
+kafka:
+  url: ${KAFKA_URL}
 
 logging:
   level:
