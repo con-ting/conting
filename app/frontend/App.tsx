@@ -9,24 +9,27 @@ import {
   RPC_ENDPOINT,
 } from './src/components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {AuthorizationProvider} from './src/components/mobileWalletAdapter/providers/AuthorizationProvider';
+import {RealmProvider} from './src/components/realm/RealmContext.ts';
 
 const App = () => {
   return (
-    <RecoilRoot>
-      <ConnectionProvider
-        config={{commitment: 'processed'}}
-        endpoint={clusterApiUrl(RPC_ENDPOINT)}>
-        <AuthorizationProvider>
-          <SafeAreaProvider>
-            <GestureHandlerRootView style={{flex: 1}}>
-              <NavigationContainer>
-                <RootApp />
-              </NavigationContainer>
-            </GestureHandlerRootView>
-          </SafeAreaProvider>
-        </AuthorizationProvider>
-      </ConnectionProvider>
-    </RecoilRoot>
+    <RealmProvider>
+      <RecoilRoot>
+        <ConnectionProvider
+          config={{commitment: 'processed'}}
+          endpoint={clusterApiUrl(RPC_ENDPOINT)}>
+          <AuthorizationProvider>
+            <SafeAreaProvider>
+              <GestureHandlerRootView style={{flex: 1}}>
+                <NavigationContainer>
+                  <RootApp />
+                </NavigationContainer>
+              </GestureHandlerRootView>
+            </SafeAreaProvider>
+          </AuthorizationProvider>
+        </ConnectionProvider>
+      </RecoilRoot>
+    </RealmProvider>
   );
 };
 
