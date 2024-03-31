@@ -29,7 +29,10 @@ const SplashScreen = () => {
       await saveDataToRealm(realm, apiData); // 이 함수는 실제 로직에 맞게 구현해야 합니다.
 
       // 모든 초기화 로직이 완료되면 로그인 화면으로 네비게이션
-      navigation.navigate('LoginScreen');
+      const timeoutId = setTimeout(() => {
+        navigation.navigate('LoginScreen');
+      }, 2000);
+      return () => clearTimeout(timeoutId);
     };
     initialize();
   }, []);
