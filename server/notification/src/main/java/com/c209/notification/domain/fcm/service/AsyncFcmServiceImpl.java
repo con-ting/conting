@@ -39,7 +39,7 @@ public class  AsyncFcmServiceImpl implements FcmService{
         FirebaseOptions options = null;
         try {
             options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream(serviceAccountFilePath)))
+                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(serviceAccountFilePath).getInputStream()))
                     .setProjectId(projectId)
                     .build();
         } catch (IOException e) {
