@@ -2,9 +2,9 @@ ALTER TABLE singer MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE singer MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 INSERT INTO singer (name,wallet,image,instagram,date_of_birth,date_of_debut)
-VALUES ('라이즈','','https://i.namu.wiki/i/0xXQ6NbvOzmuOBb8NlRol1EjOFF7OL0ByOCpQ9uUGpI_v8vTFUH20vjLE_JqjDVjzzZi5OhFJN3sT3FHc4Tz78cNTPZ5YhczYpso7LHpOYCLDGjb0kxSbvmboXC9o0vk6Yc3ZaXrgWG8wB8j75zNGA.webp','https://www.instagram.com/riize_official/','2023-09-04','2023-09-04'),
-       ('핑크퐁', '', 'https://yt3.googleusercontent.com/ytc/AIdro_nw1KkzDGpTh0vu021H1c3VBHvehuQvpdvnE_4iFg=s900-c-k-c0x00ffffff-no-rj', 'https://www.instagram.com/pinkfong.ko/', '2012-09-06', '2012-09-06'),
-       ('아이브', '', 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAzMjdfMjQw%2FMDAxNjc5OTEyNjk4MDk2.TklQU4plys8IFf3nOJ-7oTthMnxW3A-nLie7EH_N3AAg.yARx_9YQqcfyIs78yLTsUIlD4dOlNLGT-DwDnaOiNHYg.JPEG.haon3301%2F2.jpg&type=a340', 'https://www.instagram.com/ivestarship/', '2021-12-01', '2021-12-01');
+VALUES ('라이즈','riizeurBQhZPdZYQfUjcTpf7XKXaKP9C6wfcSGmhY2y','https://i.namu.wiki/i/0xXQ6NbvOzmuOBb8NlRol1EjOFF7OL0ByOCpQ9uUGpI_v8vTFUH20vjLE_JqjDVjzzZi5OhFJN3sT3FHc4Tz78cNTPZ5YhczYpso7LHpOYCLDGjb0kxSbvmboXC9o0vk6Yc3ZaXrgWG8wB8j75zNGA.webp','https://www.instagram.com/riize_official/','2023-09-04','2023-09-04'),
+       ('핑크퐁', 'pinkQGZ7KVuDE6L7WwigVJEKCMRQbgcbftYFDS3ziHu', 'https://yt3.googleusercontent.com/ytc/AIdro_nw1KkzDGpTh0vu021H1c3VBHvehuQvpdvnE_4iFg=s900-c-k-c0x00ffffff-no-rj', 'https://www.instagram.com/pinkfong.ko/', '2012-09-06', '2012-09-06'),
+       ('아이브', 'ive21cgNyb1sY95MqHxzEwNJB8Wvij4MwNfYXAdBpt4', 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzAzMjdfMjQw%2FMDAxNjc5OTEyNjk4MDk2.TklQU4plys8IFf3nOJ-7oTthMnxW3A-nLie7EH_N3AAg.yARx_9YQqcfyIs78yLTsUIlD4dOlNLGT-DwDnaOiNHYg.JPEG.haon3301%2F2.jpg&type=a340', 'https://www.instagram.com/ivestarship/', '2021-12-01', '2021-12-01');
 
 ALTER TABLE album MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE album MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
@@ -37,18 +37,17 @@ ALTER TABLE seller
     MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
-INSERT INTO seller (user_id)
-VALUES (1),
-       (2),
-       (3);
+INSERT INTO seller (user_id, wallet)
+VALUES (1, 'se1k27DnFqFKSb5b3w18mnVvJQYdenaac9uFBKbc9iE'),
+       (1, 'se2Y7qvsPJU84kLdWGGR1L42YFLzRatgPrUZjMZftAp');
 
 ALTER TABLE performance
     MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
-INSERT INTO performance (title, poster_image, description, description_image, genre, video_url, view, singer_id, hall_id, reservation_start_datetime, reservation_end_datetime, status, reservation_type, start_date, end_date, max_ticket_per_person, company_id, is_adult_only, seller_id)
-VALUES ('2024 IVE 2nd FANMEETING 〈MAGAZINE IVE〉', 'https://cdnticket.melon.co.kr/resource/image/upload/product/2024/02/20240207105504dbc862cf-1e34-4050-9f0b-827a7ebc3a9f.jpg/melon/resize/180x254/strip/true/quality/90/optimize','', 'https://cdnticket.melon.co.kr/resource/image/upload/product/2024/02/20240207110635ac758c63-b12b-4ad4-ac3f-65f9e835dfff.jpg/melon/quality/90/optimize', 'KP', 'https://www.youtube.com/watch?v=8TtyQcLv0eU', 0, 3, 1, '2024.02.13.20:00:00', '2024.08.16:23:59:59', 'on_sale', 'F', '2024.09.09', '2024.09.10', 1, 9, false, 1),
-       ('플레이 뮤지컬 〈핑크퐁과 아기상어의 무지개 구출 작전〉', 'https://ticketimage.interpark.com/Play/image/large/24/24002524_p.gif',	'2024년 5월, 핑크퐁, 아기상어와 함께 무지개를 구하러 알록달록 다채로운 색깔 나라로 떠나보아요!','https://ticketimage.interpark.com/Play/image/etc/24/24002524-01.jpg', 'FE', 'https://www.youtube.com/watch?v=SCQQ1mN-1pM', 0, 2, 2, '2024.02.29', '2024.08.24', 'on_sale', 'F', '2024.05.01', '2024.08.25', 4, 8, false, 2);
+INSERT INTO performance (title, poster_image, description, description_image, genre, video_url, view, singer_id, hall_id, reservation_start_datetime, reservation_end_datetime, status, reservation_type, start_date, end_date, max_ticket_per_person, company_id, is_adult_only, seller_id, is_minted)
+VALUES ('2024 IVE 2nd FANMEETING 〈MAGAZINE IVE〉', 'https://cdnticket.melon.co.kr/resource/image/upload/product/2024/02/20240207105504dbc862cf-1e34-4050-9f0b-827a7ebc3a9f.jpg/melon/resize/180x254/strip/true/quality/90/optimize','', 'https://cdnticket.melon.co.kr/resource/image/upload/product/2024/02/20240207110635ac758c63-b12b-4ad4-ac3f-65f9e835dfff.jpg/melon/quality/90/optimize', 'KP', 'https://www.youtube.com/watch?v=8TtyQcLv0eU', 0, 3, 1, '2024.02.13.20:00:00', '2024.08.16:23:59:59', 'on_sale', 'F', '2024.09.09', '2024.09.10', 1, 9, false, 1, true),
+       ('플레이 뮤지컬 〈핑크퐁과 아기상어의 무지개 구출 작전〉', 'https://ticketimage.interpark.com/Play/image/large/24/24002524_p.gif',	'2024년 5월, 핑크퐁, 아기상어와 함께 무지개를 구하러 알록달록 다채로운 색깔 나라로 떠나보아요!','https://ticketimage.interpark.com/Play/image/etc/24/24002524-01.jpg', 'FE', 'https://www.youtube.com/watch?v=SCQQ1mN-1pM', 0, 2, 2, '2024.02.29', '2024.08.24', 'on_sale', 'F', '2024.05.01', '2024.08.25', 4, 8, false, 2, false);
 
 ALTER TABLE grade
     MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -87,11 +86,3 @@ VALUES ('1', 1),
        ('4', 4),
        ('5', 5),
        ('6', 6);
-
-ALTER TABLE seller
-    MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-
-INSERT INTO seller (user_id)
-VALUES (1),
-       (1);
