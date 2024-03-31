@@ -1,18 +1,16 @@
 drop table seat;
 
-create TABLE seat
-(
-    seat_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
-    schedule_id  BIGINT       NOT NULL,
-    is_available Boolean DEFAULT true,
-    row          VARCHAR(255) NOT NULL,
-    col          INT          NOT NULL,
-    grade        VARCHAR(255) NOT NULL,
-    grade_price  INT          NOT NULL,
-    nft_url      VARCHAR(255),
-    sector       VARCHAR(255)
+CREATE TABLE seat (
+                      seat_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      schedule_id  BIGINT       NOT NULL,
+                      is_available BOOLEAN DEFAULT true,
+                      row          VARCHAR(255) NOT NULL,
+                      col          INT          NOT NULL,
+                      grade        VARCHAR(255),
+                      grade_price  INT          NOT NULL,
+                      nft_url      VARCHAR(255),
+                      sector       VARCHAR(255)
 );
-
 CREATE INDEX index_by_schedule_sector_sector_id ON seat (schedule_id, sector);
 CREATE INDEX index_by_sector_schedule_sector_id ON seat (sector, schedule_id);
 CREATE INDEX index_by_schedule_sector_id ON seat (schedule_id);

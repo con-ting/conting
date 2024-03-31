@@ -1,12 +1,13 @@
 DROP table ticket;
 CREATE TABLE ticket (
-                        ticket_id BIGINT PRIMARY KEY,
+                        ticket_id BIGINT PRIMARY KEY AUTO_INCREMENT,
                         is_used BOOLEAN,
                         owner_id BIGINT,
                         buyer_id BIGINT,
                         schedule_id BIGINT,
                         fingerprint_key TEXT,
-                        order_id BIGINT,
+                        seat_id Long,
+                        imp_uid TEXT,
                         row VARCHAR(255),
                         col VARCHAR(255),
                         nft_url VARCHAR(255),

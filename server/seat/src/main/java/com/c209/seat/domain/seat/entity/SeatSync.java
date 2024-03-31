@@ -36,12 +36,12 @@ public class SeatSync {
     private String col;
 
     @Column
-    private Grade grade;
+    private String grade;
 
     @Column(name="grade_price")
     private Integer gradePrice;
 
-    @Column
+    @Column(name="nft_url")
     private String ntfUrl;
 
     @Column
