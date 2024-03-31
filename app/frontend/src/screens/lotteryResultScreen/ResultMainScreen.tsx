@@ -23,6 +23,9 @@ import {
   getDifferenceInMinutes,
   isReservationAvailable,
 } from '../../utils/common/TimeFormat.ts';
+import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
+import {useRealm} from '../../components/realm/RealmContext.ts';
+import {orderResult} from '../../api/ticket/order.ts';
 
 const Tabs = ['결제 내역', '이벤트 내역'];
 
@@ -97,6 +100,7 @@ function MakeConsertCardObject(
             //콘서트 상세 이동 로직
             Alert.alert('콘서트 상세로 이동');
           },
+          swipe_btn_disabled: true,
         };
       } else {
         return {
@@ -120,6 +124,7 @@ function MakeConsertCardObject(
             //콘서트 상세 이동 로직
             Alert.alert('콘서트 상세로 이동');
           },
+          swipe_btn_disabled: true,
         };
       }
     case '예매완료':
@@ -174,6 +179,7 @@ function MakeConsertCardObject(
           //콘서트 상세 이동 로직
           Alert.alert('콘서트 상세로 이동');
         },
+        swipe_btn_disabled: true,
       };
     case '결제대기':
       return {
@@ -208,35 +214,28 @@ function MakeConsertCardObject(
   }
 }
 
-type apiMockUp = {
-  ticket_payments: [
-    {
-      ticket_id: '1';
-      order_id: '1';
-      schedule_id: '1';
-      status: '예매완료';
-      pay_due_date: '2024-02-30T11:48:56.036Z';
-    },
-    {
-      ticket_id: '1';
-      order_id: '1';
-      schedule_id: '1';
-      status: '예매완료';
-      pay_due_date: '2024-02-30T11:48:56.036Z';
-    },
-  ];
-};
-
 export default function SearchMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
-
+  const realm = useRealm();
   const getOrderResultList = async () => {
+    const resultList = [];
     // 1. 결제 내역 api 요청 -> 리스트
-
+    const apiResponse = await orderResult();
     // 2. 리스트 순회하면서 해당 local db 조회 후 결과 리스트에 추가
+    for (const ticketPayment of apiResponse.ticket_payments) {
+      console.log('tickentPayment : =', ticketPayment);
+      const localResultData = fetchScheduleDetails(
+        realm,
+        ticketPayment.schedule_id,
+      );
+      console.log('localResultData =', localResultData);
+      const result = MakeConsertCardObject(ticketPayment, localResultData);
+      console.log('result = ', result);
+      resultList.push(result);
+    }
 
-    return [];
+    return resultList;
   };
   const getEventResultList = async () => {
     //이벤트 내역 조회

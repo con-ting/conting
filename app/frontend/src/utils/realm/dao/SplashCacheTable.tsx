@@ -91,8 +91,5 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
     console.log('캐쉬데이터 저장 끝');
   } catch (e) {
     console.error('realm 에러', e);
-  } finally {
-    // DB 사용 후 닫기 (필요에 따라)
-    realm.close();
   }
 }
