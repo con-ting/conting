@@ -98,8 +98,8 @@ public class NftMintStepConfig {
                 String suffix = name.substring(name.lastIndexOf(" #"));
                 mint = web3Service.createAsset(AssetRequest.builder()
                                 .name(dto.schedule().performance().singer().name() +
-                                      " " + dto.schedule().performance().startDate() +
-                                      " 티켓 " + suffix)
+                                      " " + dto.schedule().performance().startDate().substring(2).replaceAll("-", "") +
+                                      " 티켓" + suffix)
                                 .symbol(dto.jsonMetadata().symbol())
                                 .uri(dto.jsonUrl())
                                 .sellerFeeBasisPoints(dto.jsonMetadata().sellerFeeBasisPoints())
