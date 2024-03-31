@@ -12,6 +12,14 @@ spring:
     redis:
       host: ${TICKET_HOST}
       port: 6379
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER}
+
+
 
 logging:
   level:
