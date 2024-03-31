@@ -78,7 +78,7 @@ export const BasicConcertCardWide = (props: basicProps) => {
           }}>
           <Text
             style={{
-              color: Color.MAINYELLOW,
+              color: Color.MAINBLACK,
               fontSize: fontPercent(14),
               fontFamily: Font.MAINFONT,
             }}>

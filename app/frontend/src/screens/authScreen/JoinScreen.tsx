@@ -43,7 +43,7 @@ import * as Font from '../../config/Font.ts';
 import {emailConfirm, login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {alertAndLog} from '../../utils/common/alertAndLog.ts';
+
 import {
   Account,
   useAuthorization,

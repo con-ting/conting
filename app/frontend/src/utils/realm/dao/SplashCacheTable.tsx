@@ -41,7 +41,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
     realm.write(() => {
       // 홀 데이터 저장
       data.halls.forEach(hall => {
-        console.log('hall 저장 = ', hall);
         realm.create(
           'Hall',
           {
@@ -55,7 +54,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
 
       // 공연 데이터 저장
       data.performances.forEach(performance => {
-        console.log('performance 저장 = ', performance);
         realm.create(
           'Performance',
           {
@@ -75,7 +73,6 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
 
       // 스케줄 데이터 저장
       data.schedules.forEach(schedule => {
-        console.log('Performance 저장 = ', Performance);
         realm.create(
           'Schedule',
           {
@@ -91,8 +88,5 @@ export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
     console.log('캐쉬데이터 저장 끝');
   } catch (e) {
     console.error('realm 에러', e);
-  } finally {
-    // DB 사용 후 닫기 (필요에 따라)
-    realm.close();
   }
 }
