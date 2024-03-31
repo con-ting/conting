@@ -101,34 +101,34 @@ const renderSelectedSeats = () => {
 
   return (
     <>
-    <PopUpModal
-    children={
-      <View style={styles.modal}>
-      <View style={styles.modalView}>
-        <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
-        <TouchableOpacity
-          
-          onPress={() => setIsModalVisible(!isModalVisible)}
-        >
-          <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
-        </TouchableOpacity>
+      <PopUpModal
+      children={
+        <View style={styles.modal}>
+        <View style={styles.modalView}>
+          <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
+          <TouchableOpacity
+            
+            onPress={() => setIsModalVisible(!isModalVisible)}
+          >
+            <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-    }
-  isVisible={isModalVisible}  
-  setIsVisible={setIsModalVisible}
-  />
+      }
+      isVisible={isModalVisible}  
+      setIsVisible={setIsModalVisible}
+      />
 
       <View style={styles.container}>
-      <Dropdown 
-      data={familyMembers}
-      placeholder='가족선택'
-      open={dropDownOpen}
-      setOpen={setDropDownOpen}
-      onSelectValue={handleItemSelect}
-      width={widthPercent(120)}
-      textSize={14}
-      />
+        <Dropdown 
+        data={familyMembers}
+        placeholder='가족선택'
+        open={dropDownOpen}
+        setOpen={setDropDownOpen}
+        onSelectValue={handleItemSelect}
+        width={widthPercent(120)}
+        textSize={14}
+        />
         {renderSeatsByRow(alphaRows)}
         <View style={styles.separator} />
         {renderSeatsByRow(numberRows)}
