@@ -69,7 +69,10 @@ export default function WaitingScreen({route}: any) {
 
         if (signatureKey && signatureKey.result) {
           console.log('서명 키 생성 성공', signatureKey.key);
-          navigation.navigate('SeatArea', {biometricKey: signatureKey.key});
+          navigation.navigate('SeatArea', {
+            biometricKey: signatureKey.key,
+            scheduleID: id,
+          });
         } else {
           console.log('서명 키 생성 실패');
         }

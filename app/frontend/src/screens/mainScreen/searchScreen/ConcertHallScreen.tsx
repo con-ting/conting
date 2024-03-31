@@ -8,7 +8,7 @@ export default function ConcertHallScreen({halls}: any) {
   const navigation = useNavigation();
 
   // FlatList의 renderItem 함수
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <View style={styles.cards}>
       <ConcertHallCard
         onPress={() => console.log('공연홀보기로 이동')}

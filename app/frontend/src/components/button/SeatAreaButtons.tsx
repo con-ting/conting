@@ -3,36 +3,42 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MAINYELLOW} from '../../config/Color';
 import {F_SIZE_B_BUTTON} from '../../config/Font';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import SeatMap from '../seat/SeatMap';
 import GaArea from '../seat/GaArea';
 import NaArea from '../seat/NaArea';
 import DaArea from '../seat/DaArea';
-import seatsData from '../data/seatsData';
+import {SeatApi} from '../../api/seat/Seat';
+// import seatsData from '../data/seatsData';
 
-export default function SeatAreaButtons() {
+export default function SeatAreaButtons({biometricKey, scheduleID}) {
   const [selectedArea, setSelectedArea] = useState('');
+  const [seatsData, setSeatsData] = useState([]); // 좌석 데이터 저장
 
+  useEffect(() => {
+    const fetchSeats = async () => {
+      if (selectedArea) {
+        const sectorMapping = {가: 'GA', 나: 'NA', 다: 'DA'};
+        const sector = sectorMapping[selectedArea];
+        if (sector) {
+          console.log('가져올 구역: ', sector);
+          const response = await SeatApi({schedule_id: scheduleID, sector});
+          console.log('가져온 구역의 데이터: ', response);
+          setSeatsData(response.seats);
+        }
+      }
+    };
+
+    fetchSeats();
+  }, [scheduleID, selectedArea]);
   const renderArea = () => {
     switch (selectedArea) {
       case '가':
-        return (
-          <GaArea
-            seatsData={seatsData.seat.filter(seat => seat.grade === '가')}
-          />
-        );
+        return <GaArea seatsData={seatsData} />;
       case '나':
-        return (
-          <NaArea
-            seatsData={seatsData.seat.filter(seat => seat.grade === '나')}
-          />
-        );
+        return <NaArea seatsData={seatsData} />;
       case '다':
-        return (
-          <DaArea
-            seatsData={seatsData.seat.filter(seat => seat.grade === '다')}
-          />
-        );
+        return <DaArea seatsData={seatsData} />;
       default:
         return null;
     }

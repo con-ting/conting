@@ -1,10 +1,11 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {MAINBLACK, MINTBASE} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {BasicConcertCardWide} from '../../../components/card/ConcertCardWide';
 import formatSido from '../../../utils/common/SidoFormat';
 import {useNavigation} from '@react-navigation/native';
 import {Key} from 'react';
+import {heightPercent} from '../../../config/Dimensions';
 
 const formatDateWithTime = dateString => {
   const date = new Date(dateString);
@@ -21,55 +22,50 @@ const formatDateWithTime = dateString => {
 export default function ConcertListScreen({concerts}: any) {
   const navigation = useNavigation();
 
+  const renderItem = ({item: concert}) => (
+    <View style={styles.cards}>
+      <BasicConcertCardWide
+        onPress={() =>
+          navigation.navigate('ConcertDetail', {showID: concert.show_id})
+        }
+        disabled={concert.status !== 'on_sale'}
+        title={concert.title}
+        img_url={concert.poster}
+        img_tag={
+          concert.reservation_type === 'F' ? '선착순 예매중' : '추첨 예매중'
+        }
+        img_tag_disabled={false}
+        img_tag_color={concert.status === 'on_sale' ? MINTBASE : ''} // MINTBASE를 '#00FF00'로 가정
+        sido={formatSido(concert.hall_address)}
+        concert_hall={concert.hall_name}
+        date_tag={'예매일'}
+        date={formatDateWithTime(concert.reservation_start_date_time)}
+        // 다른 props 필요시 추가
+        swipe_btn_disabled
+      />
+    </View>
+  );
+
   return (
-    <ScrollView style={styles.container}>
-      {concerts.map(
-        (concert: {
-          show_id: Key | null | undefined;
-          status: string;
-          title: string;
-          poster: string;
-          reservation_type: string;
-          hall_address: string;
-          hall_name: string;
-          reservation_start_date_time: any;
-        }) => (
-          <View style={styles.card} key={concert.show_id}>
-            <BasicConcertCardWide
-              onPress={() =>
-                navigation.navigate('ConcertDetail', {
-                  showID: concert.show_id,
-                })
-              }
-              disabled={concert.status !== 'on_sale'}
-              title={concert.title}
-              img_url={concert.poster}
-              img_tag={
-                concert.reservation_type === 'F'
-                  ? '선착순 예매중'
-                  : '추첨 예매중'
-              }
-              img_tag_disabled={false}
-              img_tag_color={concert.status === 'on_sale' ? MINTBASE : ''}
-              sido={formatSido(concert.hall_address)}
-              concert_hall={concert.hall_name}
-              date_tag={'예매일'}
-              date={formatDateWithTime(concert.reservation_start_date_time)}
-              // swipe_btn_disabled={concert.status !== 'on_sale'}
-              swipe_btn_disabled
-            />
-          </View>
-        ),
-      )}
-    </ScrollView>
+    <View style={styles.container}>
+      <FlatList
+        data={concerts}
+        renderItem={renderItem}
+        scrollEnabled={true}
+        keyExtractor={item => item.show_id}
+        // contentContainerStyle={styles.container}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    // flex: 1,
+    height: heightPercent(500),
     backgroundColor: MAINBLACK,
   },
-  card: {
+  cards: {
     marginTop: 10,
     marginBottom: 10,
   },

@@ -18,7 +18,7 @@ export default function ConcertChoiceButton({schedule}) {
   const navigation = useNavigation();
 
   const switchColor = id => {
-    console.log('Selected button ID:', id); // 클릭된 버튼의 ID 출력
+    console.log('Selected schedule_id:', id); // 클릭된 버튼의 ID 출력
     if (selectedDateId === id) {
       // 이미 선택된 경우, 선택 해제
       setSelectedDateId(null);
