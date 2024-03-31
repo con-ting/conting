@@ -44,7 +44,7 @@ public class NftMetadataStepConfig {
                     .name(dto.performance().title().trim())
                     .symbol("CONTING")
                     .description(dto.performance().description())
-                    .sellerFeeBasisPoints(750)
+                    .sellerFeeBasisPoints(0)
                     .image(dto.performance().posterImage())
                     .externalUrl(dto.performance().videoUrl())
                     .attributes(List.of(
