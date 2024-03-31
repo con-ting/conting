@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {F_SIZE_BIGTEXT, F_SIZE_B_TITLE} from '../../config/Font';
+import {F_SIZE_BIGTEXT, F_SIZE_B_TITLE, F_SIZE_TEXT, F_SIZE_Y_BIGTEXT} from '../../config/Font';
 import {
   fontPercent,
   heightPercent,
@@ -7,20 +7,53 @@ import {
 } from '../../config/Dimensions';
 import {MAINYELLOW} from '../../config/Color';
 import {useState} from 'react';
+import { PopUpModal } from '../modal/Modal';
+import SeatSum from './SeatSum';
+import { Dropdown } from '../dropdown/Dropdown';
 
 export default function NaArea({seatsData}: any) {
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState({});
 
-  const handleSeatPress = (seatId: never, isAvailable: any) => {
-    if (isAvailable) {
-      setSelectedSeats(prevSelectedSeats => {
-        if (prevSelectedSeats.includes(seatId)) {
-          return prevSelectedSeats.filter(id => id !== seatId);
-        } else {
-          return [...prevSelectedSeats, seatId];
-        }
-      });
+  // 드롭다운 오픈 상태
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  // 선택한 드롭다운 라벨
+  const [selectedDrop, setSelectedDrop] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const familyMembers = [
+    { label: '본인', value: '본인' },
+    { label: '어머니', value: '어머니' },
+    { label: '아버지', value: '아버지' },
+    { label: '누나', value: '누나' }
+  ];
+
+  const handleItemSelect = selectedValue => {
+    setSelectedDrop(selectedValue);
+  };
+
+  const isSeatSelectedByOthers = (seatId) => {
+    return Object.entries(selectedSeats).some(([key, value]) => value.seatId === seatId && key !== selectedDrop);
+  };
+
+  const handleSeatPress = (seatId: string, seatRow: string, seatCol: string) => {
+    if (!selectedDrop || isSeatSelectedByOthers(seatId)) {
+      // 드롭다운 미선택 상태이거나 다른 구성원이 이미 선택한 좌석인 경우
+      setIsModalVisible(true);
+      return;
     }
+
+    setSelectedSeats(prevSelectedSeats => ({
+      ...prevSelectedSeats,
+      [selectedDrop]: { seatId, seatRow, seatCol }
+    }));
+  };
+
+const renderSelectedSeats = () => {
+    return Object.entries(selectedSeats).map(([member, seatInfo]) => (
+      <View key={member} style={styles.selectedSeatInfo}>
+        <Text style={F_SIZE_TEXT}>{member} / {seatInfo.seatRow} / {seatInfo.seatCol}</Text>
+      </View>
+    ));
   };
 
   // 알파벳 행과 숫자 행을 분리하는 로직
@@ -45,17 +78,18 @@ export default function NaArea({seatsData}: any) {
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,
-              selectedSeats.includes(seat.id) && styles.selectedSeat,
+              selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeat,
+              isSeatSelectedByOthers(seat.seat_id) && styles.selectedSeat, // 이 부분을 추가하여 다른 구성원이 선택한 좌석 표시
             ]}
-            disabled={!seat.is_available}
-            onPress={() => handleSeatPress(seat.id, seat.is_available)}>
+            disabled={!seat.is_available || isSeatSelectedByOthers(seat.seat_id)}
+            onPress={() => handleSeatPress(seat.seat_id, row, seat.col)}>
             <Text
               style={[
                 styles.seatText,
-                selectedSeats.includes(seat.id) && styles.selectedSeatText,
+                selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeatText,
                 !seat.is_available && styles.reservedSeatText,
               ]}>
-              {seat.column}
+              {seat.col}
             </Text>
           </TouchableOpacity>
         ))}
@@ -66,7 +100,33 @@ export default function NaArea({seatsData}: any) {
 
   return (
     <>
+      <PopUpModal
+        children={
+          <View style={styles.modal}>
+          <View style={styles.modalView}>
+            <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
+            <TouchableOpacity
+              
+              onPress={() => setIsModalVisible(!isModalVisible)}
+            >
+              <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        }
+        isVisible={isModalVisible}  
+        setIsVisible={setIsModalVisible}
+        />
       <View style={styles.container}>
+      <Dropdown 
+        data={familyMembers}
+        placeholder='가족선택'
+        open={dropDownOpen}
+        setOpen={setDropDownOpen}
+        onSelectValue={handleItemSelect}
+        width={widthPercent(120)}
+        textSize={14}
+        />
         <View style={styles.stage}>
           <Text style={F_SIZE_B_TITLE}>STAGE</Text>
         </View>
@@ -81,6 +141,13 @@ export default function NaArea({seatsData}: any) {
         <Text style={F_SIZE_BIGTEXT}>Reserved</Text>
         <View style={styles.selected} />
         <Text style={F_SIZE_BIGTEXT}>Selected</Text>
+      </View>
+      <View>
+      {renderSelectedSeats()}
+      </View>
+      
+      <View>
+        <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
       </View>
     </>
   );
@@ -173,5 +240,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#D9D9D9',
     marginBottom: 20,
+  },
+  modal: {
+    height: heightPercent(50),
+  },
+  close:{
+    textAlign: 'right'
+  },
+  alert:{
+    textAlign: 'center'
+  },
+  modalView: {
+    gap: 20,
+    // alignItems: "center",
+    
   },
 });

@@ -33,53 +33,53 @@ export default function WaitingScreen({route}: any) {
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
   useEffect(() => {
-    const handleBiometricAuth = async () => {
-      try {
-        const hasKey = await checkKey();
-        let signatureKey;
+    // const handleBiometricAuth = async () => {
+    //   try {
+    //     const hasKey = await checkKey();
+    //     let signatureKey;
 
-        if (hasKey) {
-          console.log('해시키', hasKey);
-          const bioAuthResult = await biometricsAuth();
-          // id,
-          // '지문 인증을 위해 인증해주세요.',
-          if (!bioAuthResult.result) {
-            await deleteKey();
-            const keyCreationResult = await createKey();
-            if (!keyCreationResult.result) {
-              console.log('새 키 생성 실패');
-              return;
-            }
-            signatureKey = await biometricsAuth();
-            // id,
-            // '지문 인증을 위해 인증해주세요.',
-          } else {
-            signatureKey = bioAuthResult;
-          }
-        } else {
-          const keyCreationResult = await createKey();
-          if (!keyCreationResult.result) {
-            console.log('키 생성 실패');
-            return;
-          }
-          signatureKey = await biometricsAuth();
-          // id,
-          // '지문 인증을 위해 인증해주세요.',
-        }
+    //     if (hasKey) {
+    //       console.log('해시키', hasKey);
+    //       const bioAuthResult = await biometricsAuth();
+    //       // id,
+    //       // '지문 인증을 위해 인증해주세요.',
+    //       if (!bioAuthResult.result) {
+    //         await deleteKey();
+    //         const keyCreationResult = await createKey();
+    //         if (!keyCreationResult.result) {
+    //           console.log('새 키 생성 실패');
+    //           return;
+    //         }
+    //         signatureKey = await biometricsAuth();
+    //         // id,
+    //         // '지문 인증을 위해 인증해주세요.',
+    //       } else {
+    //         signatureKey = bioAuthResult;
+    //       }
+    //     } else {
+    //       const keyCreationResult = await createKey();
+    //       if (!keyCreationResult.result) {
+    //         console.log('키 생성 실패');
+    //         return;
+    //       }
+    //       signatureKey = await biometricsAuth();
+    //       // id,
+    //       // '지문 인증을 위해 인증해주세요.',
+    //     }
 
-        if (signatureKey && signatureKey.result) {
-          console.log('서명 키 생성 성공', signatureKey.key);
-          navigation.navigate('SeatArea', {
-            biometricKey: signatureKey.key,
-            scheduleID: id,
-          });
-        } else {
-          console.log('서명 키 생성 실패');
-        }
-      } catch (error) {
-        console.error('지문 인증 처리 중 오류 발생:', error);
-      }
-    };
+    //     if (signatureKey && signatureKey.result) {
+    //       console.log('서명 키 생성 성공', signatureKey.key);
+    //       navigation.navigate('SeatArea', {
+    //         biometricKey: signatureKey.key,
+    //         scheduleID: id,
+    //       });
+    //     } else {
+    //       console.log('서명 키 생성 실패');
+    //     }
+    //   } catch (error) {
+    //     console.error('지문 인증 처리 중 오류 발생:', error);
+    //   }
+    // };
 
     const fetchQueueStatus = async () => {
       try {
@@ -89,7 +89,11 @@ export default function WaitingScreen({route}: any) {
           clearInterval(intervalId.current);
 
           // 대기열이 없으면 지문 인증 로직 실행
-          handleBiometricAuth();
+          // handleBiometricAuth();
+          navigation.navigate('SeatArea', {
+                    // biometricKey: signatureKey.key,
+                    scheduleID: id,
+                  });
         } else {
           setCurrentRank(status.rank);
           console.log('대기열 조회 완료:', status);

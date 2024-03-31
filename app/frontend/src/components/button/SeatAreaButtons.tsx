@@ -1,15 +1,14 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MAINYELLOW} from '../../config/Color';
 import {F_SIZE_B_BUTTON} from '../../config/Font';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {useEffect, useState} from 'react';
-import SeatMap from '../seat/SeatMap';
 import GaArea from '../seat/GaArea';
 import NaArea from '../seat/NaArea';
 import DaArea from '../seat/DaArea';
 import {SeatApi} from '../../api/seat/Seat';
-// import seatsData from '../data/seatsData';
+
 
 export default function SeatAreaButtons({biometricKey, scheduleID}) {
   const [selectedArea, setSelectedArea] = useState('');
@@ -45,7 +44,8 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.button}
@@ -67,7 +67,8 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
         {renderArea()}
         {/* {selectedArea && <SeatMap seatsData={mockSeatsData[selectedArea]} />} */}
       </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 

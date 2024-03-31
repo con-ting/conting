@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 import {MAINBLACK, MAINYELLOW} from '../../config/Color';
-import {F_SIZE_BIGTEXT} from '../../config/Font';
+import {F_SIZE_BIGTEXT, F_SIZE_B_TITLE, F_SIZE_TEXT, F_SIZE_TITLE, F_SIZE_Y_BIGTEXT} from '../../config/Font';
 import {
   fontPercent,
   heightPercent,
@@ -9,35 +9,52 @@ import {
 } from '../../config/Dimensions';
 import SeatCompetition from './SeatCompetition';
 import SeatSum from './SeatSum';
+import { Dropdown } from '../dropdown/Dropdown';
+import { PopUpModal } from '../modal/Modal';
 
 export default function GaArea({seatsData}: any) {
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  const [lastSelectedSeatId, setLastSelectedSeatId] = useState<string | null>(
-    null,
-  );
+  const [selectedSeats, setSelectedSeats] = useState({});
 
-  const handleSeatPress = (seatId: never, isAvailable: any) => {
-    if (isAvailable) {
-      setLastSelectedSeatId(seatId); // 함수 호출 시 가장 최근 선택한 좌석의 아이디가 들어감
-      setSelectedSeats(prevSelectedSeats => {
-        if (prevSelectedSeats.includes(seatId)) {
-          const newSelectedSeats = prevSelectedSeats.filter(
-            id => id !== seatId,
-          );
-          // 선택 해제 시 lastSelectedSeatId 업데이트
-          setLastSelectedSeatId(
-            newSelectedSeats.length > 0
-              ? newSelectedSeats[newSelectedSeats.length - 1]
-              : null,
-          );
-          return newSelectedSeats;
-        } else {
-          // 새로운 좌석을 선택한 경우
-          setLastSelectedSeatId(seatId);
-          return [...prevSelectedSeats, seatId];
-        }
-      });
+  // 드롭다운 오픈 상태
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  // 선택한 드롭다운 라벨
+  const [selectedDrop, setSelectedDrop] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const familyMembers = [
+    { label: '본인', value: '본인' },
+    { label: '어머니', value: '어머니' },
+    { label: '아버지', value: '아버지' },
+    { label: '누나', value: '누나' }
+  ];
+
+  const handleItemSelect = selectedValue => {
+    setSelectedDrop(selectedValue);
+  };
+
+  const isSeatSelectedByOthers = (seatId) => {
+    return Object.entries(selectedSeats).some(([key, value]) => value.seatId === seatId && key !== selectedDrop);
+  };
+
+  const handleSeatPress = (seatId: string, seatRow: string, seatCol: string) => {
+    if (!selectedDrop || isSeatSelectedByOthers(seatId)) {
+      // 드롭다운 미선택 상태이거나 다른 구성원이 이미 선택한 좌석인 경우
+      setIsModalVisible(true);
+      return;
     }
+
+    setSelectedSeats(prevSelectedSeats => ({
+      ...prevSelectedSeats,
+      [selectedDrop]: { seatId, seatRow, seatCol }
+    }));
+  };
+
+const renderSelectedSeats = () => {
+    return Object.entries(selectedSeats).map(([member, seatInfo]) => (
+      <View key={member} style={styles.selectedSeatInfo}>
+        <Text style={F_SIZE_TEXT}>{member} / {seatInfo.seatRow} / {seatInfo.seatCol}</Text>
+      </View>
+    ));
   };
 
   // 알파벳 행과 숫자 행을 분리하는 로직
@@ -62,17 +79,18 @@ export default function GaArea({seatsData}: any) {
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,
-              selectedSeats.includes(seat.id) && styles.selectedSeat,
+              selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeat,
+              isSeatSelectedByOthers(seat.seat_id) && styles.selectedSeat, // 이 부분을 추가하여 다른 구성원이 선택한 좌석 표시
             ]}
-            disabled={!seat.is_available}
-            onPress={() => handleSeatPress(seat.id, seat.is_available)}>
+            disabled={!seat.is_available || isSeatSelectedByOthers(seat.seat_id)}
+            onPress={() => handleSeatPress(seat.seat_id, row, seat.col)}>
             <Text
               style={[
                 styles.seatText,
-                selectedSeats.includes(seat.id) && styles.selectedSeatText,
+                selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeatText,
                 !seat.is_available && styles.reservedSeatText,
               ]}>
-              {seat.column}
+              {seat.col}
             </Text>
           </TouchableOpacity>
         ))}
@@ -83,7 +101,34 @@ export default function GaArea({seatsData}: any) {
 
   return (
     <>
+      <PopUpModal
+      children={
+        <View style={styles.modal}>
+        <View style={styles.modalView}>
+          <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
+          <TouchableOpacity
+            
+            onPress={() => setIsModalVisible(!isModalVisible)}
+          >
+            <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      }
+      isVisible={isModalVisible}  
+      setIsVisible={setIsModalVisible}
+      />
+
       <View style={styles.container}>
+        <Dropdown 
+        data={familyMembers}
+        placeholder='가족선택'
+        open={dropDownOpen}
+        setOpen={setDropDownOpen}
+        onSelectValue={handleItemSelect}
+        width={widthPercent(120)}
+        textSize={14}
+        />
         {renderSeatsByRow(alphaRows)}
         <View style={styles.separator} />
         {renderSeatsByRow(numberRows)}
@@ -97,11 +142,9 @@ export default function GaArea({seatsData}: any) {
         <Text style={F_SIZE_BIGTEXT}>Selected</Text>
       </View>
       <View>
-        <SeatCompetition
-          lastSelectedSeatId={lastSelectedSeatId}
-          seatsData={seatsData}
-        />
+      {renderSelectedSeats()}
       </View>
+      
       <View>
         <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
       </View>
@@ -187,5 +230,19 @@ const styles = StyleSheet.create({
     height: heightPercent(30),
     borderRadius: 4,
     backgroundColor: MAINYELLOW,
+  },
+  modal: {
+    height: heightPercent(50),
+  },
+  close:{
+    textAlign: 'right'
+  },
+  alert:{
+    textAlign: 'center'
+  },
+  modalView: {
+    gap: 20,
+    // alignItems: "center",
+    
   },
 });
