@@ -65,5 +65,21 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public UserDto getUserDetailByWallet(String wallet) {
+        UserEntity findUser = userRepository.findByWallet(wallet)
+                                            .orElseThrow(()->
+                                                    new CommonException(UserErrorCode.NOT_FOUND_USER)
+                                            );
+
+        return UserDto
+                .builder()
+                .email(findUser.getEmail())
+                .name(findUser.getName())
+                .birthDate(findUser.getBirthDate())
+                .fcmToken(findUser.getFcmToken())
+                .build();
+    }
+
 
 }
