@@ -1,5 +1,11 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {F_SIZE_BBIGTEXT, F_SIZE_HEADER, F_SIZE_TITLE} from '../../config/Font';
+import {
+  F_SIZE_BBIGTEXT,
+  F_SIZE_HEADER,
+  F_SIZE_SMALLTEXT,
+  F_SIZE_TEXT,
+  F_SIZE_TITLE,
+} from '../../config/Font';
 import {MAINBLACK, MAINWHITE} from '../../config/Color';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {Instagram, Sms} from 'iconsax-react-native';
@@ -35,7 +41,7 @@ export default function CastInfo(props: CastInfoProps) {
           <Text style={F_SIZE_HEADER}>{props.name}</Text>
           <View style={styles.row}>
             <Instagram style={styles.icon} />
-            {/* <Text style={F_SIZE_BBIGTEXT}>{props.instagram}</Text> */}
+            <Text style={F_SIZE_SMALLTEXT}>{props.instagram}</Text>
           </View>
         </View>
       </View>

@@ -20,6 +20,7 @@ import {
   ConcertSearchApi,
   HallSearchApi,
 } from '../../../api/catalog/concert';
+import {Dropdown} from '../../../components/dropdown/Dropdown';
 
 const Tabs = ['공연', '출연진', '공연장'];
 
@@ -29,24 +30,38 @@ export default function SearchMainScreen() {
   const [concerts, setConcerts] = useState([]); // 공연 데이터 상태
   const [casts, setCasts] = useState([]); // 출연진 데이터 상태
   const [halls, setHalls] = useState([]); // 공연장 데이터 상태
+  // 드롭다운 오픈 상태
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+  // 선택한 드롭다운 라벨
+  const [selectedDrop, setSelectedDrop] = useState(null);
+
+  const handleItemSelect = selectedValue => {
+    setSelectedDrop(selectedValue);
+  };
+
+  const drops = [
+    {label: '예매일순', value: '예매일순'},
+    {label: '이름순', value: '이름순'},
+    {label: '공연일순', value: '공연일순'},
+  ];
 
   // 검색 쿼리 변경 시 호출되는 useEffect
   useEffect(() => {
     console.log('검색 페이지 진입');
     if (selectedTab === '공연') {
-      fetchConcerts(searchQuery);
+      fetchConcerts(searchQuery, selectedDrop);
     } else if (selectedTab === '출연진') {
       fetchCasts();
     } else if (selectedTab === '공연장') {
       fetchHalls(searchQuery);
     }
-  }, [searchQuery, selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
+  }, [searchQuery, selectedTab, selectedDrop]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
-  const fetchConcerts = async (query: string) => {
+  const fetchConcerts = async (query: string, sort: string) => {
     console.log('fetchConcertsRequest=', {
       status: '', // 상태 (예: '예매중')
       region: '', // 지역
-      sort: '', // 정렬 기준
+      sort: sort, // 정렬 기준
       keyword: query, // 검색 쿼리
       searchType: '공연명', // 검색 타입
       reservation_type: '', // 예매 방식
@@ -57,7 +72,7 @@ export default function SearchMainScreen() {
     const response = await ConcertSearchApi({
       status: '', // 상태 (예: '예매중')
       region: '', // 지역
-      sort: '', // 정렬 기준
+      sort: sort, // 정렬 기준
       keyword: searchQuery, // 검색 쿼리
       searchType: '공연명', // 검색 타입
       reservation_type: '', // 예매 방식
@@ -84,16 +99,16 @@ export default function SearchMainScreen() {
   };
 
   // 검색 쿼리에 따라 출연진 필터링
-  // const filteredCast = casts.filter(cast =>
-  //   cast.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  // );
+  const filteredCast = casts.filter(cast =>
+    cast.singer_name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   const renderTabs = () => {
     switch (selectedTab) {
       case '공연':
         return <ConcertListScreen concerts={concerts} />;
       case '출연진':
-        return <CastListScreen casts={casts} />;
+        return <CastListScreen casts={filteredCast} />;
       case '공연장':
         return <ConcertHallScreen halls={halls} />;
       default:
@@ -125,6 +140,19 @@ export default function SearchMainScreen() {
             </TouchableOpacity>
           ))}
         </View>
+        {selectedTab === '공연' && ( // 조건부 렌더링: 현재 탭이 '공연'일 때만 드롭다운 표시
+          <View>
+            <Dropdown
+              data={drops}
+              textSize={14}
+              placeholder="정렬옵션"
+              width={widthPercent(120)}
+              open={dropDownOpen}
+              setOpen={setDropDownOpen}
+              onSelectValue={handleItemSelect}
+            />
+          </View>
+        )}
         {renderTabs()}
       </View>
     </View>
