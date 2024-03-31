@@ -1,4 +1,11 @@
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import {
   fontPercent,
   heightPercent,
@@ -6,10 +13,9 @@ import {
 } from '../../config/Dimensions';
 import * as Color from '../../config/Color';
 import * as Font from '../../config/Font';
-import React from 'react';
-import {IconTextBox} from './IconTextBox.tsx';
+import {IconTextBox} from './IconTextBox';
 import * as ICON from 'iconsax-react-native';
-import {formatDateWithDay} from '../../utils/common/TimeFormat.ts';
+import {formatDateWithDay} from '../../utils/common/TimeFormat';
 import Swipeout from 'react-native-swipeout';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
@@ -115,11 +121,10 @@ export const BasicConcertCardWide = (props: basicProps) => {
           <View
             style={{
               flex: 1,
-              position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <FastImage
+            <ImageBackground
               style={{
                 width: '100%',
                 height: '100%',
@@ -128,19 +133,26 @@ export const BasicConcertCardWide = (props: basicProps) => {
               }}
               source={{
                 uri: props.img_url,
-              }}
-            />
+              }}>
+              {!props.img_tag_disabled && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    zIndex: 1,
+                    backgroundColor: 'rgba(0 , 0 , 0 , 0.7)',
+                    width: '100%',
+                    height: '100%',
+                    borderTopLeftRadius: 10,
+                    borderBottomLeftRadius: 10,
+                  }}
+                />
+              )}
+            </ImageBackground>
             {!props.img_tag_disabled && (
-              <BlurView
-                style={StyleSheet.absoluteFill} // BlurView를 FastImage 커버하도록 함
-                blurType="dark" //안드로이드는 light , dark만 제공 ...
-                blurAmount={2} // blur 효과 강도 설정
-              />
-            )}
-            {props.img_tag && (
               <Text
                 style={{
                   position: 'absolute',
+                  zIndex: 10,
                   color: props.img_tag_color,
                   fontSize: fontPercent(18),
                   fontFamily: Font.MAINFONT,
@@ -209,5 +221,8 @@ const styles = StyleSheet.create({
     color: Color.MAINYELLOW,
     fontSize: fontPercent(20),
     fontFamily: Font.MAINFONT,
+  },
+  box: {
+    position: 'absolute',
   },
 });

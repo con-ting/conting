@@ -2,6 +2,6 @@ ALTER TABLE seller
     MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
-INSERT INTO seller (performance_id, user_id)
-VALUES (1,	1),
-       (2,	1);
+INSERT INTO seller (user_id, wallet)
+VALUES (1, 'se1k27DnFqFKSb5b3w18mnVvJQYdenaac9uFBKbc9iE'),
+       (1, 'se2Y7qvsPJU84kLdWGGR1L42YFLzRatgPrUZjMZftAp');

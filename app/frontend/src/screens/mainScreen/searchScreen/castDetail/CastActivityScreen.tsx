@@ -3,10 +3,26 @@ import {F_SIZE_TITLE} from '../../../../config/Font';
 import {BasicConcertCardWide} from '../../../../components/card/ConcertCardWide';
 import AlbumCard from '../../../../components/card/AlbumCard';
 import {Dropdown} from '../../../../components/dropdown/Dropdown';
-import {useState} from 'react';
+import {Key, useState} from 'react';
 import {widthPercent} from '../../../../config/Dimensions';
+import { useNavigation } from '@react-navigation/native';
+import { MINTBASE } from '../../../../config/Color';
+import formatSido from '../../../../utils/common/SidoFormat';
 
-export default function CastActivityScreen() {
+const formatDateWithTime = dateString => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  const weekDay = date.toLocaleString('ko-KR', {weekday: 'short'}); // 'ko-KR' 로케일의 요일 약어
+  const hours = ('0' + date.getHours()).slice(-2);
+  const minutes = ('0' + date.getMinutes()).slice(-2);
+
+  return `${year}.${month}.${day}(${weekDay}) ${hours}:${minutes}`;
+};
+
+export default function CastActivityScreen({albums, concerts}) {
+  const navigation = useNavigation();
   // 드롭다운 오픈 상태
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
@@ -23,7 +39,7 @@ export default function CastActivityScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={[F_SIZE_TITLE, styles.title]}>출연한 콘서트</Text>
+      
       <View style={styles.drop}>
         <Dropdown
           data={drops}
@@ -35,74 +51,61 @@ export default function CastActivityScreen() {
           onSelectValue={handleItemSelect}
         />
       </View>
-      <View style={styles.card}>
-        <BasicConcertCardWide
-          onPress={() => console.log('히히')}
-          disabled={true}
-          title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
-          img_url={
-            'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
-          }
-          img_tag={'예매 예정'}
-          sido={'서울'}
-          concert_hall={
-            '신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a'
-          }
-          date_tag={'예매시작일'}
-          date={'2024.07.05'}
-          swipe_btn_disabled={true}
-        />
-      </View>
-      <View style={styles.card}>
-        <BasicConcertCardWide
-          onPress={() => console.log('히히')}
-          disabled={true}
-          title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
-          img_url={
-            'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
-          }
-          img_tag={'예매 예정'}
-          sido={'서울'}
-          concert_hall={
-            '신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a'
-          }
-          date_tag={'예매시작일'}
-          date={'2024.07.05'}
-          swipe_btn_disabled={true}
-        />
-      </View>
-      <View style={styles.card}>
-        <BasicConcertCardWide
-          onPress={() => console.log('히히')}
-          disabled={true}
-          title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
-          img_url={
-            'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
-          }
-          img_tag={'예매 예정'}
-          sido={'서울'}
-          concert_hall={
-            '신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a'
-          }
-          date_tag={'예매시작일'}
-          date={'2024.07.05'}
-          swipe_btn_disabled={true}
-        />
-      </View>
+      
+      {concerts.map(
+        (concert: {
+          show_id: Key | null | undefined;
+          status: string;
+          title: string;
+          poster: string;
+          reservation_type: string;
+          hall_address: string;
+          hall_name: string;
+          reservation_start_date_time: any;
+        }) => (
+          <View key={concert.show_id}>
+            <Text style={[F_SIZE_TITLE, styles.title]}>출연한 콘서트</Text>
+            <View style={styles.card}>
+            <BasicConcertCardWide
+              onPress={() =>
+                navigation.navigate('ConcertDetail', {
+                  showID: concert.show_id,
+                })
+              }
+              disabled={concert.status !== 'on_sale'}
+              title={concert.title}
+              img_url={concert.poster}
+              img_tag={
+                concert.reservation_type === 'F'
+                  ? '선착순 예매중'
+                  : '추첨 예매중'
+              }
+              img_tag_disabled={false}
+              img_tag_color={concert.status === 'on_sale' ? MINTBASE : ''}
+              sido={formatSido(concert.hall_address)}
+              concert_hall={concert.hall_name}
+              date_tag={'예매일'}
+              date={formatDateWithTime(concert.reservation_start_date_time)}
+              // swipe_btn_disabled={concert.status !== 'on_sale'}
+              swipe_btn_disabled
+            />
+            </View>
+          </View>
+        ),
+      )}
+      
       <Text style={[F_SIZE_TITLE, styles.title]}>발매한 앨범</Text>
       <View style={styles.card}>
+        {albums.map((album: { title: string; image: string; published_at: string | undefined; }, index: Key | null | undefined) => (
         <AlbumCard
-          name="The Winning"
-          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
-          published_at="2024.02.20"
-          songNums={10}
+        key={index}
+          name={album.title}
+          album={album.image}
+          published_at={album.published_at}
+          songNums={10} //데이터 없음
         />
-        <AlbumCard
-          name="IU 5th Album ‘LILAC’"
-          album="https://cdnimg.melon.co.kr/resource/image/cds/musicstory/imgUrl20240226030142472.jpg/melon/optimize/90"
-          published_at="2021.03.25"
-          songNums={10}
-        />
+        ))}
+        
       </View>
     </View>
   );

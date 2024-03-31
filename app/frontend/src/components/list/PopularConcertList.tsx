@@ -14,6 +14,8 @@ import Carousel from 'react-native-reanimated-carousel';
 import {useNavigation} from '@react-navigation/native';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {posterColor} from '../../utils/recoil/Atoms';
+import {ScrollView} from 'react-native-gesture-handler';
+import { Spacer } from '../../utils/common/Spacer';
 
 // 인기 콘서트 조회
 type PopularConcertListProps = {
@@ -41,7 +43,7 @@ export default function PopularConcertList({
     item,
     index,
   }: {
-    item: {showID: number; poster: string; title: string; address: string};
+    item: {showID: number; poster: string; title: string; hall_name: string};
     index: number;
   }) => {
     return (
@@ -50,7 +52,6 @@ export default function PopularConcertList({
           console.log('상세 페이지로 이동', item.show_id),
             navigation.navigate('ConcertDetail', {
               showID: item.show_id,
-              item: item,
             });
         }}>
         <View
@@ -77,11 +78,13 @@ export default function PopularConcertList({
           <View
             style={{
               alignItems: 'center',
-              marginVertical: 20,
+              marginTop: 20,
             }}>
             <Text style={F_SIZE_Y_TITLE}>선착순 예매</Text>
-            <Text style={F_SIZE_HEADER}>{item.title}</Text>
-            <Text style={F_SIZE_TITLE}>{item.address}</Text>
+            <Spacer space={10}/>
+            <Text style={F_SIZE_HEADER} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
+            <Spacer space={5}/>
+            <Text style={F_SIZE_TITLE}>{item.hall_name}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -89,16 +92,14 @@ export default function PopularConcertList({
   };
 
   return (
-    <View>
-      <Carousel
-        data={popularConcert}
-        renderItem={renderItem}
-        width={Dimensions.get('screen').width}
-        height={Dimensions.get('window').height * 0.7}
-        onSnapToItem={index => setCurrentIndex(index)}
-        defaultIndex={0}
-        mode="parallax"
-      />
-    </View>
+    <Carousel
+      data={popularConcert}
+      renderItem={renderItem}
+      width={Dimensions.get('screen').width}
+      height={Dimensions.get('window').height * 0.7}
+      onSnapToItem={index => setCurrentIndex(index)}
+      defaultIndex={0}
+      mode="parallax"
+    />
   );
 }

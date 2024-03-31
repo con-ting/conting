@@ -11,6 +11,7 @@ pipeline {
         NOTIFICATION_SERVICE="${env.NOTIFICATION_SERVICE}"
         CATALOG_SERVICE="${env.CATALOG_SERVICE}"
         QUEUE_SERVICE="${env.QUEUE_SERVICE}"
+        TICKET_SERVICE="${env.TICKET_SERVICE}"
     }
     agent any
 
@@ -115,13 +116,18 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f gateway"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" -e CATALOG_SERVICE=\"${CATALOG_SERVICE}\" -e NOTIFICATION_SERVICE=\"${NOTIFICATION_SERVICE}\" -e QUEUE_SERVICE=\"${QUEUE_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" -e CATALOG_SERVICE=\"${CATALOG_SERVICE}\" -e NOTIFICATION_SERVICE=\"${NOTIFICATION_SERVICE}\" -e QUEUE_SERVICE=\"${QUEUE_SERVICE}\" -e TICKET_SERVICE=\"${TICKET_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
                         )
                     }
                 }
+                stage("Cleanup") {
+    steps {
+        sh 'rm -rf ${WORKSPACE}/*'
+    }
+}
     }
 
     post {

@@ -10,11 +10,12 @@ import reactor.core.publisher.Mono;
 
 public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
 
-    @Query("SELECT ticket_id, scchedule_id,'', row, col FROM ticket WHERE owner_id= :ownerId ")
-    Flux<TicketDto> findAllByOwnerId(Long ownerId);
+    @Query("SELECT ticket_id, schedule_id, NULL as uuid , row, col FROM ticket WHERE owner_id= :ownerId and is_used=0 ")
+    Flux<TicketDto> findAllNotUsedTicketByOwnerId(Long ownerId);
 
-    @Query("SELECT ticket_id, scchedule_id,'', row, col FROM ticket WHERE ticket_id= :ticketId ")
+    @Query("SELECT ticket_id, schedule_id,'', row, col FROM ticket WHERE ticket_id= :ticketId ")
     Mono<TicketDto> findByTicketDtoId(Long ticketId);
 
     Mono<Ticket> findByTicketId(Long ticketId);
+
 }

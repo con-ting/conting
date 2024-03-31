@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: batch-service
+  datasource:
+    catalog:
+      url: ${CATALOG_DB_URL:jdbc:mariadb://localhost:7777/test}
+      username: ${CATALOG_DB_USER_NAME:root}
+      password: ${CATALOG_DB_PASSWORD:1234}
+    seat:
+      url: ${SEAT_DB_URL:jdbc:mariadb://localhost:7777/test}
+      username: ${SEAT_DB_USER_NAME:root}
+      password: ${SEAT_DB_PASSWORD:1234}
+
+s3:
+  access-key-id: ${S3_ACCESS_KEY_ID}
+  secret-access-key: ${S3_SECRET_ACCESS_KEY}
+  region: ${S3_REGION}
+  bucket: ${S3_BUCKET}
+  endpoint: ${S3_ENDPOINT}
+  public-base-url: ${S3_PUBLIC_BASE_URL}
+
+web3:
+  wrapper-base-url: ${WEB3_WRAPPER_BASE_URL}

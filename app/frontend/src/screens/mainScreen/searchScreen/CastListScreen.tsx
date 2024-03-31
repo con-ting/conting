@@ -4,7 +4,7 @@ import {F_SIZE_TITLE} from '../../../config/Font';
 import CastList from '../../../components/list/CastList';
 import {useState} from 'react';
 
-export default function CastListScreen({casts}) {
+export default function CastListScreen({casts}: any) {
   return (
     <View style={styles.container}>
       <CastList casts={casts} isSearch={true} />
@@ -14,7 +14,7 @@ export default function CastListScreen({casts}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: MAINBLACK,
   },
 });

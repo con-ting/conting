@@ -1,5 +1,6 @@
 package com.c209.catalog.domain.hall.entity;
 
+import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -77,4 +78,12 @@ public class Hall extends BaseEntity {
 
     @Column
     private String hall_webview_url;
+
+    public HallDto toCache(){
+        return HallDto.builder()
+                .id(this.id)
+                .address(this.address)
+                .name(this.name)
+                .build();
+    }
 }

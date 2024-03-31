@@ -6,7 +6,7 @@ export const mintCollection = async (
   umi: Umi,
   input: CollectionInput
 ) => {
-  const { name, uri, sellerFeeBasisPoints, agency, singer } = input
+  const { name, symbol, uri, sellerFeeBasisPoints, agency, singer } = input
   const server = umi.identity.publicKey
   let mint: Signer
   do {
@@ -16,6 +16,7 @@ export const mintCollection = async (
   await tokenMeta.createNft(umi, {
     mint,
     name,
+    symbol,
     uri,
     sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints / 100),
     creators: [
@@ -33,7 +34,7 @@ export const mintNftToCollection = async (
   umi: Umi,
   input: AssetInput
 ) => {
-  const { name, uri, sellerFeeBasisPoints, agency, singer, collectionMint } = input
+  const { name, symbol, uri, sellerFeeBasisPoints, agency, singer, collectionMint } = input
   const server = umi.identity.publicKey
   let mint: Signer
   do {
@@ -43,6 +44,7 @@ export const mintNftToCollection = async (
   await tokenMeta.createNft(umi, {
     mint,
     name,
+    symbol,
     uri,
     sellerFeeBasisPoints: percentAmount(sellerFeeBasisPoints / 100),
     collection: { key: collectionMint, verified: false },
@@ -59,6 +61,28 @@ export const mintNftToCollection = async (
     }
   }).sendAndConfirm(umi)
   return mint.publicKey
+}
+
+export const updateNft = async (
+  umi: Umi,
+  mint: PublicKey,
+  input: AssetInput
+) => {
+  const { name, symbol, uri, sellerFeeBasisPoints, agency, singer } = input
+  await tokenMeta.updateV1(umi, {
+    mint,
+    data: {
+      name,
+      symbol,
+      uri,
+      sellerFeeBasisPoints,
+      creators: [
+        { address: umi.identity.publicKey, verified: true, share: 10 },
+        { address: agency, verified: false, share: 90 },
+        { address: singer, verified: false, share: 0 }
+      ]
+    }
+  }).sendAndConfirm(umi)
 }
 
 export const verifyCollectionNft = async (

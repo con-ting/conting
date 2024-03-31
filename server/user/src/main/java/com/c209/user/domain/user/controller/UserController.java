@@ -41,6 +41,23 @@ public class UserController {
     }
 
 
+    @GetMapping("byWallet")
+    public ResponseEntity<UserDto> getUserByWallet(
+            @RequestParam String wallet,
+            @RequestHeader("X-Authorization-Id")Long userId
+    ){
+        return ResponseEntity.ok(userService.getUserDetailByWallet(wallet));
+    }
+
+
+    @GetMapping("/{user_id}/fcm")
+    public ResponseEntity<UserDto> getUserFcm(
+            @PathVariable("user_id") Long userId
+    ){
+        return ResponseEntity.ok(userService.getUserFcmByUserId(userId));
+    }
+
+
 
 
 
