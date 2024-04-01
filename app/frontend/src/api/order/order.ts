@@ -20,9 +20,9 @@ interface Ticket {
 
 // 결제 시 사전 검증하는 API
 export const orderBeforeApi = async (params: {
-  seat_list: Seat[];
+  seat_list: number[];
   merchant_uid: string;
-  amount: string;
+  amount: number;
   buyer_id: string;
 }) => {
   console.log('[orderBeforeApi Request] = ', params);
@@ -33,7 +33,7 @@ export const orderBeforeApi = async (params: {
 
 // 결제 성공 시 사후 검증하는 API
 export const orderAfterApi = async (params: {
-  amount: string;
+  amount: number;
   buyer_id: string;
   imp_uid: string;
   merchant_uid: string;
