@@ -1,7 +1,14 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
-import {MAINBLACK, MAINYELLOW} from '../../config/Color';
-import {F_SIZE_BIGTEXT, F_SIZE_B_TITLE, F_SIZE_TEXT, F_SIZE_TITLE, F_SIZE_Y_BIGTEXT} from '../../config/Font';
+import {CARDBASE, MAINBLACK, MAINGRAY, MAINYELLOW} from '../../config/Color';
+import {
+  F_SIZE_BIGTEXT,
+  F_SIZE_B_TITLE,
+  F_SIZE_TEXT,
+  F_SIZE_TITLE,
+  F_SIZE_Y_BIGTEXT,
+  F_SIZE_Y_BTITLE,
+} from '../../config/Font';
 import {
   fontPercent,
   heightPercent,
@@ -9,8 +16,8 @@ import {
 } from '../../config/Dimensions';
 import SeatCompetition from './SeatCompetition';
 import SeatSum from './SeatSum';
-import { Dropdown } from '../dropdown/Dropdown';
-import { PopUpModal } from '../modal/Modal';
+import {Dropdown} from '../dropdown/Dropdown';
+import {PopUpModal} from '../modal/Modal';
 
 export default function GaArea({seatsData}: any) {
   const [selectedSeats, setSelectedSeats] = useState({});
@@ -22,37 +29,51 @@ export default function GaArea({seatsData}: any) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    { label: '본인', value: '본인' },
-    { label: '어머니', value: '어머니' },
-    { label: '아버지', value: '아버지' },
-    { label: '누나', value: '누나' }
+    {label: '본인', value: '본인'},
+    {label: '어머니', value: '어머니'},
+    {label: '아버지', value: '아버지'},
+    {label: '누나', value: '누나'},
   ];
 
   const handleItemSelect = selectedValue => {
     setSelectedDrop(selectedValue);
   };
 
-  const isSeatSelectedByOthers = (seatId) => {
-    return Object.entries(selectedSeats).some(([key, value]) => value.seatId === seatId && key !== selectedDrop);
+  const isSeatSelectedByOthers = seatId => {
+    return Object.entries(selectedSeats).some(
+      ([key, value]) => value.seatId === seatId && key !== selectedDrop,
+    );
   };
 
-  const handleSeatPress = (seatId: string, seatRow: string, seatCol: string) => {
+  const handleSeatPress = (
+    seatId: string,
+    seatRow: string,
+    seatCol: string,
+  ) => {
     if (!selectedDrop || isSeatSelectedByOthers(seatId)) {
       // 드롭다운 미선택 상태이거나 다른 구성원이 이미 선택한 좌석인 경우
       setIsModalVisible(true);
       return;
     }
 
+    // seatsData에서 좌석을 찾아 등급 정보를 얻기
+    const seatData = seatsData.find(seat => seat.seat_id === seatId);
+    const seatGrade = seatData ? seatData.grade : 'Unknown';
+
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
-      [selectedDrop]: { seatId, seatRow, seatCol }
+      [selectedDrop]: {seatId, seatRow, seatCol, seatGrade},
     }));
   };
 
-const renderSelectedSeats = () => {
+  const renderSelectedSeats = () => {
     return Object.entries(selectedSeats).map(([member, seatInfo]) => (
       <View key={member} style={styles.selectedSeatInfo}>
-        <Text style={F_SIZE_TEXT}>{member} / {seatInfo.seatRow} / {seatInfo.seatCol}</Text>
+        <Text style={F_SIZE_Y_BTITLE}>{member}</Text>
+        <Text style={F_SIZE_TITLE}>
+          구역 - {seatInfo.seatGrade} / {seatInfo.seatRow}열 /{' '}
+          {seatInfo.seatCol}번
+        </Text>
       </View>
     ));
   };
@@ -79,15 +100,19 @@ const renderSelectedSeats = () => {
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,
-              selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeat,
+              selectedSeats[selectedDrop]?.seatId === seat.seat_id &&
+                styles.selectedSeat,
               isSeatSelectedByOthers(seat.seat_id) && styles.selectedSeat, // 이 부분을 추가하여 다른 구성원이 선택한 좌석 표시
             ]}
-            disabled={!seat.is_available || isSeatSelectedByOthers(seat.seat_id)}
+            disabled={
+              !seat.is_available || isSeatSelectedByOthers(seat.seat_id)
+            }
             onPress={() => handleSeatPress(seat.seat_id, row, seat.col)}>
             <Text
               style={[
                 styles.seatText,
-                selectedSeats[selectedDrop]?.seatId === seat.seat_id && styles.selectedSeatText,
+                selectedSeats[selectedDrop]?.seatId === seat.seat_id &&
+                  styles.selectedSeatText,
                 !seat.is_available && styles.reservedSeatText,
               ]}>
               {seat.col}
@@ -102,33 +127,34 @@ const renderSelectedSeats = () => {
   return (
     <>
       <PopUpModal
-      children={
-        <View style={styles.modal}>
-        <View style={styles.modalView}>
-          <Text style={[F_SIZE_B_TITLE, styles.alert]}>먼저 가족을 선택하세요.</Text>
-          <TouchableOpacity
-            
-            onPress={() => setIsModalVisible(!isModalVisible)}
-          >
-            <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      }
-      isVisible={isModalVisible}  
-      setIsVisible={setIsModalVisible}
+        children={
+          <View style={styles.modal}>
+            <View style={styles.modalView}>
+              <Text style={[F_SIZE_B_TITLE, styles.alert]}>
+                먼저 가족을 선택하세요.
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(!isModalVisible)}>
+                <Text style={[F_SIZE_Y_BIGTEXT, styles.close]}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+        isVisible={isModalVisible}
+        setIsVisible={setIsModalVisible}
       />
 
       <View style={styles.container}>
-        <Dropdown 
-        data={familyMembers}
-        placeholder='가족선택'
-        open={dropDownOpen}
-        setOpen={setDropDownOpen}
-        onSelectValue={handleItemSelect}
-        width={widthPercent(120)}
-        textSize={14}
+        <Dropdown
+          data={familyMembers}
+          placeholder="가족선택"
+          open={dropDownOpen}
+          setOpen={setDropDownOpen}
+          onSelectValue={handleItemSelect}
+          width={widthPercent(120)}
+          textSize={14}
         />
+        <View style={styles.space} />
         {renderSeatsByRow(alphaRows)}
         <View style={styles.separator} />
         {renderSeatsByRow(numberRows)}
@@ -141,10 +167,8 @@ const renderSelectedSeats = () => {
         <View style={styles.selected} />
         <Text style={F_SIZE_BIGTEXT}>Selected</Text>
       </View>
-      <View>
-      {renderSelectedSeats()}
-      </View>
-      
+      <View>{renderSelectedSeats()}</View>
+
       <View>
         <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
       </View>
@@ -231,18 +255,26 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: MAINYELLOW,
   },
+  selectedSeatInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: CARDBASE,
+    padding: 10,
+  },
   modal: {
     height: heightPercent(50),
   },
-  close:{
-    textAlign: 'right'
+  close: {
+    textAlign: 'right',
   },
-  alert:{
-    textAlign: 'center'
+  alert: {
+    textAlign: 'center',
   },
   modalView: {
     gap: 20,
     // alignItems: "center",
-    
+  },
+  space: {
+    marginTop: widthPercent(10),
   },
 });
