@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 import {CARDBASE, MAINBLACK, MAINGRAY, MAINYELLOW} from '../../config/Color';
 import {
@@ -21,7 +21,7 @@ import {PopUpModal} from '../modal/Modal';
 
 export default function GaArea({seatsData, showID}) {
   const [selectedSeats, setSelectedSeats] = useState({});
-  const show_id = useState(showID);
+  
   // 드롭다운 오픈 상태
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
@@ -34,6 +34,10 @@ export default function GaArea({seatsData, showID}) {
     {label: '아버지', value: '아버지', userName: '김아빠'},
     {label: '누나', value: '누나', userName: '김누나'},
   ];
+
+  useEffect(() => {
+    console.log('구역', showID);
+  })
 
   const handleItemSelect = selectedValue => {
     setSelectedDrop(selectedValue);
@@ -185,7 +189,7 @@ export default function GaArea({seatsData, showID}) {
         <SeatSum
           selectedSeats={selectedSeats}
           seatsData={seatsData}
-          showID={show_id}
+          showID={showID}
         />
       </View>
     </>

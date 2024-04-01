@@ -7,6 +7,10 @@ export default function SeatingAreaSelectScreen({route}) {
   const scheduleID = route.params.scheduleID;
   const showID = route.params.showID;
 
+  useEffect(() =>{
+    console.log('dddd', route);
+  })
+
   return (
     <ScrollView style={styles.container}>
       <SeatAreaButtons

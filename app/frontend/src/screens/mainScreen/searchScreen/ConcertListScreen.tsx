@@ -26,6 +26,7 @@ export default function ConcertListScreen({concerts}: any) {
     <View style={styles.cards}>
       <BasicConcertCardWide
         onPress={() =>
+          // console.log('dpd?', concert.show_id)
           navigation.navigate('ConcertDetail', {showID: concert.show_id})
         }
         disabled={concert.status !== 'on_sale'}

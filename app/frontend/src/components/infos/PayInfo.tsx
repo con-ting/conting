@@ -15,7 +15,7 @@ import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
 import formatSido from '../../utils/common/SidoFormat';
 
-export default function PayInfo({selectedSeats, concert}) {
+export default function PayInfo({selectedSeats, concert, showID}) {
   const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
