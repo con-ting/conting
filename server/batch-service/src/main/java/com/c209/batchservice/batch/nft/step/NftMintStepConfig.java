@@ -1,5 +1,7 @@
-package com.c209.batchservice.batch.nft;
+package com.c209.batchservice.batch.nft.step;
 
+import com.c209.batchservice.batch.common.JsonConfig;
+import com.c209.batchservice.batch.nft.NftJobConfig;
 import com.c209.batchservice.batch.nft.dto.*;
 import com.c209.batchservice.batch.nft.dto.request.AssetRequest;
 import com.c209.batchservice.batch.nft.dto.request.CollectionRequest;
@@ -31,19 +33,18 @@ public class NftMintStepConfig {
     public static final String NFT_MINT_DIR = NftJobConfig.NFT_DIR + "/mint";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
-    @Qualifier("catalogEntityManagerFactory")
-    private final EntityManagerFactory catalogEntityManagerFactory;
-    @Qualifier("seatEntityManagerFactory")
-    private final EntityManagerFactory seatEntityManagerFactory;
+    private final @Qualifier("catalogEntityManagerFactory") EntityManagerFactory catalogEntityManagerFactory;
+    private final @Qualifier("seatEntityManagerFactory") EntityManagerFactory seatEntityManagerFactory;
+    private final @Qualifier("nftJsonConfig") JsonConfig jsonConfig;
     private final Web3Service web3Service;
 
     @Bean
     public Step mintCollectionStep() {
         return new StepBuilder("mintCollectionStep", jobRepository)
                 .<PerformanceAndMetadataDto, PerformanceIdAndCollectionMintDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(PerformanceAndMetadataDto.class))
+                .reader(jsonConfig.createJsonItemReader(PerformanceAndMetadataDto.class))
                 .processor(mintCollectionProcessor())
-                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceIdAndCollectionMintDto.class))
+                .writer(jsonConfig.createJsonFileItemWriter(PerformanceIdAndCollectionMintDto.class))
                 .build();
     }
 
@@ -57,7 +58,7 @@ public class NftMintStepConfig {
             } else {
                 collectionMint = web3Service.createCollection(CollectionRequest.builder()
                                 .name(dto.performance().singer().name() +
-                                      " " + dto.performance().startDate())
+                                        " " + dto.performance().startDate())
                                 .symbol(dto.jsonMetadata().symbol())
                                 .uri(dto.jsonUrl())
                                 .sellerFeeBasisPoints(dto.jsonMetadata().sellerFeeBasisPoints())
@@ -79,9 +80,9 @@ public class NftMintStepConfig {
     public Step mintAssetStep() {
         return new StepBuilder("mintAssetStep", jobRepository)
                 .<SeatAndScheduleAndMetadataDto, SeatIdAndMintDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(SeatAndScheduleAndMetadataDto.class))
+                .reader(jsonConfig.createJsonItemReader(SeatAndScheduleAndMetadataDto.class))
                 .processor(mintAssetMintProcessor())
-                .writer(NftJobConfig.createJsonFileItemWriter(SeatIdAndMintDto.class))
+                .writer(jsonConfig.createJsonFileItemWriter(SeatIdAndMintDto.class))
                 .build();
     }
 
@@ -98,8 +99,8 @@ public class NftMintStepConfig {
                 String suffix = name.substring(name.lastIndexOf(" #"));
                 mint = web3Service.createAsset(AssetRequest.builder()
                                 .name(dto.schedule().performance().singer().name() +
-                                      " " + dto.schedule().performance().startDate().substring(2).replaceAll("-", "") +
-                                      " 티켓" + suffix)
+                                        " " + dto.schedule().performance().startDate().substring(2).replaceAll("-", "") +
+                                        " 티켓" + suffix)
                                 .symbol(dto.jsonMetadata().symbol())
                                 .uri(dto.jsonUrl())
                                 .sellerFeeBasisPoints(dto.jsonMetadata().sellerFeeBasisPoints())
@@ -123,7 +124,7 @@ public class NftMintStepConfig {
     public Step verifyAssetAndUpdateSeatStep() {
         return new StepBuilder("verifyAssetAndUpdateSeatStep", jobRepository)
                 .<SeatIdAndMintDto, SeatIdAndMintDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(SeatIdAndMintDto.class))
+                .reader(jsonConfig.createJsonItemReader(SeatIdAndMintDto.class))
                 .processor(verifyAssetMintProcessor())
                 .writer(seatNftUrlUpdater())
                 .build();
@@ -165,7 +166,7 @@ public class NftMintStepConfig {
     public Step updatePerformanceStep() {
         return new StepBuilder("updatePerformanceStep", jobRepository)
                 .<PerformanceAndSeatsDto, PerformanceAndSeatsDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .reader(jsonConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
                 .processor(updatePerformanceProcessor())
                 .writer(performanceIsMintedUpdater())
                 .build();
@@ -188,6 +189,7 @@ public class NftMintStepConfig {
         };
     }
 
+    @Bean
     public ItemWriter<PerformanceAndSeatsDto> performanceIsMintedUpdater() {
         return chunk -> {
             EntityManager entityManager = catalogEntityManagerFactory.createEntityManager();

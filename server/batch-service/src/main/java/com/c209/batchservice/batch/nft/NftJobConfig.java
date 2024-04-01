@@ -1,89 +1,62 @@
 package com.c209.batchservice.batch.nft;
 
+import com.c209.batchservice.batch.common.JsonConfig;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
-import org.springframework.batch.item.json.JacksonJsonObjectReader;
-import org.springframework.batch.item.json.JsonFileItemWriter;
-import org.springframework.batch.item.json.JsonItemReader;
-import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;
-import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 
 @Configuration
-@EnableBatchProcessing(dataSourceRef = "batchDataSource", transactionManagerRef = "batchTransactionManager")
+@EnableBatchProcessing(
+        dataSourceRef = "batchDataSource",
+        transactionManagerRef = "batchTransactionManager")
+@RequiredArgsConstructor
 public class NftJobConfig {
     public static final String NFT_DIR = "data/nft";
+    private final JobRepository jobRepository;
+    private final @Qualifier("loadPerformanceStep") Step loadPerformanceStep;
+    private final @Qualifier("loadScheduleStep") Step loadScheduleStep;
+    private final @Qualifier("loadSeatStep") Step loadSeatStep;
+    private final @Qualifier("mergeSeatAndScheduleStep") Step mergeSeatAndScheduleStep;
+    private final @Qualifier("mergePerformanceAndSeatsStep") Step mergePerformanceAndSeatsStep;
+    private final @Qualifier("downloadMediaStep") Step downloadMediaStep;
+    private final @Qualifier("mergePerformanceAndMediaStep") Step mergePerformanceAndMediaStep;
+    private final @Qualifier("createMediaStep") Step createMediaStep;
+    private final @Qualifier("uploadMediaStep") Step uploadMediaStep;
+    private final @Qualifier("createCollectionMetadataStep") Step createCollectionMetadataStep;
+    private final @Qualifier("createAssetMetadataStep") Step createAssetMetadataStep;
+    private final @Qualifier("mintCollectionStep") Step mintCollectionStep;
+    private final @Qualifier("mintAssetStep") Step mintAssetStep;
+    private final @Qualifier("verifyAssetAndUpdateSeatStep") Step verifyAssetStep;
+    private final @Qualifier("updatePerformanceStep") Step updatePerformanceStep;
 
-    public static String getJsonPath(final Class<?> itemType) {
-        return NFT_DIR + "/" + itemType.getSimpleName() + ".json";
+    @Bean
+    public JsonConfig nftJsonConfig() {
+        return new JsonConfig(NFT_DIR);
     }
 
     @Bean
-    @StepScope
-    public static <T> JsonItemReader<T> createJsonItemReader(Class<? extends T> itemType) {
-        return new JsonItemReaderBuilder<T>()
-                .name(itemType.getSimpleName() + "Reader")
-                .jsonObjectReader(new JacksonJsonObjectReader<>(itemType))
-                .resource(new FileSystemResource(getJsonPath(itemType)))
-                .build();
-    }
-
-    @Bean
-    @StepScope
-    public static <T> JsonFileItemWriter<T> createJsonFileItemWriter(Class<? extends T> itemType) {
-        return new JsonFileItemWriterBuilder<T>()
-                .name(itemType.getSimpleName() + "Writer")
-                .jsonObjectMarshaller(new JacksonJsonObjectMarshaller<>())
-                .resource(new FileSystemResource(getJsonPath(itemType)))
-                .build();
-    }
-
-    @Bean
-    public Job nftJob(
-            final JobRepository jobRepository,
-            // data
-            final @Qualifier("performanceStep") Step performanceStep,
-            final @Qualifier("scheduleStep") Step scheduleStep,
-            final @Qualifier("seatStep") Step seatStep,
-            final @Qualifier("seatAndScheduleStep") Step seatAndScheduleStep,
-            final @Qualifier("PerformanceAndSeatsStep") Step PerformanceAndSeatsStep,
-            // media
-            final @Qualifier("downloadMediaStep") Step downloadMediaStep,
-            final @Qualifier("performanceAndMediaStep") Step performanceAndMediaStep,
-            final @Qualifier("createMediaStep") Step createMediaStep,
-            final @Qualifier("uploadMediaStep") Step uploadMediaStep,
-            // metadata
-            final @Qualifier("collectionMetadataStep") Step collectionMetadataStep,
-            final @Qualifier("assetMetadataStep") Step assetMetadataStep,
-            // mint
-            final @Qualifier("mintCollectionStep") Step mintCollectionStep,
-            final @Qualifier("mintAssetStep") Step mintAssetStep,
-            final @Qualifier("verifyAssetAndUpdateSeatStep") Step verifyAssetStep,
-            final @Qualifier("updatePerformanceStep") Step updatePerformanceStep
-    ) {
+    public Job nftJob() {
         return new JobBuilder("nftJob", jobRepository)
                 // data
-                .start(performanceStep)
-                .next(scheduleStep)
-                .next(seatStep)
-                .next(seatAndScheduleStep)
-                .next(PerformanceAndSeatsStep)
+                .start(loadPerformanceStep)
+                .next(loadScheduleStep)
+                .next(loadSeatStep)
+                .next(mergeSeatAndScheduleStep)
+                .next(mergePerformanceAndSeatsStep)
                 // media
                 .next(downloadMediaStep)
-                .next(performanceAndMediaStep)
+                .next(mergePerformanceAndMediaStep)
                 .next(createMediaStep)
                 .next(uploadMediaStep)
                 // metadata
-                .next(collectionMetadataStep)
-                .next(assetMetadataStep)
+                .next(createCollectionMetadataStep)
+                .next(createAssetMetadataStep)
                 // mint
                 .next(mintCollectionStep)
                 .next(mintAssetStep)

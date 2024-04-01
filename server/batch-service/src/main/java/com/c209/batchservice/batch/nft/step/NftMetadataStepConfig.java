@@ -1,5 +1,7 @@
-package com.c209.batchservice.batch.nft;
+package com.c209.batchservice.batch.nft.step;
 
+import com.c209.batchservice.batch.common.JsonConfig;
+import com.c209.batchservice.batch.nft.NftJobConfig;
 import com.c209.batchservice.batch.nft.dto.*;
 import com.c209.batchservice.global.s3.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +10,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,21 +27,22 @@ public class NftMetadataStepConfig {
     private static final String NFT_METADATA_DIR = NftJobConfig.NFT_DIR + "/metadata";
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
+    private final @Qualifier("nftJsonConfig") JsonConfig jsonConfig;
     private final S3Service s3Service;
     private final ObjectMapper objectMapper;
 
     @Bean
-    public Step collectionMetadataStep() {
-        return new StepBuilder("collectionMetadataStep", jobRepository)
+    public Step createCollectionMetadataStep() {
+        return new StepBuilder("createCollectionMetadataStep", jobRepository)
                 .<PerformanceAndSeatsDto, PerformanceAndMetadataDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
-                .processor(collectionMetadataProcessor())
-                .writer(NftJobConfig.createJsonFileItemWriter(PerformanceAndMetadataDto.class))
+                .reader(jsonConfig.createJsonItemReader(PerformanceAndSeatsDto.class))
+                .processor(createCollectionMetadataProcessor())
+                .writer(jsonConfig.createJsonFileItemWriter(PerformanceAndMetadataDto.class))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<PerformanceAndSeatsDto, PerformanceAndMetadataDto> collectionMetadataProcessor() {
+    public ItemProcessor<PerformanceAndSeatsDto, PerformanceAndMetadataDto> createCollectionMetadataProcessor() {
         return dto -> {
             JsonMetadataDto jsonMetadata = JsonMetadataDto.builder()
                     .name(dto.performance().title().trim())
@@ -91,17 +95,17 @@ public class NftMetadataStepConfig {
     }
 
     @Bean
-    public Step assetMetadataStep() {
-        return new StepBuilder("assetMetadataStep", jobRepository)
+    public Step createAssetMetadataStep() {
+        return new StepBuilder("createAssetMetadataStep", jobRepository)
                 .<SeatAndScheduleAndMediaDto, SeatAndScheduleAndMetadataDto>chunk(100, batchTransactionManager)
-                .reader(NftJobConfig.createJsonItemReader(SeatAndScheduleAndMediaDto.class))
-                .processor(assetMetadataProcessor())
-                .writer(NftJobConfig.createJsonFileItemWriter(SeatAndScheduleAndMetadataDto.class))
+                .reader(jsonConfig.createJsonItemReader(SeatAndScheduleAndMediaDto.class))
+                .processor(createAssetMetadataProcessor())
+                .writer(jsonConfig.createJsonFileItemWriter(SeatAndScheduleAndMetadataDto.class))
                 .build();
     }
 
     @Bean
-    public ItemProcessor<SeatAndScheduleAndMediaDto, SeatAndScheduleAndMetadataDto> assetMetadataProcessor() {
+    public ItemProcessor<SeatAndScheduleAndMediaDto, SeatAndScheduleAndMetadataDto> createAssetMetadataProcessor() {
         AtomicInteger counter = new AtomicInteger(1);
         return dto -> {
             int count = counter.getAndIncrement();
