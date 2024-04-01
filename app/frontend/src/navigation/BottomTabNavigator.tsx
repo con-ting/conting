@@ -1,7 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/mainScreen/MainScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
-import TicketApplyListScreen from '../screens/ticketApplyScreen/TicketApplyListScreen';
+import NftTicketListScreen from '../screens/ticketApplyScreen/NftTicketListScreen.tsx';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -73,7 +73,7 @@ const GradientIcon = ({focused}: any) => {
 
 export default function BottomTabNavigator() {
   const currentColors = useRecoilValue(currentColor);
-  const pastColors = useRecoilValue(pastColor)
+  const pastColors = useRecoilValue(pastColor);
   const progress = useSharedValue(0);
   const [previousColor, setPreviousColor] = useState(pastColors[0]);
   const [nowColor, setNowColor] = useState(currentColors[0]);
@@ -92,8 +92,8 @@ export default function BottomTabNavigator() {
 
   // recoil 상태 변경 감지하여 색상 전환
   useEffect(() => {
-    setPreviousColor(pastColors[0])
-    setNowColor(currentColors [0])
+    setPreviousColor(pastColors[0]);
+    setNowColor(currentColors[0]);
     progress.value = withTiming(1 - progress.value, {
       duration: duration,
     });
@@ -224,7 +224,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name={'티켓북'}
-        component={TicketApplyListScreen}
+        component={NftTicketListScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <Element3 color={focused ? '#FCC434' : '#CCCCCC'} size={25} />

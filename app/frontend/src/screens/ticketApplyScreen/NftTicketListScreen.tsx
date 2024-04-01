@@ -19,7 +19,7 @@ import {BODY1} from '../../config/Typography.tsx';
 import {Spacer} from '../../utils/common/Spacer.tsx';
 import {Toggle} from '../../components/button/Toggle.tsx';
 
-export default function TicketApplyListScreen() {
+export default function NftTicketListScreen() {
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [posterColors, setPosterColors] = useState([
