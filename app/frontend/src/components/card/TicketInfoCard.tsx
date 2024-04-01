@@ -59,7 +59,6 @@ export default function TicketInfoCard(props: ticketInfoProps) {
 
 const styles = StyleSheet.create({
   infoCard: {
-    height: heightPercent(130),
     padding: heightPercent(15),
     backgroundColor: '#383838',
     borderTopStartRadius: 1,
