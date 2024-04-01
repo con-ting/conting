@@ -4,11 +4,13 @@ import {View, StyleSheet} from 'react-native';
 import {MAINBLACK} from '../../config/Color.ts';
 import EventCard, {cardProps} from '../../components/card/EventCard.tsx';
 
-export default function EventApplicationScreen(events: Array<cardProps>) {
-  console.log(events);
+export default function EventApplicationScreen(props: {
+  events: Array<cardProps>;
+}) {
+  console.log(props.events);
   return (
     <View style={styles.container}>
-      {events.map(
+      {props.events.map(
         event =>
           event && (
             <View style={styles.card}>

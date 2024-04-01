@@ -28,31 +28,31 @@ export type concertCardData = {
   swipe_btn_text?: string; // 스와이프 버튼에 들어갈 텍스트
   swipe_btn_color?: string; //스와이프 버튼의 백그라운드 색상
 };
-export default function ReservationWaitingScreen(
-  concerts: Array<concertCardData>,
-) {
-  console.log('concerts=', concerts);
+export default function ReservationWaitingScreen(props: {
+  concerts: Array<concertCardData>;
+}) {
+  console.log('concerts=', props.concerts);
   return (
     <View style={styles.container}>
-      {concerts.map(
-        props =>
-          props && (
+      {props.concerts.map(
+        concert =>
+          concert && (
             <View style={styles.card}>
               <BasicConcertCardWide
-                onPress={props.btn_onPress}
-                title={props.title}
-                img_url={props.img}
-                img_tag={props.img_tag_type}
+                onPress={concert.btn_onPress}
+                title={concert.title}
+                img_url={concert.img}
+                img_tag={concert.img_tag_type}
                 img_tag_disabled={false}
-                img_tag_color={props.img_tag_color}
-                sido={formatSido(props.hall_location)}
-                concert_hall={props.hall_name}
-                date_tag={props.date_tag}
-                date={korDateFormatString(props.time)}
-                swipe_btn_disabled={props.swipe_btn_disabled}
-                swipe_btn_text={props.swipe_btn_text}
-                swipe_btn_color={props.swipe_btn_color}
-                swipe_btn_onPress={props.swipe_btn_onPress}
+                img_tag_color={concert.img_tag_color}
+                sido={formatSido(concert.hall_location)}
+                concert_hall={concert.hall_name}
+                date_tag={concert.date_tag}
+                date={korDateFormatString(concert.time)}
+                swipe_btn_disabled={concert.swipe_btn_disabled}
+                swipe_btn_text={concert.swipe_btn_text}
+                swipe_btn_color={concert.swipe_btn_color}
+                swipe_btn_onPress={concert.swipe_btn_onPress}
               />
             </View>
           ),
