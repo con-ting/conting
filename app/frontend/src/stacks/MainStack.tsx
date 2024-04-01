@@ -10,8 +10,6 @@ import {heightPercent} from '../config/Dimensions';
 import {MAINFONT} from '../config/Font';
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 import ConcertDetailScreen from '../screens/mainScreen/ConcertDetailScreen';
-import {useRecoilValue} from 'recoil';
-import {posterColor} from '../utils/recoil/Atoms';
 import ConcertRegistScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistScreen';
 import ConcertRegistInfoScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistInfoScreen';
 import ConcertRegistHallScreen from '../screens/settingScreen/concertRegistScreen/ConcertRegistHallScreen';
@@ -50,7 +48,6 @@ const options = (headerShown: boolean, title: string, color = 'black') => {
 };
 
 function MainStack() {
-  const backgroundColor = useRecoilValue(posterColor);
   return (
     <Stack.Navigator>
       <Stack.Screen

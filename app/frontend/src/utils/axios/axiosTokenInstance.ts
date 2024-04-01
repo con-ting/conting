@@ -2,6 +2,8 @@ import axios, {AxiosError, AxiosRequestConfig} from 'axios';
 import {BASE_URL, CONTENT_TYPE, TIMEOUT} from '../../config/AxiosConfig.ts';
 import {getAsync, setAsync} from '../async/asyncUtil';
 import {Alert} from 'react-native';
+import instance from './axiosInstance';
+import {alertAndLog} from '../common/alertAndLog.ts';
 
 /**
  * 인증을 요구할때 사용되는 토큰 인스턴스입니다.
@@ -66,7 +68,6 @@ const handleResponseError = async (error: AxiosError) => {
   if (!error.response) return Promise.reject(error);
   const {status, config} = error.response;
   console.error('error.response :', error.response.data);
-
   switch (status) {
     case 400:
       if (error.response.data.detail) {
@@ -74,8 +75,14 @@ const handleResponseError = async (error: AxiosError) => {
       }
       Alert.alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
       break;
-    case 403:
+    case 401:
       return await refreshAccessTokenAndRetry(config);
+    case 403:
+      alertAndLog('오류', error.response.data.detail);
+      break;
+    case 404:
+      alertAndLog('', error.response.data.detail);
+      break;
     case 500:
       alert('시스템 에러, 관리자에게 문의 바랍니다.');
       break;
