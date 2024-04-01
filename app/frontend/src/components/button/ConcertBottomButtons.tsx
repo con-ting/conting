@@ -7,7 +7,7 @@ import {widthPercent} from '../../config/Dimensions';
 import ConcertDateChoiceButton from './ConcertDateChoiceButton';
 import FamilySelectButton from './FamilySelectButton';
 
-export default function ConcertBottomButtons({scrollY, schedule}) {
+export default function ConcertBottomButtons({scrollY, schedule, showID}) {
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [showRequest, setShowRequest] = useState(false);
 
@@ -94,7 +94,7 @@ export default function ConcertBottomButtons({scrollY, schedule}) {
       )}
       {showDateSelector && (
         <Animated.View style={{transform: [{translateY: dateSelectorY}]}}>
-          <ConcertDateChoiceButton schedule={schedule} />
+          <ConcertDateChoiceButton schedule={schedule} showID={showID} />
         </Animated.View>
       )}
     </View>
@@ -103,14 +103,14 @@ export default function ConcertBottomButtons({scrollY, schedule}) {
 
 const styles = StyleSheet.create({
   container: {
-    width:"100%",
+    width: '100%',
     backgroundColor: 'transparent',
     position: 'absolute',
     bottom: 0,
   },
   background: {
     width: '100%',
-    alignItems:'center'
+    alignItems: 'center',
   },
 
   buttonGroup: {

@@ -28,11 +28,13 @@ import {
 export default function WaitingScreen({route}: any) {
   const rank = route.params.rank;
   const id = route.params.id;
+  const showID = route.params.showID;
   const [currentRank, setCurrentRank] = useState(route.params.rank);
   const navigation = useNavigation(); // 네비게이션 객체 사용
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
   useEffect(() => {
+    console.log('아이디1', showID);
     // const handleBiometricAuth = async () => {
     //   try {
     //     const hasKey = await checkKey();
@@ -91,9 +93,10 @@ export default function WaitingScreen({route}: any) {
           // 대기열이 없으면 지문 인증 로직 실행
           // handleBiometricAuth();
           navigation.navigate('SeatArea', {
-                    // biometricKey: signatureKey.key,
-                    scheduleID: id,
-                  });
+            // biometricKey: signatureKey.key,
+            scheduleID: id,
+            showID: showID,
+          });
         } else {
           setCurrentRank(status.rank);
           console.log('대기열 조회 완료:', status);

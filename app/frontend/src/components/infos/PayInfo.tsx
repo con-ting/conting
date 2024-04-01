@@ -13,13 +13,9 @@ import {useEffect, useState} from 'react';
 import IMP from 'iamport-react-native';
 import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
+import formatSido from '../../utils/common/SidoFormat';
 
-const userName = '김싸피';
-
-export default function PayInfo() {
-  const route = useRoute();
-  const {selectedSeats} = route.params;
-
+export default function PayInfo({selectedSeats, concert}) {
   const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
@@ -36,7 +32,10 @@ export default function PayInfo() {
   }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행됨
 
   // 총액 계산
-  const totalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+  const totalAmount = Object.values(selectedSeats).reduce(
+    (sum, {gradePrice}) => sum + gradePrice,
+    0,
+  );
 
   // 결제 데에터
   const paymentData = {
@@ -45,7 +44,7 @@ export default function PayInfo() {
     name: '콘서트 티켓 결제',
     merchant_uid: `mid_${new Date().getTime()}`,
     amount: totalAmount,
-    buyer_name: userName,
+    buyer_name: '김싸피',
     buyer_tel: '01091250545',
     buyer_email: 'example@naver.com',
     buyer_addr: '서울시 강남구 신사동 661-16',
@@ -81,14 +80,14 @@ export default function PayInfo() {
   return (
     <View style={styles.container}>
       <BasicConcertCardWide
-        title="2024 IU HER WORLD TOUR CONCERT IN SEOUL"
+        title={concert.show.title}
         disabled
-        img_url="https://t1.daumcdn.net/cafeattach/1I7Yc/c8ae6ddb037b3ffac2575a0f6c2bd1a933f49584_re_1705505439515"
+        img_url={concert.show.poster}
         img_tag_disabled
-        sido="서울"
-        concert_hall="KSPO DOMEi"
+        sido={formatSido(concert.hall.address)}
+        concert_hall={concert.hall.name}
         date_tag="관람 예정일"
-        date="2024.03.20"
+        date={concert.show.start_date}
         swipe_btn_disabled
       />
       <Text style={[F_SIZE_TITLE, styles.header]}>구매 정보</Text>
@@ -98,14 +97,14 @@ export default function PayInfo() {
         <Text style={F_SIZE_SUBTITLE}>티켓 가격</Text>
       </View>
 
-      {selectedSeats.map((seat, index) => (
+      {Object.values(selectedSeats).map((seat, index) => (
         <View key={index} style={styles.titles}>
           <View style={styles.entry}>
-            <Text style={F_SIZE_BIGTEXT}>{userName}</Text>
+            <Text style={F_SIZE_BIGTEXT}>{seat.userName}</Text>
             {/* <Text style={F_SIZE_BIGTEXT}>{buyer.email}</Text> */}
           </View>
-          <Text style={F_SIZE_BIGTEXT}>{seat.seat_id}</Text>
-          <Text style={F_SIZE_BIGTEXT}>{seat.price.toLocaleString()}</Text>
+          <Text style={F_SIZE_BIGTEXT}>{seat.seatId}</Text>
+          <Text style={F_SIZE_BIGTEXT}>{seat.gradePrice.toLocaleString()}</Text>
         </View>
       ))}
       <View style={styles.line} />
@@ -118,7 +117,9 @@ export default function PayInfo() {
         </View>
         <View style={styles.titles}>
           <Text style={F_SIZE_SUBTITLE}>구매 수량</Text>
-          <Text style={F_SIZE_SUBTITLE}>{selectedSeats.length}</Text>
+          <Text style={F_SIZE_SUBTITLE}>
+            {Object.values(selectedSeats).length}
+          </Text>
         </View>
         <View style={styles.line} />
       </View>
