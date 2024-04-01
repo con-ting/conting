@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_MERCHANT_UID;
 import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_PG_ORDER_ID;
 
 @Service
@@ -55,8 +56,8 @@ public class OrderServiceImpl implements OrderService {
 
 
         //동일한 merchat_id가 있는지 검사
-        if(orderSyncRepository.existsByPgOrderId(request.merchantUid())){
-            throw new CommonException(CONFLICT_PG_ORDER_ID);
+        if(orderSyncRepository.existsByMerchantUid(request.merchantUid())){
+            throw new CommonException(CONFLICT_MERCHANT_UID);
         }
 
 

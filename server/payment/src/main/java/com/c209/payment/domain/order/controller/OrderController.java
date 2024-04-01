@@ -56,7 +56,7 @@ public class OrderController {
         //issue 발행
         seatProducer.updateSeat("update_seat", SeatUpdateRequest.builder().seatIds(request.seatIds()).isAvailable(false).build());
         seatProducer.issueTicket("success_order", request);
-        return null;
+        return ResponseEntity.ok(PayAuthResponse.builder().result(true).build());
     }
 
     @GetMapping("/fail")
