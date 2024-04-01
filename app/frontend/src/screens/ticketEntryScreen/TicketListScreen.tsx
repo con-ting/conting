@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';

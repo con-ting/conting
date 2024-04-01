@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: MAINBLACK,
   },
   context: {
+    flex:1,
     margin: 20,
   },
   resultItem: {

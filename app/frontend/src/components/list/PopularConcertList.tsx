@@ -15,16 +15,15 @@ import {useNavigation} from '@react-navigation/native';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {currentColor, pastColor} from '../../utils/recoil/Atoms';
 import {Spacer} from '../../utils/common/Spacer';
+import formatSido from './../../utils/common/SidoFormat';
 
 // 인기 콘서트 조회
 type PopularConcertListProps = {
   popularConcert: any;
-  onChange: () => void;
 };
 
 export default function PopularConcertList({
   popularConcert,
-  onChange,
 }: PopularConcertListProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const setPreviousColor = useSetRecoilState(pastColor);
@@ -33,13 +32,18 @@ export default function PopularConcertList({
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log('현재 공연 정보 : ', popularConcert);
     getColors(popularConcert[currentIndex].poster, {
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      console.log('배경색 가져오기 :', res);
+      console.log(res);
       setPreviousColor(currentColors);
-      setCurrentColors([res?.dominant, res.muted, res.average]);
+      setCurrentColors([res.dominant, res.lightMuted, res.vibrant]);
+
+      // 어떤 색 나오는지 확인하고 싶으면 위에꺼 주석 후 밑에 주석 풀고 mainScreen에서 주석 처리된
+      // View 구문 풀어주면됨 
+      // setCurrentColors([res.average, res.darkMuted, res.darkVibrant, res.dominant, res.lightMuted, res.lightVibrant, res.muted, res.vibrant]);
     });
   }, [currentIndex]);
 
@@ -47,7 +51,13 @@ export default function PopularConcertList({
     item,
     index,
   }: {
-    item: {showID: number; poster: string; title: string; hall_name: string};
+    item: {
+      show_id: number;
+      poster: string;
+      title: string;
+      hall_name: string;
+      hall_address: string;
+    };
     index: number;
   }) => {
     return (
@@ -55,7 +65,7 @@ export default function PopularConcertList({
         onPress={() => {
           console.log('상세 페이지로 이동', item.show_id),
             navigation.navigate('ConcertDetail', {
-              showID: item.show_id,
+              show_id: item.show_id,
             });
         }}>
         <View
@@ -90,7 +100,9 @@ export default function PopularConcertList({
               {item.title}
             </Text>
             <Spacer space={5} />
-            <Text style={F_SIZE_TITLE}>{item.hall_name}</Text>
+            <Text style={F_SIZE_TITLE}>
+              {formatSido(item.hall_address)} • {item.hall_name}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -105,7 +117,6 @@ export default function PopularConcertList({
       height={Dimensions.get('window').height * 0.7}
       onSnapToItem={index => {
         setCurrentIndex(index);
-        onChange();
       }}
       defaultIndex={0}
       mode="parallax"
