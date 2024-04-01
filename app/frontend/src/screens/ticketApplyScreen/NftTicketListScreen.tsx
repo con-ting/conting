@@ -18,6 +18,7 @@ import {MAINBLACK, TEXTGRAY} from '../../config/Color.ts';
 import {BODY1} from '../../config/Typography.tsx';
 import {Spacer} from '../../utils/common/Spacer.tsx';
 import {Toggle} from '../../components/button/Toggle.tsx';
+import NFTCard from '../../components/card/NFTCard.tsx';
 
 export default function NftTicketListScreen() {
   const navigation = useNavigation();
@@ -141,7 +142,16 @@ export default function NftTicketListScreen() {
   const renderItem = ({item, index}) => {
     return (
       <View style={styles.ticketContainer}>
-        <TicketEntryCard poster={item.poster} colors={posterColors} />
+        <NFTCard
+          poster={item.poster}
+          title={item.title}
+          date={item.date}
+          location={item.location}
+          row={item.row}
+          no={item.no}
+          ticketAddress={item.ticketAddress}
+          webmUrl={item.webmUrl}
+        />
       </View>
     );
   };
@@ -170,7 +180,7 @@ export default function NftTicketListScreen() {
         rightIcon={<ICON.Shop size={22} color={TEXTGRAY} variant="Bold" />}
         fontColor={MAINBLACK}
         onRightPress={() => {
-          Alert.alert('NFT 숍으로 이동');
+          navigation.navigate('NftShopMainScreen');
         }}
       />
       <View style={styles.toggleBox}>

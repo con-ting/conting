@@ -22,6 +22,7 @@ import TicketCheckScreen from '../screens/settingScreen/ticketCheckScreen/Ticket
 import CameraScreen from '../screens/settingScreen/ticketCheckScreen/CameraScreen';
 import HallViewScreen from '../screens/mainScreen/hallViewScreen/HallViewScreen';
 import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen';
+import NftShopMainScreen from '../screens/ticketApplyScreen/nftShopScreen/NftShopMainScreen.tsx';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -43,7 +44,7 @@ const options = (headerShown: boolean, title: string, color = 'black') => {
     // options에서 타입 호환성 문제 발생하여 명시적으로 타입 지정
     headerTitleAlign: 'center' as 'center',
     // 개별 스크린에 이펙트 적용 (현재 대기열 진입시 오른쪽에서 왼쪽으로 페이지 전환)
-    animation : 'slide_from_right'
+    animation: 'slide_from_right',
   };
 };
 
@@ -88,6 +89,11 @@ function MainStack() {
       <Stack.Screen
         name={'ResultMainScreen'}
         component={ResultMainScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'NftShopMainScreen'}
+        component={NftShopMainScreen}
         options={{headerShown: false}}
       />
 
@@ -149,7 +155,7 @@ function MainStack() {
       <Stack.Screen
         name="Camera"
         component={CameraScreen}
-        options={options(true,'')}
+        options={options(true, '')}
       />
     </Stack.Navigator>
   );
