@@ -3,7 +3,7 @@ import * as web3 from '@solana/web3.js'
 import { BN } from 'bn.js'
 import Fastify from 'fastify'
 
-import { issueFamily } from './did/did.js'
+import { issueFamily, revokeFamilyByLower } from './did/did.js'
 import { DidBody, DidInput } from './did/types.js'
 import {
   getPort,
@@ -115,6 +115,19 @@ fastify.post<{ Body: DidBody }>('/dids', async (request, reply) => {
     upperId: new BN(request.body.upperId),
   }
   const tx = await issueFamily(provider, input)
+  return { tx }
+})
+
+fastify.delete<{
+  Params: { family: string; lower: string }
+  Body: { secret: string }
+}>('/dids/:family/lower/:lower', async (request, reply) => {
+  const family = new web3.PublicKey(request.params.family)
+  const lower = new web3.PublicKey(request.params.lower)
+  const secret = web3.Keypair.fromSecretKey(
+    Uint8Array.from(JSON.parse(request.body.secret)),
+  )
+  const tx = await revokeFamilyByLower(provider, family, lower, secret)
   return { tx }
 })
 

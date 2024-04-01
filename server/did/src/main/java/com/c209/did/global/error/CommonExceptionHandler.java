@@ -11,27 +11,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class CommonExceptionHandler {
-
     @ExceptionHandler(CommonException.class)
     public ErrorResponse commonExceptionHandler(CommonException e) {
         return ErrorResponse.builder(e, e.getHttpStatus(), e.getMessage()).build();
     }
 
-
     @ExceptionHandler(RuntimeException.class)
     public ErrorResponse runtimeExceptionHandler(RuntimeException e) {
         //디버깅용으로 에러 스택을 로깅합니다.
-        log.debug(e.getMessage());
-
-
+        log.debug("RuntimeException", e);
         return ErrorResponse.builder(e, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()).build();
     }
-
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorResponse dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
         return ErrorResponse.builder(e, HttpStatus.BAD_REQUEST, e.getMessage()).build();
     }
-
-
 }

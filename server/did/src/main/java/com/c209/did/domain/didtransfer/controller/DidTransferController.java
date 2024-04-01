@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,11 +29,13 @@ public class DidTransferController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> transfer(
+    public ResponseEntity<Long> transfer(
             @RequestBody DidTransferRequest didTransferRequest,
             @RequestHeader("X-Authorization-Id") Long userId
     ) {
-        didTransferService.createDid(didTransferRequest, userId);
-        return ResponseEntity.ok().build();
+        long id = didTransferService.createDid(didTransferRequest, userId);
+        return ResponseEntity
+                .created(URI.create(String.valueOf(id)))
+                .body(id);
     }
 }

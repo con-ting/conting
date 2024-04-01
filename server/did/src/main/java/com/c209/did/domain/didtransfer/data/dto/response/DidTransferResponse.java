@@ -10,9 +10,9 @@ public record DidTransferResponse(
         Long id,
         Long scheduleId,
         Long ownerId,
-        String ownerWallet,
-        String ownerFingerprintKey,
         Long buyerId,
-        String buyerWallet
+        String ownerWallet,
+        String buyerWallet,
+        String ownerFingerprintKey
 ) {
 }

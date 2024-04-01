@@ -7,7 +7,7 @@ import lombok.Builder;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemcmpDto(
-        @NotNull Long offset,
+        @NotNull Integer offset,
         @NotNull String bytes,
         String encoding
 ) {

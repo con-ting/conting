@@ -25,6 +25,7 @@ public class Web3Service {
     }
 
     public RpcGetProgramAccountsResultResponse getProgramAccountsResult(
+            String programId,
             MemcmpDto... memcmpDtoList
     ) {
         RpcRequest rpcRequest = RpcRequest.builder()
@@ -32,7 +33,7 @@ public class Web3Service {
                 .id(1L)
                 .method("getProgramAccounts")
                 .params(List.of(
-                        web3Props.didProgramId(),
+                        programId,
                         Map.of("filters", Arrays.stream(memcmpDtoList)
                                 .map(memcmpDto -> Map.of("memcmp", memcmpDto))
                                 .toList())

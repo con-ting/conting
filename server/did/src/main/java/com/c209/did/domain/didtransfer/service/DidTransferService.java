@@ -6,7 +6,7 @@ import com.c209.did.domain.didtransfer.data.dto.response.DidTransferResponse;
 import java.util.List;
 
 public interface DidTransferService {
-    List<DidTransferResponse> getDidListByBuyerId(Long userId);
+    List<DidTransferResponse> getDidListByBuyerId(long userId);
 
-    void createDid(DidTransferRequest didTransferRequest, Long userId);
+    long createDid(DidTransferRequest didTransferRequest, long userId);
 }

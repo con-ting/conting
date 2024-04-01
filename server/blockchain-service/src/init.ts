@@ -1,6 +1,6 @@
 import { AnchorProvider, Wallet } from '@coral-xyz/anchor'
 import { mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata'
-import { keypairIdentity, publicKey } from '@metaplex-foundation/umi'
+import { keypairIdentity } from '@metaplex-foundation/umi'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { Connection, Keypair } from '@solana/web3.js'
 import * as dotenv from 'dotenv'

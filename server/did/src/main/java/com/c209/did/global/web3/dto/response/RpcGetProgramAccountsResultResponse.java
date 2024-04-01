@@ -2,6 +2,7 @@ package com.c209.did.global.web3.dto.response;
 
 import com.c209.did.global.web3.dto.response.interfaces.RpcResponse;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public record RpcGetProgramAccountsResultResponse(
@@ -18,8 +19,8 @@ public record RpcGetProgramAccountsResultResponse(
                 Boolean executable,
                 Long lamports,
                 String owner,
-                Long rentEpoch,
-                Long size
+                BigInteger rentEpoch,
+                Long space
         ) {
         }
     }
