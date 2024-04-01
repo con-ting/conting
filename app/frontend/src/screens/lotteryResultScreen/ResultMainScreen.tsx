@@ -266,7 +266,7 @@ export default function SearchMainScreen() {
       case Tabs[0]:
         return <ReservationWaitingScreen concerts={cardList} />;
       case Tabs[1]:
-        return <EventApplicationScreen props={cardList} />;
+        return <EventApplicationScreen events={cardList} />;
     }
   };
 
