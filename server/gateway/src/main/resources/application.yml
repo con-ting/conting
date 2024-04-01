@@ -68,6 +68,12 @@ spring:
             - Path=/ticket/**
           filters:
             - AuthorizationHeaderFilter
+        - id: pay-service
+          uri: ${PAY_SERVICE}
+          predicates:
+            - Path=/order/**
+          filters:
+            - AuthorizationHeaderFilter
     default-filters:
       - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
 jwt:

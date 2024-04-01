@@ -10,5 +10,5 @@ public interface PayService {
 
     public void authFailed(PayAuthRequest request);
 
-    public void capture(PayAuthRequest request);
+    public void capture(OrderSuccessRequest request);
 }

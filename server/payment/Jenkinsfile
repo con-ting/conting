@@ -4,15 +4,14 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
         DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
-        JWT_ACCESS="${env.JWT_ACCESS}"
-        AUTH_SERVICE="${env.AUTH_SERVICE}"
-        USER_SERVICE="${env.USER_SERVICE}"
-        SEAT_SERVICE="${env.SEAT_SERVICE}"
-        NOTIFICATION_SERVICE="${env.NOTIFICATION_SERVICE}"
-        CATALOG_SERVICE="${env.CATALOG_SERVICE}"
-        QUEUE_SERVICE="${env.QUEUE_SERVICE}"
-        TICKET_SERVICE="${env.TICKET_SERVICE}"
-        PAY_SERVICE="${env.PAY_SERVICE}"
+        PAY_DB_URL="${emv.PAY_DB_URL}"
+        PAY_DB_USER_NAME="${PAY_DB_USER_NAME}"
+        PAY_DB_PASSWORD="${PAY_DB_PASSWORD}"
+        KAFKA_URL="${KAFKA_URL}"
+        IAMPORT_USER_ID="${IAMPORT_USER_ID}"
+        IAMPORT_SECRET="${IAMPORT_SECRET}"
+        IAMPORT_API_KEY="${IAMPORT_API_KEY}"
+
     }
     agent any
 
@@ -29,11 +28,11 @@ pipeline {
         stage('Confirm Echo') {
             steps {
                 script {
-                    echo "discovery server 입니다."
+                    echo "pay server 입니다."
                 }
             }
         }
-         stage('Build Discovery-Server .JAR') {
+         stage('Build Pay-Server .JAR') {
                     steps {
                         script {
                             // 변경된 브랜치와 머지 대상 브랜치 출력
@@ -42,24 +41,24 @@ pipeline {
                             echo "Merge Target Branch : \${CHANGE_TARGET}"
                             echo "Current Branch: \${currentBranch}"
 
-                            echo "discovery server 입니다."
+                            echo "pay server 입니다."
                             sh 'pwd'
                             sh 'ls -al'
                             //gradlew 빌드
                             sh 'java --version'
-                            sh 'chmod +x ./server/gateway/gradlew'
+                            sh 'chmod +x ./server/payment/gradlew'
                             sh '''
-                                cd ./server/gateway
+                                cd ./server/payment
                                 ./gradlew clean build
                             '''
                         }
                     }
                 }
 
-                stage('Build Discovery-Server Image'){
+                stage('Build Pay-Server Image'){
                     steps{
                         script{
-                            dockerImage = docker.build("${repository}:Gateway_${BUILD_NUMBER}", "-f server/gateway/Dockerfile ./server/gateway")
+                            dockerImage = docker.build("${repository}:Pay_${BUILD_NUMBER}", "-f server/payment/Dockerfile ./server/payment")
                         }
                     }
                 }
@@ -75,15 +74,15 @@ pipeline {
                 stage('Push Gateway Image to DockerHub'){
                     steps {
                         script {
-                            sh "docker push \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker push \${repository}:Pay_\${BUILD_NUMBER}"
                         }
                     }
                 }
 
-                stage('Clean Gateway Image'){
+                stage('Clean Pay Image'){
                     steps{
                         script{
-                            sh "docker rmi \${repository}:Gateway_\${BUILD_NUMBER}"
+                            sh "docker rmi \${repository}:Pay_\${BUILD_NUMBER}"
                         }
                     }
                 }
@@ -94,10 +93,10 @@ pipeline {
                             continueOnError: true, failOnError: false,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Pay_Service",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
+                                        //sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
                                         sshTransfer(execCommand: "sudo docker system prune -af")
                                     ]
                                 )
@@ -115,9 +114,9 @@ pipeline {
                                     configName: "Cloud_Center",
                                     verbose: true,
                                     transfers: [
-                                        sshTransfer(execCommand: "sudo docker rm -f gateway"),
-                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Gateway_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8888:8888 --name gateway --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e JWT_ACCESS=\"${JWT_ACCESS}\" -e AUTH_SERVICE=\"${AUTH_SERVICE}\" -e USER_SERVICE=\"${USER_SERVICE}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" -e CATALOG_SERVICE=\"${CATALOG_SERVICE}\" -e NOTIFICATION_SERVICE=\"${NOTIFICATION_SERVICE}\" -e QUEUE_SERVICE=\"${QUEUE_SERVICE}\" -e TICKET_SERVICE=\"${TICKET_SERVICE}\" -e PAY_SERVICE=\"${PAY_SERVICE}\" " + repository + ":Gateway_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker rm -f pay"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Pay_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" " + repository + ":Pay_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
@@ -127,6 +126,7 @@ pipeline {
                 stage("Cleanup") {
     steps {
         sh 'rm -rf ${WORKSPACE}/*'
+        sh 'sudo docker system prune -af'
     }
 }
     }
