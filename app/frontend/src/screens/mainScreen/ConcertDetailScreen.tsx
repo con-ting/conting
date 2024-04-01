@@ -1,9 +1,6 @@
 import {
   Animated,
-  Dimensions,
-  Image,
   ImageBackground,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -11,7 +8,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {useRecoilValue} from 'recoil';
 import {currentColor} from '../../utils/recoil/Atoms';
-import {ArrowLeft, Back} from 'iconsax-react-native';
+import {ArrowLeft} from 'iconsax-react-native';
 import {
   F_SIZE_BBIGTEXT,
   F_SIZE_BTITLE,
