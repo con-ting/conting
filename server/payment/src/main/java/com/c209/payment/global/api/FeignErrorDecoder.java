@@ -2,10 +2,14 @@ package com.c209.payment.global.api;
 
 import com.c209.payment.global.exception.CommonException;
 import feign.Response;
+import feign.Util;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import feign.Response.Body;
+import feign.Util;
+import java.io.IOException;
 
 @Slf4j
 public class FeignErrorDecoder implements ErrorDecoder {
@@ -13,8 +17,6 @@ public class FeignErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String s, Response response) {
         log.error("Feign Client Error Response - Status: {}, Reason: {}, Body: {}", response.status(), response.reason(), getResponseBody(response));
-
-
         //to-do 리팩토링하기
         int status = response.status();
         if(status==400){
