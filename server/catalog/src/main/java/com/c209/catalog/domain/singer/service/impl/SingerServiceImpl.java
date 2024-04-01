@@ -39,10 +39,6 @@ public class SingerServiceImpl implements SingerService {
     }
 
     private List<AlbumDto> getAlbumDtoFromSingerAndAlbumInfoList(List<SingerAndAlbumInfo> singerAndAlbumInfoList){
-        if (singerAndAlbumInfoList.isEmpty()) {
-            return Collections.emptyList();
-        }
-
         return singerAndAlbumInfoList.stream()
                 .map(info -> AlbumDto.builder()
                         .name(info.getAlbumName())
