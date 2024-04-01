@@ -11,6 +11,7 @@ pipeline {
         IAMPORT_USER_ID="${env.IAMPORT_USER_ID}"
         IAMPORT_SECRET="${env.IAMPORT_SECRET}"
         IAMPORT_API_KEY="${env.IAMPORT_API_KEY}"
+        SEAT_SERVICE="${env.SEAT_SERVICE}"
 
     }
     agent any
@@ -116,7 +117,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f pay"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Pay_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" " + repository + ":Pay_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" " + repository + ":Pay_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]

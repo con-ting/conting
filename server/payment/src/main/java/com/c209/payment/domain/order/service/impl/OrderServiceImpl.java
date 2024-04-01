@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_MERCHANT_UID;
-import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_PG_ORDER_ID;
 
 @Service
 @Slf4j
