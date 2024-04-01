@@ -1,6 +1,7 @@
 package com.c209.payment.domain.pay.service.impl;
 
 
+import com.c209.payment.domain.order.dto.request.OrderSuccessRequest;
 import com.c209.payment.domain.order.entity.Order;
 import com.c209.payment.domain.order.entity.PGStatus;
 import com.c209.payment.domain.order.exception.OrderError;
@@ -39,18 +40,18 @@ public class PayServiceImpl {
 
         }catch(Exception e){
             e.printStackTrace();
-            if(order.getPgRetryCount()>2){
-                order.setPgStatus(PGStatus.CAPTURE_FAIL);
-            }else{
-                order.setPgStatus(PGStatus.CAPTURE_RETRY);
-            }
-            recapture(order, impUid);
+//            if(order.getPgRetryCount()>2){
+//                order.setPgStatus(PGStatus.CAPTURE_FAIL);
+//            }else{
+//                order.setPgStatus(PGStatus.CAPTURE_RETRY);
+//            }
+//            recapture(order, impUid);
         }finally{
             orderSyncRepository.save(order);
         }
     }
 
-    public void capture(PayAuthRequest request){
+    public void capture(OrderSuccessRequest request){
         Order order = orderSyncRepository.getOrderByMerchantUid(request.merchantUid()).orElseThrow(()-> new CommonException(OrderError.NOT_EXIST_MERCHANT_UID));
         capture(order, request.impUid());
     }

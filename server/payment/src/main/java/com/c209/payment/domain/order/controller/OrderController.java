@@ -8,6 +8,7 @@ import com.c209.payment.domain.pay.dto.request.PayAuthRequest;
 import com.c209.payment.domain.pay.dto.response.PayAuthResponse;
 import com.c209.payment.domain.pay.service.PayAsyncService;
 import com.c209.payment.domain.order.service.OrderService;
+import com.c209.payment.domain.pay.service.PayService;
 import com.c209.payment.domain.pay.service.impl.PayServiceImpl;
 import com.c209.payment.domain.seat.dto.request.SeatUpdateRequest;
 import com.c209.payment.domain.seat.service.SeatProducer;
@@ -25,7 +26,15 @@ import reactor.core.publisher.Mono;
 public class OrderController {
     private final OrderService orderService;
     private final SeatProducer seatProducer;
+    private final PayServiceImpl payService;
 
+
+    @GetMapping("/check")
+    public ResponseEntity<Long> checkHealth(
+            @RequestHeader("X-Authorization-Id")Long userId
+    ){
+        return ResponseEntity.ok(userId);
+    }
     @PostMapping()
     public ResponseEntity<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request,
@@ -40,7 +49,7 @@ public class OrderController {
 
         //아이엠포트 결제 단건 api를 조회해 db값과 비교한다.z
             //아이엠포트 통신시 에러가 났을 경우 최대 3회 더 수행하고 만료한다.
-        //payService.capture(request);
+        payService.capture(request);
 
 
         log.info("요청 :: {}", request);
