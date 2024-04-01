@@ -12,7 +12,7 @@ import {SeatApi} from '../../api/seat/Seat';
 export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const [selectedArea, setSelectedArea] = useState('');
   const [seatsData, setSeatsData] = useState([]); // 좌석 데이터 저장
-  const show_id = useState(showID);
+  
   useEffect(() => {
     console.log('아이디2', showID);
     const fetchSeats = async () => {
@@ -33,11 +33,11 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const renderArea = () => {
     switch (selectedArea) {
       case '가':
-        return <GaArea seatsData={seatsData} showID={show_id} />;
+        return <GaArea seatsData={seatsData} showID={showID} />;
       case '나':
-        return <NaArea seatsData={seatsData} showID={show_id} />;
+        return <NaArea seatsData={seatsData} showID={showID} />;
       case '다':
-        return <DaArea seatsData={seatsData} showID={show_id} />;
+        return <DaArea seatsData={seatsData} showID={showID} />;
       default:
         return null;
     }

@@ -14,8 +14,9 @@ import IMP from 'iamport-react-native';
 import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
 import formatSido from '../../utils/common/SidoFormat';
+import { orderAfterApi, orderFailApi } from '../../api/order/order';
 
-export default function PayInfo({selectedSeats, concert}) {
+export default function PayInfo({selectedSeats, concert, showID, buyID}) {
   const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
@@ -39,13 +40,14 @@ export default function PayInfo({selectedSeats, concert}) {
 
   // 결제 데에터
   const paymentData = {
-    pg: 'kakaopay.TC0ONETIME',
+    pg: 'tosspay.tosstest',
     pay_method: 'card',
     name: '콘서트 티켓 결제',
     merchant_uid: `mid_${new Date().getTime()}`,
     amount: totalAmount,
     buyer_name: '김싸피',
-    buyer_tel: '01091250545',
+    buyer_id: buyID,
+    buyer_tel: '01012345678',
     buyer_email: 'example@naver.com',
     buyer_addr: '서울시 강남구 신사동 661-16',
     buyer_postcode: '06018',
@@ -60,22 +62,63 @@ export default function PayInfo({selectedSeats, concert}) {
     setIsPaying(false);
   }
 
-  function handlePaymentResult(response) {
-    const {success, merchant_id, error_msg} = response;
+  async function handlePaymentResult(response) {
     setIsPaying(false);
-    navigation.replace('Result', response);
-
-    // console.log(response);
-    // 결제 페이지 렌더링 시 조건
-    // if (success) {
-    //   alert('결제 성공');
-    //   console.log(success);
-    //   setIsPaying(false);
-    //   navigation.replace('Result', response);
-    // } else {
-    //   alert(`결제 실패 : $(error_msg)`);
-    // }
+    if (response.success) {
+      // 결제 성공 시 사후 검증 API 호출
+      try {
+        const verificationParams = {
+          amount: paymentData.amount,
+          buyer_id: paymentData.buyer_id,
+          imp_uid: response.imp_uid, // 아임포트 결제 번호
+          merchant_uid: response.merchant_uid, // 자체 결제 번호
+          seat_ids: Object.values(selectedSeats).map(seat => seat.seatId), // 구매한 좌석 ID 배열
+          ticket_list: Object.values(selectedSeats).map(seat => ({
+            // 티켓 리스트 데이터 구성
+            ticket_id: seat.ticketId,
+            seat_id: seat.seatId,
+            schedule_id: concert.scheduleId,
+            owner_id: paymentData.buyer_email,
+            finger_print: biometricKey, // 소유자 지문, 이 예제에서는 biometricKey를 사용
+            nft_url: seat.nftUrl,
+            row: seat.row,
+            col: seat.col
+          })),
+        };
+        const verificationResult = await orderAfterApi(verificationParams);
+        console.log('Verification Result:', verificationResult);
+        if(verificationResult){
+          // 검증 성공 후 처리 로직, 결과 페이지로 이동
+          navigation.replace('Result', {paySuccess: true});
+        }
+      } catch (error) {
+        console.error('Verification Failed:', error);
+        // 검증 실패 시 처리 로직, 오류 메시지 표시
+        alert('결제 검증에 실패했습니다.');
+      }
+    } else {
+      // 결제 실패 시 처리 로직
+      try {
+        // 결제 실패 시 보내야 할 데이터 구조에 맞추어 ticket_list 배열 구성
+        const failParams = {
+          ticket_list: Object.values(selectedSeats).map(seat => ({
+            schedule_id: concert.scheduleId, // 현재 콘서트의 회차 ID
+            owner_id: paymentData.buyer_id, // 결제 데이터에서 buyer_id 사용
+            finger_print: seat.biometricKey, // 해당 좌석의 소유자 지문 정보
+          })),
+        };
+        const failResult = await orderFailApi(failParams);
+        console.log('Fail Result:', failResult);
+        // 실패 처리 후 로직, 예를 들어 오류 메시지 표시나 다른 화면으로 이동
+        navigation.replace('Result', {paySuccess: false});
+      } catch (error) {
+        console.error('Fail Handling Failed:', error);
+        // 실패 처리 로직 실패 시, 예를 들어 오류 메시지 표시
+        alert('결제 실패 처리에 문제가 발생했습니다.');
+      }
+    }
   }
+  
 
   return (
     <View style={styles.container}>

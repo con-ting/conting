@@ -34,6 +34,7 @@ export default function WaitingScreen({route}: any) {
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
   useEffect(() => {
+    console.log('dddddddd', route)
     console.log('아이디1', showID);
     // const handleBiometricAuth = async () => {
     //   try {
