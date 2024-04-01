@@ -44,7 +44,6 @@ public class OrderServiceImpl implements OrderService {
     //to-do 나중에 비동기로 바꿔야한다.
 
     @Override
-    @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Long userId) {
         //seat 서버에서 조회
         if(!seatClient.getSeatStatusList(request.seatList(), userId).isAvailable()){
