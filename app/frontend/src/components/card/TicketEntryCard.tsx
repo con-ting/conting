@@ -9,7 +9,6 @@ import {useState} from 'react';
 import TicketQrCard from './TicketQrCard';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import TicketFront from '../ticketEntry/TicketFront';
-import { getColors } from 'react-native-image-colors';
 
 type TicketEntryCardProps = {
   onPress?: () => void;

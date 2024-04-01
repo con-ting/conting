@@ -1,26 +1,64 @@
-import {View, StyleSheet, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
-import LinearGradient from 'react-native-linear-gradient';
 import {useEffect, useState} from 'react';
 import BannerList from './../../components/list/BannerList';
 import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
 import {useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
-import {posterColor} from '../../utils/recoil/Atoms';
-import {ScrollView} from 'react-native-gesture-handler';
-import {MainApi} from '../../api/concert/concert';
+import {currentColor} from '../../utils/recoil/Atoms';
+import {
+  ScrollView,
+} from 'react-native-gesture-handler';
+import {MainApi} from '../../api/catalog/concert';
+import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
+import {
+  Easing,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 export default function MainScreen() {
   const navigation = useNavigation();
-  const backgroundColor = useRecoilValue(posterColor);
+  const currentColors = useRecoilValue(currentColor);
   const [popular, setPopular] = useState([]);
   const [first, setFirst] = useState([]);
-  const [deadline, setDeadline] = useState([]);
   const [popularSinger, setPopularSinger] = useState([]);
+  const firstColor = useSharedValue(currentColors[0]);
+  const secondColor = useSharedValue(currentColors[1]);
+  const thirdColor = useSharedValue(currentColors[2]);
+  const {width, height} = useWindowDimensions();
 
+  // 뒷배경 애니메이션을 위한 부분
+  const duration = 1000
+  const colors = useDerivedValue(() => {
+    return [firstColor.value, secondColor.value, thirdColor.value];
+  }, []);
+
+  const onChange = async () => {
+    firstColor.value = withTiming(currentColors[0], {
+      duration: duration,
+      easing: Easing.inOut(Easing.ease),
+    });
+    secondColor.value = withTiming(currentColors[1], {
+      duration: duration,
+      easing: Easing.inOut(Easing.ease),
+    });
+    thirdColor.value = withTiming(currentColors[2], {
+      duration: duration,
+      easing: Easing.inOut(Easing.ease),
+    });
+  };
+  // 처음 화면 접속 시 서버에서 데이터 가져오기
   useEffect(() => {
+    console.log(colors.value);
     const fetchData = async () => {
       console.log('API 요청');
       try {
@@ -28,7 +66,6 @@ export default function MainScreen() {
         console.log('API 응답: ', data);
         setPopular(data.popular_shows);
         setFirst(data.f_shows);
-        setDeadline(data.r_shows);
         setPopularSinger(data.popularsingers);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
@@ -67,27 +104,35 @@ export default function MainScreen() {
     return <Text>...로딩</Text>;
   }
   return (
-    <LinearGradient
-      start={{x: 0.0, y: 0.0}}
-      end={{x: 1.0, y: 1.0}}
-      colors={backgroundColor}
-      style={styles.container}>
-      <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.search}></View>
-          <PopularConcertList popularConcert={popular} />
-          <View
-            style={{
-              flexDirection: 'column',
-              marginHorizontal: widthPercent(10),
-            }}>
-            <FisrtComeList concerts={first} way="선착 예매" />
-            <BannerList banners={bannerList} />
-            <EventList />
-          </View>
-        </ScrollView>
-      </View>
-    </LinearGradient>
+      <ScrollView style={{flex: 1}}>
+        <Canvas
+          style={{
+            flex: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}>
+          <Rect x={0} y={0} width={width} height={3000}>
+            <LinearGradient
+              start={vec(100, 0)}
+              end={vec(width, height/2)}
+              colors={colors}
+            />
+          </Rect>
+        </Canvas>
+        <PopularConcertList popularConcert={popular} onChange={onChange} />
+        <View
+          style={{
+            flexDirection: 'column',
+            marginHorizontal: widthPercent(10),
+          }}>
+          <FisrtComeList concerts={first} way="선착 예매" />
+          <BannerList banners={bannerList} />
+          <EventList />
+        </View>
+      </ScrollView>
   );
 }
 
