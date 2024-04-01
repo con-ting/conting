@@ -25,6 +25,7 @@ type BasicButtonProps = {
   backgroundColor: ColorValue;
   borderColor: string;
   borderRadius?: number;
+  borderWidth?: number;
   children: React.ReactNode;
 };
 /**
@@ -53,7 +54,7 @@ export const BasicButton = (props: BasicButtonProps) => {
           style={{
             backgroundColor: props.backgroundColor,
             borderRadius: widthPercent(props.borderRadius),
-            borderWidth: widthPercent(0.8),
+            borderWidth: props.borderWidth || 0,
             borderColor: props.borderColor,
             paddingVertical: props.paddingVertical
               ? heightPercent(props.paddingVertical)
@@ -72,6 +73,7 @@ type ButtonProps = {
   width?: DimensionValue;
   disabled?: boolean;
   isRadius?: boolean;
+  borderWidth?: number;
   btnText: string;
   textSize?: number;
   paddingVertical?: number;
@@ -212,10 +214,12 @@ export const BlueButton = (props: ButtonProps) => {
   return (
     <BasicButton
       width={props.width}
+      paddingVertical={5}
       disabled={props.disabled}
       backgroundColor="#F2F2F2"
       borderColor="#234A96"
-      borderRadius={props.isRadius ? 64 : 8}>
+      borderRadius={props.isRadius ? 64 : 8}
+      borderWidth={props.borderWidth}>
       <Text
         style={{
           color: '#234A96',

@@ -3,8 +3,13 @@ import MainScreen from '../screens/mainScreen/MainScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
 import TicketApplyListScreen from '../screens/ticketApplyScreen/TicketApplyListScreen';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+import {LinearGradient as ReactNativeLinearGradient} from 'react-native-linear-gradient';
 import {
   Home,
   CardPos,
@@ -18,19 +23,21 @@ import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen';
 import {currentColor, pastColor} from '../utils/recoil/Atoms';
 import {useNavigation} from '@react-navigation/native';
 import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
+  Easing,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 import {useEffect, useState} from 'react';
+import FastImage from 'react-native-fast-image';
+import {Canvas, Rect, LinearGradient, vec} from '@shopify/react-native-skia';
 
 const BottomTab = createBottomTabNavigator();
 
 const GradientIcon = ({focused}: any) => {
   return (
     <View style={{alignItems: 'center', justifyContent: 'center'}}>
-      <LinearGradient
+      <ReactNativeLinearGradient
         colors={['#FCC434', 'transparent']} // 위에서 아래로 불투명에서 투명으로 변화하는 그라데이션
         start={{x: 0.1, y: 0}}
         end={{x: 0.5, y: 0.8}}
@@ -66,37 +73,40 @@ const GradientIcon = ({focused}: any) => {
             입장권
           </Text>
         </View>
-      </LinearGradient>
+      </ReactNativeLinearGradient>
     </View>
   );
 };
 
 export default function BottomTabNavigator() {
   const currentColors = useRecoilValue(currentColor);
-  const pastColors = useRecoilValue(pastColor)
-  const progress = useSharedValue(0);
-  const [previousColor, setPreviousColor] = useState(pastColors[0]);
-  const [nowColor, setNowColor] = useState(currentColors[0]);
+  const firstColor = useSharedValue(currentColors[0]);
+  const secondColor = useSharedValue(currentColors[1]);
+  const thirdColor = useSharedValue(currentColors[2]);
+  const {width, height} = useWindowDimensions();
 
   // 뒷배경 애니메이션을 위한 부분
   const duration = 1000;
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: interpolateColor(
-        progress.value,
-        [0, 1],
-        [previousColor, nowColor],
-      ),
-    };
-  });
+  const colors = useDerivedValue(() => {
+    return [firstColor.value, secondColor.value, thirdColor.value];
+  }, []);
 
-  // recoil 상태 변경 감지하여 색상 전환
   useEffect(() => {
-    setPreviousColor(pastColors[0])
-    setNowColor(currentColors [0])
-    progress.value = withTiming(1 - progress.value, {
-      duration: duration,
-    });
+    const onChange = async () => {
+      firstColor.value = withTiming(currentColors[0], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      secondColor.value = withTiming(currentColors[1], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      thirdColor.value = withTiming(currentColors[2], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+    };
+    onChange();
   }, [currentColors]);
 
   return (
@@ -118,11 +128,15 @@ export default function BottomTabNavigator() {
           headerShown: true,
           headerBackground: () => {
             return (
-              <View>
-                <Animated.View
-                  style={[{width: '100%', height: '100%'}, animatedStyle]}
-                />
-              </View>
+              <Canvas style={{flex:1}}>
+                <Rect x={0} y={0} width={width} height={100}>
+                  <LinearGradient
+                    start={vec(100, 0)}
+                    end={vec(width, height / 2)}
+                    colors={colors}
+                  />
+                </Rect>
+              </Canvas>
             );
           },
           tabBarIcon: ({focused}) => (
@@ -144,31 +158,11 @@ export default function BottomTabNavigator() {
           ),
           headerTitle: () => (
             <View style={{flexDirection: 'row'}}>
-              <Image source={require('../assets/images/mainLogo.png')} />
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  marginLeft: 10,
-                  marginTop: 10,
-                }}>
-                <Text
-                  style={{
-                    color: '#FFFFFF',
-                    fontSize: 14,
-                    fontFamily: 'Jalnan2TTF',
-                  }}>
-                  BLACK PANTHER
-                </Text>
-                <Text
-                  style={{
-                    color: '#3D3B3B',
-                    fontSize: 12,
-                    fontFamily: 'Jalnan2TTF',
-                  }}>
-                  암표방지티켓팅서비스
-                </Text>
-              </View>
+              <FastImage
+                style={{width: 100, height: 40}}
+                resizeMode={FastImage.resizeMode.contain}
+                source={require('../assets/logo/logoPng.png')}
+              />
             </View>
           ),
           headerRight: () => {

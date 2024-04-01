@@ -8,6 +8,7 @@ import {
   widthPercent,
 } from '../../config/Dimensions';
 import {BlueButton} from '../button/Button';
+import {useNavigation} from '@react-navigation/native';
 
 /**
  * 선착 예매 콘서트 조회입니다.
@@ -18,10 +19,18 @@ import {BlueButton} from '../button/Button';
  */
 
 interface concertProps {
+  show_id: string;
   poster: string;
   title: string;
-  address: string;
-  date: string;
+  hall_id: string;
+  hall_name: string;
+  hall_address: string;
+  reservation_type: string;
+  reservation_start_date_time: string;
+  reservation_end_date_time: string;
+  start_date: string;
+  end_date: string;
+  view: number;
 }
 
 interface concertListProps {
@@ -30,13 +39,18 @@ interface concertListProps {
 }
 
 export default function FisrtComeList({concerts, way}: concertListProps) {
+  const navigation = useNavigation();
+
   const renderItem = ({item, index}: {item: concertProps; index: number}) => (
     <ConcertCard
-      onPress={() => console.log('공연 상세로 이동')}
+      onPress={() =>
+        navigation.navigate('ConcertDetail', {show_id: item.show_id})
+      }
       poster={item.poster}
       title={item.title}
-      address={item.address}
-      date={item.date}
+      hall_name={item.hall_name}
+      hall_address={item.hall_address}
+      date={item.reservation_start_date_time}
     />
   );
 
@@ -48,6 +62,7 @@ export default function FisrtComeList({concerts, way}: concertListProps) {
           width={100}
           textSize={fontPercent(14)}
           btnText={way}
+          borderWidth={3}
           disabled={true}
         />
         <SeeAllButton />

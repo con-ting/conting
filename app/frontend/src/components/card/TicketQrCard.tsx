@@ -1,8 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from './TicketInfoCard';
@@ -18,6 +14,7 @@ import {
 } from '../../utils/biometric/Biometrics';
 import {ticketQRAPI} from '../../api/ticket/ticket';
 import {BASE_URL} from '../../config/AxiosConfig';
+import {REDBASE} from '../../config/Color';
 
 type TicketCardProps = {
   onPress?: () => void;
@@ -94,7 +91,10 @@ export default function TicketQrCard(props: TicketCardProps) {
                 value={qrURL}
               />
             </View>
-            <Text style={F_SIZE_TEXT}>QR코드 유효시간 {timeLeft}초</Text>
+            <Text style={F_SIZE_TEXT}>
+              QR코드 유효시간{' '}
+              <Text style={{color: REDBASE}}>{timeLeft}</Text>초
+            </Text>
           </View>
         ) : (
           <CreateQR onPress={handlePass} />

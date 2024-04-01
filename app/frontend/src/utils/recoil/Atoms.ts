@@ -36,12 +36,12 @@ export const userInfoState = atom<null | UserInfoStateType>({
  */
 export const pastColor = atom<Array<string>>({
   key: 'pastColor',
-  default: ['#F0000F', '#000000', '#000000'],
+  default: ['#000000', '#000000', '#000000'],
 })
 
 export const currentColor = atom<Array<string>>({
   key: 'currentColor',
-  default: ['#0000FF', '#000000', '#000000'],
+  default: ['#000000', '#000000', '#000000'],
 });
 /**
  * FCM Token 을 담고 있는 atom입니다.
