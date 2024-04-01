@@ -18,6 +18,12 @@ interface Ticket {
   col: string;
 }
 
+interface FailTicket {
+  schedule_id: string;
+  owner_id: string;
+  finger_print: string;
+}
+
 // 결제 시 사전 검증하는 API
 export const orderBeforeApi = async (params: {
   seat_list: number[];
@@ -47,7 +53,7 @@ export const orderAfterApi = async (params: {
 };
 
 // 결제 실패 시 사용하는 API
-export const orderFailApi = async (params: {ticket_list: Ticket[]}) => {
+export const orderFailApi = async (params: {ticket_list: FailTicket[]}) => {
   console.log('[orderFailApi Request] = ', params);
   const res = await tokenInstance.post(`${orderUrl}/fail`, params);
   console.log('[orderFailApi Response] = ', res.data);

@@ -60,7 +60,7 @@ export default function SeatSum(props: SeatSumProps) {
       if  (response.result){
         // 성공적인 사전 검증 후 처리
         navigation.navigate('Pay', {
-          verificationData,
+          resData: verificationData, selectedSeats: props.selectedSeats, showID: props.showID
         });
 
       }
