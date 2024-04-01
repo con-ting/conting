@@ -18,7 +18,7 @@ import {PopUpModal} from '../modal/Modal';
 import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
 
-export default function NaArea({seatsData}: any) {
+export default function NaArea({seatsData, showID}) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
   // 드롭다운 오픈 상태
@@ -171,7 +171,11 @@ export default function NaArea({seatsData}: any) {
       <View>{renderSelectedSeats()}</View>
 
       <View>
-        <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
+        <SeatSum
+          selectedSeats={selectedSeats}
+          seatsData={seatsData}
+          showID={showID}
+        />
       </View>
     </>
   );

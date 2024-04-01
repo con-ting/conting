@@ -18,7 +18,7 @@ import {PopUpModal} from '../modal/Modal';
 import {Dropdown} from '../dropdown/Dropdown';
 import SeatSum from './SeatSum';
 
-export default function GaArea({seatsData}: any) {
+export default function GaArea({seatsData, showID}) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
   // 드롭다운 오픈 상태
@@ -168,7 +168,11 @@ export default function GaArea({seatsData}: any) {
       </View>
       <View>{renderSelectedSeats()}</View>
       <View>
-        <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
+        <SeatSum
+          selectedSeats={selectedSeats}
+          seatsData={seatsData}
+          showID={showID}
+        />
       </View>
     </>
   );

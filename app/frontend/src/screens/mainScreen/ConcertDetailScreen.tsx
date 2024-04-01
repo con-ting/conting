@@ -100,7 +100,7 @@ export default function ConcertDetailScreen({route}) {
           )}
           scrollEventThrottle={16}
           style={{
-            padding:10
+            padding: 10,
           }}>
           <SummaryCard info={concertDetail} />
           {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
@@ -115,7 +115,11 @@ export default function ConcertDetailScreen({route}) {
                 setIsRender(true);
                 setIsVisible(!isVisible);
               }}
-              onBtnPress={() => navigation.navigate("hallDetail", {hallName: concertDetail.hall.name})}
+              onBtnPress={() =>
+                navigation.navigate('hallDetail', {
+                  hallName: concertDetail.hall.name,
+                })
+              }
               title={concertDetail.hall.name}
               seat={14730}
               address={concertDetail.hall.address}
@@ -199,7 +203,7 @@ export default function ConcertDetailScreen({route}) {
             </View>
             <FastImage
               resizeMode={FastImage.resizeMode.stretch}
-              style={{width: "100%", height: '100%', marginTop: 20}}
+              style={{width: '100%', height: '100%', marginTop: 20}}
               source={{uri: concertDetail.show.description_image}}
             />
           </View>
@@ -208,6 +212,7 @@ export default function ConcertDetailScreen({route}) {
       <ConcertBottomButtons
         scrollY={scrollY}
         schedule={[concertDetail.schedule]}
+        showID={{showID}}
       />
     </ImageBackground>
   );

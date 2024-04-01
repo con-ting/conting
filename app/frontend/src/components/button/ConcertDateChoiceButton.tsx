@@ -11,7 +11,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {queuePostApi} from '../../api/queue/queue';
 
-export default function ConcertChoiceButton({schedule}) {
+export default function ConcertChoiceButton({schedule, showID}) {
   const [selectedDateId, setSelectedDateId] = useState(null);
   const [postDateId, setPostDateId] = useState({});
 
@@ -39,6 +39,7 @@ export default function ConcertChoiceButton({schedule}) {
         navigation.navigate('Waiting', {
           rank: queueData.rank,
           id: selectedDateId,
+          showID: showID,
         });
       } catch (error) {
         console.error('대기열 등록 실패:', error);

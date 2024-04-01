@@ -19,9 +19,9 @@ import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
 import {PopUpModal} from '../modal/Modal';
 
-export default function GaArea({seatsData}: any) {
+export default function GaArea({seatsData, showID}) {
   const [selectedSeats, setSelectedSeats] = useState({});
-
+  const show_id = useState(showID);
   // 드롭다운 오픈 상태
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
@@ -29,10 +29,10 @@ export default function GaArea({seatsData}: any) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {label: '본인', value: '본인'},
-    {label: '어머니', value: '어머니'},
-    {label: '아버지', value: '아버지'},
-    {label: '누나', value: '누나'},
+    {label: '본인', value: '본인', userName: '김싸피'},
+    {label: '어머니', value: '어머니', userName: '김엄마'},
+    {label: '아버지', value: '아버지', userName: '김아빠'},
+    {label: '누나', value: '누나', userName: '김누나'},
   ];
 
   const handleItemSelect = selectedValue => {
@@ -59,10 +59,22 @@ export default function GaArea({seatsData}: any) {
     // seatsData에서 좌석을 찾아 등급 정보를 얻기
     const seatData = seatsData.find(seat => seat.seat_id === seatId);
     const seatGrade = seatData ? seatData.grade : 'Unknown';
+    const gradePrice = seatData ? seatData.grade_price : 0;
+    const memberInfo = familyMembers.find(
+      member => member.value === selectedDrop,
+    );
+    const userName = memberInfo ? memberInfo.userName : '알 수 없음';
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
-      [selectedDrop]: {seatId, seatRow, seatCol, seatGrade},
+      [selectedDrop]: {
+        seatId,
+        seatRow,
+        seatCol,
+        seatGrade,
+        gradePrice,
+        userName,
+      },
     }));
   };
 
@@ -170,7 +182,11 @@ export default function GaArea({seatsData}: any) {
       <View>{renderSelectedSeats()}</View>
 
       <View>
-        <SeatSum selectedSeats={selectedSeats} seatsData={seatsData} />
+        <SeatSum
+          selectedSeats={selectedSeats}
+          seatsData={seatsData}
+          showID={show_id}
+        />
       </View>
     </>
   );
