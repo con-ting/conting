@@ -1,8 +1,9 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, TokenAccount};
+use anchor_spl::{
+    metadata::{mpl_token_metadata, Metadata},
+    token::{Mint, TokenAccount},
+};
 use arrayref::array_ref;
-use mpl_token_metadata::accounts::Metadata;
-use mpl_token_metadata::instructions::UseV1CpiBuilder;
 use solana_program::sysvar::{self, SysvarId};
 
 declare_id!("Even2kqboEgiEv8ozq4fMyiDi727VeRbTD7SQogF5vrn");
@@ -27,7 +28,9 @@ pub mod event {
         goods: String,
         uri: String,
     ) -> Result<()> {
-        let metadata = Metadata::try_from(&ctx.accounts.collection_metadata_pda.to_account_info())?;
+        let metadata = mpl_token_metadata::accounts::Metadata::try_from(
+            &ctx.accounts.collection_metadata_pda.to_account_info(),
+        )?;
         let creators = metadata.creators.unwrap();
         let maybe_server = creators.get(0).unwrap();
         let maybe_agency = creators.get(1).unwrap();
@@ -64,7 +67,9 @@ pub mod event {
         require_gt!(now, event.start_timestamp);
         require_gt!(event.end_timestamp, now);
 
-        let metadata = Metadata::try_from(&ctx.accounts.metadata_pda.to_account_info())?;
+        let metadata = mpl_token_metadata::accounts::Metadata::try_from(
+            &ctx.accounts.metadata_pda.to_account_info(),
+        )?;
         let creators = metadata.creators.unwrap();
         let maybe_server = creators.get(0).unwrap();
         let maybe_singer = creators.get(2).unwrap();
@@ -75,20 +80,35 @@ pub mod event {
         let uses = metadata.uses.unwrap();
         require_gte!(uses.remaining, 1);
 
-        let participant = &ctx.accounts.participant;
-        // UseV1CpiBuilder::new(&ctx.accounts.metadata_program)
-        //     .authority(&participant)
-        //     .mint(&ctx.accounts.mint.to_account_info())
-        //     .metadata(&ctx.accounts.metadata_pda)
-        //     .payer(&participant)
-        //     .system_program(&ctx.accounts.system_program)
-        //     .sysvar_instructions(&ctx.accounts.sysvar_instructions)
-        //     .invoke()?;
+        // mpl_token_metadata::instructions::UpdateV1 {
+        //     authority: ctx.accounts.delegate.key(),
+        //     delegate_record: None,
+        //     token: None,
+        //     mint: ctx.accounts.mint.key(),
+        //     metadata: ctx.accounts.metadata_pda.key(),
+        //     edition: None,
+        //     payer: ctx.accounts.participant.key(),
+        //     system_program: ctx.accounts.system_program.key(),
+        //     sysvar_instructions: ctx.accounts.sysvar_instructions.key(),
+        //     authorization_rules_program: None,
+        //     authorization_rules: None,
+        // }
+        // .instruction(mpl_token_metadata::instructions::UpdateV1InstructionArgs {
+        //     new_update_authority: None,
+        //     data: None,
+        //     primary_sale_happened: None,
+        //     is_mutable: None,
+        //     collection: mpl_token_metadata::types::CollectionToggle::None,
+        //     collection_details: mpl_token_metadata::types::CollectionDetailsToggle::None,
+        //     uses: mpl_token_metadata::types::UsesToggle::Clear,
+        //     rule_set: mpl_token_metadata::types::RuleSetToggle::None,
+        //     authorization_data: None,
+        // });
 
         let entry = &mut ctx.accounts.entry;
         entry.event = event.key();
-        entry.participant = participant.key();
-        
+        entry.participant = ctx.accounts.participant.key();
+
         event.participants += 1;
         Ok(())
     }
@@ -164,8 +184,6 @@ pub struct EntryEvent<'info> {
         init,
         payer = participant,
         space = 8 + 72,
-        // seeds = ["entry".as_bytes(), participant.key().as_ref()],
-        // bump,
     )]
     pub entry: Account<'info, Entry>,
 
@@ -176,14 +194,12 @@ pub struct EntryEvent<'info> {
     #[account(mut)]
     pub metadata_pda: UncheckedAccount<'info>,
 
-    // Error: failed to send transaction: Transaction simulation failed: This program may not be used for executing instructions
     // /// CHECK:
-    // #[account(address = mpl_token_metadata::ID)]
-    // pub metadata_program: UncheckedAccount<'info>,
-    /// CHECK:
-    #[account(address = Instructions::id())]
-    pub sysvar_instructions: UncheckedAccount<'info>,
-    // pub rent: Sysvar<'info, Rent>,
+    // pub delegate: UncheckedAccount<'info>,
+    // pub token_metadata_program: Program<'info, Metadata>,
+    // /// CHECK:
+    // #[account(address = Instructions::id())]
+    // pub sysvar_instructions: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }
 

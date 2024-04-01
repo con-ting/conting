@@ -11,7 +11,7 @@ import {
   collectionMint, par1sMint, par2sMint, par3sMint
 } from './env'
 
-describe('event', async () => {
+describe('did', async () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   const program = anchor.workspace.Did as anchor.Program<Did>
