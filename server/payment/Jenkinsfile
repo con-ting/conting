@@ -111,7 +111,7 @@ pipeline {
                             continueOnError: false, failOnError: true,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Pay_Service",
                                     verbose: true,
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f pay"),
