@@ -34,13 +34,16 @@ import {
   goMainPageState,
   userInfoState,
 } from '../../utils/recoil/Atoms.ts';
-import {korDateFormat, serverDateFormat} from '../../config/TimeFormat.ts';
+import {
+  korDateFormat,
+  serverDateFormat,
+} from '../../utils/common/TimeFormat.ts';
 import DatePicker from 'react-native-date-picker';
 import * as Font from '../../config/Font.ts';
 import {emailConfirm, login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {alertAndLog} from '../../utils/common/alertAndLog.ts';
+
 import {
   Account,
   useAuthorization,

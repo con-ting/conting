@@ -2,10 +2,10 @@ spring:
   application:
     name: notification
 server:
-  port: 8889
+  port: 8886
 
 fcm:
-  service-account-file: /home/ec2-user/infra/google-services.json
+  service-account-file: google.json
   project-id: conting-d3d77
 
 eureka:
@@ -14,3 +14,6 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: ${DISCOVERY_SERVER}
+
+service:
+  user: ${USER-SERVICE}

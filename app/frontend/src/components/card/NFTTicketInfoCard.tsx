@@ -28,8 +28,7 @@ type NFTTicketCardProps = {
  * @returns
  * @author 전상혁
  */
-
-export default function NFTTicket(props: NFTTicketCardProps) {
+export default function NFTTicketInfoCard(props: NFTTicketCardProps) {
   // 응모권 보유 상태에 따라 표시할 텍스트 결정
   const statusText = props.status ? '응모권 보유' : '응모권 소진';
 

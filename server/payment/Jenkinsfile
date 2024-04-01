@@ -1,0 +1,172 @@
+pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        PAY_DB_URL="${env.PAY_DB_URL}"
+        PAY_DB_USER_NAME="${env.PAY_DB_USER_NAME}"
+        PAY_DB_PASSWORD="${env.PAY_DB_PASSWORD}"
+        KAFKA_URL="${env.KAFKA_URL}"
+        IAMPORT_USER_ID="${env.IAMPORT_USER_ID}"
+        IAMPORT_SECRET="${env.IAMPORT_SECRET}"
+        IAMPORT_API_KEY="${env.IAMPORT_API_KEY}"
+
+    }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // 코드 체크아웃
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Confirm Echo') {
+            steps {
+                script {
+                    echo "pay server 입니다."
+                }
+            }
+        }
+         stage('Build Pay-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "pay server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/payment/gradlew'
+                            sh '''
+                                cd ./server/payment
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Pay-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:Pay_${BUILD_NUMBER}", "-f server/payment/Dockerfile ./server/payment")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push Gateway Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:Pay_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean Pay Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:Pay_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Pay_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        //sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep gateway | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Pay_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f pay"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Pay_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" " + repository + ":Pay_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+                stage("Cleanup") {
+    steps {
+        sh 'rm -rf ${WORKSPACE}/*'
+        sh 'docker system prune -af'
+    }
+}
+    }
+
+    post {
+        success {
+           script {
+                   def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                   def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                   mattermostSend (color: 'good',
+                   message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                   endpoint: "${env.MM_WEBHOOK}",
+                   channel: 'C209_CICD'
+                   )
+                   echo "${env.MM_WEBHOOK}"
+               }
+           }
+       failure {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'danger',
+               message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+       unstable {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'good',
+               message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+    }
+}

@@ -1,12 +1,9 @@
 pipeline {
-<<<<<<< HEAD
-=======
     environment {
         repository = "1w2k/c209"
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
     }
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
     agent any
 
     stages {
@@ -19,19 +16,6 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
-        stage('Build Discovery-Server .JAR') {
-=======
-        stage('Confirm Echo') {
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
-            steps {
-                script {
-                    echo "discovery server 입니다."
-                }
-            }
-        }
-<<<<<<< HEAD
-=======
          stage('Build Discovery-Server .JAR') {
                     steps {
                         script {
@@ -123,7 +107,7 @@ pipeline {
                         )
                     }
                 }
->>>>>>> 156589c8543da47a953858903707c80c0c1d93c5
+
     }
 
     post {

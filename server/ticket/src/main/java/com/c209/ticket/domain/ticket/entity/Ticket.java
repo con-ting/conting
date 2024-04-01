@@ -3,15 +3,19 @@ package com.c209.ticket.domain.ticket.entity;
 
 import com.c209.ticket.domain.ticket.dto.TicketDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Table("ticket")
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Ticket {
 
     @Id
@@ -21,11 +25,15 @@ public class Ticket {
     private Long ownerId;
     private Long buyerId;
     private Long scheduleId;
-    private Long fingerprintKey;
-    private Long orderId;
+    private Long seatId;
+    private String fingerprintKey;
+    private String impUid;
     private String row;
     private String col;
     private String nftUrl;
+    private Status status;
+
+    private LocalDateTime payDueDate;
 
 
     public TicketDto toDto(String uuid){
@@ -46,5 +54,21 @@ public class Ticket {
             this.isUsed = true;
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId=" + ticketId +
+                ", isUsed=" + isUsed +
+                ", ownerId=" + ownerId +
+                ", buyerId=" + buyerId +
+                ", scheduleId=" + scheduleId +
+                ", fingerprintKey='" + fingerprintKey + '\'' +
+                ", impUid=" + impUid +
+                ", row='" + row + '\'' +
+                ", col='" + col + '\'' +
+                ", nftUrl='" + nftUrl + '\'' +
+                '}';
     }
 }

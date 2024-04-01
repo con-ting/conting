@@ -1,8 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/mainScreen/MainScreen';
-import ReservationWaitingScreen from '../screens/lotteryResultScreen/ReservationWaitingScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
-import {TicketApplyListScreen} from '../screens/ticketApplyScreen/TicketApplyListScreen';
+import TicketApplyListScreen from '../screens/ticketApplyScreen/TicketApplyListScreen';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,14 +11,19 @@ import {
   Ticket,
   Element3,
   User,
-  Notification,
   SearchNormal,
-  SearchNormal1,
 } from 'iconsax-react-native';
-import { useRecoilValue } from 'recoil';
-import { posterColor } from '../utils/recoil/Atoms';
-import { useNavigation } from '@react-navigation/native';
-
+import {useRecoilValue} from 'recoil';
+import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen';
+import {currentColor, pastColor} from '../utils/recoil/Atoms';
+import {useNavigation} from '@react-navigation/native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import {useEffect, useState} from 'react';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -68,7 +72,33 @@ const GradientIcon = ({focused}: any) => {
 };
 
 export default function BottomTabNavigator() {
-  const backgroundColor = useRecoilValue(posterColor)
+  const currentColors = useRecoilValue(currentColor);
+  const pastColors = useRecoilValue(pastColor)
+  const progress = useSharedValue(0);
+  const [previousColor, setPreviousColor] = useState(pastColors[0]);
+  const [nowColor, setNowColor] = useState(currentColors[0]);
+
+  // 뒷배경 애니메이션을 위한 부분
+  const duration = 1000;
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        progress.value,
+        [0, 1],
+        [previousColor, nowColor],
+      ),
+    };
+  });
+
+  // recoil 상태 변경 감지하여 색상 전환
+  useEffect(() => {
+    setPreviousColor(pastColors[0])
+    setNowColor(currentColors [0])
+    progress.value = withTiming(1 - progress.value, {
+      duration: duration,
+    });
+  }, [currentColors]);
+
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -86,7 +116,15 @@ export default function BottomTabNavigator() {
         component={MainScreen}
         options={{
           headerShown: true,
-          headerStyle: {backgroundColor: backgroundColor[0]},
+          headerBackground: () => {
+            return (
+              <View>
+                <Animated.View
+                  style={[{width: '100%', height: '100%'}, animatedStyle]}
+                />
+              </View>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <Home
               color={focused ? '#FCC434' : '#CCCCCC'}
@@ -133,22 +171,25 @@ export default function BottomTabNavigator() {
               </View>
             </View>
           ),
-          headerRight: () =>{
+          headerRight: () => {
             const navigation = useNavigation();
-            return(
-
-            <View style={{marginRight: 10}}>
-              <TouchableOpacity>
-              <SearchNormal color="#FFFFFF" size={30} onPress={() => navigation.navigate('SearchMain')}/>
-              </TouchableOpacity>
-            </View>
-            )
-            },
+            return (
+              <View style={{marginRight: 10}}>
+                <TouchableOpacity>
+                  <SearchNormal
+                    color="#FFFFFF"
+                    size={30}
+                    onPress={() => navigation.navigate('SearchMain')}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          },
         }}
       />
       <BottomTab.Screen
         name={'추첨결과'}
-        component={ReservationWaitingScreen}
+        component={ResultMainScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <CardPos color={focused ? '#FCC434' : '#CCCCCC'} size={25} />

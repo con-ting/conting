@@ -1,0 +1,170 @@
+pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        TICKET_HOST="${env.TICKET_HOST}"
+        TICKET_DB_PORT="${env.TICKET_DB_PORT}"
+        TICKET_DB_USERNAME="${env.TICKET_DB_USERNAME}"
+        TICKET_DB_PASSWORD="${env.TICKET_DB_PASSWORD}"
+        KAFKA_URL="${env.KAFKA_URL}"
+
+    }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // 코드 체크아웃
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Confirm Echo') {
+            steps {
+                script {
+                    echo "ticket server 입니다."
+                }
+            }
+        }
+         stage('Build Ticket-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "discovery server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/ticket/gradlew'
+                            sh '''
+                                cd ./server/ticket
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Ticket-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:Ticket_${BUILD_NUMBER}", "-f server/ticket/Dockerfile ./server/ticket")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push Gateway Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:Ticket_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean Gateway Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:Ticket_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Ticket_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        //sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep ticket | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Ticket_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f ticket"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Ticket_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8883:8883 --name ticket --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e TICKET_HOST=\"${TICKET_HOST}\" -e TICKET_DB_PORT=\"${TICKET_DB_PORT}\" -e TICKET_DB_PASSWORD=\"${TICKET_DB_PASSWORD}\" -e TICKET_DB_USERNAME=\"${TICKET_DB_USERNAME}\" -e KAFKA_URL=\"${KAFKA_URL}\"  " + repository + ":Ticket_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+                stage("Cleanup") {
+    steps {
+        sh 'rm -rf ${WORKSPACE}/*'
+    }
+}
+    }
+
+    post {
+        success {
+           script {
+                   def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                   def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                   mattermostSend (color: 'good',
+                   message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                   endpoint: "${env.MM_WEBHOOK}",
+                   channel: 'C209_CICD'
+                   )
+                   echo "${env.MM_WEBHOOK}"
+               }
+           }
+       failure {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'danger',
+               message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+       unstable {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'good',
+               message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+    }
+}
+

@@ -1,10 +1,16 @@
 package com.c209.payment.domain.seat.dto.request;
 
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record SeatUpdateRequest(
-        Long seatId
+        Boolean isAvailable,
+        List<Long> seatIds
 ) {
 }

@@ -1,109 +1,62 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {SimpleInput, MultiLineInput} from '../../components/input/input';
-import {Dropdown} from '../../components/dropdown/Dropdown';
-import {widthPercent} from '../../config/Dimensions';
-import {CheckBox} from '../../components/checkbox/CheckBox';
-import {PopUpModal, SlideModal} from '../../components/modal/Modal';
-import {GrayButton} from '../../components/button/Button';
-import {SearchBar} from '../../components/searchBar/SearchBar.tsx';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+
+import {MAINBLACK} from '../../config/Color.ts';
+
 import {BasicConcertCardWide} from '../../components/card/ConcertCardWide.tsx';
+import {korDateFormatString} from '../../utils/common/TimeFormat.ts';
+import formatSido from '../../utils/common/SidoFormat.ts';
 
-export default function ReservationWaitingScreen() {
-  const [empId, setEmpId] = useState('');
-
-  const [dropDownTestOpen, setDropDownTestOpen] = useState(false);
-
-  const [selectedDropDownTest, setSelectedDropDownTest] = useState(null);
-
-  const handleSidoItemSelect = selectedValue => {
-    setSelectedDropDownTest(selectedValue);
-  };
-  const [checkBoxTest, setCheckBoxTest] = useState(false);
-  const hospitalData = [
-    {label: '테스트1', value: '테스트벨류'},
-    {label: '테스트2', value: '테스트벨류2'},
-    {label: '테스트3', value: '테스트벨류3'},
-    {label: '테스트4', value: '테스트벨류4'},
-    {label: 'test', value: 'test'},
-  ];
-  const [popUpModalTest, setPopUpModalTest] = useState(false);
-  const [sliceModalTest, setSliceModalTest] = useState(false);
-
-  const sliceModalBtn = () => {
-    setSliceModalTest(!sliceModalTest);
-  };
-  const popUpModalBtn = () => {
-    setPopUpModalTest(!popUpModalTest);
-  };
-  const search = (query: string) => {
-    console.log('검색어: ', query);
-    // 검색어를 사용한 검색 로직 구현
-    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
-  };
-
+export type concertCardData = {
+  ticket_id: number;
+  order_id: number;
+  schedule_id: string;
+  performance_id: number; //local DB
+  img: string; //local DB
+  title: string; // local DB
+  hall_location: string; //local DB
+  hall_name: string; //local DB
+  time: string;
+  running_time: string;
+  img_tag_type: string; // '예매완료, 환불대기, 결제대기, 기한경과', 예매 실패
+  img_tag_color: string;
+  date_tag: string;
+  date_tag_color: string;
+  swipe_btn_disabled?: boolean;
+  btn_onPress?: () => void;
+  swipe_btn_onPress?: () => void;
+  swipe_btn_text?: string; // 스와이프 버튼에 들어갈 텍스트
+  swipe_btn_color?: string; //스와이프 버튼의 백그라운드 색상
+};
+export default function ReservationWaitingScreen(props: {
+  concerts: Array<concertCardData>;
+}) {
+  console.log('concerts=', props.concerts);
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={search}></SearchBar>
-      <Text style={styles.text}>환불대기중 페이지</Text>
-      <Text style={styles.text}>메인 페이지</Text>
-      <GrayButton
-        onPress={popUpModalBtn}
-        btnText="팝업 모달테스트"></GrayButton>
-      <GrayButton
-        onPress={sliceModalBtn}
-        btnText="슬라이스 모달테스트"></GrayButton>
-      <BasicConcertCardWide
-        onPress={() => console.log("히히")}
-        disabled={true}
-        img_tag_disabled={true}
-        title={'우디(Woody)의 映花fefefefeafdfasvawevasvasdvasdv'}
-        img_url={
-          'http://ticketimage.interpark.com/PlayDictionary/DATA/PlayDic/PlayDicUpload/040001/24/02/0400012402_199945_01.116.gif'
-        }
-        img_tag={'예매 예정'}
-        sido={'서울'}
-        concert_hall={
-          '신한카드 SOL페이 스퀘어 홀 한글한글한글한글ㅇ리암러ㅣㅇㅁㄴ;ㅏㄹ이박무창a'
-        }
-        date_tag={'예매시작일'}
-        date={'2024.07.05'}
-        swipe_btn_disabled={true}
-      />
-      <PopUpModal isVisible={popUpModalTest} setIsVisible={setPopUpModalTest}>
-        <View style={{padding: widthPercent(4)}}>
-          <SimpleInput
-            placeholder="하기싫어"
-            value={empId}
-            onChangeText={setEmpId}
-            width="30%"
-          />
-          <MultiLineInput
-            placeholder="하기싫어"
-            value={empId}
-            onChangeText={setEmpId}
-            width="70%"
-            height={100}
-          />
-        </View>
-      </PopUpModal>
-      <SlideModal isVisible={sliceModalTest} setIsVisible={setSliceModalTest}>
-        <Dropdown
-          data={hospitalData}
-          width={widthPercent(165)}
-          placeholder="드롭다운 테스트"
-          zIndexInverse={10}
-          open={dropDownTestOpen}
-          setOpen={setDropDownTestOpen}
-          onSelectValue={handleSidoItemSelect}
-          textSize={12}
-        />
-        <CheckBox
-          text="체크박스 테스트"
-          isChecked={checkBoxTest}
-          setIsChecked={() => setCheckBoxTest(!checkBoxTest)}
-        />
-      </SlideModal>
+      {props.concerts.map(
+        concert =>
+          concert && (
+            <View style={styles.card}>
+              <BasicConcertCardWide
+                onPress={concert.btn_onPress}
+                title={concert.title}
+                img_url={concert.img}
+                img_tag={concert.img_tag_type}
+                img_tag_disabled={false}
+                img_tag_color={concert.img_tag_color}
+                sido={formatSido(concert.hall_location)}
+                concert_hall={concert.hall_name}
+                date_tag={concert.date_tag}
+                date={korDateFormatString(concert.time)}
+                swipe_btn_disabled={concert.swipe_btn_disabled}
+                swipe_btn_text={concert.swipe_btn_text}
+                swipe_btn_color={concert.swipe_btn_color}
+                swipe_btn_onPress={concert.swipe_btn_onPress}
+              />
+            </View>
+          ),
+      )}
     </View>
   );
 }
@@ -111,14 +64,10 @@ export default function ReservationWaitingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black', // 배경색을 검은색으로 설정
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: MAINBLACK,
   },
-
-  text: {
-    color: 'white', // 텍스트 색상을 하얀색으로 설정하여 가독성 확보
-    fontSize: 20,
-    fontFamily: 'Jalnan2TTF',
+  card: {
+    marginTop: 10,
+    marginBottom: 10,
   },
 });

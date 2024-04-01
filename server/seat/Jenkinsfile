@@ -7,6 +7,9 @@ pipeline {
         SEAT_HOST="${env.SEAT_HOST}"
         SEAT_DB_USER_NAME="${env.SEAT_DB_USER_NAME}"
         SEAT_DB_PASSWORD="${env.SEAT_DB_PASSWORD}"
+        KAFKA_URL="${env.KAFKA_URL}"
+        SEAT_SYNC_DB_URL="${SEAT_SYNC_DB_URL}"
+        SEAT_ASYNC_DB_URL="${SEAT_ASYNC_DB_URL}"
     }
     agent any
 
@@ -111,7 +114,7 @@ pipeline {
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f seat"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Seat_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8889:8889 --name seat --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e SEAT_HOST=\"${SEAT_HOST}\" -e SEAT_DB_USER_NAME=\"${SEAT_DB_USER_NAME}\" -e SEAT_DB_PASSWORD=\"${SEAT_DB_PASSWORD}\"  " + repository + ":Seat_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8889:8889 --name seat --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e SEAT_HOST=\"${SEAT_HOST}\" -e SEAT_DB_USER_NAME=\"${SEAT_DB_USER_NAME}\" -e SEAT_ASYNC_DB_URL=\"${SEAT_ASYNC_DB_URL}\" -e SEAT_SYNC_DB_URL=\"${SEAT_SYNC_DB_URL}\" -e SEAT_DB_PASSWORD=\"${SEAT_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\"  " + repository + ":Seat_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]

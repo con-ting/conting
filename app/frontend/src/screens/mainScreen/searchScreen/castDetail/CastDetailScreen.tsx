@@ -14,20 +14,71 @@ import CastInfo from '../../../../components/infos/CastInfo';
 import CastActivityScreen from './CastActivityScreen';
 import CastEventScreen from './CastEventScreen';
 import {widthPercent} from '../../../../config/Dimensions';
+import {
+  CastDetailSearchApi,
+  ConcertSearchApi,
+} from '../../../../api/catalog/concert';
 
 const Tabs = ['활동', '이벤트'];
 
 export default function CastDetailScreen({route}: any) {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const {castId} = route.params; // 네비게이션 파라미터에서 castId를 추출
+  const [castInfo, setCastInfo] = useState([]); //가수 프로필  정보
+  const [castAlbum, setCastAlbum] = useState([]); //가수 앨범 정보
+  const [singer, setSinger] = useState([]); //가
+  const [castName, setCastName] = useState('');
+  const [concerts, setConcerts] = useState([]); // 공연 데이터 상태
+
+  useEffect(() => {
+    fetchCast(castId);
+  }, [castId]);
+
+  const fetchCast = async (id: number) => {
+    console.log('fetchCastRequest =', {
+      singer_id: id,
+    });
+
+    const response = await CastDetailSearchApi(id);
+    console.log('fetchCastResponse =', response);
+    setCastInfo(response.singer);
+    setCastName(response.singer.name);
+    fetchConcerts(response.singer.name);
+    console.log('이름은-----------------', castName);
+    console.log('캐스트정보', castInfo);
+    // 가수 명 세팅 후 그에 해당하는 콘서트 조회
+    setCastAlbum(response.albums);
+  };
+
+  const fetchConcerts = async (name: string) => {
+    console.log('fetchConcertsRequest=', {
+      status: '', // 상태 (예: '예매중')
+      region: '', // 지역
+      sort: '', // 정렬 기준
+      keyword: name, // 조회할 출연진 명
+      searchType: '가수', // 검색 타입
+      reservation_type: '', // 예매 방식
+    });
+
+    const response = await ConcertSearchApi({
+      status: '', // 상태 (예: '예매중')
+      region: '', // 지역
+      sort: '', // 정렬 기준
+      keyword: name, // 검색 쿼리
+      searchType: '가수', // 검색 타입
+      reservation_type: '', // 예매 방식
+    });
+    console.log('fetchConcertsResponse=', response);
+    setConcerts(response.shows);
+  };
 
   // 주어진 castId와 일치하는 출연진 찾기
-  const cast = casts.find(cast => cast.id === castId);
+  // const cast = casts.find(cast => cast.id === castId);
 
   const renderTabs = () => {
     switch (selectedTab) {
       case '활동':
-        return <CastActivityScreen />;
+        return <CastActivityScreen albums={castAlbum} concerts={concerts} />;
       case '이벤트':
         return <CastEventScreen />;
       default:
@@ -39,7 +90,11 @@ export default function CastDetailScreen({route}: any) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.context}>
-        {cast && <CastInfo name={cast.name} img={cast.image} />}
+        <CastInfo
+          name={castInfo.name}
+          img={castInfo.instagram}
+          instagram={castInfo.profile}
+        />
         <View style={styles.tabsContainer}>
           {Tabs.map(tab => (
             <TouchableOpacity

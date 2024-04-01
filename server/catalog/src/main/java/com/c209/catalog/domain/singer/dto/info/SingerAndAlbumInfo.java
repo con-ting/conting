@@ -13,8 +13,8 @@ public class SingerAndAlbumInfo {
 
     private Long singerId;
     private String singerName;
-    private String instagram;
     private String singerImage;
+    private String instagram;
     private Long albumId;
     private String albumImage;
     private String albumName;

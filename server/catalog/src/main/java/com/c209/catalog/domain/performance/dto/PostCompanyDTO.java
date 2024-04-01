@@ -15,6 +15,5 @@ import lombok.*;
 public class PostCompanyDTO {
     @NotNull
     private String companyName;
-    @NotNull
     private String call;
 }

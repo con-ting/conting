@@ -1,13 +1,4 @@
 import {atom} from 'recoil';
-import {
-  Account,
-  Authorization,
-} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
-import {
-  AuthToken,
-  Base64EncodedAddress,
-} from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {PublicKey} from '@solana/web3.js';
 
 /**
  * token확인 후 main으로 갈지에 대한 정보를 저장하고 있을 상태 atom입니다.
@@ -39,9 +30,18 @@ export const userInfoState = atom<null | UserInfoStateType>({
   },
 });
 
-export const posterColor = atom<Array<string>>({
-  key: 'posterColor',
-  default: ['#000000', '#000000', '#000000'],
+/**
+ * 포스터 별 뒷 배경을 바꾸기 위해 전역으로 관리하는 색상입니다.
+ * @author 강성권
+ */
+export const pastColor = atom<Array<string>>({
+  key: 'pastColor',
+  default: ['#F0000F', '#000000', '#000000'],
+})
+
+export const currentColor = atom<Array<string>>({
+  key: 'currentColor',
+  default: ['#0000FF', '#000000', '#000000'],
 });
 /**
  * FCM Token 을 담고 있는 atom입니다.

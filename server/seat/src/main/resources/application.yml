@@ -33,6 +33,9 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: ${DISCOVERY_SERVER}
+
+kafka:
+  url: ${KAFKA_URL}
 ---
 spring:
   config:

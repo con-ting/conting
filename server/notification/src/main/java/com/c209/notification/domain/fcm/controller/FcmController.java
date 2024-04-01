@@ -17,7 +17,7 @@ public class FcmController {
 
     @PostMapping("/send")
     public Mono<ResponseEntity<FcmSendResponse>> send(@RequestBody SendFcmMessageRequest request){
-        return fcmService.sendMessage(request.title(), request.body(), request.token())
+        return fcmService.sendMessage(request.title(), request.body(), request.receiverId())
                 .map(FcmSendResponse::new)
                 .map(ResponseEntity::ok);
     }

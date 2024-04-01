@@ -1,20 +1,55 @@
 import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
-import TicketQrCard from '../../components/card/TicketQrCard';
-import {YellowButton} from '../../components/button/Button';
 import {useNavigation} from '@react-navigation/native';
-import {MAINBLACK} from '../../config/Color';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
-import LinearGradient from 'react-native-linear-gradient';
 import {getColors} from 'react-native-image-colors';
-
+import {
+  Easing,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 
 export default function TicketListScreen() {
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [posterColors, setPosterColors] = useState(['#000000', '#000000']);
+  const [posterColors, setPosterColors] = useState([
+    '#000000',
+    '#000000',
+    '#000000',
+  ]);
+  const firstColor = useSharedValue(posterColors[0]);
+  const secondColor = useSharedValue(posterColors[1]);
+  const thirdColor = useSharedValue(posterColors[2]);
+  const {width, height} = useWindowDimensions();
+
+  // 뒷배경 애니메이션을 위한 부분
+  const duration = 1000;
+  const colors = useDerivedValue(() => {
+    return [firstColor.value, secondColor.value, thirdColor.value];
+  }, []);
+  useEffect(() => {
+    const onChange = async () => {
+      firstColor.value = withTiming(posterColors[0], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      secondColor.value = withTiming(posterColors[1], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      thirdColor.value = withTiming(posterColors[2], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+    };
+    onChange()
+  },[posterColors]);
+
+  // 배경색 가져오기
   useEffect(() => {
     getColors(concertList[currentIndex].poster, {
       cache: true,
@@ -23,6 +58,7 @@ export default function TicketListScreen() {
       setPosterColors([res?.dominant, res.muted, res.average]);
     });
   }, [currentIndex]);
+
   const concertList = [
     {
       show_id: 2,
@@ -85,46 +121,58 @@ export default function TicketListScreen() {
   const renderItem = ({item, index}) => {
     return (
       <View style={styles.ticketContainer}>
-        <TicketEntryCard poster={item.poster} />
+        <TicketEntryCard poster={item.poster} colors={posterColors} />
       </View>
     );
   };
   return (
-    <LinearGradient style={styles.container} colors={posterColors}>
+    <>
+      <Canvas
+        style={{
+          flex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}>
+        <Rect x={0} y={0} width={width} height={height}>
+          <LinearGradient
+            start={vec(100, 0)}
+            end={vec(width, height / 2)}
+            colors={colors}
+          />
+        </Rect>
+      </Canvas>
       <Carousel
         data={concertList}
         renderItem={renderItem}
         width={widthPercent(400)}
         mode="horizontal-stack"
         modeConfig={{
-          moveSize: 200,
+          moveSize: 100,
           stackInterval: 50,
           scaleInterval: 0.1,
           rotateZDeg: 80,
         }}
-        onSnapToItem={index => setCurrentIndex(index)}
+        onSnapToItem={index => {
+          setCurrentIndex(index);
+        }}
       />
-    </LinearGradient>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  context: {
-    flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
-    // padding: 10,
   },
   ticketContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   buttonContainer: {
     width: '100%',
     height: 100,

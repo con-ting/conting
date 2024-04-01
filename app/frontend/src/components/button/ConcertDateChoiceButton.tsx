@@ -11,14 +11,14 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {queuePostApi} from '../../api/queue/queue';
 
-export default function ConcertChoiceButton({schedule}) {
+export default function ConcertChoiceButton({schedule, showID}) {
   const [selectedDateId, setSelectedDateId] = useState(null);
   const [postDateId, setPostDateId] = useState({});
 
   const navigation = useNavigation();
 
   const switchColor = id => {
-    console.log('Selected button ID:', id); // 클릭된 버튼의 ID 출력
+    console.log('Selected schedule_id:', id); // 클릭된 버튼의 ID 출력
     if (selectedDateId === id) {
       // 이미 선택된 경우, 선택 해제
       setSelectedDateId(null);
@@ -39,6 +39,7 @@ export default function ConcertChoiceButton({schedule}) {
         navigation.navigate('Waiting', {
           rank: queueData.rank,
           id: selectedDateId,
+          showID: showID,
         });
       } catch (error) {
         console.error('대기열 등록 실패:', error);
@@ -55,16 +56,18 @@ export default function ConcertChoiceButton({schedule}) {
   useEffect(() => {
     // 주어진 schedule 데이터가 배열 안에 배열 형태로 들어있는 것을 확인하고 바깥쪽 배열을 제거합니다.
     const scheduleData = schedule[0]; // schedule 데이터 수정
-    const processedDates = scheduleData.map(date => {
-      const startDate = new Date(date.start_datetime);
-      const month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
-      const day = startDate.getDate().toString().padStart(2, '0'); // 일 정보를 2자리 문자열로 변환
-      return {
-        id: date.id,
-        month: month.toString(), // 월 정보를 문자열로 저장
-        day: day.toString(), // 일 정보를 문자열로 저장
-      };
-    });
+    const processedDates = scheduleData.map(
+      (date: {start_datetime: string | number | Date; id: any}) => {
+        const startDate = new Date(date.start_datetime);
+        const month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+        const day = startDate.getDate().toString().padStart(2, '0'); // 일 정보를 2자리 문자열로 변환
+        return {
+          id: date.id,
+          month: month.toString(), // 월 정보를 문자열로 저장
+          day: day.toString(), // 일 정보를 문자열로 저장
+        };
+      },
+    );
     setDates(processedDates);
   }, [schedule]);
 

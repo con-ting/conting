@@ -1,19 +1,29 @@
 server:
-  port: 8882
-
+  port: 8883
 
 spring:
   application:
     name: ticket-service
   r2dbc:
-    url: r2dbc:mariadb://localhost:9992/ticket?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 1234
+    url: r2dbc:mariadb://${TICKET_HOST}:${TICKET_DB_PORT}/ticket?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: ${TICKET_DB_USERNAME}
+    password: ${TICKET_DB_PASSWORD}
   data:
     redis:
-      host: 127.0.0.1
+      host: ${TICKET_HOST}
       port: 6379
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER}
+
+
 
 logging:
   level:
-    com.c209.ticket: DEBUG
+    com.c209.ticket: debug
+    io.lettuce.core: debug
+kafka:
+  url: ${KAFKA_URL}

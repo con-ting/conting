@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import NFTTicket from '../../../components/card/NFTTicketCard';
+import NFTTicket from '../../../components/card/NFTTicketInfoCard.tsx';
 import {fontPercent} from '../../../config/Dimensions';
 import ToggleSwitch from '../../../components/toggle/ToggleSwitch';
 

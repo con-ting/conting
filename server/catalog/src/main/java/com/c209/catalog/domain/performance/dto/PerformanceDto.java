@@ -19,7 +19,6 @@ public class PerformanceDto {
     private Long show_id;
     @NotNull
     private String title;
-    @NotNull
     private String description;
     @NotNull
     private String poster;

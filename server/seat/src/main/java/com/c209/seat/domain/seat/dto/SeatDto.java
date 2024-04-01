@@ -15,7 +15,7 @@ public record SeatDto (
         Boolean isAvailable,
         String row,
         String col,
-        Grade grade,
+        String grade,
         Integer gradePrice,
         String ntfUrl,
         Sector sector

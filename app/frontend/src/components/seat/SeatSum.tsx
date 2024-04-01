@@ -1,38 +1,45 @@
 import {StyleSheet, Text, View} from 'react-native';
-import seatsData from '../data/seatsData';
+// import seatsData from '../data/seatsData';
 import {F_SIZE_TITLE, F_SIZE_Y_HEADER} from '../../config/Font';
 import {YellowButton} from '../button/Button';
 import {useNavigation} from '@react-navigation/native';
+import {useEffect, useState} from 'react';
 
 type SeatSumProps = {
-  selectedSeats: Array<string>;
+  selectedSeats: {
+    [key: string]: {
+      seatId: string;
+      seatRow: string;
+      seatCol: string;
+      userName: string;
+    };
+  };
   seatsData: Array<{
-    id: string;
-    price: number;
+    seat_id: string;
+    grade_price: number;
   }>;
+  showID: string;
 };
 
 export default function SeatSum(props: SeatSumProps) {
   const navigation = useNavigation();
 
   const calTotalPrice = () => {
-    return props.selectedSeats.reduce((total, seatId) => {
-      const seat = props.seatsData.find(s => s.id === seatId);
-      return total + (seat ? seat.price : 0);
+    return Object.values(props.selectedSeats).reduce((total, {seatId}) => {
+      const seat = props.seatsData.find(s => s.seat_id === seatId);
+      return total + (seat ? seat.grade_price : 0);
     }, 0);
   };
 
   // 선택한 좌석이 없다면 렌더링 하지 않음
-  if (props.selectedSeats.length === 0) {
+  if (Object.keys(props.selectedSeats).length === 0) {
     return null;
   }
 
-  const selectedSeatsInfo = props.selectedSeats
-    .map(seatId => {
-      const seat = props.seatsData.find(s => s.id === seatId);
-      return seat ? {seat_id: seat.id, price: seat.price} : null;
-    })
-    .filter(info => info !== null); // 필터링하여 null 제거
+  useEffect(() => {
+    console.log('받아1', props.selectedSeats);
+    console.log('쇼ㅕ', props.showID);
+  });
 
   return (
     <View style={styles.container}>
@@ -42,7 +49,10 @@ export default function SeatSum(props: SeatSumProps) {
       </View>
       <YellowButton
         onPress={() =>
-          navigation.navigate('Pay', {selectedSeats: selectedSeatsInfo})
+          navigation.navigate('Pay', {
+            selectedSeats: props.selectedSeats,
+            showID: props.showID,
+          })
         }
         width={190}
         btnText="티켓 구매"
