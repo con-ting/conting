@@ -19,12 +19,6 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      default-filters:
-        - name: GlobalLoggingFilter
-          args:
-            baseMessage: Spring Cloud Gateway Global Filter
-            preLogger: true
-            postLogger: true
       routes:
         - id: auth-service
           uri: ${AUTH_SERVICE}
@@ -66,6 +60,12 @@ spring:
           uri: ${TICKET_SERVICE}
           predicates:
             - Path=/ticket/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: pay-service
+          uri: ${PAY_SERVICE}
+          predicates:
+            - Path=/order/**
           filters:
             - AuthorizationHeaderFilter
     default-filters:

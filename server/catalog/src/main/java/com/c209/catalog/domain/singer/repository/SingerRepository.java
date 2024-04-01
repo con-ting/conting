@@ -20,8 +20,8 @@ public interface SingerRepository extends JpaRepository<Singer, Long> {
     @Query("SELECT new com.c209.catalog.domain.singer.dto.info.SingerAndAlbumInfo ("+
     "s.id, "+
     "s.name, "+
-    "s.image, "+
     "s.instagram, "+
+    "s.image, "+
     "a.id, "+
     "a.image, "+
     "a.name," +

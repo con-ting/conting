@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {F_SIZE_TITLE, F_SIZE_Y_HEADER} from '../../config/Font';
 import {YellowButton} from '../button/Button';
 import {useNavigation} from '@react-navigation/native';
+import {useEffect, useState} from 'react';
 
 type SeatSumProps = {
   selectedSeats: {
@@ -10,12 +11,14 @@ type SeatSumProps = {
       seatId: string;
       seatRow: string;
       seatCol: string;
+      userName: string;
     };
   };
   seatsData: Array<{
     seat_id: string;
     grade_price: number;
   }>;
+  showID: string;
 };
 
 export default function SeatSum(props: SeatSumProps) {
@@ -33,13 +36,10 @@ export default function SeatSum(props: SeatSumProps) {
     return null;
   }
 
-
-  const selectedSeatsInfo = Object.values(props.selectedSeats)
-  .map(({seatId}) => {
-    const seat = props.seatsData.find(s => s.seat_id === seatId);
-    return seat ? {seat_id: seat.seat_id, price: seat.grade_price} : null;
-  })
-  .filter(info => info !== null); // 필터링하여 null 제거
+  useEffect(() => {
+    console.log('받아1', props.selectedSeats);
+    console.log('쇼ㅕ', props.showID);
+  });
 
   return (
     <View style={styles.container}>
@@ -49,7 +49,10 @@ export default function SeatSum(props: SeatSumProps) {
       </View>
       <YellowButton
         onPress={() =>
-          navigation.navigate('Pay', {selectedSeats: selectedSeatsInfo})
+          navigation.navigate('Pay', {
+            selectedSeats: props.selectedSeats,
+            showID: props.showID,
+          })
         }
         width={190}
         btnText="티켓 구매"

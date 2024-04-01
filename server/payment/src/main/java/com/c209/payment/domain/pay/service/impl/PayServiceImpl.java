@@ -1,6 +1,7 @@
 package com.c209.payment.domain.pay.service.impl;
 
 
+import com.c209.payment.domain.order.dto.request.OrderSuccessRequest;
 import com.c209.payment.domain.order.entity.Order;
 import com.c209.payment.domain.order.entity.PGStatus;
 import com.c209.payment.domain.order.exception.OrderError;
@@ -35,22 +36,25 @@ public class PayServiceImpl {
                 order.setPgStatus(PGStatus.AUTH_SUCCESS);
             }else{
                 order.setPgStatus(PGStatus.AUTH_INVALID);
+                throw new CommonException("사전등록시 등록했던 결제금액과 실제 결제 금액이 일치하지 않습니다.",HttpStatus.CONFLICT);
             }
 
         }catch(Exception e){
             e.printStackTrace();
-            if(order.getPgRetryCount()>2){
-                order.setPgStatus(PGStatus.CAPTURE_FAIL);
-            }else{
-                order.setPgStatus(PGStatus.CAPTURE_RETRY);
-            }
-            recapture(order, impUid);
+
+            throw new CommonException("아이엠포트 통신중 에러가 발생했습니다. 로그를 확인해야합니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+//            if(order.getPgRetryCount()>2){
+//                order.setPgStatus(PGStatus.CAPTURE_FAIL);
+//            }else{
+//                order.setPgStatus(PGStatus.CAPTURE_RETRY);
+//            }
+//            recapture(order, impUid);
         }finally{
             orderSyncRepository.save(order);
         }
     }
 
-    public void capture(PayAuthRequest request){
+    public void capture(OrderSuccessRequest request){
         Order order = orderSyncRepository.getOrderByMerchantUid(request.merchantUid()).orElseThrow(()-> new CommonException(OrderError.NOT_EXIST_MERCHANT_UID));
         capture(order, request.impUid());
     }
