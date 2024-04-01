@@ -15,20 +15,22 @@ import {useNavigation} from '@react-navigation/native';
 import {useRecoilState, useSetRecoilState} from 'recoil';
 import {currentColor, pastColor} from '../../utils/recoil/Atoms';
 import {ScrollView} from 'react-native-gesture-handler';
-import { Spacer } from '../../utils/common/Spacer';
+import {Spacer} from '../../utils/common/Spacer';
 
 // 인기 콘서트 조회
 type PopularConcertListProps = {
   popularConcert: any;
+  onChange: () => void;
 };
 
 export default function PopularConcertList({
   popularConcert,
+  onChange,
 }: PopularConcertListProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentColors , setCurrentColors] = useRecoilState(currentColor);
-  const [pastcolors, setPastColors] = useRecoilState(pastColor)
-  
+  const setPreviousColor = useSetRecoilState(pastColor);
+  const [currentColors, setCurrentColors] = useRecoilState(currentColor);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -36,7 +38,8 @@ export default function PopularConcertList({
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      setPastColors(currentColors)
+      console.log('배경색 가져오기 :', res);
+      setPreviousColor(currentColors);
       setCurrentColors([res?.dominant, res.muted, res.average]);
     });
   }, [currentIndex]);
@@ -83,9 +86,11 @@ export default function PopularConcertList({
               marginTop: 20,
             }}>
             <Text style={F_SIZE_Y_TITLE}>선착순 예매</Text>
-            <Spacer space={10}/>
-            <Text style={F_SIZE_HEADER} numberOfLines={1} ellipsizeMode="tail">{item.title}</Text>
-            <Spacer space={5}/>
+            <Spacer space={10} />
+            <Text style={F_SIZE_HEADER} numberOfLines={1} ellipsizeMode="tail">
+              {item.title}
+            </Text>
+            <Spacer space={5} />
             <Text style={F_SIZE_TITLE}>{item.hall_name}</Text>
           </View>
         </View>
@@ -99,7 +104,10 @@ export default function PopularConcertList({
       renderItem={renderItem}
       width={Dimensions.get('screen').width}
       height={Dimensions.get('window').height * 0.7}
-      onSnapToItem={index => setCurrentIndex(index)}
+      onSnapToItem={index => {
+        setCurrentIndex(index);
+        onChange();
+      }}
       defaultIndex={0}
       mode="parallax"
     />

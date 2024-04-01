@@ -1,13 +1,10 @@
 import {
-  ImageBackground,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {Shadow} from 'react-native-shadow-2';
 import TicketInfoCard from './TicketInfoCard';
 import {F_SIZE_TEXT} from '../../config/Font';
 import LinearGradient from 'react-native-linear-gradient';
@@ -69,7 +66,7 @@ export default function TicketQrCard(props: TicketCardProps) {
       } else {
         // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
         console.log('정상 실행');
-        const res = await ticketQRAPI({ticket_id: '2', finger_print: key});
+        const res = await ticketQRAPI({ticket_id: '10', finger_print: key});
         setQrURL(`${BASE_URL}/ticket/qr/${res.uuid}`);
         setIspass(true);
       }

@@ -34,15 +34,14 @@ export const userInfoState = atom<null | UserInfoStateType>({
  * 포스터 별 뒷 배경을 바꾸기 위해 전역으로 관리하는 색상입니다.
  * @author 강성권
  */
+export const pastColor = atom<Array<string>>({
+  key: 'pastColor',
+  default: ['#F0000F', '#000000', '#000000'],
+})
 
 export const currentColor = atom<Array<string>>({
   key: 'currentColor',
-  default: ['#000000', '#000000', '#000000'],
-});
-
-export const pastColor = atom<Array<string>>({
-  key: 'pastColor',
-  default: ['#000000', '#000000', '#000000'],
+  default: ['#0000FF', '#000000', '#000000'],
 });
 /**
  * FCM Token 을 담고 있는 atom입니다.
