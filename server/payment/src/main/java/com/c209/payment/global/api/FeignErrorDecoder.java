@@ -12,6 +12,8 @@ public class FeignErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String s, Response response) {
+        log.error("Feign Client Error Response - Status: {}, Reason: {}, Body: {}", response.status(), response.reason(), response.body());
+
         //to-do 리팩토링하기
         int status = response.status();
         if(status==400){
