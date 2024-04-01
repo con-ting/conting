@@ -12,6 +12,7 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(CommonException.class)
     public ErrorResponse commonExceptionHandler(CommonException e){
+        e.printStackTrace();
         log.error(e.getMessage());
         return ErrorResponse.builder(e, e.getHttpStatus(), e.getMessage()).build();
     }
