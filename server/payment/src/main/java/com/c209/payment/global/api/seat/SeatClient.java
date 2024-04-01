@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-@FeignClient(name = "seat-service", url = "${seat.service.url}")
+@FeignClient(name = "seat-service", url = "${service.seat.url}")
 public interface SeatClient {
 
     @GetMapping("/list/status")
