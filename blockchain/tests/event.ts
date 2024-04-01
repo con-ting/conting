@@ -1,43 +1,53 @@
 import * as anchor from '@coral-xyz/anchor'
-import { Event } from '../target/types/event'
-import { expect } from 'chai'
-import * as splToken from '@solana/spl-token'
-import { Metaplex } from '@metaplex-foundation/js'
-import { SYSVAR_INSTRUCTIONS_PUBKEY, SYSVAR_SLOT_HASHES_PUBKEY, SYSVAR_SLOT_HISTORY_PUBKEY } from '@solana/web3.js'
-import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
+import * as spl from '@solana/spl-token'
+import * as web3 from '@solana/web3.js'
+import { SYSVAR_SLOT_HASHES_PUBKEY } from '@solana/web3.js'
+import { expect } from 'chai'
+
+import { Event } from '../target/types/event'
 import {
-  agency, singer, participant1 as par1, participant2 as par2, participant3 as par3,
-  collectionMint, par1sMint, par2sMint, par3sMint
+  agency,
+  collectionMint,
+  getMetadataPDA,
+  par1sMint,
+  par2sMint,
+  par3sMint,
+  participant1,
+  participant2,
+  participant3,
+  singer,
 } from './env'
 
-describe('event', async () => {
+describe('event', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   const program = anchor.workspace.Event as anchor.Program<Event>
 
   const server = (provider.wallet as NodeWallet).payer
-  const event = anchor.web3.Keypair.generate()
-  const entry = anchor.web3.Keypair.generate()
-  // let entry: anchor.web3.PublicKey;
+  const event = web3.Keypair.generate()
+  const entry = web3.Keypair.generate()
 
-  let collectionToken: anchor.web3.PublicKey;
-  let collectionMetadataPda: anchor.web3.PublicKey;
-  let par1sToken: anchor.web3.PublicKey;
-  let par2sToken: anchor.web3.PublicKey;
-  let par3sToken: anchor.web3.PublicKey;
-  let par1sMetadataPda: anchor.web3.PublicKey;
-  let par2sMetadataPda: anchor.web3.PublicKey;
-  let par3sMetadataPda: anchor.web3.PublicKey;
+  const collectionToken = spl.getAssociatedTokenAddressSync(collectionMint, server.publicKey)
+  const collectionMetadataPda = getMetadataPDA(collectionMint)
+  const par1sToken = spl.getAssociatedTokenAddressSync(par1sMint, participant1.publicKey)
+  const par2sToken = spl.getAssociatedTokenAddressSync(par2sMint, participant2.publicKey)
+  const par3sToken = spl.getAssociatedTokenAddressSync(par3sMint, participant3.publicKey)
+  const par1sMetadataPda = getMetadataPDA(par1sMint)
+  const par2sMetadataPda = getMetadataPDA(par2sMint)
+  const par3sMetadataPda = getMetadataPDA(par3sMint)
 
   before(async () => {
-    await provider.connection.requestAirdrop(agency.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(singer.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(par1.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(par2.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(par3.publicKey, anchor.web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(agency.publicKey, web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(singer.publicKey, web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(participant1.publicKey, web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(participant2.publicKey, web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(participant3.publicKey, web3.LAMPORTS_PER_SOL)
 
-    // entry = anchor.web3.PublicKey.findProgramAddressSync(
+    const accountInfo = await provider.connection.getAccountInfo(par1sMetadataPda)
+    console.log(accountInfo.data)
+
+    // entry = web3.PublicKey.findProgramAddressSync(
     //   [
     //     anchor.utils.bytes.utf8.encode('entry'),
     //     par1.publicKey.toBuffer(),
@@ -45,59 +55,16 @@ describe('event', async () => {
     //   program.programId
     // )[0]
     // console.log('Event ::', entry)
-
-    collectionToken = splToken.getAssociatedTokenAddressSync(
-      collectionMint,
-      server.publicKey,
-    )
-    par1sToken = splToken.getAssociatedTokenAddressSync(
-      par1sMint,
-      par1.publicKey,
-    )
-    par2sToken = splToken.getAssociatedTokenAddressSync(
-      par2sMint,
-      par2.publicKey,
-    )
-    par3sToken = splToken.getAssociatedTokenAddressSync(
-      par3sMint,
-      par3.publicKey,
-    )
-    const metaplex = Metaplex.make(provider.connection)
-    collectionMetadataPda = metaplex
-      .nfts()
-      .pdas()
-      .metadata({ mint: collectionMint })
-    par1sMetadataPda = metaplex
-      .nfts()
-      .pdas()
-      .metadata({ mint: par1sMint })
-    par2sMetadataPda = metaplex
-      .nfts()
-      .pdas()
-      .metadata({ mint: par2sMint })
-    par3sMetadataPda = metaplex
-      .nfts()
-      .pdas()
-      .metadata({ mint: par3sMint })
-
     await new Promise((resolve) => setTimeout(resolve, 1000))
   })
 
   it('Create Event', async () => {
     const now = Date.now() / 1000
     const start = now - 3
-    const end = now + 2
+    const end = now + 1
 
-    const tx = await program.methods.createEvent(
-      new anchor.BN(start),
-      new anchor.BN(end),
-      1,
-      'singer_name',
-      'name',
-      'description',
-      'goods',
-      'uri',
-    )
+    const tx = await program.methods
+      .createEvent(new anchor.BN(start), new anchor.BN(end), 1, 'singer_name', 'name', 'description', 'goods', 'uri')
       .accounts({
         agency: agency.publicKey,
         singer: singer.publicKey,
@@ -114,9 +81,10 @@ describe('event', async () => {
   })
 
   it('Entry Event', async () => {
-    const tx = await program.methods.entryEvent()
+    const tx = await program.methods
+      .entryEvent()
       .accounts({
-        participant: par1.publicKey,
+        participant: participant1.publicKey,
         event: event.publicKey,
         entry: entry.publicKey,
         mint: par1sMint,
@@ -126,7 +94,7 @@ describe('event', async () => {
         // tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
         // sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY
       })
-      .signers([par1, entry])
+      .signers([participant1, entry])
       .rpc()
     console.log('TxHash ::', tx)
 
@@ -135,12 +103,11 @@ describe('event', async () => {
   })
 
   it('Pick Winner', async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3500))
-    const participants = [par1.publicKey]
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    const participants = [participant1.publicKey]
 
-    const tx = await program.methods.pickWinner(
-      participants,
-    )
+    const tx = await program.methods
+      .pickWinner(participants)
       .accounts({
         agency: agency.publicKey,
         event: event.publicKey,
