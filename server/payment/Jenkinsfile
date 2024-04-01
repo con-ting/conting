@@ -126,7 +126,7 @@ pipeline {
                 stage("Cleanup") {
     steps {
         sh 'rm -rf ${WORKSPACE}/*'
-        sh 'sudo docker system prune -af'
+        sh 'docker system prune -af'
     }
 }
     }
