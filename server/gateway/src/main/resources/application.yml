@@ -68,6 +68,12 @@ spring:
             - Path=/order/**
           filters:
             - AuthorizationHeaderFilter
+        - id: did-service
+          uri: ${DID_SERVICE}
+          predicates:
+            - Path=/did/**
+          filters:
+            - AuthorizationHeaderFilter
     default-filters:
       - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
 jwt:
