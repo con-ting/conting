@@ -26,6 +26,7 @@ import {
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
 import {useRealm} from '../../components/realm/RealmContext.ts';
 import {orderResult} from '../../api/ticket/order.ts';
+import {useNavigation} from '@react-navigation/native';
 
 const Tabs = ['결제 내역', '이벤트 내역'];
 
@@ -35,6 +36,8 @@ export type orderResultApiData = {
   schedule_id: string; //'회차 ID';
   status: string; //'예매완료, 환불대기, 결제대기, 기한경과';
   pay_due_date: string; //'결제기한';
+  price: number; //'좌석의 가격';
+  imp_uid: string; //'아임포트 id';
 };
 export type localData = {
   schedule_id: number; // 이놈으로 조회해야함 이 데이터들을
@@ -54,6 +57,7 @@ export type localData = {
 function MakeConsertCardObject(
   apiData: orderResultApiData,
   localData: localData,
+  navigation: any,
 ) {
   switch (apiData.status) {
     case '환불대기':
@@ -130,8 +134,22 @@ function MakeConsertCardObject(
         },
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
-          //결제 페이지로 이동 로직
-          Alert.alert('앙 환불 띠');
+          //환불 페이지로 이동 로직
+          navigation.navigate('Refund', {
+            ticket_id: apiData.ticket_id,
+            order_id: apiData.order_id,
+            price: apiData.price,
+            imp_uid: apiData.imp_uid,
+            schedule_id: apiData.schedule_id,
+            // performance_id: localData.performance_id,
+            title: localData.title,
+            status: apiData.status,
+            img: localData.img,
+            hall_location: localData.hall_location,
+            hall_name: localData.hall_name,
+            start_date: localData.start_date,
+            // 필요한 다른 정보들을 추가로 전달할 수 있습니다.
+          });
         },
         swipe_btn_text: '환불하기', // 스와이프 버튼에 들어갈 텍스트
         swipe_btn_color: REDBASE, //스와이프 버튼의 백그라운드 색상
@@ -218,6 +236,7 @@ function MakeConsertCardObject(
 }
 
 export default function SearchMainScreen() {
+  const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
   const realm = useRealm();
@@ -233,7 +252,11 @@ export default function SearchMainScreen() {
         ticketPayment.schedule_id,
       );
       console.log('localResultData =', localResultData);
-      const result = MakeConsertCardObject(ticketPayment, localResultData);
+      const result = MakeConsertCardObject(
+        ticketPayment,
+        localResultData,
+        navigation,
+      );
       console.log('result = ', result);
       resultList.push(result);
     }
