@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/did_transfers")
+@RequestMapping("/did_transfer")
 @RequiredArgsConstructor
 public class DidTransferController {
     private final DidTransferService didTransferService;
