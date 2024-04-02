@@ -9,16 +9,12 @@ export async function getFamilies(
   connection: any,
   anchorWallet: any,
 ) {
-  console.log('[getFamiliesApi request] = ', connection);
-  console.log('[getFamiliesApi request] = anchorWallet ', anchorWallet);
   const families = [];
   const provider = new AnchorProvider(connection, anchorWallet, {
     preflightCommitment: 'confirmed',
     commitment: 'processed',
   });
-  console.log('[getFamiliesApi request] = provider', provider);
   const program = new Program<Did>(IDL, DID_PROGRAM_ID, provider);
-  console.log('[getFamiliesApi request] = program', program);
 
   const familiesLowerIsMe = await program.account.family.all([
     {
@@ -28,10 +24,6 @@ export async function getFamilies(
       },
     },
   ]);
-  console.log(
-    '[getFamiliesApi request] = familiesLowerIsMe',
-    familiesLowerIsMe,
-  );
   for (const familiesLowerIsMeElement of familiesLowerIsMe) {
     const data = await findFamilyInfo(
       String(familiesLowerIsMeElement.account.upper),
