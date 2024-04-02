@@ -72,6 +72,11 @@ export default function MainScreen() {
               onPress: async () => {
                 // if (token!=userInfo.fcm)
                 await updateUserFcmAndWallet({wallet: account.publicKey});
+                await setUserInfo({
+                  user_id: userInfo?.user_id,
+                  user_email: userInfo?.user_email,
+                  walletAddress: userInfo?.walletAddress,
+                });
               },
             },
           ],
