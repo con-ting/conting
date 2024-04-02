@@ -8,7 +8,6 @@ import lombok.ToString;
 import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@ToString
 public record OrderFailRequest(
         List<TicketIssueDto> ticketList
 ) {
