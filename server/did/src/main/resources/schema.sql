@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS did_transfer;
 CREATE TABLE did_transfer
 (
     did_transfer_id       BIGINT PRIMARY KEY AUTO_INCREMENT,
-    performance_id           BIGINT       NOT NULL,
+    performance_id        BIGINT       NOT NULL,
     owner_id              BIGINT       NOT NULL,
     buyer_id              BIGINT       NOT NULL,
     owner_wallet          VARCHAR(44)  NOT NULL,
