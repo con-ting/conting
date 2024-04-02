@@ -1,36 +1,38 @@
-import {
-  StyleSheet,
-} from 'react-native';
-import {
-  heightPercent,
-  widthPercent,
-} from '../../config/Dimensions';
+import {StyleSheet} from 'react-native';
+import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {useState} from 'react';
 import TicketQrCard from './TicketQrCard';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import TicketFront from '../ticketEntry/TicketFront';
+
+export type ticketProps = {
+  poster: string;
+  title: string;
+  date: string;
+  location: string;
+  row: string;
+  col: string;
+};
 
 type TicketEntryCardProps = {
   onPress?: () => void;
-  colors : Array<string>
-  poster: string;
-  title?: string;
-  ticketId?: number;
+  colors: Array<string>;
+  ticket: ticketProps;
 };
 
 export default function TicketEntryCard(props: TicketEntryCardProps) {
   const [isBack, setIsBack] = useState(true);
-
+  const {ticket} = props;
   const backHandler = () => {
-    console.log("앞뒤 전환")
+    console.log('앞뒤 전환');
     setIsBack(!isBack);
   };
   return (
     <TouchableOpacity activeOpacity={1} onPress={backHandler}>
       {isBack ? (
-        <TicketFront poster={props.poster}/>
+        <TicketFront {...ticket} />
       ) : (
-        <TicketQrCard colors={props.colors}/>
+        <TicketQrCard ticket={ticket} colors={props.colors} />
       )}
     </TouchableOpacity>
   );

@@ -1,12 +1,9 @@
 import {ImageBackground, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from '../card/TicketInfoCard';
+import {ticketProps} from '../card/TicketEntryCard';
 
-type props = {
-  poster: string;
-};
-
-export default function TicketFront(props: props) {
+export default function TicketFront(props: ticketProps) {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -14,8 +11,8 @@ export default function TicketFront(props: props) {
           uri: props.poster,
         }}
         style={styles.image}
-        imageStyle={{borderRadius: 20, resizeMode:"stretch"}}>
-        <TicketInfoCard />
+        imageStyle={{borderRadius: 20, resizeMode: 'stretch'}}>
+        <TicketInfoCard {...props} />
       </ImageBackground>
     </View>
   );

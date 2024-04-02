@@ -1,16 +1,19 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {AppState, Dimensions, StyleSheet, Text, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { checkQRAPI } from '../../../api/ticket/ticket';
+import {checkQRAPI} from '../../../api/ticket/ticket';
+import { alertAndLog } from '../../../utils/common/alertAndLog';
 
 export default function CameraScreen() {
-  const checkQR = async (event) => {
+  console.log(AppState.currentState)
+  const checkQR = async event => {
     const QrUrl = await event.data;
     const start = await QrUrl.indexOf('/ticket');
     const url = await QrUrl.substring(start);
     try {
-      const res = await checkQRAPI(url)
-    }catch(error){
-      console.log(error)
+      const res = await checkQRAPI({url: url});
+    } catch (error) {
+      console.log(error);
+      alertAndLog('', error)
     }
   };
 
