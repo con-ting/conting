@@ -12,6 +12,24 @@ spring:
     redis:
       host: ${TICKET_HOST}
       port: 6379
+  datasource:
+
+    url: jdbc:mariadb://${TICKET_HOST}:${TICKET_DB_PORT}/ticket?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: ${TICKET_DB_USERNAME}
+    password: ${TICKET_DB_PASSWORD}
+    hikari:
+      max-lifetime: 160000
+    jpa:
+      hibernate:
+        ddl-auto: none
+      open-in-view: false
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+          show_sql: true
+      generate-ddl: false
+
 eureka:
   client:
     register-with-eureka: true

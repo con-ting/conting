@@ -7,9 +7,9 @@ export default function SeatingAreaSelectScreen({route}) {
   const scheduleID = route.params.scheduleID;
   const showID = route.params.showID;
 
-  useEffect(() =>{
-    console.log('dddd', route);
-  })
+  useEffect(() => {
+    console.log('대기열에서 넘어온 데이터 : ', route);
+  });
 
   return (
     <ScrollView style={styles.container}>
