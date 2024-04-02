@@ -21,7 +21,7 @@ import {PopUpModal} from '../modal/Modal';
 
 export default function GaArea({seatsData, showID}) {
   const [selectedSeats, setSelectedSeats] = useState({});
-  
+
   // 드롭다운 오픈 상태
   const [dropDownOpen, setDropDownOpen] = useState(false);
   // 선택한 드롭다운 라벨
@@ -29,15 +29,15 @@ export default function GaArea({seatsData, showID}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {label: '본인', value: '본인', userName: '김싸피'},
-    {label: '어머니', value: '어머니', userName: '김엄마'},
-    {label: '아버지', value: '아버지', userName: '김아빠'},
-    {label: '누나', value: '누나', userName: '김누나'},
+    {id: 1, label: '본인', value: '본인', userName: '김싸피'},
+    {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
+    {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
+    {id: 4, label: '누나', value: '누나', userName: '김누나'},
   ];
 
   useEffect(() => {
     console.log('구역', showID);
-  })
+  });
 
   const handleItemSelect = selectedValue => {
     setSelectedDrop(selectedValue);
@@ -68,6 +68,7 @@ export default function GaArea({seatsData, showID}) {
       member => member.value === selectedDrop,
     );
     const userName = memberInfo ? memberInfo.userName : '알 수 없음';
+    const memberId = memberInfo ? memberInfo.id : null;
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
@@ -78,6 +79,7 @@ export default function GaArea({seatsData, showID}) {
         seatGrade,
         gradePrice,
         userName,
+        memberId,
       },
     }));
   };

@@ -1,10 +1,4 @@
-import {
-  Animated,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Animated, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useRecoilValue} from 'recoil';
 import {currentColor} from '../../utils/recoil/Atoms';

@@ -28,10 +28,10 @@ export default function NaArea({seatsData, showID}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {label: '본인', value: '본인'},
-    {label: '어머니', value: '어머니'},
-    {label: '아버지', value: '아버지'},
-    {label: '누나', value: '누나'},
+    {id: 1, label: '본인', value: '본인'},
+    {id: 2, label: '어머니', value: '어머니'},
+    {id: 3, label: '아버지', value: '아버지'},
+    {id: 4, label: '누나', value: '누나'},
   ];
 
   const handleItemSelect = selectedValue => {
@@ -58,10 +58,17 @@ export default function NaArea({seatsData, showID}) {
     // seatsData에서 좌석을 찾아 등급 정보를 얻기
     const seatData = seatsData.find(seat => seat.seat_id === seatId);
     const seatGrade = seatData ? seatData.grade : 'Unknown';
+    const member = familyMembers.find(member => member.value === selectedDrop);
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
-      [selectedDrop]: {seatId, seatRow, seatCol, seatGrade},
+      [selectedDrop]: {
+        seatId,
+        seatRow,
+        seatCol,
+        seatGrade,
+        memberId: member ? member.id : null, // 선택한 좌석 데이터에 가족 구성원의 ID 추가
+      },
     }));
   };
 

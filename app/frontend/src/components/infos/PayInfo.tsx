@@ -14,7 +14,7 @@ import IMP from 'iamport-react-native';
 import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
 import formatSido from '../../utils/common/SidoFormat';
-import { orderAfterApi, orderFailApi } from '../../api/order/order';
+import {orderAfterApi, orderFailApi} from '../../api/order/order';
 
 export default function PayInfo({selectedSeats, concert, showID, buyID}) {
   const navigation = useNavigation();
@@ -24,6 +24,8 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
 
   const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
+    console.log(selectedSeats);
+    console.log('콘서트정보', concert);
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)
       .toString()
@@ -75,19 +77,19 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
           seat_ids: Object.values(selectedSeats).map(seat => seat.seatId), // 구매한 좌석 ID 배열
           ticket_list: Object.values(selectedSeats).map(seat => ({
             // 티켓 리스트 데이터 구성
-            ticket_id: seat.ticketId,
+
             seat_id: seat.seatId,
-            schedule_id: concert.scheduleId,
+            schedule_id: concert.schedule.id,
             owner_id: paymentData.buyer_email,
             finger_print: biometricKey, // 소유자 지문, 이 예제에서는 biometricKey를 사용
-            nft_url: seat.nftUrl,
-            row: seat.row,
-            col: seat.col
+            nft_url: '',
+            row: seat.seatRow,
+            col: seat.seatCol,
           })),
         };
         const verificationResult = await orderAfterApi(verificationParams);
         console.log('Verification Result:', verificationResult);
-        if(verificationResult){
+        if (verificationResult) {
           // 검증 성공 후 처리 로직, 결과 페이지로 이동
           navigation.replace('Result', {paySuccess: true});
         }
@@ -102,7 +104,7 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
         // 결제 실패 시 보내야 할 데이터 구조에 맞추어 ticket_list 배열 구성
         const failParams = {
           ticket_list: Object.values(selectedSeats).map(seat => ({
-            schedule_id: concert.scheduleId, // 현재 콘서트의 회차 ID
+            schedule_id: concert.schedule.id, // 현재 콘서트의 회차 ID
             owner_id: paymentData.buyer_id, // 결제 데이터에서 buyer_id 사용
             finger_print: seat.biometricKey, // 해당 좌석의 소유자 지문 정보
           })),
@@ -118,7 +120,6 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
       }
     }
   }
-  
 
   return (
     <View style={styles.container}>
