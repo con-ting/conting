@@ -21,43 +21,43 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.c209.batchservice.domain.seat.repository",
-        entityManagerFactoryRef = "seatEntityManagerFactory",
-        transactionManagerRef = "seatTransactionManager")
-public class SeatDataSourceConfig {
+        basePackages = "com.c209.batchservice.domain.payment.repository",
+        entityManagerFactoryRef = "paymentEntityManagerFactory",
+        transactionManagerRef = "paymentTransactionManager")
+public class PaymentDataSourceConfig {
     @Bean
-    @ConfigurationProperties("spring.datasource.seat")
-    public DataSourceProperties seatDataSourceProperties() {
+    @ConfigurationProperties("spring.datasource.payment")
+    public DataSourceProperties paymentDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @ConfigurationProperties("spring.datasource.seat.hikari")
-    public DataSource seatDataSource() {
-        return seatDataSourceProperties()
+    @ConfigurationProperties("spring.datasource.payment.hikari")
+    public DataSource paymentDataSource() {
+        return paymentDataSourceProperties()
                 .initializeDataSourceBuilder()
                 .build();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean seatEntityManagerFactory(
-            final @Qualifier("seatDataSource") DataSource seatDataSource,
+    public LocalContainerEntityManagerFactoryBean paymentEntityManagerFactory(
+            final @Qualifier("paymentDataSource") DataSource paymentDataSource,
             final EntityManagerFactoryBuilder builder,
             final JpaProperties jpaProperties,
             final HibernateProperties hibernateProperties
     ) {
         return builder
-                .dataSource(seatDataSource)
-                .packages("com.c209.batchservice.domain.seat.entity")
-                .persistenceUnit("seatEntityManager")
+                .dataSource(paymentDataSource)
+                .packages("com.c209.batchservice.domain.payment.entity")
+                .persistenceUnit("paymentEntityManager")
                 .properties(hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings()))
                 .build();
     }
 
     @Bean
-    public PlatformTransactionManager seatTransactionManager(
-            final @Qualifier("seatEntityManagerFactory") LocalContainerEntityManagerFactoryBean seatEntityManagerFactory
+    public PlatformTransactionManager paymentTransactionManager(
+            final @Qualifier("paymentEntityManagerFactory") LocalContainerEntityManagerFactoryBean paymentEntityManagerFactory
     ) {
-        return new JpaTransactionManager(Objects.requireNonNull(seatEntityManagerFactory.getObject()));
+        return new JpaTransactionManager(Objects.requireNonNull(paymentEntityManagerFactory.getObject()));
     }
 }

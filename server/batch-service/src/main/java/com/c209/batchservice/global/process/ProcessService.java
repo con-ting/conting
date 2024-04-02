@@ -21,7 +21,7 @@ public class ProcessService {
         if (exitValue != 0) {
             throw new RuntimeException(
                     "Command \"" + String.join(" ", command) + "\" failed with exit code 0x" + Integer.toHexString(exitValue) + ":\n" +
-                    output
+                            output
             );
         }
         return output;
