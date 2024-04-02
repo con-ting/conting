@@ -13,7 +13,6 @@ import {
   AuthorizeAPI,
   ReauthorizeAPI,
 } from '@solana-mobile/mobile-wallet-adapter-protocol';
-import {alertAndLog} from '../utils/common/alertAndLog.ts';
 
 /**
  * useAnchorWallet
@@ -82,6 +81,38 @@ export const DID_PROGRAM_ID = new PublicKey(
  * NFT 티켓 거래 프로그램 주소
  * @author 김형민
  */
-const EVENT_PROGRAM_ID = new PublicKey(
+export const EVENT_PROGRAM_ID = new PublicKey(
   'Even2kqboEgiEv8ozq4fMyiDi727VeRbTD7SQogF5vrn',
+);
+
+/**
+ * EVENT_PROGRAM_ID
+ * 이벤트 블록체인 프로그램 주소
+ * @author 김형민
+ */
+export const EVENT_PROGRAM_ID = new PublicKey(
+  'Even2kqboEgiEv8ozq4fMyiDi727VeRbTD7SQogF5vrn',
+);
+
+/**
+ * MPL_TOKEN_METADATA_PROGRAM_ID
+ * 메타데이터 프로그램 주소
+ */
+export const MPL_TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
+);
+/**
+ * SERVER_ADDRESS
+ * conting 서버 지갑 주소
+ */
+export const SERVER_ADDRESS = new PublicKey(
+  'A9ydQTX8gDEaFoA3xEAwDSkfPnoWPAxoM8CJUyhHRsv1',
+);
+
+/**
+ * MARKET_PROGRAM_ID
+ * nft 마켓 주소
+ */
+export const MARKET_PROGRAM_ID = new PublicKey(
+  'MarqygkQw8N9f1byiDrWvtbKs6iDfeWiUmBpovQiJpi',
 );

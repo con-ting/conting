@@ -23,7 +23,7 @@ export const transferReservationRights = async (params: {
   return res.data;
 };
 /**
- * findFamilyInfo
+ * userInfoByWallet
  * 조회할 유저의 지갑주소를 넣으면 해당 유저의 정보가 조회된다.
  * @param wallet 조회할 유저의 지갑 주소
  */
@@ -31,6 +31,21 @@ export const userInfoByWallet = async (wallet: string) => {
   console.log('[userInfoByWallet request] = ', wallet);
   const res = await tokenInstance.get(`users/byWallet?wallet=${wallet}`);
   console.log('[userInfoByWallet response] = ', res.data);
+  return res.data;
+};
+/**
+ * findFamilyListForPurchaseByShowId
+ * 해당 콘서트 id 로 조회시, 내가 대리구매가 가능한 가족들 리스트가 나온다.
+ * @param wallet 조회할 유저의 지갑 주소
+ */
+export const findFamilyListForPurchaseByShowId = async (props: {
+  showId: string;
+}) => {
+  console.log('[findFamilyListForPurchaseByShowIdApi request] =', props);
+  const res = await tokenInstance.get(
+    `${didUrl}/transfer/buyer/${props.showId}`,
+  );
+  console.log('[findFamilyListForPurchaseByShowIdApi response] = ', res.data);
   return res.data;
 };
 
