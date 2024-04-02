@@ -24,7 +24,6 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
   const [isBack, setIsBack] = useState(true);
   const {ticket} = props;
   const backHandler = () => {
-    console.log('앞뒤 전환');
     setIsBack(!isBack);
   };
   return (

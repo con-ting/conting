@@ -17,13 +17,14 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import PopularSinger from '../../components/list/PopularSinger';
 
 export default function MainScreen() {
   const navigation = useNavigation();
   const currentColors = useRecoilValue(currentColor);
   const [popular, setPopular] = useState([]);
   const [first, setFirst] = useState([]);
-  const [popularSinger, setPopularSinger] = useState([]);
+  const [popularSingers, setPopularSinger] = useState([]);
   const firstColor = useSharedValue(currentColors[0]);
   const secondColor = useSharedValue(currentColors[1]);
   const thirdColor = useSharedValue(currentColors[2]);
@@ -62,7 +63,7 @@ export default function MainScreen() {
         console.log('API 응답: ', data);
         setPopular(data.popular_shows);
         setFirst(data.f_shows);
-        setPopularSinger(data.popularsingers);
+        setPopularSinger(data.popular_singers);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
       }
@@ -139,6 +140,7 @@ export default function MainScreen() {
         }}>
         <FisrtComeList concerts={first} way="선착 예매" />
         <BannerList banners={bannerList} />
+        <PopularSinger singers={popularSingers}/>
         <EventList />
       </View>
     </ScrollView>
