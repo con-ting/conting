@@ -59,6 +59,11 @@ export default function TicketListScreen() {
     });
   }, [currentIndex]);
 
+  // 티켓 리스트 불러올 API 호출
+  // useEffect(()=>{
+  //   const res =
+  // })
+
   const concertList = [
     {
       show_id: 2,
@@ -126,7 +131,7 @@ export default function TicketListScreen() {
     );
   };
   return (
-    <>
+    <View style={styles.container}>
       <Canvas
         style={{
           flex: 1,
@@ -159,7 +164,7 @@ export default function TicketListScreen() {
           setCurrentIndex(index);
         }}
       />
-    </>
+    </View>
   );
 }
 

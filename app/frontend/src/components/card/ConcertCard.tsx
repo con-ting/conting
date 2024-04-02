@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   fontPercent,
@@ -8,11 +7,9 @@ import {
 import {Calendar, Video} from 'iconsax-react-native';
 import {
   F_SIZE_Y_BUTTON,
-  F_SIZE_Y_HEADER,
-  F_SIZE_Y_TITLE,
 } from '../../config/Font';
 import formatSido from '../../utils/common/SidoFormat';
-import { formatDateWithDay } from '../../utils/common/TimeFormat';
+import { korDateFormatString } from '../../utils/common/TimeFormat';
 
 type ConcertCardProps = {
   onPress: () => void;
@@ -58,7 +55,7 @@ export default function ConcertCard(props: ConcertCardProps) {
           </View>
           <View style={styles.infoContainer}>
             <Calendar size={16} color="#FFFFFF" />
-            <Text style={styles.context}>{formatDateWithDay(props.date)}</Text>
+            <Text style={styles.context}>{korDateFormatString(props.date)}</Text>
           </View>
         </View>
       </TouchableOpacity>

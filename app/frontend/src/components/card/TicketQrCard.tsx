@@ -12,9 +12,10 @@ import {
   createKey,
   deleteKey,
 } from '../../utils/biometric/Biometrics';
-import {ticketQRAPI} from '../../api/ticket/ticket';
+import {healthCheckAPI, ticketQRAPI} from '../../api/ticket/ticket';
 import {BASE_URL} from '../../config/AxiosConfig';
 import {REDBASE} from '../../config/Color';
+import {alertAndLog} from '../../utils/common/alertAndLog';
 
 type TicketCardProps = {
   onPress?: () => void;
@@ -64,10 +65,39 @@ export default function TicketQrCard(props: TicketCardProps) {
         // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
         console.log('정상 실행');
         const res = await ticketQRAPI({ticket_id: '10', finger_print: key});
-        setQrURL(`${BASE_URL}/ticket/qr/${res.uuid}`);
+        setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
         setIspass(true);
+        healthCheck(res.uuid);
       }
     }
+  };
+
+  // 네트워크가 끊길 경우 대비한 헬스 체크 함수
+  const healthCheck = (uuid: string) => {
+    const healthcheck = setInterval(async () => {
+      try {
+        const res = await healthCheckAPI({uuid: uuid});
+      } catch (error) {
+        switch (error) {
+          case 'QR의 네트워크 차단이 감지되었습니다.':
+            alertAndLog('', error);
+            clearInterval(healthcheck);
+            setIspass(false);
+          case 'QR 코드가 유효하지 않습니다.':
+            alertAndLog('', error);
+            clearInterval(healthcheck);
+            setIspass(false);
+          default:
+            console.log(error)
+        }
+      }
+    }, 2000);
+
+    // 30초 후 자동으로 반복 종료
+    setTimeout(() => {
+      clearInterval(healthcheck);
+      console.log('Health check stopped.');
+    }, 30000);
   };
 
   return (
@@ -92,8 +122,7 @@ export default function TicketQrCard(props: TicketCardProps) {
               />
             </View>
             <Text style={F_SIZE_TEXT}>
-              QR코드 유효시간{' '}
-              <Text style={{color: REDBASE}}>{timeLeft}</Text>초
+              QR코드 유효시간 <Text style={{color: REDBASE}}>{timeLeft}</Text>초
             </Text>
           </View>
         ) : (

@@ -33,7 +33,7 @@ export default function ConcertDetailScreen({route}) {
   const [concertDetail, setConcertDetail] = useState(null);
   const backgroundColor = useRecoilValue(currentColor);
   const navigation = useNavigation();
-  const show_id = route.params.showID;
+  const show_id = route.params.show_id;
   // 스크롤 위치 추적을 위한 Animated.Value
   const scrollY = useRef(new Animated.Value(0)).current;
 
