@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, useWindowDimensions, Alert} from 'react-native';
+import {View, StyleSheet, Text, useWindowDimensions} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
 import {useCallback, useEffect, useState} from 'react';
@@ -103,21 +103,23 @@ export default function MainScreen() {
     return [firstColor.value, secondColor.value, thirdColor.value];
   }, []);
 
-  const onChange = async () => {
-    firstColor.value = withTiming(currentColors[0], {
-      duration: duration,
-      easing: Easing.inOut(Easing.ease),
-    });
-    secondColor.value = withTiming(currentColors[1], {
-      duration: duration,
-      easing: Easing.inOut(Easing.ease),
-    });
-    thirdColor.value = withTiming(currentColors[2], {
-      duration: duration,
-      easing: Easing.inOut(Easing.ease),
-    });
-  };
-
+  useEffect(() => {
+    const onChange = async () => {
+      firstColor.value = withTiming(currentColors[0], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      secondColor.value = withTiming(currentColors[1], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+      thirdColor.value = withTiming(currentColors[2], {
+        duration: duration,
+        easing: Easing.inOut(Easing.ease),
+      });
+    };
+    onChange();
+  }, [currentColors]);
   // 처음 화면 접속 시 서버에서 데이터 가져오기
   useEffect(() => {
     console.log(colors.value);
@@ -162,11 +164,11 @@ export default function MainScreen() {
     // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
   };
 
-  if (popular.length === 0) {
+  if (popular.length === 0 && first.length === 0) {
     return <Text>...로딩</Text>;
   }
   return (
-    <ScrollView style={{flex: 1}}>
+    <ScrollView style={styles.container}>
       <Canvas
         style={{
           flex: 1,
@@ -179,12 +181,25 @@ export default function MainScreen() {
         <Rect x={0} y={0} width={width} height={3000}>
           <LinearGradient
             start={vec(100, 0)}
-            end={vec(width, height / 2)}
+            end={vec(500, height / 2)}
             colors={colors}
           />
         </Rect>
       </Canvas>
-      <PopularConcertList popularConcert={popular} onChange={onChange} />
+      {/*
+      색상 확인용
+        <View
+        style={{flex: 1, width: 400, flexDirection:'row', justifyContent: 'center'}}>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[0]}}>average</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[1]}}>darkMuted</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[2]}}>darkVibrant</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[3]}}>dominant</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[4]}}>lightMuted</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[5]}}>lightVibrant</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[6]}}>Muted</Text>
+        <Text style={{width:50, height: 100, backgroundColor:currentColors[7]}}>Vibrant</Text>
+      </View> */}
+      <PopularConcertList popularConcert={popular} />
       <View
         style={{
           flexDirection: 'column',

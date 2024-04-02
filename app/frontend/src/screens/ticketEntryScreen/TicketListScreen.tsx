@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
@@ -58,6 +58,11 @@ export default function TicketListScreen() {
       setPosterColors([res?.dominant, res.muted, res.average]);
     });
   }, [currentIndex]);
+
+  // 티켓 리스트 불러올 API 호출
+  // useEffect(()=>{
+  //   const res =
+  // })
 
   const concertList = [
     {
@@ -126,7 +131,7 @@ export default function TicketListScreen() {
     );
   };
   return (
-    <>
+    <View style={styles.container}>
       <Canvas
         style={{
           flex: 1,
@@ -159,7 +164,7 @@ export default function TicketListScreen() {
           setCurrentIndex(index);
         }}
       />
-    </>
+    </View>
   );
 }
 

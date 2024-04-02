@@ -13,13 +13,10 @@ import {useEffect, useState} from 'react';
 import IMP from 'iamport-react-native';
 import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
+import formatSido from '../../utils/common/SidoFormat';
+import {orderAfterApi, orderFailApi} from '../../api/order/order';
 
-const userName = '김싸피';
-
-export default function PayInfo() {
-  const route = useRoute();
-  const {selectedSeats} = route.params;
-
+export default function PayInfo({selectedSeats, concert, showID, buyID}) {
   const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
@@ -27,6 +24,8 @@ export default function PayInfo() {
 
   const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
+    console.log(selectedSeats);
+    console.log('콘서트정보', concert);
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)
       .toString()
@@ -36,17 +35,21 @@ export default function PayInfo() {
   }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행됨
 
   // 총액 계산
-  const totalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+  const totalAmount = Object.values(selectedSeats).reduce(
+    (sum, {gradePrice}) => sum + gradePrice,
+    0,
+  );
 
   // 결제 데에터
   const paymentData = {
-    pg: 'kakaopay.TC0ONETIME',
+    pg: 'tosspay.tosstest',
     pay_method: 'card',
     name: '콘서트 티켓 결제',
     merchant_uid: `mid_${new Date().getTime()}`,
     amount: totalAmount,
-    buyer_name: userName,
-    buyer_tel: '01091250545',
+    buyer_name: '김싸피',
+    buyer_id: buyID,
+    buyer_tel: '01012345678',
     buyer_email: 'example@naver.com',
     buyer_addr: '서울시 강남구 신사동 661-16',
     buyer_postcode: '06018',
@@ -61,34 +64,74 @@ export default function PayInfo() {
     setIsPaying(false);
   }
 
-  function handlePaymentResult(response) {
-    const {success, merchant_id, error_msg} = response;
+  async function handlePaymentResult(response) {
     setIsPaying(false);
-    navigation.replace('Result', response);
+    if (response.success) {
+      // 결제 성공 시 사후 검증 API 호출
+      try {
+        const verificationParams = {
+          amount: paymentData.amount,
+          buyer_id: paymentData.buyer_id,
+          imp_uid: response.imp_uid, // 아임포트 결제 번호
+          merchant_uid: response.merchant_uid, // 자체 결제 번호
+          seat_ids: Object.values(selectedSeats).map(seat => seat.seatId), // 구매한 좌석 ID 배열
+          ticket_list: Object.values(selectedSeats).map(seat => ({
+            // 티켓 리스트 데이터 구성
 
-    // console.log(response);
-    // 결제 페이지 렌더링 시 조건
-    // if (success) {
-    //   alert('결제 성공');
-    //   console.log(success);
-    //   setIsPaying(false);
-    //   navigation.replace('Result', response);
-    // } else {
-    //   alert(`결제 실패 : $(error_msg)`);
-    // }
+            seat_id: seat.seatId,
+            schedule_id: concert.schedule.id,
+            owner_id: paymentData.buyer_email,
+            finger_print: biometricKey, // 소유자 지문, 이 예제에서는 biometricKey를 사용
+            nft_url: '',
+            row: seat.seatRow,
+            col: seat.seatCol,
+          })),
+        };
+        const verificationResult = await orderAfterApi(verificationParams);
+        console.log('Verification Result:', verificationResult);
+        if (verificationResult) {
+          // 검증 성공 후 처리 로직, 결과 페이지로 이동
+          navigation.replace('Result', {paySuccess: true});
+        }
+      } catch (error) {
+        console.error('Verification Failed:', error);
+        // 검증 실패 시 처리 로직, 오류 메시지 표시
+        alert('결제 검증에 실패했습니다.');
+      }
+    } else {
+      // 결제 실패 시 처리 로직
+      try {
+        // 결제 실패 시 보내야 할 데이터 구조에 맞추어 ticket_list 배열 구성
+        const failParams = {
+          ticket_list: Object.values(selectedSeats).map(seat => ({
+            schedule_id: concert.schedule.id, // 현재 콘서트의 회차 ID
+            owner_id: paymentData.buyer_id, // 결제 데이터에서 buyer_id 사용
+            finger_print: seat.biometricKey, // 해당 좌석의 소유자 지문 정보
+          })),
+        };
+        const failResult = await orderFailApi(failParams);
+        console.log('Fail Result:', failResult);
+        // 실패 처리 후 로직, 예를 들어 오류 메시지 표시나 다른 화면으로 이동
+        navigation.replace('Result', {paySuccess: false});
+      } catch (error) {
+        console.error('Fail Handling Failed:', error);
+        // 실패 처리 로직 실패 시, 예를 들어 오류 메시지 표시
+        alert('결제 실패 처리에 문제가 발생했습니다.');
+      }
+    }
   }
 
   return (
     <View style={styles.container}>
       <BasicConcertCardWide
-        title="2024 IU HER WORLD TOUR CONCERT IN SEOUL"
+        title={concert.show.title}
         disabled
-        img_url="https://t1.daumcdn.net/cafeattach/1I7Yc/c8ae6ddb037b3ffac2575a0f6c2bd1a933f49584_re_1705505439515"
+        img_url={concert.show.poster}
         img_tag_disabled
-        sido="서울"
-        concert_hall="KSPO DOMEi"
+        sido={formatSido(concert.hall.address)}
+        concert_hall={concert.hall.name}
         date_tag="관람 예정일"
-        date="2024.03.20"
+        date={concert.show.start_date}
         swipe_btn_disabled
       />
       <Text style={[F_SIZE_TITLE, styles.header]}>구매 정보</Text>
@@ -98,14 +141,14 @@ export default function PayInfo() {
         <Text style={F_SIZE_SUBTITLE}>티켓 가격</Text>
       </View>
 
-      {selectedSeats.map((seat, index) => (
+      {Object.values(selectedSeats).map((seat, index) => (
         <View key={index} style={styles.titles}>
           <View style={styles.entry}>
-            <Text style={F_SIZE_BIGTEXT}>{userName}</Text>
+            <Text style={F_SIZE_BIGTEXT}>{seat.userName}</Text>
             {/* <Text style={F_SIZE_BIGTEXT}>{buyer.email}</Text> */}
           </View>
-          <Text style={F_SIZE_BIGTEXT}>{seat.seat_id}</Text>
-          <Text style={F_SIZE_BIGTEXT}>{seat.price.toLocaleString()}</Text>
+          <Text style={F_SIZE_BIGTEXT}>{seat.seatId}</Text>
+          <Text style={F_SIZE_BIGTEXT}>{seat.gradePrice.toLocaleString()}</Text>
         </View>
       ))}
       <View style={styles.line} />
@@ -118,7 +161,9 @@ export default function PayInfo() {
         </View>
         <View style={styles.titles}>
           <Text style={F_SIZE_SUBTITLE}>구매 수량</Text>
-          <Text style={F_SIZE_SUBTITLE}>{selectedSeats.length}</Text>
+          <Text style={F_SIZE_SUBTITLE}>
+            {Object.values(selectedSeats).length}
+          </Text>
         </View>
         <View style={styles.line} />
       </View>

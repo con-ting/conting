@@ -10,6 +10,10 @@ spring:
       url: ${SEAT_DB_URL:jdbc:mariadb://localhost:7777/test}
       username: ${SEAT_DB_USER_NAME:root}
       password: ${SEAT_DB_PASSWORD:1234}
+    payment:
+      url: ${PAYMENT_DB_URL:jdbc:mariadb://localhost:7777/test}
+      username: ${PAYMENT_DB_USER_NAME:root}
+      password: ${PAYMENT_DB_PASSWORD:1234}
 
 s3:
   access-key-id: ${S3_ACCESS_KEY_ID}

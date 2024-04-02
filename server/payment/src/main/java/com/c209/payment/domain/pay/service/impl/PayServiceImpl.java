@@ -36,10 +36,13 @@ public class PayServiceImpl {
                 order.setPgStatus(PGStatus.AUTH_SUCCESS);
             }else{
                 order.setPgStatus(PGStatus.AUTH_INVALID);
+                throw new CommonException("사전등록시 등록했던 결제금액과 실제 결제 금액이 일치하지 않습니다.",HttpStatus.CONFLICT);
             }
 
         }catch(Exception e){
             e.printStackTrace();
+
+            throw new CommonException("아이엠포트 통신중 에러가 발생했습니다. 로그를 확인해야합니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 //            if(order.getPgRetryCount()>2){
 //                order.setPgStatus(PGStatus.CAPTURE_FAIL);
 //            }else{

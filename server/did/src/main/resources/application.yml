@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT:8895}
+
+spring:
+  application:
+    name: did
+  datasource:
+    url: ${DID_DB_URL:jdbc:mariadb://localhost:7777/did}
+    username: ${DID_DB_USERNAME:root}
+    password: ${DID_DB_PASSWORD:1234}
+    hikari:
+      max-lifetime: 160000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    generate-ddl: false
+  sql:
+    init:
+      mode: embedded
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER}
+    enabled: true
+
+logging:
+  level:
+    com.c209.did: DEBUG
+
+web3:
+  rpc-endpoint: ${WEB3_RPC_ENDPOINT:https://api.devnet.solana.com}
+  did-program-id: ${DID_PROGRAM_ID:DiDiDgTdcYhe7jemETo4u5B6GNtsv1BPDnRHBQJtVoEj}

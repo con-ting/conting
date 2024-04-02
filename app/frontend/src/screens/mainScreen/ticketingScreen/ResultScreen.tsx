@@ -7,8 +7,8 @@ import {useState} from 'react';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 
 export default function ResultScreen({route}) {
-  const [paySuccess, setPaySuccess] = useState(true); // 결제 성공 여부
-  const [reservationType, setReservationType] = useState('추첨'); // 예매 방식
+  const [paySuccess, setPaySuccess] = useState(route.params?.paySuccess); // 결제 성공 여부
+  const [reservationType, setReservationType] = useState('선착순'); // 예매 방식
 
   const navigation = useNavigation();
 
@@ -26,7 +26,7 @@ export default function ResultScreen({route}) {
           </View>
           <View style={styles.button}>
             <YellowButton
-              onPress={() => navigation.navigate('입장권')}
+              onPress={() => navigation.navigate('구매내역')}
               width={'90%'}
               btnText="내 티켓 보러가기"
               textSize={20}

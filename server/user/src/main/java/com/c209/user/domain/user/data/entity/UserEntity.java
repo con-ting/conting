@@ -12,17 +12,17 @@ import java.time.LocalDate;
 @Table
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access= AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @ToString
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -31,18 +31,18 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(name="date_of_birth", nullable = false)
+    @Column(name = "date_of_birth", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name="fcm_token", nullable = false)
+    @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
 
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String wallet;
 
 
-    public UserDto toDto(){
+    public UserDto toDto() {
         return UserDto.builder()
                 .id(id)
                 .name(name)

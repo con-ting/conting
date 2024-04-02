@@ -50,7 +50,6 @@ public class BatchDataSourceConfig {
     ) {
         return builder
                 .dataSource(batchDataSource)
-                .packages("com.c209.batchservice.batch.entity")
                 .persistenceUnit("batchEntityManager")
                 .properties(hibernateProperties.determineHibernateProperties(jpaProperties.getProperties(), new HibernateSettings()))
                 .build();

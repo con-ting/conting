@@ -6,6 +6,7 @@ import com.c209.ticket.domain.ticket.dto.response.ResultResponse;
 import com.c209.ticket.domain.ticket.dto.response.TicketListResponse;
 import com.c209.ticket.domain.ticket.dto.response.TicketPaymentsListResponse;
 import com.c209.ticket.domain.ticket.service.TicketService;
+import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,31 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ticket")
-
 @Slf4j
 public class TicketController {
 
     private final TicketService ticketService;
+
+    @PutMapping("/{ticket_id}/refund")
+    public ResponseEntity<ResultResponse> refundTicket(
+            @RequestHeader("X-Authorization-Id")Long userId,
+            @PathVariable("ticket_id") Long ticketId
+    ){
+
+        return ResponseEntity.ok(ResultResponse
+                .builder()
+                .result(ticketService.refund(userId, ticketId))
+                .build());
+    }
+
+    //환불 결제
+        //해당 티켓을 조회합니다.
+        //owner id 가 맞는지 확인합니다.
+        //
+        //예매완료처리합니다.
+            //해당 티켓의 is_used를 0으로 만듭니다.
+            //해당 티켓의 imp uid를 업데이트 합니다.
+            //status를 예매완료로 바꿉니다. 
 
 
 
@@ -71,6 +92,8 @@ public class TicketController {
         return ticketService.getTicketPaymentsList(userId)
                 .map(ResponseEntity::ok);
     }
+
+
 
 
 

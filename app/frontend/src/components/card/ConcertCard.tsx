@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   fontPercent,
@@ -8,15 +7,16 @@ import {
 import {Calendar, Video} from 'iconsax-react-native';
 import {
   F_SIZE_Y_BUTTON,
-  F_SIZE_Y_HEADER,
-  F_SIZE_Y_TITLE,
 } from '../../config/Font';
+import formatSido from '../../utils/common/SidoFormat';
+import { korDateFormatString } from '../../utils/common/TimeFormat';
 
 type ConcertCardProps = {
   onPress: () => void;
   poster: string;
   title: string;
-  address: string;
+  hall_name: string;
+  hall_address: string;
   date: string;
 };
 
@@ -33,12 +33,7 @@ type ConcertCardProps = {
  */
 
 export default function ConcertCard(props: ConcertCardProps) {
-  //   const data = {
-  //     title: '임영웅 콘서트 IM HERO TOUR 2023',
-  //     img: require('../../assets/images/imyoungyoong.png'),
-  //     address: '서울•킨텍스 1전시장 1..',
-  //     date: '2024.04.22(월) 13:00',
-  //   };
+  console.log(props.date)
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={props.onPress}>
@@ -46,20 +41,21 @@ export default function ConcertCard(props: ConcertCardProps) {
           <Image source={{uri: props.poster}} style={styles.image} />
         </View>
         <View
-        style={{
-          marginTop:heightPercent(20)
-        }}
-        >
-          <Text style={F_SIZE_Y_BUTTON}>{props.title}</Text>
+          style={{
+            marginTop: heightPercent(20),
+          }}>
+          <Text style={F_SIZE_Y_BUTTON} numberOfLines={2} ellipsizeMode="tail">
+            {props.title}
+          </Text>
           <View style={styles.infoContainer}>
             <Video size={16} color="#FFFFFF" />
             <Text style={styles.context} numberOfLines={1} ellipsizeMode="tail">
-              {props.address}
+              {formatSido(props.hall_address)}•{props.hall_name}
             </Text>
           </View>
           <View style={styles.infoContainer}>
             <Calendar size={16} color="#FFFFFF" />
-            <Text style={styles.context}>{props.date}</Text>
+            <Text style={styles.context}>{korDateFormatString(props.date)}</Text>
           </View>
         </View>
       </TouchableOpacity>

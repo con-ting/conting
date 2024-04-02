@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_PG_ORDER_ID;
+import static com.c209.payment.domain.order.exception.OrderError.CONFLICT_MERCHANT_UID;
 
 @Service
 @Slf4j
@@ -43,7 +43,6 @@ public class OrderServiceImpl implements OrderService {
     //to-do 나중에 비동기로 바꿔야한다.
 
     @Override
-    @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request, Long userId) {
         //seat 서버에서 조회
         if(!seatClient.getSeatStatusList(request.seatList(), userId).isAvailable()){
@@ -55,8 +54,8 @@ public class OrderServiceImpl implements OrderService {
 
 
         //동일한 merchat_id가 있는지 검사
-        if(orderSyncRepository.existsByPgOrderId(request.merchantUid())){
-            throw new CommonException(CONFLICT_PG_ORDER_ID);
+        if(orderSyncRepository.existsByMerchantUid(request.merchantUid())){
+            throw new CommonException(CONFLICT_MERCHANT_UID);
         }
 
 

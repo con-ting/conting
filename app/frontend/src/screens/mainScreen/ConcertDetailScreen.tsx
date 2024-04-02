@@ -1,17 +1,8 @@
-import {
-  Animated,
-  Dimensions,
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Animated, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useRecoilValue} from 'recoil';
 import {currentColor} from '../../utils/recoil/Atoms';
-import {ArrowLeft, Back} from 'iconsax-react-native';
+import {ArrowLeft} from 'iconsax-react-native';
 import {
   F_SIZE_BBIGTEXT,
   F_SIZE_BTITLE,
@@ -36,7 +27,7 @@ export default function ConcertDetailScreen({route}) {
   const [concertDetail, setConcertDetail] = useState(null);
   const backgroundColor = useRecoilValue(currentColor);
   const navigation = useNavigation();
-  const showID = route.params.showID;
+  const show_id = route.params.show_id;
   // 스크롤 위치 추적을 위한 Animated.Value
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -45,10 +36,10 @@ export default function ConcertDetailScreen({route}) {
   const isFocused = useIsFocused();
 
   // fetchData 함수는 이제 useEffect 바깥에서 정의되며, 필요한 값을 파라미터로 받는다.
-  const fetchData = async (showID, isMounted) => {
-    console.log('API 요청: ', {show_id: showID});
+  const fetchData = async (show_id, isMounted) => {
+    console.log('API 요청: ', {show_id: show_id});
     try {
-      const data = await ConcertDetailApi(showID);
+      const data = await ConcertDetailApi(show_id);
       console.log('API 응답: ', data);
       // isMounted를 파라미터로 받아, 함수 내에서 직접 접근한다.
       if (isMounted.current) {
@@ -64,13 +55,13 @@ export default function ConcertDetailScreen({route}) {
     isMounted.current = true;
 
     if (isFocused) {
-      fetchData(showID, isMounted); // showID와 isMounted를 파라미터로 전달
+      fetchData(show_id, isMounted); // showID와 isMounted를 파라미터로 전달
     }
 
     return () => {
       isMounted.current = false;
     };
-  }, [isFocused, showID]); // 의존성 배열에 showID 추가
+  }, [isFocused, show_id]); // 의존성 배열에 show_id 추가
 
   if (!concertDetail) {
     // concertDetail 데이터가 아직 로드되지 않았을 때의 대체 컨텐츠 (예: 로딩 스피너)
@@ -212,7 +203,7 @@ export default function ConcertDetailScreen({route}) {
       <ConcertBottomButtons
         scrollY={scrollY}
         schedule={[concertDetail.schedule]}
-        showID={showID}
+        showID={show_id}
       />
     </ImageBackground>
   );

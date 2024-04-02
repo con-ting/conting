@@ -20,7 +20,7 @@ public class Ticket {
 
     @Id
     private Long ticketId;
-
+    private Integer price;
     private Boolean isUsed;
     private Long ownerId;
     private Long buyerId;
@@ -32,9 +32,7 @@ public class Ticket {
     private String col;
     private String nftUrl;
     private Status status;
-
     private LocalDateTime payDueDate;
-
 
     public TicketDto toDto(String uuid){
         return TicketDto

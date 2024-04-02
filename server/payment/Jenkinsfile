@@ -4,13 +4,14 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
         dockerImage = ''
         DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
-        PAY_DB_URL="${emv.PAY_DB_URL}"
-        PAY_DB_USER_NAME="${PAY_DB_USER_NAME}"
-        PAY_DB_PASSWORD="${PAY_DB_PASSWORD}"
-        KAFKA_URL="${KAFKA_URL}"
-        IAMPORT_USER_ID="${IAMPORT_USER_ID}"
-        IAMPORT_SECRET="${IAMPORT_SECRET}"
-        IAMPORT_API_KEY="${IAMPORT_API_KEY}"
+        PAY_DB_URL="${env.PAY_DB_URL}"
+        PAY_DB_USER_NAME="${env.PAY_DB_USER_NAME}"
+        PAY_DB_PASSWORD="${env.PAY_DB_PASSWORD}"
+        KAFKA_URL="${env.KAFKA_URL}"
+        IAMPORT_USER_ID="${env.IAMPORT_USER_ID}"
+        IAMPORT_SECRET="${env.IAMPORT_SECRET}"
+        IAMPORT_API_KEY="${env.IAMPORT_API_KEY}"
+        SEAT_SERVICE="${env.SEAT_SERVICE}"
 
     }
     agent any
@@ -111,12 +112,12 @@ pipeline {
                             continueOnError: false, failOnError: true,
                             publishers: [
                                 sshPublisherDesc(
-                                    configName: "Cloud_Center",
+                                    configName: "Pay_Service",
                                     verbose: true,
                                     transfers: [
                                         sshTransfer(execCommand: "sudo docker rm -f pay"),
                                         sshTransfer(execCommand: "sudo docker pull " + repository +":Pay_${BUILD_NUMBER}"),
-                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" " + repository + ":Pay_${BUILD_NUMBER}")
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8882:8882 --name pay --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e PAY_DB_URL=\"${PAY_DB_URL}\" -e PAY_DB_USER_NAME=\"${PAY_DB_USER_NAME}\" -e PAY_DB_PASSWORD=\"${PAY_DB_PASSWORD}\" -e KAFKA_URL=\"${KAFKA_URL}\" -e IAMPORT_USER_ID=\"${IAMPORT_USER_ID}\" -e IAMPORT_API_KEY=\"${IAMPORT_API_KEY}\" -e IAMPORT_SECRET=\"${IAMPORT_SECRET}\" -e SEAT_SERVICE=\"${SEAT_SERVICE}\" " + repository + ":Pay_${BUILD_NUMBER}")
                                     ]
                                 )
                             ]
@@ -126,7 +127,7 @@ pipeline {
                 stage("Cleanup") {
     steps {
         sh 'rm -rf ${WORKSPACE}/*'
-        sh 'sudo docker system prune -af'
+        sh 'docker system prune -af'
     }
 }
     }

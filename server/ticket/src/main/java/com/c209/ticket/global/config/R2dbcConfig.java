@@ -8,14 +8,15 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Import;
 
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Component;
 
 @Component
-@EnableR2dbcRepositories
-//("com.c209.ticket.domain.ticket.repository")
+@EnableJpaRepositories("com.c209.ticket.domain.ticket.repository.sync")
+@EnableR2dbcRepositories("com.c209.ticket.domain.ticket.repository.async")
 @EnableR2dbcAuditing
 @Import(DataSourceAutoConfiguration.class)
 @RequiredArgsConstructor

@@ -39,6 +39,8 @@ public class SearchShowServiceImpl implements SearchShowService {
 
         List<PerformanceSearchDto> performanceSearchDtos = searchResult.get();
 
+        String lowerCaseKeyword = keyword.toLowerCase();
+
         if (status != null) {
             performanceSearchDtos = performanceSearchDtos.stream()
                     .filter(dto -> dto.getStatus() == status)
@@ -46,8 +48,9 @@ public class SearchShowServiceImpl implements SearchShowService {
         }
 
         if (region != null) {
+            String lowerCaseRegion = region.toLowerCase();
             performanceSearchDtos = performanceSearchDtos.stream()
-                    .filter(dto -> dto.getHall_address().contains(region))
+                    .filter(dto -> dto.getHall_address().toLowerCase().contains(lowerCaseRegion))
                     .collect(Collectors.toList());
         }
 
@@ -60,15 +63,15 @@ public class SearchShowServiceImpl implements SearchShowService {
         if (searchType != null) {
             if (searchType.equals("가수")) {
                 performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getSinger_name().contains(keyword))
+                        .filter(dto -> dto.getSinger_name().toLowerCase().contains(lowerCaseKeyword))
                         .collect(Collectors.toList());
             } else if (searchType.equals("공연장")) {
                 performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getHall_name().contains(keyword))
+                        .filter(dto -> dto.getHall_name().toLowerCase().contains(lowerCaseKeyword))
                         .collect(Collectors.toList());
             } else if (searchType.equals("공연명")) {
                 performanceSearchDtos = performanceSearchDtos.stream()
-                        .filter(dto -> dto.getTitle().contains(keyword))
+                        .filter(dto -> dto.getTitle().toLowerCase().contains(lowerCaseKeyword))
                         .collect(Collectors.toList());
             }
         }

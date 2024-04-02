@@ -14,6 +14,7 @@ export default function EventList() {
           width={100}
           textSize={fontPercent(14)}
           btnText="응모 이벤트"
+          borderWidth={3}
           disabled={true}
         />
         <Text>나의 NFT 티켓으로 응모하면 득템</Text>

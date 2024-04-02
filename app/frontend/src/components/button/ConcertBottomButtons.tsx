@@ -25,7 +25,7 @@ export default function ConcertBottomButtons({scrollY, schedule, showID}) {
 
   // 직접 예매하기 버튼 누른 경우 호출될 함수
   const onDirectTicketingPress = () => {
-    console.log('dd', scrollY);
+    // console.log('dd', scrollY);
     console.log('ㅇ?', schedule);
     // 기존 버튼을 숨기는 애니메이션
     Animated.timing(buttonOpacity, {
@@ -94,7 +94,7 @@ export default function ConcertBottomButtons({scrollY, schedule, showID}) {
       )}
       {showDateSelector && (
         <Animated.View style={{transform: [{translateY: dateSelectorY}]}}>
-          <ConcertDateChoiceButton schedule={schedule} />
+          <ConcertDateChoiceButton schedule={schedule} showID={showID} />
         </Animated.View>
       )}
     </View>

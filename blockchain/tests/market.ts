@@ -1,82 +1,42 @@
 import * as anchor from '@coral-xyz/anchor'
-import { Market } from '../target/types/market'
-import { expect } from 'chai'
-import * as splToken from '@solana/spl-token'
-import { Metaplex } from '@metaplex-foundation/js'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
-import { seller, buyer, sellersMint as mint, collectionMint } from './env'
+import * as spl from '@solana/spl-token'
+import * as web3 from '@solana/web3.js'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { expect } from 'chai'
 
-describe('market', async () => {
+import { Market } from '../target/types/market'
+import { buyer, collectionMint, getMetadataPDA, sellersMint as mint, seller } from './env'
+
+describe('market', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
   const program = anchor.workspace.Market as anchor.Program<Market>
-  const server = (provider.wallet as NodeWallet).payer
+  const getPDA = (seller: web3.PublicKey): web3.PublicKey =>
+    web3.PublicKey.findProgramAddressSync(
+      [anchor.utils.bytes.utf8.encode('escrow'), seller.toBuffer()],
+      program.programId,
+    )[0]
 
-  let sellersEscrow: anchor.web3.PublicKey
-  let buyersEscrow: anchor.web3.PublicKey
-  let collectionToken: anchor.web3.PublicKey
-  let sellersToken: anchor.web3.PublicKey
-  let buyersToken: anchor.web3.PublicKey
-  let sellersEscrowedToken: anchor.web3.PublicKey
-  let buyersEscrowedToken: anchor.web3.PublicKey
-  let metadataPda: anchor.web3.PublicKey
+  const server = (provider.wallet as NodeWallet).payer
+  const sellersEscrow = getPDA(seller.publicKey)
+  const buyersEscrow = getPDA(buyer.publicKey)
+  const collectionToken = spl.getAssociatedTokenAddressSync(collectionMint, server.publicKey)
+  const sellersToken = spl.getAssociatedTokenAddressSync(mint, seller.publicKey)
+  const buyersToken = spl.getAssociatedTokenAddressSync(mint, buyer.publicKey)
+  const sellersEscrowedToken = spl.getAssociatedTokenAddressSync(mint, sellersEscrow, true)
+  const buyersEscrowedToken = spl.getAssociatedTokenAddressSync(mint, buyersEscrow, true)
+  const metadataPda = getMetadataPDA(mint)
 
   before(async () => {
-    await provider.connection.requestAirdrop(seller.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(buyer.publicKey, anchor.web3.LAMPORTS_PER_SOL)
-
-    sellersEscrow = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        anchor.utils.bytes.utf8.encode('escrow'),
-        seller.publicKey.toBuffer(),
-      ],
-      program.programId
-    )[0]
-    buyersEscrow = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        anchor.utils.bytes.utf8.encode('escrow'),
-        buyer.publicKey.toBuffer(),
-      ],
-      program.programId
-    )[0]
-
-    collectionToken = splToken.getAssociatedTokenAddressSync(
-      collectionMint,
-      server.publicKey,
-    )
-    sellersToken = splToken.getAssociatedTokenAddressSync(
-      mint,
-      seller.publicKey,
-    )
-    buyersToken = splToken.getAssociatedTokenAddressSync(
-      mint,
-      buyer.publicKey,
-    )
-    sellersEscrowedToken = splToken.getAssociatedTokenAddressSync(
-      mint,
-      sellersEscrow,
-      true,
-    )
-    buyersEscrowedToken = splToken.getAssociatedTokenAddressSync(
-      mint,
-      buyersEscrow,
-      true,
-    )
-
-    // ticket MetadataPda
-    metadataPda = Metaplex.make(provider.connection)
-      .nfts()
-      .pdas()
-      .metadata({ mint: mint })
-
+    await provider.connection.requestAirdrop(seller.publicKey, web3.LAMPORTS_PER_SOL)
+    await provider.connection.requestAirdrop(buyer.publicKey, web3.LAMPORTS_PER_SOL)
     await new Promise((resolve) => setTimeout(resolve, 1000))
   })
 
   it('Sells a ticket of seller', async () => {
-    const tx = await program.methods.sellTicket(
-      new anchor.BN(0.1 * LAMPORTS_PER_SOL),
-    )
+    const tx = await program.methods
+      .sellTicket(new anchor.BN(0.1 * LAMPORTS_PER_SOL))
       .accounts({
         seller: seller.publicKey,
         mint,
@@ -95,7 +55,8 @@ describe('market', async () => {
   })
 
   it('Buys a ticket of seller', async () => {
-    const tx = await program.methods.buyTicket()
+    const tx = await program.methods
+      .buyTicket()
       .accounts({
         buyer: buyer.publicKey,
         seller: seller.publicKey,
@@ -108,14 +69,13 @@ describe('market', async () => {
       .rpc()
     console.log('TxHash ::', tx)
 
-    const buyersTokenAccount = await splToken.getAccount(provider.connection, buyersToken)
+    const buyersTokenAccount = await spl.getAccount(provider.connection, buyersToken)
     expect(buyersTokenAccount.amount).to.eq(1n)
   })
 
   it('Sells a ticket of buyer', async () => {
-    const tx = await program.methods.sellTicket(
-      new anchor.BN(0.2 * LAMPORTS_PER_SOL),
-    )
+    const tx = await program.methods
+      .sellTicket(new anchor.BN(0.2 * LAMPORTS_PER_SOL))
       .accounts({
         seller: buyer.publicKey,
         mint,
@@ -133,7 +93,8 @@ describe('market', async () => {
   })
 
   it('Cancels a trade of buyer', async () => {
-    const tx = await program.methods.cancel()
+    const tx = await program.methods
+      .cancel()
       .accounts({
         seller: buyer.publicKey,
         escrow: buyersEscrow,
@@ -144,7 +105,7 @@ describe('market', async () => {
       .rpc()
     console.log('TxHash ::', tx)
 
-    const buyersTokenAccount = await splToken.getAccount(provider.connection, buyersToken)
+    const buyersTokenAccount = await spl.getAccount(provider.connection, buyersToken)
     expect(buyersTokenAccount.amount).to.eq(1n)
   })
 })

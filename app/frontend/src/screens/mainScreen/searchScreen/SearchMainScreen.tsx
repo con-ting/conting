@@ -79,6 +79,7 @@ export default function SearchMainScreen() {
     });
     console.log('fetchConcertsResponse=', response);
     setConcerts(response.shows); // 응답 데이터로 공연 데이터 상태 업데이트
+    
   };
 
   const fetchHalls = async (query: string) => {
@@ -165,6 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: MAINBLACK,
   },
   context: {
+    flex:1,
     margin: 20,
   },
   resultItem: {

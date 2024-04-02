@@ -9,12 +9,12 @@ import NaArea from '../seat/NaArea';
 import DaArea from '../seat/DaArea';
 import {SeatApi} from '../../api/seat/Seat';
 
-
-export default function SeatAreaButtons({biometricKey, scheduleID}) {
+export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const [selectedArea, setSelectedArea] = useState('');
   const [seatsData, setSeatsData] = useState([]); // 좌석 데이터 저장
-
+  
   useEffect(() => {
+    console.log('아이디2', showID);
     const fetchSeats = async () => {
       if (selectedArea) {
         const sectorMapping = {가: 'GA', 나: 'NA', 다: 'DA'};
@@ -33,11 +33,11 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
   const renderArea = () => {
     switch (selectedArea) {
       case '가':
-        return <GaArea seatsData={seatsData} />;
+        return <GaArea seatsData={seatsData} showID={showID} />;
       case '나':
-        return <NaArea seatsData={seatsData} />;
+        return <NaArea seatsData={seatsData} showID={showID} />;
       case '다':
-        return <DaArea seatsData={seatsData} />;
+        return <DaArea seatsData={seatsData} showID={showID} />;
       default:
         return null;
     }
@@ -46,27 +46,27 @@ export default function SeatAreaButtons({biometricKey, scheduleID}) {
   return (
     <ScrollView>
       <View style={styles.container}>
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setSelectedArea('가')}>
-          <Text style={F_SIZE_B_BUTTON}>가</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setSelectedArea('나')}>
-          <Text style={F_SIZE_B_BUTTON}>나</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setSelectedArea('다')}>
-          <Text style={F_SIZE_B_BUTTON}>다</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.seatsContainer}>
-        {renderArea()}
-        {/* {selectedArea && <SeatMap seatsData={mockSeatsData[selectedArea]} />} */}
-      </View>
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setSelectedArea('가')}>
+            <Text style={F_SIZE_B_BUTTON}>가</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setSelectedArea('나')}>
+            <Text style={F_SIZE_B_BUTTON}>나</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setSelectedArea('다')}>
+            <Text style={F_SIZE_B_BUTTON}>다</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.seatsContainer}>
+          {renderArea()}
+          {/* {selectedArea && <SeatMap seatsData={mockSeatsData[selectedArea]} />} */}
+        </View>
       </View>
     </ScrollView>
   );

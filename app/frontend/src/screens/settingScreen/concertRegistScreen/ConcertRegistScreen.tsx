@@ -16,13 +16,28 @@ import {YellowButton} from '../../../components/button/Button';
 import {useNavigation} from '@react-navigation/native';
 
 export default function ConcertRegistScreen() {
-  const [selected, setSelected] = useState(''); // 선택된 버튼을 추적하기 위한 상태
-  const [selectedDates, setSelectedDates] = useState({}); // 선택된 날짜들을 저장하는 상태
+  const [reservationType, setReservationType] = useState('');
+  const [schedule, setSchedule] = useState([]);
   const navigation = useNavigation();
 
-  // 버튼을 누를 때 호출되는 함수
+  // 예매 방식 선택
   const handlePress = type => {
-    setSelected(type);
+    setReservationType(type);
+  };
+
+  // 날짜와 시간 선택
+  const handleSchedule = dates => {
+    setSchedule(dates);
+  };
+
+  // 다음 페이지로 이동하며 데이터를 전달
+  const handleNext = () => {
+    const registrationData = {
+      reservationType: reservationType,
+      schedule: schedule,
+    };
+    console.log('registration1 :', registrationData);
+    navigation.navigate('ConcertRegistInfo', {registrationData});
   };
 
   return (
@@ -37,29 +52,29 @@ export default function ConcertRegistScreen() {
           </View>
           <View style={styles.infos}>
             <TouchableOpacity
-              onPress={() => handlePress('선착순')}
+              onPress={() => handlePress('F')}
               style={[
                 styles.button,
-                selected === '선착순' && styles.selectedButton,
+                reservationType === 'F' && styles.selectedButton,
               ]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '선착순' && styles.selectedText,
+                  reservationType === 'F' && styles.selectedText,
                 ]}>
                 선착순
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handlePress('추첨')}
+              onPress={() => handlePress('R')}
               style={[
                 styles.button,
-                selected === '추첨' && styles.selectedButton,
+                reservationType === 'R' && styles.selectedButton,
               ]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '추첨' && styles.selectedText,
+                  reservationType === 'R' && styles.selectedText,
                 ]}>
                 추첨
               </Text>
@@ -72,13 +87,13 @@ export default function ConcertRegistScreen() {
           </View>
           <View style={styles.calendarContainer}>
             {/* 공연 일정을 선택하는 컴포넌트 */}
-            <CalendarSelect onDateSelected={setSelectedDates} />
-            <TimeInput dates={selectedDates} />
+            <CalendarSelect onDateSelected={setSchedule} />
+            <TimeInput dates={schedule} onTimeSelected={handleSchedule} />
           </View>
         </View>
         <View style={styles.nextButton}>
           <YellowButton
-            onPress={() => navigation.navigate('ConcertRegistInfo')}
+            onPress={handleNext}
             width={'30%'}
             btnText="다음"
             textSize={20}
@@ -112,7 +127,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
   },
+
   infos: {
+    height: heightPercent(50),
     marginLeft: 10,
     marginTop: 14,
     flexDirection: 'row',
@@ -128,7 +145,7 @@ const styles = StyleSheet.create({
     color: MAINWHITE,
   },
   button: {
-    width: 150,
+    width: widthPercent(150),
     paddingVertical: 10,
     marginLeft: 10, // 버튼 사이의 간격
     justifyContent: 'center',
@@ -138,6 +155,7 @@ const styles = StyleSheet.create({
   },
 
   selectedButton: {
+    // width: 160,
     borderWidth: 2,
     borderColor: MAINYELLOW,
     backgroundColor: BUTTONSELECT,

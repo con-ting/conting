@@ -46,6 +46,9 @@ logging:
   level:
     com.c209.payment: DEBUG
 
+service:
+  seat:
+    url: ${SEAT_SERVICE}
 
 iamport:
   userId: ${IAMPORT_USER_ID}

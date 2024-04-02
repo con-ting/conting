@@ -11,7 +11,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {queuePostApi} from '../../api/queue/queue';
 
-export default function ConcertChoiceButton({schedule}) {
+export default function ConcertChoiceButton({schedule, showID}) {
   const [selectedDateId, setSelectedDateId] = useState(null);
   const [postDateId, setPostDateId] = useState({});
 
@@ -34,11 +34,13 @@ export default function ConcertChoiceButton({schedule}) {
       // 대기열 등록 API 호출 시, 바로 schedule_id를 포함한 객체를 인자로 전달
       try {
         const queueData = await queuePostApi({schedule_id: selectedDateId});
+        
         console.log('대기열 등록 완료:', queueData);
         // 대기열 페이지로 이동, queueData에는 대기열 정보 가져옴
         navigation.navigate('Waiting', {
           rank: queueData.rank,
           id: selectedDateId,
+          showID: showID,
         });
       } catch (error) {
         console.error('대기열 등록 실패:', error);

@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface OrderSyncRepository extends JpaRepository<Order, Long> {
 
     Boolean existsByPgOrderId(String pgOrderId);
+    Boolean existsByMerchantUid(String merchantUid);
 
     Optional<Order> getOrderByPgOrderId(String merchantUid);
 
