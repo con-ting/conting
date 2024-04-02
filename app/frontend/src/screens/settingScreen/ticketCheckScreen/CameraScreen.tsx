@@ -1,11 +1,23 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import { checkQRAPI } from '../../../api/ticket/ticket';
 
 export default function CameraScreen() {
+  const checkQR = async (event) => {
+    const QrUrl = await event.data;
+    const start = await QrUrl.indexOf('/ticket');
+    const url = await QrUrl.substring(start);
+    try {
+      const res = await checkQRAPI(url)
+    }catch(error){
+      console.log(error)
+    }
+  };
+
   return (
     <View style={styles.container}>
       <QRCodeScanner
-        onRead={e => console.log('들어가슈', e)}
+        onRead={checkQR}
         topContent={<Text>1</Text>}
         reactivateTimeout={3000}
         reactivate={true}

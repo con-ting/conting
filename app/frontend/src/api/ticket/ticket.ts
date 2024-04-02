@@ -3,6 +3,13 @@ import {alertAndLog} from '../../utils/common/alertAndLog';
 
 const ticketUrl: string = '/ticket';
 
+export const getTicketListAPI = async () => {
+  console.log('[getTicketList resquest]');
+  const res = await tokenInstance.get(`${ticketUrl}/my`);
+  console.log('[getTicketList response] = ', res.data);
+  return res.data;
+};
+
 export const ticketQRAPI = async (params: {
   ticket_id: string;
   finger_print: string;
@@ -15,12 +22,16 @@ export const ticketQRAPI = async (params: {
   return res.data;
 };
 
-export const checkQRAPI = async (params: {uuid: string}) => {
+export const healthCheckAPI = async (params: {uuid: string}) => {
+  console.log('[healthCheckAPI resquest] = ', params);
+  const res = await tokenInstance.put(`${ticketUrl}/qr/${params.uuid}`);
+  console.log('[heathCheckAPI response]= ', res.data);
+  return res.data;
+};
+
+export const checkQRAPI = async (params: {url : string}) => {
   console.log('[checkQRAPI request] = ', params);
-  const res = await tokenInstance.get(`${ticketUrl}/qr/${params.uuid}`);
+  const res = await tokenInstance.get(`${params.url}`);
   console.log('[checkQRAPI response] = ', res.data);
-  if (res.status === 200) {
-    alertAndLog('', res.statusText);
-  }
   return res.data;
 };
