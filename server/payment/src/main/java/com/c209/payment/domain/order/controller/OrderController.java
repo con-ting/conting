@@ -64,7 +64,7 @@ public class OrderController {
     ResponseEntity<PayAuthResponse> payFailed(
             @RequestBody OrderFailRequest request){
         //
-
+        log.info("결제 실패 :{}",request);
 
         seatProducer.failTicket("failure_order", request);
         return ResponseEntity.ok(PayAuthResponse.builder().result(true).build());
