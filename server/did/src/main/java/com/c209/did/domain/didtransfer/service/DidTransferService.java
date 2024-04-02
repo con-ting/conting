@@ -8,5 +8,7 @@ import java.util.List;
 public interface DidTransferService {
     List<DidTransferResponse> getDidTransferListByBuyerId(long userId);
 
-    long createDid(DidTransferRequest didTransferRequest, long userId);
+    DidTransferResponse getDidTransfer(long performanceId, long ownerId, long buyerId);
+
+    long createDidTransfer(DidTransferRequest didTransferRequest, long userId);
 }

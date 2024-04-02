@@ -38,8 +38,16 @@ public class DidTransferServiceImpl implements DidTransferService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public DidTransferResponse getDidTransfer(final long performanceId, final long ownerId, final long buyerId) {
+        return didTransferRepository.findByPerformanceIdAndOwnerIdAndBuyerId(performanceId, ownerId, buyerId)
+                .map(didTransferMapper::toResponse)
+                .orElseThrow(() -> new CommonException(DidTransferErrorCode.NOT_FOUND_DID_TRANSFER));
+    }
+
+    @Override
     @Transactional
-    public long createDid(final DidTransferRequest didTransferRequest, final long userId) {
+    public long createDidTransfer(final DidTransferRequest didTransferRequest, final long userId) {
         if (didTransferRequest.ownerId() != userId) {
             throw new CommonException(DidTransferErrorCode.NOT_MATCH_USER_OWNER_ID);
         }

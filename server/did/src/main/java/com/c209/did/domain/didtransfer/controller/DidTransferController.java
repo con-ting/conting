@@ -18,10 +18,19 @@ public class DidTransferController {
     private final DidTransferService didTransferService;
 
     @GetMapping("/my")
-    public ResponseEntity<List<DidTransferResponse>> getDidListByUserId(
+    public ResponseEntity<List<DidTransferResponse>> getDidTransferListByUserId(
             @RequestHeader("X-Authorization-Id") Long userId
     ) {
         return ResponseEntity.ok(didTransferService.getDidTransferListByBuyerId(userId));
+    }
+
+    @GetMapping("/{buyerId}/{performanceId}")
+    public ResponseEntity<DidTransferResponse> getDidTransferByUserIdAndUserId(
+            @PathVariable Long buyerId,
+            @PathVariable Long performanceId,
+            @RequestHeader("X-Authorization-Id") Long userId
+    ) {
+        return ResponseEntity.ok(didTransferService.getDidTransfer(performanceId, userId, buyerId));
     }
 
     @PostMapping
@@ -29,7 +38,7 @@ public class DidTransferController {
             @RequestBody DidTransferRequest didTransferRequest,
             @RequestHeader("X-Authorization-Id") Long userId
     ) {
-        long id = didTransferService.createDid(didTransferRequest, userId);
+        long id = didTransferService.createDidTransfer(didTransferRequest, userId);
         return ResponseEntity
                 .created(URI.create(String.valueOf(id)))
                 .body(id);
@@ -43,7 +52,7 @@ public class DidTransferController {
         return ResponseEntity
                 .ok()
                 .body(didTransferRequestList.stream()
-                        .map(x -> didTransferService.createDid(x, userId))
+                        .map(x -> didTransferService.createDidTransfer(x, userId))
                         .toList());
     }
 
@@ -55,7 +64,7 @@ public class DidTransferController {
         return ResponseEntity
                 .ok()
                 .body(didTransferV2Request.families().stream()
-                        .map(x -> didTransferService.createDid(DidTransferRequest.builder()
+                        .map(x -> didTransferService.createDidTransfer(DidTransferRequest.builder()
                                 .performanceId(didTransferV2Request.performanceId())
                                 .ownerId(didTransferV2Request.ownerId())
                                 .buyerId(x.id())
