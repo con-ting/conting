@@ -16,16 +16,11 @@ import java.util.List;
 public class DidTransferController {
     private final DidTransferService didTransferService;
 
-    @GetMapping("/health_check")
-    public ResponseEntity<String> checkStatus() {
-        return ResponseEntity.ok("ok");
-    }
-
     @GetMapping("/my")
     public ResponseEntity<List<DidTransferResponse>> getDidListByUserId(
             @RequestHeader("X-Authorization-Id") Long userId
     ) {
-        return ResponseEntity.ok(didTransferService.getDidListByBuyerId(userId));
+        return ResponseEntity.ok(didTransferService.getDidTransferListByBuyerId(userId));
     }
 
     @PostMapping

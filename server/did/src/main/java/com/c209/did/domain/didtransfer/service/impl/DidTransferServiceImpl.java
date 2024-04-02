@@ -23,7 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DidTransferTransferServiceImpl implements DidTransferService {
+public class DidTransferServiceImpl implements DidTransferService {
     private final DidTransferRepository didTransferRepository;
     private final DidTransferMapper didTransferMapper;
     private final Web3Props web3Props;
@@ -31,7 +31,7 @@ public class DidTransferTransferServiceImpl implements DidTransferService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DidTransferResponse> getDidListByBuyerId(final long buyerId) {
+    public List<DidTransferResponse> getDidTransferListByBuyerId(final long buyerId) {
         return didTransferRepository.findAllByBuyerId(buyerId).stream()
                 .map(didTransferMapper::toResponse)
                 .toList();
