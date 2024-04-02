@@ -67,11 +67,11 @@ export default function FamilySelectButton(showID) {
       if (signatureKey && signatureKey.result) {
         console.log('서명 키 생성 성공', signatureKey.key);
         await findFamilyInfo({
-          performance_id: showID,
+          performance_id: showID.showID,
           owner_fingerprint_key: signatureKey.key,
           owner_id: userInfo?.user_id,
           owner_wallet: userInfo?.walletAddress,
-          families: setIsFamily,
+          families: isFamily,
         });
       } else {
         console.log('서명 키 생성 실패');
