@@ -16,7 +16,7 @@ public class DidTransferEntity {
     @Column(name = "did_transfer_id")
     private Long id;
     @NotNull
-    private Long scheduleId;
+    private Long performanceId;
     @NotNull
     private Long ownerId;
     @NotNull

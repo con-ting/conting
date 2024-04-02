@@ -8,7 +8,7 @@ import lombok.Builder;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record DidTransferRequest(
-        @NotNull Long scheduleId,
+        @NotNull Long performanceId,
         @NotNull Long ownerId,
         @NotNull Long buyerId,
         @NotNull String ownerWallet,
