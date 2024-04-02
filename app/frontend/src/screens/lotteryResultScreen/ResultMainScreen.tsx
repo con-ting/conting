@@ -26,6 +26,13 @@ import {
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
 import {useRealm} from '../../components/realm/RealmContext.ts';
 import {orderResult} from '../../api/ticket/order.ts';
+import {eventListFindAll, eventListFindByWallet} from '../../api/web3/event.ts';
+import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
+import {useRecoilState} from 'recoil';
+import {userInfoState} from '../../utils/recoil/Atoms.ts';
+import {useNavigation} from '@react-navigation/native';
+import {useAnchorWallet} from '../../config/web3Config.tsx';
+import {PublicKey} from '@solana/web3.js';
 
 const Tabs = ['결제 내역', '이벤트 내역'];
 
@@ -221,6 +228,10 @@ export default function SearchMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
   const realm = useRealm();
+  const {connection} = useConnection();
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const navigation = useNavigation();
+
   const getOrderResultList = async () => {
     const resultList = [];
     // 1. 결제 내역 api 요청 -> 리스트
@@ -242,7 +253,18 @@ export default function SearchMainScreen() {
   };
   const getEventResultList = async () => {
     //이벤트 내역 조회
-
+    // const eventList = await eventListFindByWallet({
+    //   connection: connection,
+    //   anchorWallet: useAnchorWallet,
+    //   myWalletAddress: new PublicKey(userInfo?.walletAddress),
+    // });
+    const eventList = await eventListFindAll({
+      connection: connection,
+      anchorWallet: useAnchorWallet,
+    });
+    console.log('============================');
+    console.log('eventList ==', eventList);
+    console.log('============================');
     return [];
   };
   // useEffect

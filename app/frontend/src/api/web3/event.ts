@@ -1,10 +1,7 @@
-import {Keypair, PublicKey, SYSVAR_INSTRUCTIONS_PUBKEY} from '@solana/web3.js';
+import {PublicKey} from '@solana/web3.js';
 import {AnchorProvider, Program} from '@coral-xyz/anchor';
 import {Event, IDL} from '../../config/web3Types/event.ts';
-import {
-  EVENT_PROGRAM_ID,
-  MPL_TOKEN_METADATA_PROGRAM_ID,
-} from '../../config/web3Config.tsx';
+import {EVENT_PROGRAM_ID} from '../../config/web3Config.tsx';
 
 /**
  * eventFindBySingerAddress
@@ -46,9 +43,10 @@ export async function eventFindBySingerAddress(props: {
  * @param anchorWallet
  */
 export async function eventListFindAll(props: {
-  connection: any;
+  // connection: any;
   anchorWallet: any;
 }) {
+  // const connection = new Connection(clusterApiUrl(RPC_ENDPOINT), 'confirmed');
   console.log('eventListFindAll API request = 요청 파라미터 없음');
   const provider = new AnchorProvider(props.connection, props.anchorWallet, {
     preflightCommitment: 'confirmed',
@@ -56,7 +54,7 @@ export async function eventListFindAll(props: {
   });
   const program = new Program<Event>(IDL, EVENT_PROGRAM_ID, provider);
   const events = await program.account.event.all();
-  // console.log('eventListFindAll API response = ', events);
+  console.log('eventListFindAll API response = ', events);
   return events;
 }
 
