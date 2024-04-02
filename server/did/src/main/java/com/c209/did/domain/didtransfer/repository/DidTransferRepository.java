@@ -8,6 +8,4 @@ import java.util.Optional;
 
 public interface DidTransferRepository extends JpaRepository<DidTransferEntity, Long> {
     List<DidTransferEntity> findAllByBuyerId(long buyerId);
-
-    Optional<DidTransferEntity> findByScheduleIdAndOwnerIdAndBuyerId(long ScheduleId, long ownerId, long buyerId);
 }
