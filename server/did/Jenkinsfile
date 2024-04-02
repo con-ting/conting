@@ -1,0 +1,166 @@
+pipeline {
+    environment {
+        repository = "1w2k/c209"
+        DOCKERHUB_CREDENTIALS = credentials('docker_credentials')
+        dockerImage = ''
+        DISCOVERY_SERVER="${env.DISCOVERY_SERVER}"
+        DID_DB_URL="${env.DID_DB_URL}"
+        DID_DB_USERNAME="${env.DID_DB_USERNAME}"
+        DID_DB_PASSWORD="${env.DID_DB_PASSWORD}"
+    }
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // 코드 체크아웃
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Confirm Echo') {
+            steps {
+                script {
+                    echo "did server 입니다."
+                }
+            }
+        }
+         stage('Build Did-Server .JAR') {
+                    steps {
+                        script {
+                            // 변경된 브랜치와 머지 대상 브랜치 출력
+                            // 현재 빌드 중인 브랜치명 확인
+                            def currentBranch = env.BRANCH_NAME
+                            echo "Merge Target Branch : \${CHANGE_TARGET}"
+                            echo "Current Branch: \${currentBranch}"
+
+                            echo "discovery server 입니다."
+                            sh 'pwd'
+                            sh 'ls -al'
+                            //gradlew 빌드
+                            sh 'java --version'
+                            sh 'chmod +x ./server/did/gradlew'
+                            sh '''
+                                cd ./server/did
+                                ./gradlew clean build
+                            '''
+                        }
+                    }
+                }
+
+                stage('Build Did-Server Image'){
+                    steps{
+                        script{
+                            dockerImage = docker.build("${repository}:Did_${BUILD_NUMBER}", "-f server/did/Dockerfile ./server/did")
+                        }
+                    }
+                }
+
+                stage('DockerHub Login'){
+                    steps{
+                        script{
+                            sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                        }
+                    }
+                }
+
+                stage('Push Gateway Image to DockerHub'){
+                    steps {
+                        script {
+                            sh "docker push \${repository}:Did_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage('Clean Gateway Image'){
+                    steps{
+                        script{
+                            sh "docker rmi \${repository}:Did_\${BUILD_NUMBER}"
+                        }
+                    }
+                }
+
+                stage("Garbage Collect TESTSERV") {
+                    steps {
+                        sshPublisher(
+                            continueOnError: true, failOnError: false,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Did_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        //sshTransfer(execCommand: "sudo docker kill \$(docker ps | grep did | tr ' ' '\t' | cut -f1)"),
+                                        sshTransfer(execCommand: "sudo docker system prune -af")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+
+                stage("Deploy"){
+                    steps{
+                        sshPublisher(
+                            continueOnError: false, failOnError: true,
+                            publishers: [
+                                sshPublisherDesc(
+                                    configName: "Did_Service",
+                                    verbose: true,
+                                    transfers: [
+                                        sshTransfer(execCommand: "sudo docker rm -f did"),
+                                        sshTransfer(execCommand: "sudo docker pull " + repository +":Did_${BUILD_NUMBER}"),
+                                        sshTransfer(execCommand: "sudo docker run -d -p 8883:8883 --name did --log-driver=fluentd -e DISCOVERY_SERVER=\"${DISCOVERY_SERVER}\" -e DID_DB_URL=\"${DID_DB_URL}\" -e DID_DB_PASSWORD=\"${DID_DB_PASSWORD}\" -e DID_DB_USERNAME=\"${DID_DB_USERNAME}\" " + repository + ":Did_${BUILD_NUMBER}")
+                                    ]
+                                )
+                            ]
+                        )
+                    }
+                }
+                stage("Cleanup") {
+    steps {
+        sh 'rm -rf ${WORKSPACE}/*'
+    }
+}
+    }
+
+    post {
+        success {
+           script {
+                   def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                   def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                   mattermostSend (color: 'good',
+                   message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                   endpoint: "${env.MM_WEBHOOK}",
+                   channel: 'C209_CICD'
+                   )
+                   echo "${env.MM_WEBHOOK}"
+               }
+           }
+       failure {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'danger',
+               message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+       unstable {
+           script {
+               def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+               def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+               mattermostSend (color: 'good',
+               message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+               endpoint: "${env.MM_WEBHOOK}",
+               channel: 'C209_CICD'
+               )
+               echo "${env.MM_WEBHOOK}"
+           }
+       }
+    }
+}
