@@ -22,7 +22,9 @@ type SeatSumProps = {
     seat_id: string;
     grade_price: number;
   }>;
+  scheduleID: string;
   showID: string;
+  biometricKey: string;
 };
 
 export default function SeatSum(props: SeatSumProps) {
@@ -82,6 +84,8 @@ export default function SeatSum(props: SeatSumProps) {
             // resData: verificationData,
             selectedSeats: props.selectedSeats,
             showID: props.showID,
+            scheduleID: props.scheduleID,
+            biometricKey: props.biometricKey,
           });
         }}
         width={190}

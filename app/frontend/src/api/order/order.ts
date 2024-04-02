@@ -8,9 +8,9 @@ interface Seat {
 }
 
 interface Ticket {
-  ticket_id: string;
   seat_id: string;
   schedule_id: string;
+  price: number;
   owner_id: string;
   finger_print: string;
   nft_url: string;
@@ -19,9 +19,14 @@ interface Ticket {
 }
 
 interface FailTicket {
+  seat_id: string;
   schedule_id: string;
+  price: number;
   owner_id: string;
   finger_print: string;
+  nft_url: string;
+  row: string;
+  col: string;
 }
 
 // 결제 시 사전 검증하는 API

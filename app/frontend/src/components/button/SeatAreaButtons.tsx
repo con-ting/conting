@@ -8,11 +8,15 @@ import GaArea from '../seat/GaArea';
 import NaArea from '../seat/NaArea';
 import DaArea from '../seat/DaArea';
 import {SeatApi} from '../../api/seat/Seat';
+import {useRecoilValue} from 'recoil';
+import {userInfoState} from '../../utils/recoil/Atoms';
 
 export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const [selectedArea, setSelectedArea] = useState('');
   const [seatsData, setSeatsData] = useState([]); // 좌석 데이터 저장
-  
+  const userInfo = useRecoilValue(userInfoState);
+  const userID = userInfo ? userInfo.user_id : null;
+
   useEffect(() => {
     console.log('아이디2', showID);
     const fetchSeats = async () => {
@@ -33,11 +37,35 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const renderArea = () => {
     switch (selectedArea) {
       case '가':
-        return <GaArea seatsData={seatsData} showID={showID} />;
+        return (
+          <GaArea
+            userID={userID}
+            seatsData={seatsData}
+            showID={showID}
+            scheduleID={scheduleID}
+            biometricKey={biometricKey}
+          />
+        );
       case '나':
-        return <NaArea seatsData={seatsData} showID={showID} />;
+        return (
+          <NaArea
+            userID={userID}
+            seatsData={seatsData}
+            showID={showID}
+            scheduleID={scheduleID}
+            biometricKey={biometricKey}
+          />
+        );
       case '다':
-        return <DaArea seatsData={seatsData} showID={showID} />;
+        return (
+          <DaArea
+            userID={userID}
+            seatsData={seatsData}
+            showID={showID}
+            scheduleID={scheduleID}
+            biometricKey={biometricKey}
+          />
+        );
       default:
         return null;
     }

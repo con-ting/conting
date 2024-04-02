@@ -16,7 +16,14 @@ import WebView from 'react-native-webview';
 import formatSido from '../../utils/common/SidoFormat';
 import {orderAfterApi, orderFailApi} from '../../api/order/order';
 
-export default function PayInfo({selectedSeats, concert, showID, buyID}) {
+export default function PayInfo({
+  selectedSeats,
+  concert,
+  showID,
+  scheduleID,
+  buyID,
+  biometricKey,
+}) {
   const navigation = useNavigation();
 
   // 주문 번호 상태와 생성 로직
@@ -64,9 +71,18 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
     setIsPaying(false);
   }
 
-  async function handlePaymentResult(response) {
+  async function handlePaymentResult(response: {
+    imp_success: boolean;
+    imp_uid: any;
+    merchant_uid: any;
+  }) {
+    // 결제 결과 콜백 시작 지점에 로그 찍기
+    console.log('Payment Result Callback Fired', response);
+
     setIsPaying(false);
-    if (response.success) {
+    if (response.imp_success) {
+      // 결제 성공 로그
+      console.log('Payment Success', response);
       // 결제 성공 시 사후 검증 API 호출
       try {
         const verificationParams = {
@@ -79,8 +95,9 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
             // 티켓 리스트 데이터 구성
 
             seat_id: seat.seatId,
-            schedule_id: concert.schedule.id,
-            owner_id: paymentData.buyer_email,
+            schedule_id: scheduleID,
+            price: seat.gradePrice,
+            owner_id: seat.memberId,
             finger_print: biometricKey, // 소유자 지문, 이 예제에서는 biometricKey를 사용
             nft_url: '',
             row: seat.seatRow,
@@ -99,14 +116,21 @@ export default function PayInfo({selectedSeats, concert, showID, buyID}) {
         alert('결제 검증에 실패했습니다.');
       }
     } else {
+      // 결제 실패 로그
+      console.error('Payment Failed', response);
       // 결제 실패 시 처리 로직
       try {
         // 결제 실패 시 보내야 할 데이터 구조에 맞추어 ticket_list 배열 구성
         const failParams = {
           ticket_list: Object.values(selectedSeats).map(seat => ({
-            schedule_id: concert.schedule.id, // 현재 콘서트의 회차 ID
-            owner_id: paymentData.buyer_id, // 결제 데이터에서 buyer_id 사용
-            finger_print: seat.biometricKey, // 해당 좌석의 소유자 지문 정보
+            seat_id: seat.seatId,
+            schedule_id: scheduleID, // 현재 콘서트의 회차 ID
+            price: seat.gradePrice,
+            owner_id: seat.memberId, // 결제 데이터에서 buyer_id 사용
+            finger_print: biometricKey, // 해당 좌석의 소유자 지문 정보
+            nft_url: '',
+            row: seat.seatRow,
+            col: seat.seatCol,
           })),
         };
         const failResult = await orderFailApi(failParams);
