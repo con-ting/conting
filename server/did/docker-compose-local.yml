@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  did-db:
+    container_name: did-db
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: 1w2k/did-db
+    environment:
+      - MARIADB_DATABASE=did
+      - MARIADB_ROOT_PASSWORD=1234
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "9995:3306"

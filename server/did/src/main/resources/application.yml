@@ -1,12 +1,12 @@
 server:
-  port: ${SERVER_PORT:8889}
+  port: ${SERVER_PORT:8895}
 
 spring:
   application:
     name: did
   datasource:
     url: ${DID_DB_URL:jdbc:mariadb://localhost:7777/did}
-    username: ${DID_DB_USER_NAME:root}
+    username: ${DID_DB_USERNAME:root}
     password: ${DID_DB_PASSWORD:1234}
     hikari:
       max-lifetime: 160000
@@ -35,6 +35,7 @@ eureka:
 logging:
   level:
     com.c209.did: DEBUG
+
 web3:
   rpc-endpoint: ${WEB3_RPC_ENDPOINT:https://api.devnet.solana.com}
   did-program-id: ${DID_PROGRAM_ID:DiDiDgTdcYhe7jemETo4u5B6GNtsv1BPDnRHBQJtVoEj}
