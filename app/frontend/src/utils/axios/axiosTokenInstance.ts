@@ -79,10 +79,10 @@ const handleResponseError = async (error: AxiosError) => {
     case 401:
       return await refreshAccessTokenAndRetry(config);
     case 403:
-      throw error.response.data.detail
+      throw error.response.data.detail;
     case 404:
-      alertAndLog('', error.response.data.detail);
-      throw error.response.data.detail
+      console.error('', error.response.data.detail);
+      throw error.response.data;
     case 500:
       alert('시스템 에러, 관리자에게 문의 바랍니다.');
       break;
