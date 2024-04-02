@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import {getFamilies} from '../../api/web3/did.ts';
+import {getFamilies} from '../../api/web3/web3.ts';
 import {PublicKey} from '@solana/web3.js';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {useConnection} from '../mobileWalletAdapter/providers/ConnectionProvider.tsx';
@@ -15,29 +15,10 @@ type familyData = {
   name: string;
   wallet: string;
 };
-const mockData = [
-  {
-    id: '1',
-    email: 'ssafy@ssafy.com',
-    name: '김싸피',
-    wallet: 'sadfasevalksesaknvlasdiem',
-  },
-  {
-    id: '2',
-    email: 'ssafy2@ssafy.com',
-    name: '김두피',
-    wallet: 'sadfav215bcasevalksesaknvlasdiem',
-  },
-  {
-    id: '3',
-    email: 'ssafy3@ssafy.com',
-    name: '김삼피',
-    wallet: 'sadfasevalks25r1esaknvlasdiem',
-  },
-];
-export default function FamilySelectButton() {
+
+export default function FamilySelectButton(showID) {
   const [isFamily, setIsFamily] = useState([]);
-  const [buttons, setButtons] = useState(mockData);
+  const [buttons, setButtons] = useState([]);
   const [settingData, setSettingData] = useState(false);
   const {connection} = useConnection();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
@@ -55,15 +36,18 @@ export default function FamilySelectButton() {
     renderingData();
     setSettingData(true);
   }, []);
-  const switchColor = (id: any) => {
-    if (isFamily.includes(id)) {
+  const switchColor = (data: any) => {
+    if (isFamily.includes(data)) {
       // 이미 선택된 경우, 제거
-      setIsFamily(isFamily.filter(item => item !== id));
+      setIsFamily(isFamily.filter(item => item.id !== data.id));
     } else {
       // 선택되지 않은 경우, 추가
-      setIsFamily([...isFamily, id]);
+      setIsFamily([...isFamily, data]);
     }
   };
+  useEffect(() => {
+    console.log('isFamily', isFamily);
+  }, [isFamily]);
   if (settingData) {
     return (
       <View style={styles.container}>
@@ -73,18 +57,18 @@ export default function FamilySelectButton() {
             style={[
               styles.button,
               {
-                backgroundColor: isFamily.includes(data.id)
+                backgroundColor: isFamily.includes(data)
                   ? '#FCC434'
                   : '#1C1C1C',
               },
-              {borderColor: isFamily.includes(data.id) ? '#FCC434' : '#000000'},
+              {borderColor: isFamily.includes(data) ? '#FCC434' : '#000000'},
             ]}
-            onPress={() => switchColor(data.id)}>
+            onPress={() => switchColor(data)}>
             <View style={{flexDirection: 'row'}}>
               <Text
                 style={[
                   styles.name,
-                  {color: isFamily.includes(data.id) ? '#000000' : '#FFFFFF'},
+                  {color: isFamily.includes(data) ? '#000000' : '#FFFFFF'},
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
@@ -93,7 +77,7 @@ export default function FamilySelectButton() {
               <Text
                 style={[
                   styles.email,
-                  {color: isFamily.includes(data.id) ? '#000000' : '#FFFFFF'},
+                  {color: isFamily.includes(data) ? '#000000' : '#FFFFFF'},
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
