@@ -1,20 +1,22 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import {getFamilies} from '../../api/web3/web3.ts';
+
 import {PublicKey} from '@solana/web3.js';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {useConnection} from '../mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
 import {H3} from '../../config/Typography.tsx';
-import {findFamilyInfo} from '../../api/web3/did.ts';
+import {getFamilies, transferReservationRights} from '../../api/web3/did.ts';
 import {
   biometricsAuth,
   checkKey,
   createKey,
   deleteKey,
 } from '../../utils/biometric/Biometrics.tsx';
+import {logout} from '../../api/auth/auth.ts';
+import {useNavigation} from '@react-navigation/native';
 
 type familyData = {
   id: string;
@@ -29,7 +31,7 @@ export default function FamilySelectButton(showID) {
   const [settingData, setSettingData] = useState(false);
   const {connection} = useConnection();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-
+  const navigation = useNavigation();
   const handleBiometricAuth = async () => {
     try {
       const hasKey = await checkKey();
@@ -66,13 +68,23 @@ export default function FamilySelectButton(showID) {
 
       if (signatureKey && signatureKey.result) {
         console.log('서명 키 생성 성공', signatureKey.key);
-        await findFamilyInfo({
-          performance_id: showID,
+        const newVar = await transferReservationRights({
+          performance_id: showID.showID,
           owner_fingerprint_key: signatureKey.key,
           owner_id: userInfo?.user_id,
           owner_wallet: userInfo?.walletAddress,
-          families: setIsFamily,
+          families: isFamily,
         });
+        if (newVar) {
+          Alert.alert('안내', '해당 예매 부탁 성공', [
+            {
+              text: '확인',
+              onPress: async () => {
+                navigation.navigate('Main');
+              },
+            },
+          ]);
+        }
       } else {
         console.log('서명 키 생성 실패');
         new Error('서명 키 생성 실패');
@@ -85,6 +97,7 @@ export default function FamilySelectButton(showID) {
   const renderingData = async () => {
     const families = await getFamilies(
       new PublicKey(userInfo.walletAddress),
+      showID.showID,
       connection,
       useAnchorWallet,
     );
