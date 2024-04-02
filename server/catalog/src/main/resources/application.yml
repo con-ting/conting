@@ -24,8 +24,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
-    generate-ddl: true
+        show_sql: false
+    generate-ddl: false
 eureka:
   client:
     register-with-eureka: true
