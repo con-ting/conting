@@ -41,5 +41,6 @@ export const ConnectionContext = createContext<ConnectionContextState>(
 );
 
 export function useConnection(): ConnectionContextState {
+  // console.log('useContext(ConnectionContext) =>  ', ConnectionContext);
   return useContext(ConnectionContext);
 }

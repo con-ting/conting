@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Alert, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, Linking, Platform, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -17,6 +17,8 @@ import {LocalImageLoader} from '../../utils/common/ImageLoader.tsx';
 import * as Animatable from 'react-native-animatable';
 import {login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
+import {useAuthorization} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -30,6 +32,48 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
+
+  /**
+   * tryConnect
+   * 연동 앱과 커넥션 요청
+   * @author 김형민
+   */
+  const {authorizeSession} = useAuthorization();
+  const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
+  const {selectedAccount} = useAuthorization();
+  const handleConnectPress = useCallback(async () => {
+    let success = false; // 성공 여부를 추적하는 변수
+    try {
+      if (authorizationInProgress) {
+        return false; // 진행 중이면 바로 false 반환
+      }
+      setAuthorizationInProgress(true);
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+      });
+      success = true; // 연결 성공
+    } catch (err: any) {
+      console.log(
+        '연결 중 에러 발생',
+        err instanceof Error ? err.message : err,
+      );
+    } finally {
+      setAuthorizationInProgress(false);
+      return success; // 여기서 성공 여부 반환
+    }
+  }, [authorizationInProgress, authorizeSession]);
+  // 각각의 버튼에 대한 실행될 링크(url)와 링크가 실행되지 않을 때 대체 링크(alterUrl)
+  const deepLinkEvent = useCallback(async (url: string, alterUrl: string) => {
+    // 만약 어플이 설치되어 있으면 true, 없으면 false
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // 설치되어 있으면
+      await Linking.openURL(url);
+    } else {
+      // 앱이 없으면
+      await Linking.openURL(alterUrl);
+    }
+  }, []);
 
   //1. 로그인 API 요청
   const loginApiSender = async () => {
@@ -54,6 +98,29 @@ const LoginScreen = () => {
     const userResponse = await loginApiSender(); //1. 로그인 API 요청
     // console.log('로그인 API 요청 끝');
     await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+
+    // 4. 커넥션 요청
+    // 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
+    console.log('지갑 연결 시도');
+    const walletPass = await handleConnectPress(); // await 추가
+    if (!walletPass) {
+      //2-1. 연결 실패 시
+      if (Platform.OS === 'android') {
+        deepLinkEvent(
+          'market://details?id=app.phantom',
+          'https://play.google.com/store/apps/details?id=app.phantom',
+        );
+      } else {
+        deepLinkEvent(
+          "itms-apps://itunes.apple.com/us/app/id1598432977?mt=8'",
+          'https://apps.apple.com/kr/app/phantom-crypto-wallet/id1598432977',
+        );
+      }
+      return;
+    }
+    //2-2. 연결 성공 시
+    console.log('지갑 연결 성공');
+
     //4. 전역 상태에 유저 정보 저장
     console.log('전역 상태에 유저 정보 저장 시작');
     await setUserInfo({
@@ -64,7 +131,7 @@ const LoginScreen = () => {
     console.log('전역 상태에 유저 정보 저장 끝');
     //5. goMainPage 수정
     console.log('goMainPage 수정 시작');
-    await setGoMainPage(true);
+    setGoMainPage(true);
     console.log('goMainPage 수정 끝');
   };
 

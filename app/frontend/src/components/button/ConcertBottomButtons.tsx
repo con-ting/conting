@@ -89,7 +89,7 @@ export default function ConcertBottomButtons({scrollY, schedule, showID}) {
       </Animated.View>
       {showRequest && (
         <Animated.View style={{transform: [{translateY: dateSelectorY}]}}>
-          <FamilySelectButton />
+          <FamilySelectButton showID={showID} />
         </Animated.View>
       )}
       {showDateSelector && (

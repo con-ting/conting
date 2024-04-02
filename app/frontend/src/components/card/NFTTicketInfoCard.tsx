@@ -34,7 +34,7 @@ export default function NFTTicketInfoCard(props: NFTTicketCardProps) {
 
   // 1 SOL = 100,000원으로 가정
   const convertToKRW = sol => {
-    return (parseFloat(sol.replace(/,/g, '')) * 100000).toLocaleString() + '원';
+    return (parseFloat(sol.replace(/,/g, '')) * 25000).toLocaleString() + '원';
   };
 
   return (

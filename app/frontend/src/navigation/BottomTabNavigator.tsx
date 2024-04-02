@@ -1,7 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/mainScreen/MainScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
-import TicketApplyListScreen from '../screens/ticketApplyScreen/TicketApplyListScreen';
+import NftTicketListScreen from '../screens/ticketApplyScreen/NftTicketListScreen.tsx';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
 import {
   Text,
@@ -218,7 +218,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name={'티켓북'}
-        component={TicketApplyListScreen}
+        component={NftTicketListScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <Element3 color={focused ? '#FCC434' : '#CCCCCC'} size={25} />
