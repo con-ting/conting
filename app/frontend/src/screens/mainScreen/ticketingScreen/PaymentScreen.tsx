@@ -10,16 +10,18 @@ import {userInfoState} from '../../../utils/recoil/Atoms';
 export default function PaymentScreen({route}) {
   const selectedSeats = route.params.selectedSeats;
   const showID = route.params.showID;
+  const scheduleID = route.params.scheduleID;
+  const biometricKey = route.params.biometricKey;
   // const buyID = route.params.resData.buyer_id;
   const userInfo = useRecoilValue(userInfoState);
   const userID = userInfo ? userInfo.user_id : null;
   const [concertDetail, setConcertDetail] = useState(null);
 
   useEffect(() => {
-    console.log('받아', selectedSeats);
-    console.log(route);
-
-    console.log('shs', route.params.showID);
+    // console.log('받아', selectedSeats);
+    // console.log(route);
+    console.log('결제페이지 입장 ', route);
+    // console.log('shs', route.params.showID);
     fetchConcert(route.params.showID);
   }, []);
 
@@ -45,6 +47,8 @@ export default function PaymentScreen({route}) {
         selectedSeats={selectedSeats}
         concert={concertDetail}
         showID={showID}
+        scheduleID={scheduleID}
+        biometricKey={biometricKey}
         buyID={userID}
       />
     </ScrollView>

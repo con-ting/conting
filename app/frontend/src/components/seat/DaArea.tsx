@@ -18,7 +18,13 @@ import {PopUpModal} from '../modal/Modal';
 import {Dropdown} from '../dropdown/Dropdown';
 import SeatSum from './SeatSum';
 
-export default function GaArea({seatsData, showID}) {
+export default function GaArea({
+  userID,
+  seatsData,
+  showID,
+  scheduleID,
+  biometricKey,
+}) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
   // 드롭다운 오픈 상태
@@ -28,10 +34,10 @@ export default function GaArea({seatsData, showID}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {label: '본인', value: '본인'},
-    {label: '어머니', value: '어머니'},
-    {label: '아버지', value: '아버지'},
-    {label: '누나', value: '누나'},
+    {id: userID, label: '본인', value: '본인'},
+    {id: 2, label: '어머니', value: '어머니'},
+    {id: 3, label: '아버지', value: '아버지'},
+    {id: 4, label: '누나', value: '누나'},
   ];
 
   const handleItemSelect = selectedValue => {
@@ -58,10 +64,24 @@ export default function GaArea({seatsData, showID}) {
     // seatsData에서 좌석을 찾아 등급 정보를 얻기
     const seatData = seatsData.find(seat => seat.seat_id === seatId);
     const seatGrade = seatData ? seatData.grade : 'Unknown';
+    const gradePrice = seatData ? seatData.grade_price : 0;
+    const memberInfo = familyMembers.find(
+      member => member.value === selectedDrop,
+    );
+    const userName = memberInfo ? memberInfo.userName : '알 수 없음';
+    const memberId = memberInfo ? memberInfo.id : null;
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
-      [selectedDrop]: {seatId, seatRow, seatCol},
+      [selectedDrop]: {
+        seatId,
+        seatRow,
+        seatCol,
+        seatGrade,
+        gradePrice,
+        userName,
+        memberId,
+      },
     }));
   };
 
@@ -172,6 +192,8 @@ export default function GaArea({seatsData, showID}) {
           selectedSeats={selectedSeats}
           seatsData={seatsData}
           showID={showID}
+          scheduleID={scheduleID}
+          biometricKey={biometricKey}
         />
       </View>
     </>

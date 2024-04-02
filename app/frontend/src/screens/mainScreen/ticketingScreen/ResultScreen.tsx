@@ -26,7 +26,7 @@ export default function ResultScreen({route}) {
           </View>
           <View style={styles.button}>
             <YellowButton
-              onPress={() => navigation.navigate('구매내역')}
+              onPress={() => navigation.navigate('ResultMainScreen')}
               width={'90%'}
               btnText="내 티켓 보러가기"
               textSize={20}
