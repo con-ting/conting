@@ -18,6 +18,7 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import PopularSinger from '../../components/list/PopularSinger';
+import Loading from '../../components/loader/Loading';
 
 export default function MainScreen() {
   const navigation = useNavigation();
@@ -98,7 +99,7 @@ export default function MainScreen() {
   };
 
   if (popular.length === 0 && first.length === 0) {
-    return <Text>...로딩</Text>;
+    return <Loading/>
   }
   return (
     <ScrollView style={styles.container}>

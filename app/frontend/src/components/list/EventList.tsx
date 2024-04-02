@@ -37,7 +37,7 @@ export default function EventList() {
       <View style={styles.cardContainer}>
         <View
           style={{
-            flex: 3,
+            flex: 4,
             borderRadius: widthPercent(10),
           }}>
           <Image
@@ -68,7 +68,7 @@ export default function EventList() {
         <TouchableOpacity
           style={{
             width: '100%',
-            height: 30,
+            height: 40,
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: 'black',
