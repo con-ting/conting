@@ -4,6 +4,7 @@ import {getAsync, setAsync} from '../async/asyncUtil';
 import {Alert} from 'react-native';
 import instance from './axiosInstance';
 import {alertAndLog} from '../common/alertAndLog.ts';
+import {logout} from '../../api/auth/auth.ts';
 
 /**
  * 인증을 요구할때 사용되는 토큰 인스턴스입니다.
@@ -15,7 +16,7 @@ const tokenInstance = axios.create({
   timeout: TIMEOUT,
 });
 
-const getValueFor = async (key: string) => {
+export const getValueFor = async (key: string) => {
   return await getAsync(key);
 };
 
@@ -57,7 +58,7 @@ const refreshAccessTokenAndRetry = async (config: AxiosRequestConfig) => {
     console.error(error.response.status);
     if (error.response.status === 401) {
       // TODO
-      // await logout();
+      await logout();
       Alert.alert('토큰 갱신에 실패했습니다. 다시 로그인 해주세요.');
       return Promise.reject(error);
     }

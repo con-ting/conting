@@ -11,6 +11,7 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "^0.28.0",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/blur": "^4.4.0",
     "@react-native-community/datetimepicker": "^7.6.3",
@@ -23,6 +24,7 @@
     "@realm/react": "^0.6.2",
     "@shopify/react-native-skia": "^1.0.4",
     "@solana-mobile/mobile-wallet-adapter-protocol": "^2.1.2",
+    "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.1.2",
     "@solana/web3.js": "^1.91.2",
     "axios": "^1.6.8",
     "deprecated-react-native-prop-types": "^5.0.0",

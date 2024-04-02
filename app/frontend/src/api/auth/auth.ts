@@ -1,5 +1,6 @@
 import instance from '../../utils/axios/axiosInstance'; // token 필요없는 axios
-import tokenInstance from '../../utils/axios/axiosTokenInstance'; // token 필요한 axios
+import tokenInstance from '../../utils/axios/axiosTokenInstance';
+import {removeAsync} from '../../utils/async/asyncUtil.ts'; // token 필요한 axios
 const authUrl: string = 'auth';
 
 export const phoneNumberCertMessageSenderApi = async (params: {
@@ -36,4 +37,10 @@ export const emailConfirm = async (params: {email: string}) => {
   const res = await instance.get(`${authUrl}/check?email=${params.email}`);
   console.log('[emailConfirmAPI response] = ', res.data);
   return res.data;
+};
+
+export const logout = async () => {
+  await removeAsync('accessToken');
+  await removeAsync('refreshToken');
+  await removeAsync('userId');
 };

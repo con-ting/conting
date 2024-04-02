@@ -29,11 +29,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import {userJoin} from '../../api/auth/user.ts';
 import {useRecoilState} from 'recoil';
-import {
-  fcmToken,
-  goMainPageState,
-  userInfoState,
-} from '../../utils/recoil/Atoms.ts';
+import {fcmToken, userInfoState} from '../../utils/recoil/Atoms.ts';
 import {
   korDateFormat,
   serverDateFormat,
@@ -72,7 +68,6 @@ const JoinScreen = propsData => {
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const phoneNumber = propsData.route.params.replace(/-/g, '');
-  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
@@ -211,7 +206,7 @@ const JoinScreen = propsData => {
     console.log('전역 상태에 유저 정보 저장 끝');
     //5. goMainPage 수정
     console.log('goMainPage 수정 시작');
-    await setGoMainPage(true);
+    await setAsync('goMainPage', true);
     console.log('goMainPage 수정 끝');
   };
 

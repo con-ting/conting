@@ -1,21 +1,19 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-} from 'react-native';
+import {View, StyleSheet, Text, useWindowDimensions, Alert} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import BannerList from './../../components/list/BannerList';
 import {widthPercent} from '../../config/Dimensions';
 import EventList from '../../components/list/EventList';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import {useNavigation} from '@react-navigation/native';
-import {currentColor} from '../../utils/recoil/Atoms';
 import {
-  ScrollView,
-} from 'react-native-gesture-handler';
+  currentColor,
+  fcmToken,
+  goMainPageState,
+  userInfoState,
+} from '../../utils/recoil/Atoms';
+import {ScrollView} from 'react-native-gesture-handler';
 import {MainApi} from '../../api/catalog/concert';
 import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 import {
@@ -24,6 +22,14 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import {
+  Account,
+  useAuthorization,
+} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
+import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
+import {PublicKey} from '@solana/web3.js';
+import {updateUserFcmAndWallet} from '../../api/auth/user.ts';
+import {logout} from '../../api/auth/auth.ts';
 
 export default function MainScreen() {
   const navigation = useNavigation();
@@ -35,9 +41,59 @@ export default function MainScreen() {
   const secondColor = useSharedValue(currentColors[1]);
   const thirdColor = useSharedValue(currentColors[2]);
   const {width, height} = useWindowDimensions();
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
+  const [balance, setBalance] = useState<number | null>(null);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
+  const [token, setToken] = useRecoilState(fcmToken);
+
+  const validationUserInfo = useCallback(
+    async (account: Account) => {
+      console.log('앱 주소 =: ' + account.address);
+      console.log('개인 지갑 주소 =: ' + account.publicKey);
+      console.log('개인 지갑 앱 = ' + account.label);
+      if (!account.publicKey.equals(new PublicKey(userInfo?.walletAddress))) {
+        console.error('기존 지갑 계정과 다릅니다.');
+        Alert.alert(
+          'ERROR', // Alert 타이틀
+          '기존 지갑 계정과 다릅니다. 지갑 계정을 바꾸고 다시 로그인해주세요', // 메시지 내용
+          [
+            {
+              text: '확인',
+              onPress: async () => {
+                //로그아웃 로직
+                await logout();
+                setGoMainPage(false);
+              },
+            },
+            {
+              text: '지갑주소갱신',
+              onPress: async () => {
+                // if (token!=userInfo.fcm)
+                await updateUserFcmAndWallet({wallet: account.publicKey});
+              },
+            },
+          ],
+          {cancelable: false}, // 밖을 눌러서 취소할 수 없도록 설정
+        );
+      }
+      const fetchedBalance = await connection.getBalance(account.publicKey);
+      console.log('개인 지갑 잔액 = ' + fetchedBalance);
+      await setBalance(fetchedBalance);
+    },
+    [connection],
+  );
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return;
+    }
+    validationUserInfo(selectedAccount);
+  }, [validationUserInfo, selectedAccount]);
 
   // 뒷배경 애니메이션을 위한 부분
-  const duration = 1000
+  const duration = 1000;
   const colors = useDerivedValue(() => {
     return [firstColor.value, secondColor.value, thirdColor.value];
   }, []);
@@ -56,6 +112,7 @@ export default function MainScreen() {
       easing: Easing.inOut(Easing.ease),
     });
   };
+
   // 처음 화면 접속 시 서버에서 데이터 가져오기
   useEffect(() => {
     console.log(colors.value);
@@ -104,35 +161,35 @@ export default function MainScreen() {
     return <Text>...로딩</Text>;
   }
   return (
-      <ScrollView style={{flex: 1}}>
-        <Canvas
-          style={{
-            flex: 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}>
-          <Rect x={0} y={0} width={width} height={3000}>
-            <LinearGradient
-              start={vec(100, 0)}
-              end={vec(width, height/2)}
-              colors={colors}
-            />
-          </Rect>
-        </Canvas>
-        <PopularConcertList popularConcert={popular} onChange={onChange} />
-        <View
-          style={{
-            flexDirection: 'column',
-            marginHorizontal: widthPercent(10),
-          }}>
-          <FisrtComeList concerts={first} way="선착 예매" />
-          <BannerList banners={bannerList} />
-          <EventList />
-        </View>
-      </ScrollView>
+    <ScrollView style={{flex: 1}}>
+      <Canvas
+        style={{
+          flex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}>
+        <Rect x={0} y={0} width={width} height={3000}>
+          <LinearGradient
+            start={vec(100, 0)}
+            end={vec(width, height / 2)}
+            colors={colors}
+          />
+        </Rect>
+      </Canvas>
+      <PopularConcertList popularConcert={popular} onChange={onChange} />
+      <View
+        style={{
+          flexDirection: 'column',
+          marginHorizontal: widthPercent(10),
+        }}>
+        <FisrtComeList concerts={first} way="선착 예매" />
+        <BannerList banners={bannerList} />
+        <EventList />
+      </View>
+    </ScrollView>
   );
 }
 
