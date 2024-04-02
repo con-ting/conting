@@ -163,9 +163,7 @@ public class TicketServiceImpl implements TicketService {
     //해당 ticket의 isUsed속성을 true로 업데이트한 후 db에 저장합니다.
 
     private Mono<Ticket> validateTicket(Long userId, Ticket ticket) {
-        if (!ticket.getOwnerId().equals(userId)) {
-            return Mono.error(new CommonException(TICKET_UNOWNED)); // userId와 ownerId가 일치하지 않을 경우 예외 발생
-        }
+        
         if (ticket.getIsUsed()) {
             return Mono.error(new CommonException(TICKET_ALREADY_USED)); // ticket이 이미 사용되었을 경우 예외 발생
         }
