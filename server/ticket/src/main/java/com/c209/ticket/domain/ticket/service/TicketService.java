@@ -3,6 +3,7 @@ package com.c209.ticket.domain.ticket.service;
 import com.c209.ticket.domain.ticket.dto.TicketDto;
 import com.c209.ticket.domain.ticket.dto.response.TicketListResponse;
 import com.c209.ticket.domain.ticket.dto.response.TicketPaymentsListResponse;
+import com.netflix.appinfo.ApplicationInfoManager;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface TicketService {
     Mono<Boolean> verifyQR(Long userId, String qrUUID, Long ticketId);
 
     Mono<TicketPaymentsListResponse> getTicketPaymentsList(Long userId);
+
+    boolean refund(Long userId, Long ticketId);
 }
