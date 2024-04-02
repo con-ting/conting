@@ -53,7 +53,7 @@ public class OrderController {
         //payService.capture(request);
 
 
-        log.info("요청 :: {}", request);
+        log.info("결제 성공 요청 :: {}", request);
         //issue 발행
         seatProducer.updateSeat("update_seat", SeatUpdateRequest.builder().seatIds(request.seatIds()).isAvailable(false).build());
         seatProducer.issueTicket("success_order", request);
@@ -64,7 +64,7 @@ public class OrderController {
     ResponseEntity<PayAuthResponse> payFailed(
             @RequestBody OrderFailRequest request){
         //
-        log.info("결제 실패 :{}",request);
+        log.info("결제 실패 요청 :{}",request);
 
         seatProducer.failTicket("failure_order", request);
         return ResponseEntity.ok(PayAuthResponse.builder().result(true).build());

@@ -40,6 +40,7 @@ public class TicketConsumerService {
             // 여기서 orderRequest 객체를 사용하여 원하는 작업 수행
             // 예: orderRequest.getAmount(), orderRequest.getBuyerId(), orderRequest.getImpUid() 등을 사용하여 필요한 작업 수행
             for(TicketIssueDto issue : orderRequest.ticketList()){
+                    log.info("현재 발급 처리중인 issue :: {}", issue);
                     Ticket save = issue.toEntityForSuccess();
                     save.setIsUsed(false);
                     save.setBuyerId(orderRequest.buyerId());
