@@ -19,7 +19,13 @@ import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
 import {PopUpModal} from '../modal/Modal';
 
-export default function GaArea({seatsData, showID}) {
+export default function GaArea({
+  userID,
+  seatsData,
+  showID,
+  scheduleID,
+  biometricKey,
+}) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
   // 드롭다운 오픈 상태
@@ -29,7 +35,7 @@ export default function GaArea({seatsData, showID}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {id: 1, label: '본인', value: '본인', userName: '김싸피'},
+    {id: userID, label: '본인', value: '본인', userName: '김싸피'},
     {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
     {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
     {id: 4, label: '누나', value: '누나', userName: '김누나'},
@@ -192,6 +198,8 @@ export default function GaArea({seatsData, showID}) {
           selectedSeats={selectedSeats}
           seatsData={seatsData}
           showID={showID}
+          scheduleID={scheduleID}
+          biometricKey={biometricKey}
         />
       </View>
     </>

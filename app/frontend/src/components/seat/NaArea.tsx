@@ -18,7 +18,13 @@ import {PopUpModal} from '../modal/Modal';
 import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
 
-export default function NaArea({seatsData, showID}) {
+export default function NaArea({
+  userID,
+  seatsData,
+  showID,
+  scheduleID,
+  biometricKey,
+}) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
   // 드롭다운 오픈 상태
@@ -28,10 +34,10 @@ export default function NaArea({seatsData, showID}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const familyMembers = [
-    {id: 1, label: '본인', value: '본인'},
-    {id: 2, label: '어머니', value: '어머니'},
-    {id: 3, label: '아버지', value: '아버지'},
-    {id: 4, label: '누나', value: '누나'},
+    {id: userID, label: '본인', value: '본인', userName: '김싸피'},
+    {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
+    {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
+    {id: 4, label: '누나', value: '누나', userName: '김누나'},
   ];
 
   const handleItemSelect = selectedValue => {
@@ -58,7 +64,12 @@ export default function NaArea({seatsData, showID}) {
     // seatsData에서 좌석을 찾아 등급 정보를 얻기
     const seatData = seatsData.find(seat => seat.seat_id === seatId);
     const seatGrade = seatData ? seatData.grade : 'Unknown';
-    const member = familyMembers.find(member => member.value === selectedDrop);
+    const gradePrice = seatData ? seatData.grade_price : 0;
+    const memberInfo = familyMembers.find(
+      member => member.value === selectedDrop,
+    );
+    const userName = memberInfo ? memberInfo.userName : '알 수 없음';
+    const memberId = memberInfo ? memberInfo.id : null;
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
@@ -67,7 +78,9 @@ export default function NaArea({seatsData, showID}) {
         seatRow,
         seatCol,
         seatGrade,
-        memberId: member ? member.id : null, // 선택한 좌석 데이터에 가족 구성원의 ID 추가
+        gradePrice,
+        userName,
+        memberId,
       },
     }));
   };
@@ -182,6 +195,8 @@ export default function NaArea({seatsData, showID}) {
           selectedSeats={selectedSeats}
           seatsData={seatsData}
           showID={showID}
+          scheduleID={scheduleID}
+          biometricKey={biometricKey}
         />
       </View>
     </>
