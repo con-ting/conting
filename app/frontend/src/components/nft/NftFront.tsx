@@ -1,6 +1,7 @@
 import {ImageBackground, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from '../card/TicketInfoCard';
+import FastImage from 'react-native-fast-image';
 
 type nftFrontProps = {
   poster: string;
@@ -25,12 +26,11 @@ type nftFrontProps = {
 export default function NftFront(props: nftFrontProps) {
   return (
     <View style={styles.container}>
-      <ImageBackground
+      <FastImage
         source={{
           uri: props.poster,
         }}
-        style={styles.image}
-        imageStyle={{borderRadius: 20, resizeMode: 'stretch'}}>
+        style={styles.image}>
         <TicketInfoCard
           title={props.title}
           date={props.date}
@@ -38,7 +38,7 @@ export default function NftFront(props: nftFrontProps) {
           row={props.row}
           no={props.no}
         />
-      </ImageBackground>
+      </FastImage>
     </View>
   );
 }
@@ -54,9 +54,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   image: {
     flex: 1,
     justifyContent: 'flex-end',
+    borderRadius: 20,
+    resizeMode: 'stretch',
   },
 });

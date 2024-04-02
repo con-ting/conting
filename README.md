@@ -182,7 +182,7 @@ NFT 응모권을 활용한 응모 굿즈를 확인할 수 있습니다.
 
 ### 그 외 작업중인 추첨결과 및 티켓북 탭 화면
 - [해당 화면 FE 코드 보기](/app/frontend/src/screens/lotteryResultScreen/ReservationWaitingScreen.tsx)
-- [해당 화면 FE 코드 보기](/app/frontend/src/screens/ticketApplyScreen/TicketApplyListScreen.tsx)
+- [해당 화면 FE 코드 보기](/app/frontend/src/screens/ticketApplyScreen/NftTicketListScreen.tsx)
 
 ![작업중탭.gif](/docs/img/작업중탭.gif)
 

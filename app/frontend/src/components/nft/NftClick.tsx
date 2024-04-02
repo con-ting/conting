@@ -41,7 +41,8 @@ export default function NftClick(props: nftClickProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: 300, // 적절한 높이 설정
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',

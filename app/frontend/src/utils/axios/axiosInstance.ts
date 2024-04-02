@@ -30,11 +30,11 @@ const handleResponseError = async (error: AxiosError): Promise<void> => {
     case 400:
       if (error.response.data.detail) {
         console.error('[ERROR 400]', error.response.data.detail);
+        Alert.alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
       }
-      Alert.alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
       break;
     case 401:
-      // TODO: 로그아웃 로직
+      Alert.alert('잘못된 정보를 입력하셨습니다.\n다시 확인해주세요');
       break;
     case 409:
       Alert.alert('이미 가입된 회원입니다.');
