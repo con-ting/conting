@@ -1,4 +1,4 @@
-import {View, StyleSheet, Text, useWindowDimensions} from 'react-native';
+import {View, StyleSheet, Text, useWindowDimensions, Alert} from 'react-native';
 import FisrtComeList from '../../components/list/FirstComeList';
 import PopularConcertList from './../../components/list/PopularConcertList';
 import {useCallback, useEffect, useState} from 'react';
@@ -67,18 +67,18 @@ export default function MainScreen() {
                 setGoMainPage(false);
               },
             },
-            {
-              text: '지갑주소갱신',
-              onPress: async () => {
-                // if (token!=userInfo.fcm)
-                await updateUserFcmAndWallet({wallet: account.publicKey});
-                await setUserInfo({
-                  user_id: userInfo?.user_id,
-                  user_email: userInfo?.user_email,
-                  walletAddress: userInfo?.walletAddress,
-                });
-              },
-            },
+            // {
+            //   text: '지갑주소갱신',
+            //   onPress: async () => {
+            //     // if (token!=userInfo.fcm)
+            //     await updateUserFcmAndWallet({wallet: account.publicKey});
+            //     await setUserInfo({
+            //       user_id: userInfo?.user_id,
+            //       user_email: userInfo?.user_email,
+            //       walletAddress: userInfo?.walletAddress,
+            //     });
+            //   },
+            // },
           ],
           {cancelable: false}, // 밖을 눌러서 취소할 수 없도록 설정
         );

@@ -8,6 +8,13 @@ import {useConnection} from '../mobileWalletAdapter/providers/ConnectionProvider
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
 import {H3} from '../../config/Typography.tsx';
+import {findFamilyInfo} from '../../api/web3/did.ts';
+import {
+  biometricsAuth,
+  checkKey,
+  createKey,
+  deleteKey,
+} from '../../utils/biometric/Biometrics.tsx';
 
 type familyData = {
   id: string;
@@ -22,6 +29,58 @@ export default function FamilySelectButton(showID) {
   const [settingData, setSettingData] = useState(false);
   const {connection} = useConnection();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  const handleBiometricAuth = async () => {
+    try {
+      const hasKey = await checkKey();
+      let signatureKey;
+
+      if (hasKey) {
+        console.log('해시키', hasKey);
+        const bioAuthResult = await biometricsAuth();
+        // id,
+        // '지문 인증을 위해 인증해주세요.',
+        if (!bioAuthResult.result) {
+          await deleteKey();
+          const keyCreationResult = await createKey();
+          if (!keyCreationResult.result) {
+            console.log('새 키 생성 실패');
+            return;
+          }
+          signatureKey = await biometricsAuth();
+          // id,
+          // '지문 인증을 위해 인증해주세요.',
+        } else {
+          signatureKey = bioAuthResult;
+        }
+      } else {
+        const keyCreationResult = await createKey();
+        if (!keyCreationResult.result) {
+          console.log('키 생성 실패');
+          return;
+        }
+        signatureKey = await biometricsAuth();
+        // id,
+        // '지문 인증을 위해 인증해주세요.',
+      }
+
+      if (signatureKey && signatureKey.result) {
+        console.log('서명 키 생성 성공', signatureKey.key);
+        await findFamilyInfo({
+          performance_id: showID,
+          owner_fingerprint_key: signatureKey.key,
+          owner_id: userInfo?.user_id,
+          owner_wallet: userInfo?.walletAddress,
+          families: setIsFamily,
+        });
+      } else {
+        console.log('서명 키 생성 실패');
+        new Error('서명 키 생성 실패');
+      }
+    } catch (error) {
+      console.error('지문 인증 처리 중 오류 발생:', error);
+    }
+  };
 
   const renderingData = async () => {
     const families = await getFamilies(
@@ -92,9 +151,7 @@ export default function FamilySelectButton(showID) {
             {backgroundColor: '#000000'},
             {borderColor: '#FCC434'},
           ]}
-          onPress={() => {
-            Alert.alert('예매 부탁하는 API 전송 후 다시 콘서트로');
-          }}>
+          onPress={handleBiometricAuth}>
           <Text style={[styles.title, {color: '#FCC434'}]}>예매 부탁하기</Text>
         </TouchableOpacity>
       </View>
