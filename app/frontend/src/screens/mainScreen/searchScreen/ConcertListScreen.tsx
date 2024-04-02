@@ -1,4 +1,11 @@
-import { FlatList, ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+} from 'react-native';
 import {MAINBLACK, MINTBASE} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {BasicConcertCardWide} from '../../../components/card/ConcertCardWide';
@@ -27,7 +34,7 @@ export default function ConcertListScreen({concerts}: any) {
       <BasicConcertCardWide
         onPress={() =>
           // console.log('dpd?', concert.show_id)
-          navigation.navigate('ConcertDetail', {showID: concert.show_id})
+          navigation.navigate('ConcertDetail', {show_id: concert.show_id})
         }
         disabled={concert.status !== 'on_sale'}
         title={concert.title}

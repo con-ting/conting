@@ -59,3 +59,42 @@ export const CastSearchApi = async () => {
   console.log('[CastSearch Response] = ', res.data);
   return res.data;
 };
+
+// 공연 등록 시 사용하는 API
+export const ConcertRegistApi = async (params: {
+  show: {
+    title: string;
+    description: string;
+    poster_image: string;
+    description_image: string;
+    genre: string;
+    video_title: string;
+    video_url: string;
+    reservation_start_date_time: string;
+    reservation_end_date_time: string;
+    reservation_type: string;
+    start_date: string;
+    end_date: string;
+    max_ticket_per_person: 1;
+  };
+  schedule: Array<{
+    start_datetime: string;
+    end_datetime: string;
+  }>;
+  hall_id: number;
+  grade_price: {
+    A: number;
+    B: number;
+    C: number;
+  };
+  singer_id: number;
+  company: {
+    company_name: string;
+    call: string;
+  };
+}) => {
+  console.log('[ConcertRegistApi Request] = ', params);
+  const res = await tokenInstance.post(`${concertUrl}/show`, params);
+  console.log('[ConcertRegist Response] = ', res.data);
+  return res.data;
+};
