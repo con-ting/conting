@@ -2,6 +2,7 @@ package com.c209.payment.domain.order.controller;
 
 
 import com.c209.payment.domain.order.dto.request.CreateOrderRequest;
+import com.c209.payment.domain.order.dto.request.OrderFailRequest;
 import com.c209.payment.domain.order.dto.request.OrderSuccessRequest;
 import com.c209.payment.domain.order.dto.response.CreateOrderResponse;
 import com.c209.payment.domain.pay.dto.request.PayAuthRequest;
@@ -49,7 +50,7 @@ public class OrderController {
 
         //아이엠포트 결제 단건 api를 조회해 db값과 비교한다.z
             //아이엠포트 통신시 에러가 났을 경우 최대 3회 더 수행하고 만료한다.
-        payService.capture(request);
+        //payService.capture(request);
 
 
         log.info("요청 :: {}", request);
@@ -59,9 +60,14 @@ public class OrderController {
         return ResponseEntity.ok(PayAuthResponse.builder().result(true).build());
     }
 
-    @GetMapping("/fail")
-    ResponseEntity<PayAuthResponse> payFailed(PayAuthRequest reqeust){
-        return ResponseEntity.ok(null);
+    @PostMapping("/fail")
+    ResponseEntity<PayAuthResponse> payFailed(
+            @RequestBody OrderFailRequest request){
+        //
+
+
+        seatProducer.failTicket("failure_order", request);
+        return ResponseEntity.ok(PayAuthResponse.builder().result(true).build());
     }
 
 

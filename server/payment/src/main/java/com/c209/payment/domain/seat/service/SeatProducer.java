@@ -1,5 +1,6 @@
 package com.c209.payment.domain.seat.service;
 
+import com.c209.payment.domain.order.dto.request.OrderFailRequest;
 import com.c209.payment.domain.order.dto.request.OrderSuccessRequest;
 import com.c209.payment.domain.seat.dto.request.SeatUpdateRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,5 +47,20 @@ public class SeatProducer {
         log.info("Kafka Producer sent data from the Order microservice: " + jsonInString);
 
         return request;
+    }
+
+    public void failTicket(String topic, OrderFailRequest request) {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+
+        try {
+            jsonInString = mapper.writeValueAsString(request);
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        kafkaTemplate.send(topic, jsonInString);
+        log.info("Kafka Producer sent data from the Order microservice: " + jsonInString);
+
     }
 }

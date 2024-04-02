@@ -1,26 +1,29 @@
 package com.c209.ticket.domain.ticket.service.impl;
 
 import com.c209.ticket.domain.ticket.dto.TicketDto;
-import com.c209.ticket.domain.ticket.dto.TicketPaymentsDto;
 import com.c209.ticket.domain.ticket.dto.response.TicketListResponse;
 import com.c209.ticket.domain.ticket.dto.response.TicketPaymentsListResponse;
+import com.c209.ticket.domain.ticket.entity.Status;
 import com.c209.ticket.domain.ticket.entity.Ticket;
-import com.c209.ticket.domain.ticket.exception.QRErrorCode;
-import com.c209.ticket.domain.ticket.repository.TicketRepository;
+import com.c209.ticket.domain.ticket.entity.TicketSync;
+import com.c209.ticket.domain.ticket.exception.TicketErrorCode;
+import com.c209.ticket.domain.ticket.repository.async.TicketAsyncRepository;
+import com.c209.ticket.domain.ticket.repository.sync.TicketSyncRepository;
 import com.c209.ticket.domain.ticket.service.TicketService;
+import com.c209.ticket.global.api.NotificationRestClient;
+import com.c209.ticket.global.api.dto.FcmRequest;
 import com.c209.ticket.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
+import java.time.*;
+import java.util.List;
 import java.util.UUID;
 
 import static com.c209.ticket.domain.ticket.exception.QRErrorCode.QR_EXPIRED_ERROR;
@@ -32,34 +35,27 @@ import static com.c209.ticket.domain.ticket.exception.TicketErrorCode.*;
 @RequiredArgsConstructor
 @Slf4j
 public class TicketServiceImpl implements TicketService {
-
+    private final TicketAsyncRepository ticketAsyncRepository;
+    private final TicketSyncRepository ticketSyncRepository;
 
     @Override
     public Mono<TicketListResponse> getUserTickerList(Long userId) {
-        return ticketRepository.findAllNotUsedTicketByOwnerId(userId).collectList().map(TicketListResponse::new);
+        return ticketAsyncRepository.findAllNotUsedTicketByOwnerId(userId).collectList().map(TicketListResponse::new);
     }
 
 
-    private final TicketRepository ticketRepository;
+
 
     private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
-//    public Mono<TicketDto> getTicketDetail2(Long userId, Long ticketId, String fingerPrint) {
-//        return ticketRepository.findByTicketId(ticketId)
-//                .map(ticket->{
-//                    if(!ticket.getOwnerId().equals(userId)){
-//
-//                    }else if(!ticket.getFingerprintKey().equals(fingerPrint)){
-//
-//                    }else if()
-//                })
-//    }
+    private final NotificationRestClient notificationRestClient;
+
 
 
 
     @Override
     public Mono<TicketDto> getTicketDetail(Long userId, Long ticketId, String fingerPrint) {
 
-        Mono<Ticket> ticketMono = ticketRepository.findByTicketId(ticketId)
+        Mono<Ticket> ticketMono = ticketAsyncRepository.findByTicketId(ticketId)
                 .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND)));
 
         //티켓의 isUsed 여부 판단
@@ -163,7 +159,6 @@ public class TicketServiceImpl implements TicketService {
     //해당 ticket의 isUsed속성을 true로 업데이트한 후 db에 저장합니다.
 
     private Mono<Ticket> validateTicket(Long userId, Ticket ticket) {
-        
         if (ticket.getIsUsed()) {
             return Mono.error(new CommonException(TICKET_ALREADY_USED)); // ticket이 이미 사용되었을 경우 예외 발생
         }
@@ -174,7 +169,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Mono<Boolean> verifyQR(Long userId, String qrUUID, Long ticketId) {
-        return ticketRepository.findByTicketId(ticketId)
+        return ticketAsyncRepository.findByTicketId(ticketId)
                 .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND))) // ticket이 존재하지 않을 경우 예외 발생
                 .flatMap(ticket -> validateTicket(userId, ticket))
                 .flatMap(ticket -> {
@@ -194,10 +189,10 @@ public class TicketServiceImpl implements TicketService {
                                             }
                                             // UUID의 밸류 값을 업데이트하고 새로운 만료 시간 설정
                                             return reactiveRedisTemplate.delete(qrUUID)
-                                                    .then(ticketRepository.findByTicketId(ticketId)
+                                                    .then(ticketAsyncRepository.findByTicketId(ticketId)
                                                             .flatMap(existingTicket -> {
                                                                 existingTicket.setIsUsed(true);
-                                                                return ticketRepository.save(existingTicket).
+                                                                return ticketAsyncRepository.save(existingTicket).
                                                                         thenReturn(true);
                                                             }));
                                         });
@@ -208,6 +203,69 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Mono<TicketPaymentsListResponse> getTicketPaymentsList(Long userId) {
-        return ticketRepository.findAllTicketPayments(userId).collectList().map(TicketPaymentsListResponse::new);
+        return ticketAsyncRepository.findAllTicketPayments(userId).collectList().map(TicketPaymentsListResponse::new);
+    }
+    //모든 티켓의 상태를 환불됨으로 바꿉니다. -> 해당 ticket 중 하나의 impUid로 환불 요청을 진행합니다.
+
+    //환불된 티켓의 좌석 정보를 d당첨된 티켓 리스트에 옮겨 담습니다.
+
+
+
+    @Override
+    public boolean refund(Long userId, Long ticketId) {
+        log.info("조회하는 티켓 id{}", ticketId);
+        TicketSync ticket = ticketSyncRepository.findByTicketId(ticketId)
+                .orElseThrow(()-> new CommonException(TICKET_NOT_FOUND));
+
+        //현재 ticket_id가 ownerId 또는 buyerId와 일치하는지 확인합니다.
+        if(!ticket.getBuyerId().equals(userId)){
+            throw new CommonException( "구매자만 환불할 수 있습니다.",HttpStatus.BAD_REQUEST);
+        }
+
+
+        //일치할 경우에만 buyerId, 해당 티켓의 schedule_id와 연관된 모든 티켓을 가져옵니다.
+        //해당 티켓을 순회합니다.
+        //모든 티켓의 상태를 환불됨으로 바꿉니다.
+        List<TicketSync> refundTickets = ticketSyncRepository.findByBuyerIdAndImpUid(userId, ticket.getImpUid());
+
+        refundTickets.forEach(t -> {
+            t.setStatus(Status.환불됨);
+        });
+
+
+        log.info("환불 내역 : {}", refundTickets);
+        ticketSyncRepository.saveAll(refundTickets);
+
+
+        //티켓의 개수만큼 동일 schedule_id이며 status=환불대기인 티켓 리스트를 가져옵니다.
+
+        List<TicketSync> reIssueTickets = ticketSyncRepository.findRandomRefundPendingTicketsByScheduleId(ticket.getScheduleId());
+        int reIssueNum = Math.min(refundTickets.size(), reIssueTickets.size());
+
+        log.info("재발급 후보 티켓들 {} ::",reIssueTickets);
+
+
+        reIssueTickets = reIssueTickets.subList(0, reIssueNum);
+        LocalDateTime payDueDate = LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
+        for(int i=0; i<reIssueNum; i++){
+            reIssueTickets.get(i).setStatus(Status.결제대기);
+            reIssueTickets.get(i).setCol(refundTickets.get(i).getCol());
+            reIssueTickets.get(i).setRow(refundTickets.get(i).getRow());
+            reIssueTickets.get(i).setNftUrl(refundTickets.get(i).getNftUrl());
+            reIssueTickets.get(i).setPayDueDate(payDueDate);
+            log.info("환불표가 발생했습니다! "+payDueDate.toLocalDate().toString() +" 23:59분까지 결제를 완료해주세요!");
+            notificationRestClient.sendFcm(FcmRequest
+                    .builder()
+                    .receiver_id(reIssueTickets.get(i).getOwnerId())
+                            .title("[콘팅] :: 환불표 발생 알림")
+                            .body(("환불표가 발생했습니다! "+payDueDate.toLocalDate().toString() +" 23:59분까지 결제를 완료해주세요!"))
+                    .build());
+
+        }
+
+
+        log.info("재발급된 티켓 {}", reIssueTickets);
+        ticketSyncRepository.saveAll(reIssueTickets);
+        return true;
     }
 }

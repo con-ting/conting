@@ -1,6 +1,7 @@
 DROP table ticket;
 CREATE TABLE ticket (
                         ticket_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        price BIGINT,
                         is_used BOOLEAN,
                         owner_id BIGINT,
                         buyer_id BIGINT,
