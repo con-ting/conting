@@ -6,6 +6,7 @@ import com.c209.catalog.domain.performance.exception.PerformanceErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancePostErrorCode;
 import com.c209.catalog.domain.performance.exception.PerformancerErrorCode;
 import com.c209.catalog.domain.schedule.exception.ScheduleErrorCode;
+import com.c209.catalog.domain.seller.exception.SellerErrorCode;
 import com.c209.catalog.domain.singer.exception.SingerErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,11 @@ public class CommonException extends RuntimeException {
     public CommonException(ViewErrorCode viewErrorCode) {
         this.message = viewErrorCode.getMessage();
         this.httpStatus = viewErrorCode.getHttpStatus();
+    }
+
+    public CommonException(SellerErrorCode sellerErrorCode) {
+        this.message = sellerErrorCode.getMessage();
+        this.httpStatus = sellerErrorCode.getHttpStatus();
     }
 
     public CommonException(String message, HttpStatus httpStatus) {
