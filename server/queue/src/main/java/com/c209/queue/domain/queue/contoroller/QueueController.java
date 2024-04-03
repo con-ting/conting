@@ -102,7 +102,7 @@ public class QueueController {
                     .map(ResponseEntity::ok);
     }
 
-    @PostMapping("mock/{schedule_id}")
+    @PostMapping("mock")
     public Flux<Long> registerUsers(
             @RequestParam("schedule_id") Long scheduleId
     ) {
