@@ -15,7 +15,6 @@ import {
   createKey,
   deleteKey,
 } from '../../utils/biometric/Biometrics.tsx';
-import {logout} from '../../api/auth/auth.ts';
 import {useNavigation} from '@react-navigation/native';
 
 type familyData = {
