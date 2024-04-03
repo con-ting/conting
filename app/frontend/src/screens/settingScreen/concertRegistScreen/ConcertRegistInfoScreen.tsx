@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   BUTTONSELECT,
   MAINBLACK,
@@ -43,6 +50,28 @@ export default function ConcertRegistInfoScreen({route}) {
     setGenre(type);
   };
 
+  async function uploadImageToCloudinary(uri) {
+    let formData = new FormData();
+    formData.append('file', {uri, type: 'image/jpeg', name: 'upload.jpg'});
+    formData.append('upload_preset', 'kgo5vfww'); // Cloudinary에서 설정한 Unsigned Upload preset
+
+    try {
+      let response = await fetch(
+        'https://api.cloudinary.com/v1_1/dyd7qk3q7/image/upload',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+      let responseJson = await response.json();
+
+      console.log(responseJson);
+      return responseJson.secure_url; // 업로드된 이미지의 URL
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const selectPosterImage = () => {
     const options = {
       mediaType: 'photo', // 'photo', 'video', 또는 'mixed' 중 선택
@@ -51,15 +80,17 @@ export default function ConcertRegistInfoScreen({route}) {
       quality: 1, // 0과 1 사이의 값으로, 선택된 이미지의 품질을 지정 (0이 가장 낮은 품질, 1이 가장 높은 품질)
     };
 
-    // options은 동일하게 유지
-    launchImageLibrary(options, response => {
+    launchImageLibrary(options, async response => {
       if (response.didCancel) {
         console.log('Image picker cancelled');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        const source = {uri: response.assets[0].uri};
-        setImage(source); // 포스터 이미지 상태 업데이트
+        const sourceUri = response.assets[0].uri; // 선택된 이미지의 URI
+        const uploadedImageUrl = await uploadImageToCloudinary(sourceUri); // Cloudinary로 업로드
+        if (uploadedImageUrl) {
+          setImage({uri: uploadedImageUrl}); // 업로드된 이미지 URL로 상태 업데이트
+        }
       }
     });
   };
@@ -72,20 +103,36 @@ export default function ConcertRegistInfoScreen({route}) {
       quality: 1, // 0과 1 사이의 값으로, 선택된 이미지의 품질을 지정 (0이 가장 낮은 품질, 1이 가장 높은 품질)
     };
 
-    // options은 동일하게 유지
-    launchImageLibrary(options, response => {
+    launchImageLibrary(options, async response => {
       if (response.didCancel) {
         console.log('Image picker cancelled');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        const source = {uri: response.assets[0].uri};
-        setDescriptionImage(source); // 소개용 이미지의 URI 상태 업데이트
-        setFileName(response.assets[0].fileName); // 파일 이름 상태 업데이트
+        const sourceUri = response.assets[0].uri; // 선택된 이미지의 URI
+        const uploadedImageUrl = await uploadImageToCloudinary(sourceUri); // Cloudinary로 업로드
+        if (uploadedImageUrl) {
+          setDescriptionImage({uri: uploadedImageUrl});
+          setFileName(descriptionImage.uri); // 업로드된 이미지 URL로 상태 업데이트
+        }
       }
     });
   };
   const handleNext = () => {
+    // 모든 필수 입력값이 있는지 확인
+    if (!title) {
+      Alert.alert('알림', '공연 제목을 입력해주세요.');
+      return;
+    }
+    if (!description) {
+      Alert.alert('알림', '소개 내용을 입력해주세요.');
+      return;
+    }
+    if (!genre) {
+      Alert.alert('알림', '장르를 선택해주세요.');
+      return;
+    }
+
     // 이전 페이지에서 받은 데이터
     const {reservationType, schedule} = route.params.registrationData;
 
@@ -157,6 +204,7 @@ export default function ConcertRegistInfoScreen({route}) {
           </View>
           <View style={styles.infos}>
             <MultiLineInput
+              backGroundColor={MAINWHITE}
               textColor={MAINBLACK}
               placeholder="소개 입력"
               onChangeText={setDescription}

@@ -1,4 +1,4 @@
-import {Image, Text, View} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {
   F_SIZE_B_HEADER,
@@ -25,6 +25,16 @@ export default function ConcertRegistCompany({route}) {
   const [companyPhone, setCompanyPhone] = useState('');
 
   const handleSubmit = async () => {
+    if (!companyName) {
+      Alert.alert('알림', '회사명을 입력해주세요.');
+      return;
+    }
+
+    if (!companyPhone) {
+      Alert.alert('알림', ' 연락처를 입력해주세요.');
+      return;
+    }
+
     const previousData = route.params.registrationData; // Assuming finalData is passed from the previous screen
     const completeData = {
       ...previousData,

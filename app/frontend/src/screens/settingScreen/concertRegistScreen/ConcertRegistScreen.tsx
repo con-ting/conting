@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {F_SIZE_B_BUTTON, F_SIZE_TITLE} from '../../../config/Font';
 import {Calendar, Ticket2} from 'iconsax-react-native';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
@@ -55,7 +55,32 @@ export default function ConcertRegistScreen() {
 
   // 다음 페이지로 이동하며 데이터를 전달
   const handleNext = () => {
-    console.log('스케', schedule);
+    // 예매 방식이 선택되지 않았을 경우
+    if (!reservationType) {
+      Alert.alert('알림', '예매 방식을 선택해주세요.');
+      return;
+    }
+
+    // 날짜가 선택되지 않았을 경우
+    if (Object.keys(schedule).length === 0) {
+      Alert.alert('알림', '공연 일정을 선택해주세요.');
+      return;
+    }
+
+    // 선택된 모든 날짜에 대해 시작 시간과 종료 시간이 입력되었는지 확인
+    const allTimesFilled = Object.values(schedule).every(
+      ({start, end}) => start && end,
+    );
+
+    if (!allTimesFilled) {
+      Alert.alert(
+        '알림',
+        '모든 날짜에 대한 시작 시간과 종료 시간을 입력해주세요.',
+      );
+      return;
+    }
+
+    // 모든 조건이 충족되면 다음 페이지로 이동
     const formattedSchedule = Object.keys(schedule).map(date => ({
       start_datetime: `${date}T${schedule[date].start}:00`,
       end_datetime: `${date}T${schedule[date].end}:00`,

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {MAINBLACK, MAINWHITE} from '../../../config/Color';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 import {DollarCircle, Map1} from 'iconsax-react-native';
@@ -45,6 +45,22 @@ export default function ConcertRegistHallScreen({route}) {
 
   // 다음 버튼 이벤트 핸들러 수정
   const handleNext = () => {
+    // 공연장이 선택되었는지 확인
+    if (!selectedHallId) {
+      Alert.alert('알림', '공연장을 선택해주세요.');
+      return;
+    }
+
+    // 구역별 가격 정보가 모두 입력되었는지 확인
+    const allPricesEntered = Object.values(gradePrices).every(
+      price => price !== '' && price != null,
+    );
+
+    if (!allPricesEntered) {
+      Alert.alert('알림', '모든 구역의 가격을 입력해주세요.');
+      return;
+    }
+
     // 이전 단계에서 받은 데이터
     const previousData = route.params.registrationData;
 
@@ -131,7 +147,7 @@ const styles = StyleSheet.create({
     color: MAINWHITE,
   },
   nextButton: {
-    marginBottom: 20,
+    // marginBottom: 20,
     alignItems: 'center',
   },
 });
