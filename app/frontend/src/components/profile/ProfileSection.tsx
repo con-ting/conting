@@ -5,34 +5,21 @@ import {YellowButton} from '../button/Button';
 import {logout} from '../../api/auth/auth.ts';
 import {useRecoilState} from 'recoil';
 import {goMainPageState} from '../../utils/recoil/Atoms.ts';
+import {DETAIL3} from '../../config/Typography.tsx';
+import {Spacer} from '../../utils/common/Spacer.tsx';
 
-export default function ProfileSection({name}: any) {
-  const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
-
+export default function ProfileSection(props: {name: string; wallet: string}) {
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/profile.png')}
-        style={styles.picture}
-      />
-      <Text style={F_SIZE_TITLE}>{name}</Text>
-      <YellowButton
-        onPress={async () => {
-          await logout();
-          setGoMainPage(false);
-        }}
-        width={'40%'}
-        btnText="로그아웃"
-        textSize={12}
-        isRadius
-      />
+      <Text style={F_SIZE_TITLE}>{props.name}</Text>
+      <Spacer space={4} />
+      <DETAIL3>지갑 주소 : {props.wallet}</DETAIL3>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 20,
