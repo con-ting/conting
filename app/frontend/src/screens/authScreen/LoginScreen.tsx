@@ -121,25 +121,25 @@ const LoginScreen = () => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
-    const fcmPass = false;
-    if (token !== userResponse.user.fcm) {
-      Alert.alert('알림', '사용환경이 달라지신거 같아요.', [
-        {
-          text: '변경',
-          onPress: async () => {
-            await updateUserFcmAndWallet({fcm: token});
-            fcmPass = true;
-          },
-        },
-        {
-          text: '유지',
-          onPress: () => {
-            fcmPass = true;
-          },
-        },
-      ]);
-    }
-    if (fcmPass) {
+    if (
+      () => {
+        if (token !== userResponse.user.fcm) {
+          Alert.alert('알림', '사용환경이 달라지신거 같아요.', [
+            {
+              text: '변경',
+              onPress: async () => {
+                await updateUserFcmAndWallet({fcm: token});
+              },
+            },
+            {
+              text: '유지',
+              onPress: () => {},
+            },
+          ]);
+        }
+        return true;
+      }
+    ) {
       //4. 전역 상태에 유저 정보 저장
       console.log('전역 상태에 유저 정보 저장 시작');
       setUserInfo({
