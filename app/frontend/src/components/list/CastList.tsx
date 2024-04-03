@@ -13,7 +13,7 @@ import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
-export default function CastList({casts, isSearch}) {
+export default function CastList({casts, isSearch, onCastSelect}) {
   const [selectedCast, setSelectedCast] = useState(null); //출연진 선택
   const navigation = useNavigation();
 
@@ -38,7 +38,10 @@ export default function CastList({casts, isSearch}) {
           <TouchableOpacity
             key={item.singer_id}
             style={[styles.member]}
-            onPress={() => handlePress(item)}>
+            onPress={() => {
+              handlePress(item);
+              onCastSelect(item);
+            }}>
             <Image
               source={{uri: item.singer_profile_image}}
               style={[
