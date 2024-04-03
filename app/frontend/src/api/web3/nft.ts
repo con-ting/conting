@@ -1,6 +1,7 @@
 import {AnchorProvider, Program} from '@coral-xyz/anchor';
 import {Market, IDL} from '../../config/web3Types/market.ts';
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   MARKET_PROGRAM_ID,
   MPL_TOKEN_METADATA_PROGRAM_ID,
   SERVER_ADDRESS,
@@ -273,3 +274,13 @@ async function fetchJsonData(url: string): Promise<any> {
     throw error;
   }
 }
+export const getAssociatedTokenAddress = (
+  mint: PublicKey,
+  owner: PublicKey,
+): PublicKey => {
+  const [address] = PublicKey.findProgramAddressSync(
+    [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+  );
+  return address;
+};

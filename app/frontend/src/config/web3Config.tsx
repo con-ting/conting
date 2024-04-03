@@ -107,3 +107,16 @@ export const SERVER_ADDRESS = new PublicKey(
 export const MARKET_PROGRAM_ID = new PublicKey(
   'MarqygkQw8N9f1byiDrWvtbKs6iDfeWiUmBpovQiJpi',
 );
+/**
+ * TOKEN_PROGRAM_ID
+ * 솔라나 네트워크 토큰 프로그램 주소
+ */
+export const TOKEN_PROGRAM_ID = new PublicKey(
+  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+);
+/**
+ * ASSOCIATED_TOKEN_PROGRAM_ID
+ */
+export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+);
