@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {CARDBASE, MAINBLACK, MAINWHITE} from '../../../config/Color';
 import {F_SIZE_TITLE} from '../../../config/Font';
 import {SearchBar} from '../../../components/searchBar/SearchBar';
@@ -38,6 +38,10 @@ export default function ConcertRegistCastScreen({route}) {
 
   // 다음 버튼 이벤트 핸들러 수정
   const handleNext = () => {
+    if (!selectedCastId) {
+      Alert.alert('알림', '출연진을 선택해주세요.');
+      return;
+    }
     // 이전 단계에서 받은 데이터
     const previousData = route.params.registrationData;
 
