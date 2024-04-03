@@ -142,7 +142,7 @@ public class TicketServiceImpl implements TicketService {
                                 });
                     }
                 })
-                .switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))); // Mono가 비어있을 경우 false 반환
+                .switchIfEmpty(Mono.just(true)); // Mono가 비어있을 경우 false 반환
     }
 
     //reds에서 uuid로 조회합니다.
