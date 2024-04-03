@@ -3,7 +3,7 @@ import {F_SIZE_HEADER} from '../../../config/Font';
 import {MAINBLACK} from '../../../config/Color';
 import {YellowButton} from '../../../components/button/Button';
 import {useNavigation} from '@react-navigation/native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 
 export default function ResultScreen({route}) {

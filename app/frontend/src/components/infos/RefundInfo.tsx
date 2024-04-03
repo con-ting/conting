@@ -5,57 +5,97 @@ import {
   F_SIZE_BIGTEXT,
   F_SIZE_HEADER,
   F_SIZE_SUBTITLE,
-  F_SIZE_TEXT,
   F_SIZE_TITLE,
   F_SIZE_Y_BUTTON,
   F_SIZE_Y_HEADER,
-  F_SIZE_Y_TITLE,
 } from '../../config/Font';
 import {YellowButton} from '../button/Button';
 import {useNavigation} from '@react-navigation/native';
+import formatSido from '../../utils/common/SidoFormat';
+import {formatDateWithDay} from '../../utils/common/TimeFormat';
+import {
+  accessImApi,
+  fetchAccessToken,
+  refundApi,
+  refundImApi,
+} from '../../api/ticket/order';
+import {useEffect} from 'react';
 
-export default function RefundInfo() {
+export default function RefundInfo({refund}) {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log('환불페이지 진입');
+  });
+
+  const handleRefund = async () => {
+    try {
+      // 아임포트 API 키와 시크릿을 사용하여 액세스 토큰 발급 받기
+      const accessToken = await fetchAccessToken({
+        imp_key: '7368484231035413',
+        imp_secret:
+          'ScabDOEfm3eLP1Tj936pazGTSTps7cst3ToGNoFDWZGi15nX1byHxRmlEDxu90bbhOr2dphr8Nz9V6Na',
+      });
+      console.log('accessToken?', accessToken);
+
+      // 환불 정보와 액세스 토큰을 사용하여 아임포트를 통한 환불 처리
+      const refundResult = await refundImApi(refund.imp_uid, accessToken);
+
+      console.log('환불 결과:', refundResult);
+      // 환불 처리 성공 여부에 따른 추가 작업
+      if (refundResult.response && refundResult.response.data) {
+        // 서버에 환불 정보 업데이트
+        const serverResult = await refundApi(refund.ticket_id);
+        if (serverResult.success) {
+          // 환불 처리 성공
+          navigation.navigate('ResultRefund');
+        } else {
+          // 서버 환불 처리 실패
+          alert('서버 환불 처리 실패: ' + serverResult.message);
+        }
+      } else {
+        // 환불 처리 실패
+        alert(
+          '환불 실패: ' +
+            (refundResult.response
+              ? refundResult.response.message
+              : '알 수 없는 오류'),
+        );
+      }
+    } catch (error) {
+      console.error('환불 처리 중 오류 발생:', error);
+      alert('환불 오류: 환불 처리 중 문제가 발생했습니다.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <BasicConcertCardWide
-        title="2024 IU HER WORLD TOUR CONCERT IN SEOUL"
+        title={refund.title}
         disabled
-        img_url="https://t1.daumcdn.net/cafeattach/1I7Yc/c8ae6ddb037b3ffac2575a0f6c2bd1a933f49584_re_1705505439515"
+        img_url={refund.img}
         img_tag_disabled
-        sido="서울"
-        concert_hall="KSPO DOMEi"
+        sido={formatSido(refund.hall_location)}
+        concert_hall={refund.hall_name}
         date_tag="관람 예정일"
-        date="2024.03.20"
+        date={formatDateWithDay(refund.start_date)}
         swipe_btn_disabled
       />
       <Text style={[F_SIZE_HEADER, styles.header]}>구매 정보</Text>
       <View style={styles.titles}>
-        <Text style={F_SIZE_SUBTITLE}>입장 권한</Text>
+        {/* <Text style={F_SIZE_SUBTITLE}>입장 권한</Text> */}
+        <Text style={F_SIZE_SUBTITLE}>티켓 아이디</Text>
         <Text style={[F_SIZE_SUBTITLE, styles.seat]}>좌석 번호</Text>
         <Text style={F_SIZE_SUBTITLE}>티켓 가격</Text>
       </View>
       <View style={styles.titles}>
         <View style={styles.entry}>
-          <Text style={F_SIZE_BIGTEXT}>김싸피</Text>
+          <Text style={F_SIZE_BIGTEXT}>{refund.ticket_id}</Text>
         </View>
         <Text style={F_SIZE_BIGTEXT}>7</Text>
-        <Text style={F_SIZE_BIGTEXT}>99,000</Text>
+        <Text style={F_SIZE_BIGTEXT}>{refund.price}</Text>
       </View>
-      <View style={styles.titles}>
-        <View style={styles.entry}>
-          <Text style={F_SIZE_BIGTEXT}>김싸피</Text>
-        </View>
-        <Text style={F_SIZE_BIGTEXT}>8</Text>
-        <Text style={F_SIZE_BIGTEXT}>99,000</Text>
-      </View>
-      <View style={styles.titles}>
-        <View style={styles.entry}>
-          <Text style={F_SIZE_BIGTEXT}>김싸피</Text>
-        </View>
-        <Text style={F_SIZE_BIGTEXT}>9</Text>
-        <Text style={F_SIZE_BIGTEXT}>99,000</Text>
-      </View>
+
       <View style={styles.line} />
       <View>
         <Text style={[F_SIZE_HEADER, styles.header]}>취소 수수료</Text>
@@ -105,7 +145,7 @@ export default function RefundInfo() {
         <Text style={F_SIZE_Y_HEADER}>297,000 원</Text>
       </View>
       <YellowButton
-        onPress={() => navigation.navigate('ResultRefund')}
+        onPress={() => handleRefund()}
         btnText="환불하기"
         textSize={20}
         isRadius
@@ -167,3 +207,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+function alert(arg0: string, arg1: any) {
+  throw new Error('Function not implemented.');
+}

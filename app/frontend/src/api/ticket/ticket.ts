@@ -7,7 +7,7 @@ export const getTicketListAPI = async () => {
   console.log('[getTicketList resquest]');
   const res = await tokenInstance.get(`${ticketUrl}/my`);
   console.log('[getTicketList response] = ', res.data);
-  return res.data;
+  return res.data.ticket_list;
 };
 
 export const ticketQRAPI = async (params: {

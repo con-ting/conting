@@ -3,7 +3,8 @@
     "outDir": "build",
     "sourceMap": true,
     "typeRoots": ["./node_modules/@types"],
-    "module": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "esnext",
     "esModuleInterop": true
   }

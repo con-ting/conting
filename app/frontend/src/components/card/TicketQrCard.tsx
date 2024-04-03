@@ -16,13 +16,16 @@ import {healthCheckAPI, ticketQRAPI} from '../../api/ticket/ticket';
 import {BASE_URL} from '../../config/AxiosConfig';
 import {REDBASE} from '../../config/Color';
 import {alertAndLog} from '../../utils/common/alertAndLog';
+import { ticketProps } from './TicketEntryCard';
 
 type TicketCardProps = {
   onPress?: () => void;
   colors: Array<string>;
+  ticket: ticketProps
 };
 
 export default function TicketQrCard(props: TicketCardProps) {
+  console.log('ticket qr : ', props)
   const [isPass, setIspass] = useState(false);
   const [qrURL, setQrURL] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
@@ -88,7 +91,7 @@ export default function TicketQrCard(props: TicketCardProps) {
             clearInterval(healthcheck);
             setIspass(false);
           default:
-            console.log(error)
+            console.log(error);
         }
       }
     }, 2000);
@@ -128,7 +131,7 @@ export default function TicketQrCard(props: TicketCardProps) {
         ) : (
           <CreateQR onPress={handlePass} />
         )}
-        <TicketInfoCard />
+        <TicketInfoCard {...props.ticket}/>
       </View>
     </LinearGradient>
   );

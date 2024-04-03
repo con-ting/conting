@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, useWindowDimensions, Alert} from 'react-native';
-import TicketEntryCard from './../../components/card/TicketEntryCard';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
@@ -151,12 +150,13 @@ export default function NftTicketListScreen() {
           no={item.no}
           ticketAddress={item.ticketAddress}
           webmUrl={item.webmUrl}
+          colors={posterColors}
         />
       </View>
     );
   };
   return (
-    <>
+    <View>
       <Canvas
         style={{
           flex: 1,
@@ -201,7 +201,7 @@ export default function NftTicketListScreen() {
         }}
         onSnapToItem={index => setCurrentIndex(index)}
       />
-    </>
+    </View>
   );
 }
 
