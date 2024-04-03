@@ -177,7 +177,7 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name={'결제내역'}
+        name={'ResultMainScreen'}
         component={ResultMainScreen}
         options={{
           tabBarIcon: ({focused}) => (

@@ -5,6 +5,7 @@ export function fetchScheduleDetails(realm: Realm.Realm, scheduleId: number) {
 
   // Schedule 모델에서 특정 schedule_id에 해당하는 데이터를 조회
   const schedule = realm.objectForPrimaryKey('Schedule', String(scheduleId));
+  console.log(schedule)
   if (schedule) {
     // 연관된 Performance 정보 조회
     const performance = realm.objectForPrimaryKey(

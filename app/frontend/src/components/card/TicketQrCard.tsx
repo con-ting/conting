@@ -30,6 +30,7 @@ type TicketCardProps = {
 export default function TicketQrCard(props: TicketCardProps) {
   console.log('ticket qr : ', props);
   const [isPass, setIspass] = useState(false);
+  const [isQR, setIsQR] = useState(false);
   const [qrURL, setQrURL] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
 
@@ -50,6 +51,11 @@ export default function TicketQrCard(props: TicketCardProps) {
     return () => clearInterval(interval);
   }, [isPass, timeLeft]);
 
+  useEffect(()=>{
+    if(isPass){
+      setIsQR(false)
+    }
+  },[isPass])
   // 입장권 터치시 지문 인식하는 과정
   const handlePass = async () => {
     // 키가 존재하는지 확인
@@ -120,10 +126,10 @@ export default function TicketQrCard(props: TicketCardProps) {
   return (
     <Pressable
       style={{
-        width: props.width, 
+        width: props.width,
         height: props.height,
       }}
-      onPress={() => (props.rotate.value = props.rotate.value ? 0 : 1)}>
+      onPress={() => (props.rotate.value = props.rotate.value && !isQR ? 0 : 1)}>
       <LinearGradient style={styles.container} colors={props.colors}>
         <View style={styles.container}>
           {isPass ? (
