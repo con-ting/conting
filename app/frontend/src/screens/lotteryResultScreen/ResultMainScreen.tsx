@@ -219,7 +219,7 @@ function MakeConsertCardObject(
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
           //결제 페이지로 이동 로직
-          navigation.navigate('WaitingScreen', {
+          navigation.navigate('Waiting', {
             id: apiData.schedule_id,
             showID: localData.performance_id,
           });
