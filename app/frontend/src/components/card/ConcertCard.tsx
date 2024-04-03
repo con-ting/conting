@@ -33,7 +33,6 @@ type ConcertCardProps = {
  */
 
 export default function ConcertCard(props: ConcertCardProps) {
-  console.log(props.date)
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={props.onPress}>

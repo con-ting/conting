@@ -4,11 +4,12 @@ import {F_SIZE_SMALLTEXT, F_SIZE_TEXT, F_SIZE_Y_TEXT} from '../../config/Font';
 import {korDateFormatString} from '../../utils/common/TimeFormat.ts';
 
 type ticketInfoProps = {
+  poster?: string;
   title?: string;
   date?: string;
   location?: string;
   row?: string;
-  no?: string;
+  col?: string;
 };
 
 /**
@@ -18,7 +19,7 @@ type ticketInfoProps = {
  * - date?: 관람일
  * - location?: 공연장
  * - row?: 좌석 열
- * - no?: 좌석 번호
+ * - col?: 좌석 번호
  * @returns
  * @author 강성권, 김형민
  */
@@ -51,7 +52,7 @@ export default function TicketInfoCard(props: ticketInfoProps) {
       </View>
       <View style={styles.textCard}>
         <Text style={F_SIZE_TEXT}>No</Text>
-        <Text style={F_SIZE_SMALLTEXT}>{props.no ? props.no : '15'}</Text>
+        <Text style={F_SIZE_SMALLTEXT}>{props.col ? props.col : '15'}</Text>
       </View>
     </View>
   );

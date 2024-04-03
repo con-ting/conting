@@ -1,9 +1,16 @@
-import {ImageBackground, StyleSheet, View} from 'react-native';
-import {heightPercent, widthPercent} from '../../config/Dimensions';
-import TicketInfoCard from '../card/TicketInfoCard';
+import {StyleSheet, Text, View} from 'react-native';
+import {widthPercent} from '../../config/Dimensions';
 import FastImage from 'react-native-fast-image';
+import {
+  F_SIZE_TEXT,
+  F_SIZE_Y_BIGTEXT,
+  F_SIZE_Y_TEXT,
+} from '../../config/Font';
+import {korDateFormatString} from '../../utils/common/TimeFormat';
 
 type nftFrontProps = {
+  width: number;
+  height: number;
   poster: string;
   title: string;
   date: string;
@@ -25,41 +32,80 @@ type nftFrontProps = {
  */
 export default function NftFront(props: nftFrontProps) {
   return (
-    <View style={styles.container}>
-      <FastImage
-        source={{
-          uri: props.poster,
-        }}
-        style={styles.image}>
-        <TicketInfoCard
-          title={props.title}
-          date={props.date}
-          location={props.location}
-          row={props.row}
-          no={props.no}
+    <View
+      style={{...styles.container, width: props.width, height: props.height}}>
+      <View style={styles.imageContainer}>
+        <FastImage
+          source={{uri: props.poster}}
+          style={styles.image}
+          resizeMode={FastImage.resizeMode.stretch}
         />
-      </FastImage>
+      </View>
+      <View style={styles.textCard}>
+        <View style={styles.title}>
+          <Text style={F_SIZE_Y_BIGTEXT}>{props.title}</Text>
+        </View>
+        <View style={styles.contentCard}>
+          <View style={styles.content}>
+            <Text style={F_SIZE_Y_TEXT}>location</Text>
+            <Text style={F_SIZE_TEXT}>{props.location}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={F_SIZE_Y_TEXT}>date</Text>
+            <Text style={F_SIZE_TEXT}>{korDateFormatString(props.date)}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={F_SIZE_Y_TEXT}>row</Text>
+            <Text style={F_SIZE_TEXT}>{props.row}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={F_SIZE_Y_TEXT}>no</Text>
+            <Text style={F_SIZE_TEXT}>{props.no}</Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'white',
+              justifyContent: 'center',
+              borderRadius: widthPercent(20),
+            }}>
+            <Text style={F_SIZE_Y_TEXT}>응모 가능</Text>
+          </View>
+        </View>
+      </View>
+      {/* 
+      제목, 날짜, 티켓주소, 수수료,  */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(250),
-    height: heightPercent(500),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgba(130, 156, 199, 0.6)',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    overflow: 'hidden',
+    flexDirection: 'row',
+  },
+  imageContainer: {
+    flex: 3,
+    borderRadius: widthPercent(20),
   },
   image: {
     flex: 1,
-    justifyContent: 'flex-end',
-    borderRadius: 20,
-    resizeMode: 'stretch',
+    borderRadius: widthPercent(20),
+  },
+  textCard: {
+    flex: 2,
+    padding: widthPercent(10),
+  },
+  title: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentCard: {
+    flex: 3,
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

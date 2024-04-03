@@ -5,11 +5,13 @@ import {
   widthPercent,
 } from '../../config/Dimensions';
 import {MAINBLACK} from '../../config/Color';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export type profileProps = {
   name: string;
   profile: string;
-  backgroundNone: boolean;
+  backgroundNone?: boolean;
 };
 
 /**
@@ -21,11 +23,15 @@ export type profileProps = {
  * @author 강성권
  */
 export default function SingerProfile(props: profileProps) {
+  const navigation = useNavigation();
   return (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('CastDetail', {castId: props.id})
+      }
       style={[
         styles.container,
-        {backgroundColor: props.backgroundNone ? '' : MAINBLACK},
+        {backgroundColor: props.backgroundNone ? 'transparent' : MAINBLACK},
       ]}>
       <Image
         style={{
@@ -36,7 +42,7 @@ export default function SingerProfile(props: profileProps) {
         source={{uri: props.profile}}
       />
       <Text style={styles.title}>{props.name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -45,10 +51,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'black', // 배경색을 검은색으로 설정
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: widthPercent(10),
   },
   title: {
     color: 'white',
     fontSize: fontPercent(16),
+    marginTop: heightPercent(15),
     fontFamily: 'Jalnan2TTF',
   },
 });

@@ -77,15 +77,6 @@ export const DID_PROGRAM_ID = new PublicKey(
 );
 
 /**
- * DID_PROGRAM_ID
- * NFT 티켓 거래 프로그램 주소
- * @author 김형민
- */
-export const EVENT_PROGRAM_ID = new PublicKey(
-  'Even2kqboEgiEv8ozq4fMyiDi727VeRbTD7SQogF5vrn',
-);
-
-/**
  * EVENT_PROGRAM_ID
  * 이벤트 블록체인 프로그램 주소
  * @author 김형민
