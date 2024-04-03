@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  useWindowDimensions,
-  Alert,
-  Dimensions,
-} from 'react-native';
+import {View, StyleSheet, useWindowDimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
@@ -18,9 +11,6 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
-import {AuthHeader} from '../../components/header/AuthHeader.tsx';
-import * as ICON from 'iconsax-react-native';
-import {MAINBLACK, TEXTGRAY} from '../../config/Color.ts';
 import {BODY1} from '../../config/Typography.tsx';
 import {Spacer} from '../../utils/common/Spacer.tsx';
 import {Toggle} from '../../components/button/Toggle.tsx';
@@ -30,68 +20,7 @@ import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
 import {PublicKey} from '@solana/web3.js';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
-const defualtList = [
-  // {
-  //   ticketAddress: 'Ati6E8fcVeugB8tHE4W3CUgcPFCR3wrMGushG4g8paFZ',
-  //   ownerAddress: '8jQnaWEY6EQdSL3jS9XDuEqYgACPmXRaR7hup3NYnLwj',
-  //   primarySaleHappened: false,
-  //   poster:
-  //     'https://search.pstatic.net/common?type=f&size=224x338&quality=100&direct=true&src=https%3A%2F%2Fcsearch-phinf.pstatic.net%2F20240131_125%2F1706681961365GvH5L_PNG%2F269_image_url_1706681961328.png',
-  //   title: '임영웅 콘서트 IM HERO TOUR 2023',
-  //   date: new Date(),
-  //   location: 'SSAFY',
-  //   row: '나',
-  //   no: 4,
-  //   webmUrl:
-  //     'https://pub-42d3d2de01ff4e1baef74a4d07121130.r2.dev/1/290/38cd9a1e3cfc7a0811517aae38368ab23aab672694593b9ffbaeea9a0edd9a80.webm',
-  //   isEventAble: true,
-  // },
-  // {
-  //   ticketAddress: 'Ati6E8fcVeugB8tHE4W3CUgcPFCR3wrMGushG4g8paFZ',
-  //   ownerAddress: '8jQnaWEY6EQdSL3jS9XDuEqYgACPmXRaR7hup3NYnLwj',
-  //   primarySaleHappened: true,
-  //   poster:
-  //     'http://www.kopis.or.kr/upload/pfmPoster/PF_PF238364_240329_131111.gif',
-  //   title: '로스트아크 OST 전국투어 콘서트: SOUND OF LOST ARK [서울]',
-  //   date: new Date(),
-  //   location: 'SSAFY',
-  //   row: '가',
-  //   no: 4,
-  //   webmUrl:
-  //     'https://pub-42d3d2de01ff4e1baef74a4d07121130.r2.dev/1/290/38cd9a1e3cfc7a0811517aae38368ab23aab672694593b9ffbaeea9a0edd9a80.webm',
-  //   isEventAble: true,
-  // },
-  // {
-  //   ticketAddress: 'Ati6E8fcVeugB8tHE4W3CUgcPFCR3wrMGushG4g8paFZ',
-  //   ownerAddress: '8jQnaWEY6EQdSL3jS9XDuEqYgACPmXRaR7hup3NYnLwj',
-  //   primarySaleHappened: true,
-  //   poster:
-  //     'https://cdnticket.melon.co.kr/resource/image/upload/product/2024/02/2024022110462240e3b3a2-7bdd-4303-bd7d-e05005a4a078.jpg/melon/resize/180x254/strip/true/quality/90/optimize',
-  //   title: 'HIPHOPPLAYA FESTIVAL 2024',
-  //   date: new Date(),
-  //   location: 'SSAFY',
-  //   row: '가',
-  //   no: 4,
-  //   webmUrl:
-  //     'https://pub-42d3d2de01ff4e1baef74a4d07121130.r2.dev/1/290/38cd9a1e3cfc7a0811517aae38368ab23aab672694593b9ffbaeea9a0edd9a80.webm',
-  //   isEventAble: true,
-  // },
-  // {
-  //   ticketAddress: 'Ati6E8fcVeugB8tHE4W3CUgcPFCR3wrMGushG4g8paFZ',
-  //   ownerAddress: '8jQnaWEY6EQdSL3jS9XDuEqYgACPmXRaR7hup3NYnLwj',
-  //   primarySaleHappened: true,
-  //   poster:
-  //     'https://ticketimage.interpark.com/Play/image/large/24/24004177_p.gif',
-  //   title: '다나카 내한 공연［SAYONARA TANAKA］',
-  //   date: new Date(),
-  //   location: 'SSAFY',
-  //   row: '가',
-  //   no: 4,
-  //   webmUrl:
-  //     'https://pub-42d3d2de01ff4e1baef74a4d07121130.r2.dev/1/290/38cd9a1e3cfc7a0811517aae38368ab23aab672694593b9ffbaeea9a0edd9a80.webm',
-  //   isEventAble: false,
-  // },
-];
+const defualtList = [];
 
 export default function NftTicketListScreen() {
   const navigation = useNavigation();
@@ -218,15 +147,6 @@ export default function NftTicketListScreen() {
           />
         </Rect>
       </Canvas>
-      {/* <AuthHeader
-        text="티켓북"
-        borderLevel={5}
-        rightIcon={<ICON.Shop size={22} color={TEXTGRAY} variant="Bold" />}
-        fontColor={MAINBLACK}
-        onRightPress={() => {
-          navigation.navigate('NftShopMainScreen');
-        }}
-      /> */}
       <View style={{...styles.toggleBox, top: toggleHeight, right: 10}}>
         <BODY1>관람한 NFT 티켓 보기</BODY1>
         <Spacer space={20} horizontal={true}></Spacer>
