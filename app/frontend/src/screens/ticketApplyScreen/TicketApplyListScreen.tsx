@@ -52,6 +52,7 @@ export default function TicketApplyListScreen() {
           row={item.row}
           no={item.no}
           webmUrl={item.webmUrl}
+          colors={posterColors}
         />
       </View>
     );
