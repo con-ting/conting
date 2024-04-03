@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MainScreen from '../screens/mainScreen/MainScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
 import NftTicketListScreen from '../screens/ticketApplyScreen/NftTicketListScreen.tsx';
-import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
+import MyPageScreen from '../screens/settingScreen/MyPageScreen';
 import {Text, TouchableOpacity, View, useWindowDimensions} from 'react-native';
 import {LinearGradient as ReactNativeLinearGradient} from 'react-native-linear-gradient';
 import {

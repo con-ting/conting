@@ -158,13 +158,6 @@ export default function MainScreen() {
     },
   ];
 
-  const search = (query: string) => {
-    console.log('검색어: ', query);
-    // 검색어를 사용한 검색 로직 구현
-    navigation.navigate('SearchMain', {query});
-    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
-  };
-
   if (popular.length === 0 && first.length === 0) {
     return <Loading/>
   }
