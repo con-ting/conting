@@ -19,9 +19,11 @@ import {useEffect, useRef, useState} from 'react';
 import ConcertBottomButtons from '../../components/button/ConcertBottomButtons';
 import SingerProfile from '../../components/card/SingerProfile';
 import {ConcertDetailApi} from '../../api/catalog/concert';
+import Loading from '../../components/loader/Loading';
+import {korDateFormatString} from '../../utils/common/TimeFormat';
 
 export default function ConcertDetailScreen({route}) {
-  // 배경색을 recoil에서 받아오기
+  // 지도 토글을 위한
   const [isRender, setIsRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [concertDetail, setConcertDetail] = useState(null);
@@ -31,51 +33,41 @@ export default function ConcertDetailScreen({route}) {
   // 스크롤 위치 추적을 위한 Animated.Value
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  // 컴포넌트가 마운트되었는지 추적하기 위한 ref
-  const isMounted = useRef(false);
-  const isFocused = useIsFocused();
-
   // fetchData 함수는 이제 useEffect 바깥에서 정의되며, 필요한 값을 파라미터로 받는다.
-  const fetchData = async (show_id, isMounted) => {
-    console.log('API 요청: ', {show_id: show_id});
-    try {
-      const data = await ConcertDetailApi(show_id);
-      console.log('API 응답: ', data);
-      // isMounted를 파라미터로 받아, 함수 내에서 직접 접근한다.
-      if (isMounted.current) {
-        setConcertDetail(data);
-      }
-    } catch (error) {
-      console.error('API 호출 중 오류 발생: ', error);
-      // 에러 처리 로직 추가...
-    }
-  };
-
   useEffect(() => {
-    isMounted.current = true;
-
-    if (isFocused) {
-      fetchData(show_id, isMounted); // showID와 isMounted를 파라미터로 전달
-    }
-
-    return () => {
-      isMounted.current = false;
+    const fetchData = async (show_id: string) => {
+      try {
+        const data = await ConcertDetailApi(show_id);
+        // isMounted를 파라미터로 받아, 함수 내에서 직접 접근한다.
+        setConcertDetail(data);
+      } catch (error) {
+        console.error('API 호출 중 오류 발생: ', error);
+        // 에러 처리 로직 추가...
+      }
     };
-  }, [isFocused, show_id]); // 의존성 배열에 show_id 추가
+    fetchData(show_id);
+  }, []);
 
   if (!concertDetail) {
     // concertDetail 데이터가 아직 로드되지 않았을 때의 대체 컨텐츠 (예: 로딩 스피너)
-    return <Text>Loading...</Text>;
+    return <Loading />;
   }
-
   return (
     <ImageBackground
       blurRadius={2}
       resizeMode="stretch"
       style={{flex: 1, justifyContent: 'space-between'}}
       source={{uri: concertDetail.show.poster}}>
-      <ArrowLeft onPress={() => navigation.goBack()} color="white" size={48} />
-      <Text style={F_SIZE_HEADER}>{concertDetail.show.title}</Text>
+      <View style={styles.topContainer}>
+        <ArrowLeft
+          onPress={() => navigation.goBack()}
+          color="white"
+          size={48}
+        />
+        <Text style={{...F_SIZE_HEADER, marginTop: heightPercent(20)}}>
+          {concertDetail.show.title}
+        </Text>
+      </View>
       <LinearGradient
         start={{x: 0.0, y: 0.0}}
         end={{x: 1.0, y: 1.0}}
@@ -91,11 +83,12 @@ export default function ConcertDetailScreen({route}) {
           )}
           scrollEventThrottle={16}
           style={{
+            flex: 1,
             padding: 10,
           }}>
           <SummaryCard info={concertDetail} />
           {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
-          <Outline content={concertDetail.show.description} />
+          <Outline show={concertDetail.show} />
           <Price />
           {/* <View style={styles.title}>
             <Text style={F_SIZE_BTITLE}>공연장</Text>
@@ -112,7 +105,7 @@ export default function ConcertDetailScreen({route}) {
                 })
               }
               title={concertDetail.hall.name}
-              seat={14730}
+              seat={concertDetail.hall.seat_total}
               address={concertDetail.hall.address}
             />
           </View>
@@ -131,8 +124,8 @@ export default function ConcertDetailScreen({route}) {
                   latitude: 37.520555375455,
                   longitude: 127.11505129348,
                 }}
-                title="공연장"
-                description="this is a marker example"
+                title={concertDetail.hall.name}
+                description="공연장입니다."
               />
             </MapView>
           ) : (
@@ -141,16 +134,17 @@ export default function ConcertDetailScreen({route}) {
           <View style={styles.casts}>
             <Text style={F_SIZE_BTITLE}>출연</Text>
             <View style={styles.row}>
-              <SingerProfile
-                name="아이유"
-                profile="https://img.khan.co.kr/news/2023/01/02/news-p.v1.20230102.1f95577a65fc42a79ae7f990b39e7c21_P1.png"
-                backgroundNone={true}
-              />
-              <SingerProfile
-                name="장기하"
-                profile="https://img.khan.co.kr/news/2023/01/02/news-p.v1.20230102.1f95577a65fc42a79ae7f990b39e7c21_P1.png"
-                backgroundNone={true}
-              />
+              {concertDetail.singers.map((singer, idx) => {
+                return (
+                  <SingerProfile
+                    key={idx}
+                    id={singer.id}
+                    name={singer.name}
+                    profile={singer.profile}
+                    backgroundNone={true}
+                  />
+                );
+              })}
             </View>
           </View>
           <View style={styles.refund}>
@@ -208,17 +202,22 @@ export default function ConcertDetailScreen({route}) {
     </ImageBackground>
   );
 }
-const Outline = ({content}) => {
+const Outline = ({show}) => {
+  console.log('outline', show)
   return (
     <View>
       <View style={styles.outline}>
         <Text style={F_SIZE_BTITLE}>개요</Text>
-        <Text style={F_SIZE_BBIGTEXT}>{content}</Text>
+        <Text style={F_SIZE_BBIGTEXT}>{show.description}</Text>
       </View>
       <View style={styles.outline}>
         <Text style={F_SIZE_BTITLE}>시간</Text>
-        <Text style={F_SIZE_BBIGTEXT}>2024. 03. 02. (토) 19:00</Text>
-        <Text style={F_SIZE_BBIGTEXT}>2024. 03. 10. (일) 20:00</Text>
+        <Text style={F_SIZE_BBIGTEXT}>
+          {korDateFormatString(show.start_date)}
+        </Text>
+        <Text style={F_SIZE_BBIGTEXT}>
+          {korDateFormatString(show.end_date)}
+        </Text>
       </View>
       <View style={styles.reserve}>
         <Text style={F_SIZE_BTITLE}>예매 방식</Text>
@@ -254,6 +253,9 @@ const Price = () => {
 };
 
 const styles = StyleSheet.create({
+  topContainer: {
+    padding: widthPercent(20),
+  },
   cardContainer: {
     width: widthPercent(380),
     height: heightPercent(350),

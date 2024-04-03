@@ -15,6 +15,8 @@ import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 import {getTicketListAPI} from '../../api/ticket/ticket';
 import {useRealm} from '../../components/realm/RealmContext';
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery';
+import Loading from '../../components/loader/Loading';
+import { F_SIZE_BUTTON } from '../../config/Font';
 
 export default function TicketListScreen() {
   const navigation = useNavigation();
@@ -80,6 +82,7 @@ export default function TicketListScreen() {
         );
         console.log('concertdata : ', concertdata, 'type:');
         tickets.push({
+          id: ticket.ticket_id,
           poster: concertdata?.img,
           title: concertdata?.title,
           date: concertdata?.start_time,
@@ -94,19 +97,26 @@ export default function TicketListScreen() {
   }, []);
   const renderItem = ({item, index}) => {
     return (
-      <View style={styles.ticketContainer}>
+      <View style={styles.container}>
         <TicketEntryCard ticket={item} colors={posterColors} />
       </View>
     );
   };
   if (!ticketList.length) {
-    return <Text>로딩중...</Text>;
+    return (
+      <View style={{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center'
+      }}>
+        <Text style={F_SIZE_BUTTON}>구매한 티켓이 없어요 ㅠㅠㅠㅠ</Text>
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
       <Canvas
         style={{
-          flex: 1,
           position: 'absolute',
           top: 0,
           left: 0,
@@ -143,17 +153,7 @@ export default function TicketListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-  },
-  ticketContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    height: 100,
-    alignItems: 'center',
-    marginBottom: 50,
   },
 });

@@ -16,16 +16,16 @@ import {healthCheckAPI, ticketQRAPI} from '../../api/ticket/ticket';
 import {BASE_URL} from '../../config/AxiosConfig';
 import {REDBASE} from '../../config/Color';
 import {alertAndLog} from '../../utils/common/alertAndLog';
-import { ticketProps } from './TicketEntryCard';
+import {ticketProps} from './TicketEntryCard';
 
 type TicketCardProps = {
   onPress?: () => void;
   colors: Array<string>;
-  ticket: ticketProps
+  ticket: ticketProps;
 };
 
 export default function TicketQrCard(props: TicketCardProps) {
-  console.log('ticket qr : ', props)
+  console.log('ticket qr : ', props);
   const [isPass, setIspass] = useState(false);
   const [qrURL, setQrURL] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
@@ -67,10 +67,17 @@ export default function TicketQrCard(props: TicketCardProps) {
       } else {
         // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
         console.log('정상 실행');
-        const res = await ticketQRAPI({ticket_id: '10', finger_print: key});
-        setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
-        setIspass(true);
-        healthCheck(res.uuid);
+        try {
+          const res = await ticketQRAPI({
+            ticket_id: props.ticket.id,
+            finger_print: key,
+          });
+          setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
+          setIspass(true);
+          healthCheck(res.uuid);
+        } catch (error) {
+          alertAndLog('', error);
+        }
       }
     }
   };
@@ -104,11 +111,7 @@ export default function TicketQrCard(props: TicketCardProps) {
   };
 
   return (
-    <LinearGradient
-      style={{
-        borderRadius: 20,
-      }}
-      colors={props.colors}>
+    <LinearGradient style={styles.container} colors={props.colors}>
       <View style={styles.container}>
         {isPass ? (
           <View style={styles.QrCard}>
@@ -131,18 +134,15 @@ export default function TicketQrCard(props: TicketCardProps) {
         ) : (
           <CreateQR onPress={handlePass} />
         )}
-        <TicketInfoCard {...props.ticket}/>
+        <TicketInfoCard {...props.ticket} />
       </View>
     </LinearGradient>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(250),
-    height: heightPercent(500),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgba(130, 156, 199, 0.6)',
+    flex: 1,
+
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
