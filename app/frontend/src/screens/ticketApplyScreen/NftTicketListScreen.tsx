@@ -112,7 +112,7 @@ export default function NftTicketListScreen() {
     } else {
       setFilteringList(concertList);
     }
-  }, [toggleState]);
+  }, [toggleState, concertList]);
 
   // 뒷배경 애니메이션을 위한 부분
   const duration = 1000;
@@ -139,13 +139,15 @@ export default function NftTicketListScreen() {
 
   // 배경색 가져오기
   useEffect(() => {
-    getColors(concertList[currentIndex].poster.uri, {
-      cache: true,
-      key: concertList[currentIndex].poster.uri,
-    }).then((res): any => {
-      setPosterColors([res?.dominant, res.muted, res.average]);
-    });
-  }, [currentIndex]);
+    if (concertList.length > 0) {
+      getColors(concertList[currentIndex].poster.uri, {
+        cache: true,
+        key: concertList[currentIndex].poster.uri,
+      }).then((res): any => {
+        setPosterColors([res?.dominant, res.muted, res.average]);
+      });
+    }
+  }, [currentIndex, concertList]);
 
   useEffect(() => {
     const settingList = async () => {
