@@ -26,6 +26,6 @@ public class DidTransferBuyerController {
             @PathVariable Long performanceId,
             @RequestHeader("X-Authorization-Id") Long buyerId
     ) {
-        return ResponseEntity.ok(didTransferService.getDidTransferListByBuyerId(performanceId, buyerId));
+        return ResponseEntity.ok(didTransferService.getDidTransferListByBuyerId(buyerId, performanceId));
     }
 }
