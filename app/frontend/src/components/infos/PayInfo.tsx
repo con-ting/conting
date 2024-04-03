@@ -31,7 +31,7 @@ export default function PayInfo({
 
   const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
-    console.log(selectedSeats);
+    console.log('구매자', selectedSeats.id);
     console.log('콘서트정보', concert);
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)
@@ -97,8 +97,8 @@ export default function PayInfo({
             seat_id: seat.seatId,
             schedule_id: scheduleID,
             price: seat.gradePrice,
-            owner_id: seat.memberId,
-            finger_print: biometricKey, // 소유자 지문, 이 예제에서는 biometricKey를 사용
+            owner_id: seat.owner_id,
+            finger_print: seat.owner_fingerprint_key, // 소유자 지문, 이 예제에서는 biometricKey를 사용
             nft_url: '',
             row: seat.seatRow,
             col: seat.seatCol,

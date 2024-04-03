@@ -18,7 +18,7 @@ export default function PaymentScreen({route}) {
   const [concertDetail, setConcertDetail] = useState(null);
 
   useEffect(() => {
-    // console.log('받아', selectedSeats);
+    console.log('받아', selectedSeats);
     // console.log(route);
     console.log('결제페이지 입장 ', route);
     // console.log('shs', route.params.showID);
@@ -31,7 +31,7 @@ export default function PaymentScreen({route}) {
       const response = await ConcertDetailApi(showID);
       console.log('공연 API 응답: ', response);
       setConcertDetail(response);
-      console.log('콪어', concertDetail);
+      // console.log('콪어', concertDetail);
     } catch (error) {
       console.error('공연 API 호출 중 오류 발생: ', error);
     }
@@ -49,7 +49,7 @@ export default function PaymentScreen({route}) {
         showID={showID}
         scheduleID={scheduleID}
         biometricKey={biometricKey}
-        buyID={userID}
+        buyID={selectedSeats.memberId}
       />
     </ScrollView>
   );
