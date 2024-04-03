@@ -12,7 +12,6 @@ import {vec} from '@shopify/react-native-skia';
 import Animated, {
   Extrapolation,
   interpolate,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -40,12 +39,9 @@ const {width, height} = Dimensions.get('window');
 const cardWidth = width * 0.8;
 const cardHeight = height * 0.7;
 const imageHeight = 0.45 * cardHeight;
-const c = vec(imageHeight / 2, imageHeight / 2);
-const r = c.x - 32;
 const MAX_SWIPE = Math.ceil(cardWidth - 50);
 
 export default function TicketEntryCard(props: TicketEntryCardProps) {
-  const [isBack, setIsBack] = useState(true);
   const {ticket} = props;
   const x = useSharedValue(0);
   const y = useSharedValue(0);
@@ -108,81 +104,22 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
       ],
     };
   });
-  const toggleBack = () => {
-    rotation.value = withTiming(
-      // 각도
-      isBack ? 0 : 180,
-      {
-        duration: 1000,
-        easing: Easing.ease,
-      }, // 애니메이션 종류 후 상태 업데이트
-    );
-    // setIsBack(!isBack);
-  };
-
   const frontCardStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{perspective: 1000}, {rotateY: `${rotation.value}deg`}],
-    };
-  });
-
-  const backCardStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{perspective: 1000}, {rotateY: `${rotation.value + 180}deg`}],
-    };
-  });
-
-  const animatedImage = useAnimatedStyle(() => {
-    const xAxisRotation = `${interpolate(
-      rotateX.value,
-      [-MAX_SWIPE, MAX_SWIPE],
-      [-40, 40],
-      {
-        extrapolateLeft: Extrapolation.CLAMP,
-        extrapolateRight: Extrapolation.CLAMP,
-      },
-    )}deg`;
-    const yAxisRotation = `${interpolate(
-      rotateY.value,
-      [-MAX_SWIPE, MAX_SWIPE],
-      [40, -40],
-      {
-        extrapolateLeft: Extrapolation.CLAMP,
-        extrapolateRight: Extrapolation.CLAMP,
-      },
-    )}deg`;
-    const translationX = interpolate(
-      rotateX.value,
-      [-MAX_SWIPE, MAX_SWIPE],
-      [-80, 80],
-      {
-        extrapolateLeft: Extrapolation.CLAMP,
-        extrapolateRight: Extrapolation.CLAMP,
-      },
-    );
-    const translationY = interpolate(
-      rotateY.value,
-      [-MAX_SWIPE, MAX_SWIPE],
-      [-80, 80],
-      {
-        extrapolateLeft: Extrapolation.CLAMP,
-        extrapolateRight: Extrapolation.CLAMP,
-      },
-    );
+    const rotationValue = interpolate(rotation.value, [0, 1], [0, 180]);
     return {
       transform: [
-        {perspective: 1500},
-        {rotateX: yAxisRotation},
-        {rotateY: xAxisRotation},
-        {scale: withTiming(imageScale.value)},
-        {translateX: translationX},
-        {translateY: translationY},
+        {rotateY: withTiming(`${rotationValue}deg`, {duration: 1000})},
       ],
     };
   });
-  const back = () => {
-    setIsBack(!isBack);
-  };
+  const backCardStyle = useAnimatedStyle(() => {
+    const rotationValue = interpolate(rotation.value, [0, 1], [180, 360]);
+    return {
+      transform: [
+        {rotateY: withTiming(`${rotationValue}deg`, {duration: 1000})},
+      ],
+    };
+  });
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <BackgroundGradient
@@ -192,18 +129,23 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
       />
       <GestureDetector gesture={dragGesture}>
         <Animated.View style={[styles.ticketContainer, animatedCard]}>
-          <TouchableOpacity
-            style={{zIndex: 100, width: cardWidth - 5, height: cardHeight - 5}}
-            activeOpacity={1}
-            onPress={back}>
-            {isBack ? (
-              // <Animated.View style={frontCardStyle}>
-              <TicketFront {...ticket} />
-            ) : (
-              // </Animated.View>
-              <TicketQrCard ticket={ticket} colors={props.colors} />
-            )}
-          </TouchableOpacity>
+          <Animated.View style={[styles.frontCard, frontCardStyle]}>
+            <TicketFront
+              rotate={rotation}
+              ticket={ticket}
+              width={cardWidth}
+              height={cardHeight}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.backCard, backCardStyle]}>
+            <TicketQrCard
+              width={cardWidth}
+              height={cardHeight}
+              ticket={ticket}
+              rotate={rotation}
+              colors={props.colors}
+            />
+          </Animated.View>
         </Animated.View>
       </GestureDetector>
     </View>
@@ -218,6 +160,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     borderRadius: widthPercent(20),
+  },
+  frontCard: {
+    width: cardWidth - 5,
+    height: cardHeight - 5,
+    position: 'absolute',
+    backfaceVisibility: 'hidden',
+  },
+  backCard: {
+    width: cardWidth - 5,
+    height: cardHeight - 5,
+    position: 'absolute',
+    backfaceVisibility: 'hidden',
   },
   imageContainer: {
     height: imageHeight,
