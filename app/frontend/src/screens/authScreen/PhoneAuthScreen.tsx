@@ -44,7 +44,7 @@ type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const PhoneAuthScreen = () => {
   const navigation = useNavigation<RootStackNavigationProp>();
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('010-');
   const [isStart, setIsStart] = useState(false);
   const [certNumber, setCertNumber] = useState('');
   const [certPass, setCertPass] = useState(false);
@@ -55,14 +55,19 @@ const PhoneAuthScreen = () => {
       phone_number: phoneNumber.replace(/-/g, ''),
       fcm: token,
     });
-    // 인증번호 발송 api (금액 때문에 주석 지우지마세요)
-    // const phoneNumberResponse = await phoneNumberCertMessageSenderApi({
-    //   phone_number: phoneNumber.replace(/-/g, ''),
-    //   fcm: token,
-    // });
-    setIsStart(true);
+    const phoneNumberResponse = await phoneNumberCertMessageSenderApi({
+      phone_number: phoneNumber.replace(/-/g, ''),
+      fcm: token,
+    });
+    if (phoneNumberResponse.send_result) {
+      Alert.alert('인증번호 전송 성공');
+      setIsStart(true);
+    } else {
+      Alert.alert('인증번호 전송 실패');
+    }
+    console.log('response =', phoneNumberResponse);
+
     console.log(isStart);
-    // console.log('response =', phoneNumberResponse);
   };
 
   // 모달 관련
@@ -94,8 +99,8 @@ const PhoneAuthScreen = () => {
         console.log('CertApiResponse=', certCodeResponse);
         setCertPass(certCodeResponse.verification_result);
       };
-      // asyncCertCodeConfirmCodeApi(); //애가 실제로 사용하는 것
-      setCertPass(true); // 금액 때문에 처리해놓은것
+      asyncCertCodeConfirmCodeApi(); //애가 실제로 사용하는 것
+      // setCertPass(true); // 금액 때문에 처리해놓은것
     }
   }, [certNumber]);
 

@@ -121,7 +121,7 @@ export default function NftTicketListScreen() {
     } else {
       setFilteringList(concertList);
     }
-  }, [toggleState]);
+  }, [toggleState, concertList]);
 
   // 뒷배경 애니메이션을 위한 부분
   const duration = 1000;

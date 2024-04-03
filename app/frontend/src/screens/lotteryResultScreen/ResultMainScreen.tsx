@@ -240,7 +240,52 @@ function MakeConsertCardObject(
       };
   }
 }
+function makeEventData(web3Data: any) {
+  // 현재 시간을 Unix 타임스탬프로 가져옵니다.
+  const now = new Date().getTime();
 
+  // BN 인스턴스를 사용하여 timestamp를 숫자로 변환합니다.
+  const startTimestamp = web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const endTimestamp = web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+
+  let img_tag: string;
+  let img_tag_color: string;
+  // 현재 시간이 이벤트 기간 내인지 확인합니다.
+  if (now > startTimestamp && now < endTimestamp) {
+    img_tag = '당첨 대기중';
+    img_tag_color = BLUEBASE;
+  } else if (now >= endTimestamp) {
+    // 이벤트가 종료되었고, 당첨자 명단에 내 지갑 주소가 있는지 확인합니다.
+    if (
+      web3Data.account.winners.includes(new PublicKey(userInfo?.walletAddress))
+    ) {
+      img_tag_color = MINTBASE;
+      img_tag = '당첨';
+    } else {
+      img_tag_color = MAINGRAY;
+      img_tag = '미당첨';
+    }
+  } else {
+    img_tag = '미정';
+    img_tag_color = MAINGRAY;
+  }
+
+  // 변환된 cardProps 객체를 반환합니다.
+  return {
+    onPress: () => {
+      Alert.alert('앙 이벤트띠');
+    },
+    disabled: false,
+    name: web3Data.account.name,
+    img_url: web3Data.account.uri,
+    participants: web3Data.account.participants,
+    winnersTotal: web3Data.account.winnersTotal,
+    img_tag: img_tag,
+    img_tag_color: img_tag_color,
+    start_at: new Date(startTimestamp).toISOString(),
+    end_at: new Date(endTimestamp).toISOString(),
+  };
+}
 export default function SearchMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
@@ -273,21 +318,21 @@ export default function SearchMainScreen() {
     return resultList;
   };
   const getEventResultList = async () => {
+    const result = [];
+
     //이벤트 내역 조회
-    // const eventList = await eventListFindByWallet({
-    //   connection: connection,
-    //   anchorWallet: useAnchorWallet,
-    //   myWalletAddress: new PublicKey(userInfo?.walletAddress),
-    // });
-    const eventList = await eventListFindAll({
+    const eventList = await eventListFindByWallet({
       connection: connection,
       anchorWallet: useAnchorWallet,
+      myWalletAddress: new PublicKey(userInfo?.walletAddress),
     });
-    console.log('============================');
-    console.log('eventList ==', eventList);
-    console.log('============================');
-    return [];
+
+    for (const eventListElement of eventList) {
+      result.push(makeEventData(eventListElement));
+    }
+    return result;
   };
+
   // useEffect
   useEffect(() => {
     console.log('내역 페이지 진입 = ', selectedTab);
