@@ -5,6 +5,7 @@ export function fetchScheduleDetails(realm: Realm.Realm, scheduleId: number) {
 
   // Schedule 모델에서 특정 schedule_id에 해당하는 데이터를 조회
   const schedule = realm.objectForPrimaryKey('Schedule', String(scheduleId));
+  console.log('schedule = ', schedule);
   if (schedule) {
     // 연관된 Performance 정보 조회
     const performance = realm.objectForPrimaryKey(
@@ -12,10 +13,12 @@ export function fetchScheduleDetails(realm: Realm.Realm, scheduleId: number) {
       String(schedule.performance_id),
     );
 
+    console.log('performance = ', performance);
     // 연관된 Hall 정보 조회 (Performance가 존재할 때만 조회)
     const hall = performance
       ? realm.objectForPrimaryKey('Hall', String(performance.hall_id))
       : null;
+    console.log('hall = ', hall);
     // 최종 데이터 객체 구성
     details = {
       schedule_id: String(schedule.schedule_id),
@@ -35,6 +38,7 @@ export function fetchScheduleDetails(realm: Realm.Realm, scheduleId: number) {
       start_time: schedule.start_time,
       end_time: schedule.end_time,
     };
+    console.log('details', details);
   }
 
   return details;
