@@ -4,7 +4,7 @@ import * as web3 from '@solana/web3.js'
 import { expect } from 'chai'
 
 import { Did } from '../target/types/did'
-import { participant1 as par1, participant2 as par2, participant3 as par3 } from './env'
+import { participant1 as par1, participant2 as par2, participant3 as par3 } from './common'
 
 describe('did', () => {
   const provider = anchor.AnchorProvider.env()
