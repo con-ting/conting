@@ -5,6 +5,8 @@ import Fastify from 'fastify'
 
 import { issueFamily, revokeFamilyByLower } from './did/did.js'
 import { DidBody, DidInput } from './did/types.js'
+import { createEvent } from './event/event.js'
+import { EventBody, EventInput } from './event/types.js'
 import {
   getPort,
   getSecret,
@@ -128,6 +130,22 @@ fastify.delete<{
     Uint8Array.from(JSON.parse(request.body.secret)),
   )
   const tx = await revokeFamilyByLower(provider, family, lower, secret)
+  return { tx }
+})
+
+fastify.post<{ Body: EventBody }>('/events', async (request, reply) => {
+  const input: EventInput | { secret: web3.Keypair } = {
+    ...request.body,
+    secret: web3.Keypair.fromSecretKey(
+      Uint8Array.from(JSON.parse(request.body.secret)),
+    ),
+    agency: new web3.PublicKey(request.body.agency),
+    singer: new web3.PublicKey(request.body.singer),
+    collectionMint: new web3.PublicKey(request.body.collectionMint),
+    startTimestamp: new BN(request.body.startTimestamp),
+    endTimestamp: new BN(request.body.endTimestamp),
+  }
+  const tx = await createEvent(provider, input)
   return { tx }
 })
 
