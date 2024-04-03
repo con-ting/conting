@@ -105,8 +105,8 @@ export default function NftTicketListScreen() {
   const secondColor = useSharedValue(posterColors[1]);
   const thirdColor = useSharedValue(posterColors[2]);
   const {width, height} = useWindowDimensions();
-  const toggleWidth = width
-  const toggleHeight = Math.floor(height/10)
+  const toggleWidth = width;
+  const toggleHeight = Math.floor(height / 10);
   const [toggleState, setToggleState] = useState(false);
   const [filteringList, setFilteringList] = useState([]);
   const [concertList, setConcertList] = useState(defualtList);
@@ -148,13 +148,16 @@ export default function NftTicketListScreen() {
 
   // 배경색 가져오기
   useEffect(() => {
+    if (!concertList.length) {
+      return;
+    }
     getColors(concertList[currentIndex].poster.uri, {
       cache: true,
       key: concertList[currentIndex].poster.uri,
     }).then((res): any => {
       setPosterColors([res?.dominant, res.muted, res.average]);
     });
-  }, [currentIndex]);
+  }, [currentIndex, concertList]);
 
   useEffect(() => {
     const settingList = async () => {
@@ -224,7 +227,7 @@ export default function NftTicketListScreen() {
           navigation.navigate('NftShopMainScreen');
         }}
       /> */}
-      <View style={{...styles.toggleBox, top:toggleHeight, right:10}}>
+      <View style={{...styles.toggleBox, top: toggleHeight, right: 10}}>
         <BODY1>관람한 NFT 티켓 보기</BODY1>
         <Spacer space={20} horizontal={true}></Spacer>
         <Toggle isEnabled={toggleState} setIsEnabled={setToggleState}></Toggle>
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
   },
   toggleBox: {
     position: 'absolute',
-    zIndex:100,
+    zIndex: 100,
     flexDirection: 'row',
     alignItems: 'center',
   },

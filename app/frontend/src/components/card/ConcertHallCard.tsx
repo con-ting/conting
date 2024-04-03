@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   fontPercent,
@@ -30,13 +29,6 @@ type ConcertHallCardProps = {
  */
 
 export default function ConcertHallCard(props: ConcertHallCardProps) {
-  //나중에 서버에서 선택한 공연의 공연장 정보를 가져올 예정
-  //   const concertData = {
-  //     title: 'KSPO DOME',
-  //     seat: '14,730',
-  //     address: '서울특별시 송파구 올림픽로 424',
-  //   };
-
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={props.onPress}>
@@ -45,9 +37,8 @@ export default function ConcertHallCard(props: ConcertHallCardProps) {
           <Glass onPress={props.onBtnPress} size="24" color="#FFFFFF" />
         </View>
         <View style={styles.infoContext}>
-          <Text style={styles.info}>{props.seat}석</Text>
-          <Text style={styles.info}> | </Text>
-          <Text style={styles.info}>{props.address}</Text>
+          <Text
+            style={styles.info}>{`${props.seat}석 | ${props.address}`}</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -56,25 +47,23 @@ export default function ConcertHallCard(props: ConcertHallCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexWrap: 'wrap',
-    flexDirection: 'column',
     width: '100%',
-    height: heightPercent(90),
+    height: heightPercent(80),
     borderRadius: 12,
     backgroundColor: CARDBASE,
+    paddingHorizontal: widthPercent(10),
   },
   titleContext: {
+    flex: 3,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 10,
   },
 
   infoContext: {
+    flex: 2,
     alignItems: 'center',
     flexDirection: 'row',
-    marginTop: 5,
-    marginLeft: 10,
   },
   info: {
     fontSize: fontPercent(12),
