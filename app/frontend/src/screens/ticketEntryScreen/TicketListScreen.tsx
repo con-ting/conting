@@ -15,7 +15,7 @@ import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 import {getTicketListAPI} from '../../api/ticket/ticket';
 import {useRealm} from '../../components/realm/RealmContext';
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery';
-import { F_SIZE_BUTTON } from '../../config/Font';
+import {F_SIZE_BUTTON, F_SIZE_Y_BIGTEXT} from '../../config/Font';
 
 export default function TicketListScreen() {
   const realm = useRealm();
@@ -102,12 +102,13 @@ export default function TicketListScreen() {
   };
   if (!ticketList.length) {
     return (
-      <View style={{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center'
-      }}>
-        <Text style={F_SIZE_BUTTON}>구매한 티켓이 없어요...</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={F_SIZE_Y_BIGTEXT}>구매한 티켓이 없어요...</Text>
       </View>
     );
   }
@@ -129,22 +130,26 @@ export default function TicketListScreen() {
           />
         </Rect>
       </Canvas>
-      <Carousel
-        data={ticketList}
-        renderItem={renderItem}
-        width={widthPercent(400)}
-        autoFillData={false}
-        mode="horizontal-stack"
-        modeConfig={{
-          moveSize: 100,
-          stackInterval: 50,
-          scaleInterval: 0.1,
-          rotateZDeg: 80,
-        }}
-        onSnapToItem={index => {
-          setCurrentIndex(index);
-        }}
-      />
+      {ticketList.length === 1 ? (
+        renderItem({item: ticketList[0]})
+      ) : (
+        <Carousel
+          data={ticketList}
+          renderItem={renderItem}
+          width={widthPercent(400)}
+          mode="horizontal-stack"
+          modeConfig={{
+            moveSize: 100,
+            stackInterval: 50,
+            scaleInterval: 0.1,
+            rotateZDeg: 80,
+          }}
+          autoFillData={false}
+          onSnapToItem={index => {
+            setCurrentIndex(index);
+          }}
+        />
+      )}
     </View>
   );
 }

@@ -1,14 +1,8 @@
 import {Dimensions, Easing, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
-import {useState} from 'react';
 import TicketQrCard from './TicketQrCard';
-import {
-  Gesture,
-  GestureDetector,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import TicketFront from '../ticketEntry/TicketFront';
-import {vec} from '@shopify/react-native-skia';
 import Animated, {
   Extrapolation,
   interpolate,
