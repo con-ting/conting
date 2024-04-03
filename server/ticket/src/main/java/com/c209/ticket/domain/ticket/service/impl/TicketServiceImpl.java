@@ -176,7 +176,7 @@ public class TicketServiceImpl implements TicketService {
                 .flatMap(ticket -> {
                     // Redis에서 uuid로 조회합니다.
                     return reactiveRedisTemplate.opsForValue().get(qrUUID)
-                            .switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))) // 값이 없으면 예외 발생
+                            //.switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))) // 값이 없으면 예외 발생
                             .flatMap(value -> {
                                 // 기존 만료 시간 가져오기
                                 return reactiveRedisTemplate.opsForValue().get(qrUUID)
