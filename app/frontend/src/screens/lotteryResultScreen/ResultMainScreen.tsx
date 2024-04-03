@@ -87,7 +87,9 @@ function MakeConsertCardObject(
           time: localData.reservation_end_datetime,
           btn_onPress: () => {
             //콘서트 상세 이동 로직
-            Alert.alert('콘서트 상세로 이동');
+            navigation.navigate('ConcertDetail', {
+              show_id: localData.performance_id,
+            });
           },
           swipe_btn_disabled: true,
         };
@@ -111,7 +113,9 @@ function MakeConsertCardObject(
           time: localData.reservation_end_datetime,
           btn_onPress: () => {
             //콘서트 상세 이동 로직
-            Alert.alert('콘서트 상세로 이동');
+            navigation.navigate('ConcertDetail', {
+              show_id: localData.performance_id,
+            });
           },
           swipe_btn_disabled: true,
         };
@@ -136,7 +140,9 @@ function MakeConsertCardObject(
         time: localData.start_time,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
@@ -180,7 +186,9 @@ function MakeConsertCardObject(
         time: apiData.pay_due_date,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: true,
       };
@@ -204,12 +212,17 @@ function MakeConsertCardObject(
         date_tag: '결제마감일',
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
           //결제 페이지로 이동 로직
-          Alert.alert('앙 결제 띠');
+          navigation.navigate('Waiting', {
+            id: apiData.schedule_id,
+            showID: localData.performance_id,
+          });
         },
         swipe_btn_text: '결제하기', // 스와이프 버튼에 들어갈 텍스트
         swipe_btn_color: MAINYELLOW, //스와이프 버튼의 백그라운드 색상
@@ -234,7 +247,9 @@ function MakeConsertCardObject(
         time: localData.reservation_end_datetime,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: true,
       };
@@ -291,9 +306,10 @@ export function makeEventData(web3Data: any) {
     },
   };
 }
-export default function SearchMainScreen() {
+export default function ResultMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
+  const [eventCardList, setEventCardList] = useState([]);
   const realm = useRealm();
   const {connection} = useConnection();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
@@ -337,19 +353,20 @@ export default function SearchMainScreen() {
     }
     return result;
   };
-
+  const settingOrderResult = async () => {
+    const data = await getOrderResultList();
+    console.log('orderResultList =', data);
+    setCardList(data);
+  };
   // useEffect
   useEffect(() => {
     console.log('내역 페이지 진입 = ', selectedTab);
     if (selectedTab == Tabs[0]) {
       // getOrderResultList 함수의 결과를 기다린 후에 처리하도록 수정
-      getOrderResultList().then(data => {
-        console.log('orderResultList =', data);
-        setCardList(data);
-      });
+      settingOrderResult();
     } else {
       getEventResultList().then(list => {
-        setCardList(list);
+        setEventCardList(list);
       });
     }
   }, [selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
@@ -359,7 +376,7 @@ export default function SearchMainScreen() {
       case Tabs[0]:
         return <ReservationWaitingScreen concerts={cardList} />;
       case Tabs[1]:
-        return <EventApplicationScreen events={cardList} />;
+        return <EventApplicationScreen events={eventCardList} />;
     }
   };
 
