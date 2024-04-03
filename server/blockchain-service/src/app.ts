@@ -19,6 +19,7 @@ import {
   mintCollection,
   mintNftToCollection,
   transferNft,
+  unverifyCollectionNft,
   updateNft,
   useNft,
   verifyCollectionNft,
@@ -56,6 +57,15 @@ fastify.post<{ Params: { mint: string; collectionMint: string } }>(
     const mint = publicKey(request.params.mint)
     const collectionMint = publicKey(request.params.collectionMint)
     await verifyCollectionNft(umi, mint, collectionMint)
+  },
+)
+
+fastify.post<{ Params: { mint: string; collectionMint: string } }>(
+  '/collections/:collectionMint/unverify/:mint',
+  async (request, reply) => {
+    const mint = publicKey(request.params.mint)
+    const collectionMint = publicKey(request.params.collectionMint)
+    await unverifyCollectionNft(umi, mint, collectionMint)
   },
 )
 

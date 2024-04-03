@@ -118,6 +118,20 @@ export const verifyCollectionNft = async (
     .sendAndConfirm(umi)
 }
 
+export const unverifyCollectionNft = async (
+  umi: Umi,
+  assetMint: PublicKey,
+  collectionMint: PublicKey,
+) => {
+  const metadata = tokenMeta.findMetadataPda(umi, { mint: assetMint })
+  await tokenMeta
+    .unverifyCollectionV1(umi, {
+      metadata,
+      collectionMint,
+    })
+    .sendAndConfirm(umi)
+}
+
 export const transferNft = async (
   umi: Umi,
   mint: PublicKey,

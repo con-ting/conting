@@ -1,4 +1,4 @@
-import {Image, Text, View} from 'react-native';
+import {Alert, Image, Text, View} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {
   F_SIZE_B_HEADER,
@@ -16,10 +16,46 @@ import {PopUpModal} from '../../../components/modal/Modal';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
 import SuccessModal from '../../../components/modal/SuccessModal';
+import {ConcertRegistApi} from '../../../api/catalog/concert';
 
-export default function ConcertRegistCompany() {
+export default function ConcertRegistCompany({route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const [companyName, setCompanyName] = useState('');
+  const [companyPhone, setCompanyPhone] = useState('');
+
+  const handleSubmit = async () => {
+    if (!companyName) {
+      Alert.alert('알림', '회사명을 입력해주세요.');
+      return;
+    }
+
+    if (!companyPhone) {
+      Alert.alert('알림', ' 연락처를 입력해주세요.');
+      return;
+    }
+
+    const previousData = route.params.registrationData; // Assuming finalData is passed from the previous screen
+    const completeData = {
+      ...previousData,
+      company: {
+        company_name: companyName,
+        call: companyPhone,
+      },
+    };
+    try {
+      console.log('보낼 데이터', completeData);
+      const response = await ConcertRegistApi(completeData);
+      if (response.success) {
+        setModalVisible(true);
+      } else {
+        console.error('API call failed', response.error);
+      }
+    } catch (error) {
+      console.error('API call error', error);
+    }
+  };
+
   return (
     <View style={styles.view}>
       <SuccessModal
@@ -30,11 +66,19 @@ export default function ConcertRegistCompany() {
             <View style={styles.modalAlert}>
               <FastImage
                 style={{width: widthPercent(140), height: heightPercent(140)}}
-                source={require('../../../assets/gif/sc.gif')}
+                source={require('../../../assets/gif/success3.gif')}
               />
               <Text style={F_SIZE_B_HEADER}>공연이 등록되었습니다!</Text>
             </View>
-            <YellowButton btnText="확인" textSize={20} width={250} />
+            <YellowButton
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate('Main');
+              }}
+              btnText="확인"
+              textSize={20}
+              width={250}
+            />
           </View>
         }
         // backGroundColor="white"
@@ -47,21 +91,27 @@ export default function ConcertRegistCompany() {
             <Text style={F_SIZE_TITLE}>주최자 / 기획사</Text>
           </View>
           <View style={styles.infos}>
-            <SimpleInput backGroundColor={MAINWHITE} textColor={MAINBLACK} />
+            <SimpleInput
+              backGroundColor={MAINWHITE}
+              onChangeText={setCompanyName}
+              textColor={MAINBLACK}
+            />
           </View>
           <View style={styles.title}>
             <CallCalling style={styles.icon} />
             <Text style={F_SIZE_TITLE}>연락처</Text>
           </View>
           <View style={styles.infos}>
-            <SimpleInput backGroundColor={MAINWHITE} textColor={MAINBLACK} />
+            <SimpleInput
+              backGroundColor={MAINWHITE}
+              onChangeText={setCompanyPhone}
+              textColor={MAINBLACK}
+            />
           </View>
         </View>
         <View style={styles.nextButton}>
           <YellowButton
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
+            onPress={handleSubmit}
             btnText="등록하기"
             textSize={20}
           />

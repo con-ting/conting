@@ -254,13 +254,17 @@ public class TicketServiceImpl implements TicketService {
             reIssueTickets.get(i).setNftUrl(refundTickets.get(i).getNftUrl());
             reIssueTickets.get(i).setPayDueDate(payDueDate);
             log.info("환불표가 발생했습니다! "+payDueDate.toLocalDate().toString() +" 23:59분까지 결제를 완료해주세요!");
-            notificationRestClient.sendFcm(FcmRequest
+            try{
+                notificationRestClient.sendFcm(FcmRequest
                     .builder()
                     .receiver_id(reIssueTickets.get(i).getOwnerId())
                             .title("[콘팅] :: 환불표 발생 알림")
                             .body(("환불표가 발생했습니다! "+payDueDate.toLocalDate().toString() +" 23:59분까지 결제를 완료해주세요!"))
                     .build());
-
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
         }
 
 
