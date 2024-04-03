@@ -3,7 +3,6 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {checkQRAPI} from '../../../api/ticket/ticket';
 import {alertAndLog} from '../../../utils/common/alertAndLog';
 
-
 export default function CameraScreen() {
   const checkQR = async event => {
     const QrUrl = await event.data;
@@ -11,9 +10,12 @@ export default function CameraScreen() {
     const url = await QrUrl.substring(start);
     try {
       const res = await checkQRAPI({url: url});
+      if (res.result) {
+        alertAndLog('', '입장 가능입니다.');
+      }
     } catch (error) {
       console.log(error);
-      alertAndLog('', error)
+      alertAndLog('', error);
     }
   };
 

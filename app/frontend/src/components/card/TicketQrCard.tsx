@@ -20,7 +20,6 @@ import {ticketProps} from './TicketEntryCard';
 import {SharedValue} from 'react-native-reanimated';
 
 type TicketCardProps = {
-  rotate: SharedValue<number>;
   colors: Array<string>;
   ticket: ticketProps;
   width: number;
@@ -51,11 +50,11 @@ export default function TicketQrCard(props: TicketCardProps) {
     return () => clearInterval(interval);
   }, [isPass, timeLeft]);
 
-  useEffect(()=>{
-    if(isPass){
-      setIsQR(false)
+  useEffect(() => {
+    if (isPass) {
+      setIsQR(false);
     }
-  },[isPass])
+  }, [isPass]);
   // 입장권 터치시 지문 인식하는 과정
   const handlePass = async () => {
     // 키가 존재하는지 확인
@@ -124,42 +123,32 @@ export default function TicketQrCard(props: TicketCardProps) {
   };
 
   return (
-    <Pressable
-      style={{
-        width: props.width,
-        height: props.height,
-      }}
-      onPress={() => (props.rotate.value = props.rotate.value && !isQR ? 0 : 1)}>
-      <LinearGradient style={styles.container} colors={props.colors}>
-        <View style={styles.container}>
-          {isPass ? (
-            <View style={styles.QrCard}>
-              <Text style={F_SIZE_TEXT}>
-                캡쳐 방지 기능이 활성화 상태입니다
-              </Text>
-              <View
-                style={{
-                  marginVertical: 20,
-                }}>
-                <QRCode
-                  size={widthPercent(150)}
-                  color="black"
-                  backgroundColor="white"
-                  value={qrURL}
-                />
-              </View>
-              <Text style={F_SIZE_TEXT}>
-                QR코드 유효시간 <Text style={{color: REDBASE}}>{timeLeft}</Text>
-                초
-              </Text>
+    <LinearGradient style={styles.container} colors={props.colors}>
+      <View style={styles.container}>
+        {isPass ? (
+          <View style={styles.QrCard}>
+            <Text style={F_SIZE_TEXT}>캡쳐 방지 기능이 활성화 상태입니다</Text>
+            <View
+              style={{
+                marginVertical: 20,
+              }}>
+              <QRCode
+                size={widthPercent(150)}
+                color="black"
+                backgroundColor="white"
+                value={qrURL}
+              />
             </View>
-          ) : (
-            <CreateQR onPress={handlePass} />
-          )}
-          <TicketInfoCard {...props.ticket} />
-        </View>
-      </LinearGradient>
-    </Pressable>
+            <Text style={F_SIZE_TEXT}>
+              QR코드 유효시간 <Text style={{color: REDBASE}}>{timeLeft}</Text>초
+            </Text>
+          </View>
+        ) : (
+          <CreateQR onPress={handlePass} />
+        )}
+        <TicketInfoCard {...props.ticket} />
+      </View>
+    </LinearGradient>
   );
 }
 const styles = StyleSheet.create({

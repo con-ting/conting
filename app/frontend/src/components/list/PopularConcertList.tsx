@@ -36,7 +36,6 @@ export default function PopularConcertList({
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      console.log(res);
       setPreviousColor(currentColors);
       setCurrentColors([res.dominant, res.lightMuted, res.vibrant]);
     });

@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Text} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
 import {getColors} from 'react-native-image-colors';
@@ -26,6 +26,7 @@ export default function TicketListScreen() {
     '#000000',
     '#000000',
   ]);
+  const isFocused = useIsFocused();
   const firstColor = useSharedValue(posterColors[0]);
   const secondColor = useSharedValue(posterColors[1]);
   const thirdColor = useSharedValue(posterColors[2]);
@@ -71,7 +72,6 @@ export default function TicketListScreen() {
   useEffect(() => {
     const getInfo = async () => {
       const res = await getTicketListAPI();
-      console.log(res);
       let tickets: Array<any> = [];
       await res.forEach((ticket: any) => {
         const concertdata = fetchScheduleDetails(
@@ -92,7 +92,7 @@ export default function TicketListScreen() {
       setTicketList(tickets);
     };
     getInfo();
-  }, []);
+  }, [isFocused]);
   const renderItem = ({item, index}) => {
     return (
       <View style={styles.container}>
@@ -105,6 +105,7 @@ export default function TicketListScreen() {
       <View
         style={{
           flex: 1,
+          backgroundColor: 'black',
           justifyContent: 'center',
           alignItems: 'center',
         }}>

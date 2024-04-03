@@ -1,7 +1,11 @@
 import {Dimensions, Easing, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketQrCard from './TicketQrCard';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import {
+  Gesture,
+  GestureDetector,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import TicketFront from '../ticketEntry/TicketFront';
 import Animated, {
   Extrapolation,
@@ -9,9 +13,9 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from 'react-native-reanimated';
 import {BackgroundGradient} from './NFTCard';
+import {useState} from 'react';
 
 export type ticketProps = {
   id: string;
@@ -32,7 +36,7 @@ type TicketEntryCardProps = {
 const {width, height} = Dimensions.get('window');
 const cardWidth = width * 0.8;
 const cardHeight = height * 0.7;
-const imageHeight = 0.45 * cardHeight;
+
 const MAX_SWIPE = Math.ceil(cardWidth - 50);
 
 export default function TicketEntryCard(props: TicketEntryCardProps) {
@@ -44,7 +48,7 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
   const rotateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
   const imageScale = useSharedValue(1);
-  const rotation = useSharedValue(0);
+  const [isBack, setIsback] = useState(false);
 
   const dragGesture = Gesture.Pan()
     .onBegin(e => {
@@ -98,22 +102,9 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
       ],
     };
   });
-  const frontCardStyle = useAnimatedStyle(() => {
-    const rotationValue = interpolate(rotation.value, [0, 1], [0, 180]);
-    return {
-      transform: [
-        {rotateY: withTiming(`${rotationValue}deg`, {duration: 1000})},
-      ],
-    };
-  });
-  const backCardStyle = useAnimatedStyle(() => {
-    const rotationValue = interpolate(rotation.value, [0, 1], [180, 360]);
-    return {
-      transform: [
-        {rotateY: withTiming(`${rotationValue}deg`, {duration: 1000})},
-      ],
-    };
-  });
+  const backHandler = () => {
+    setIsback(!isBack);
+  };
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <BackgroundGradient
@@ -123,23 +114,25 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
       />
       <GestureDetector gesture={dragGesture}>
         <Animated.View style={[styles.ticketContainer, animatedCard]}>
-          <Animated.View style={[styles.frontCard, frontCardStyle]}>
-            <TicketFront
-              rotate={rotation}
-              ticket={ticket}
-              width={cardWidth}
-              height={cardHeight}
-            />
-          </Animated.View>
-          <Animated.View style={[styles.backCard, backCardStyle]}>
-            <TicketQrCard
-              width={cardWidth}
-              height={cardHeight}
-              ticket={ticket}
-              rotate={rotation}
-              colors={props.colors}
-            />
-          </Animated.View>
+          <TouchableOpacity
+            style={{width: cardWidth, height: cardHeight}}
+            activeOpacity={0.8}
+            onPress={backHandler}>
+            {!isBack ? (
+              <TicketFront
+                ticket={ticket}
+                width={cardWidth}
+                height={cardHeight}
+              />
+            ) : (
+              <TicketQrCard
+                width={cardWidth}
+                height={cardHeight}
+                ticket={ticket}
+                colors={props.colors}
+              />
+            )}
+          </TouchableOpacity>
         </Animated.View>
       </GestureDetector>
     </View>
@@ -159,15 +152,10 @@ const styles = StyleSheet.create({
     width: cardWidth - 5,
     height: cardHeight - 5,
     position: 'absolute',
-    backfaceVisibility: 'hidden',
   },
   backCard: {
     width: cardWidth - 5,
     height: cardHeight - 5,
     position: 'absolute',
-    backfaceVisibility: 'hidden',
-  },
-  imageContainer: {
-    height: imageHeight,
   },
 });
