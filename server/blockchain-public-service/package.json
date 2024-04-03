@@ -2,7 +2,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"start": "node build/src/app.js",
+		"start": "node build/app.js",
 		"lint:fix": "prettier \"*/**/*{.js,.ts}\" -w",
 		"lint": "prettier \"*/**/*{.js,.ts}\" --check"
 	},
