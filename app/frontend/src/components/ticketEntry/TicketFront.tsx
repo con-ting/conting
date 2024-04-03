@@ -1,22 +1,19 @@
 import {ImageBackground, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from '../card/TicketInfoCard';
+import {ticketProps} from '../card/TicketEntryCard';
+import FastImage from 'react-native-fast-image';
 
-type props = {
-  poster: string;
-};
-
-export default function TicketFront(props: props) {
+export default function TicketFront(props: ticketProps) {
   return (
     <View style={styles.container}>
-      <ImageBackground
+      <FastImage
         source={{
           uri: props.poster,
         }}
-        style={styles.image}
-        imageStyle={{borderRadius: 20, resizeMode:"stretch"}}>
-        <TicketInfoCard />
-      </ImageBackground>
+        style={styles.image}>
+        <TicketInfoCard {...props} />
+      </FastImage>
     </View>
   );
 }
@@ -36,5 +33,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: 'flex-end',
+    resizeMode: 'stretch',
+    borderRadius: 20,
   },
 });

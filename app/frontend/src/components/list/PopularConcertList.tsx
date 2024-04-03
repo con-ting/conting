@@ -32,7 +32,6 @@ export default function PopularConcertList({
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log('현재 공연 정보 : ', popularConcert);
     getColors(popularConcert[currentIndex].poster, {
       cache: true,
       key: popularConcert[currentIndex].poster,

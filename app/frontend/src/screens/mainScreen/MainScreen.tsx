@@ -28,15 +28,16 @@ import {
 } from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {PublicKey} from '@solana/web3.js';
-import {updateUserFcmAndWallet} from '../../api/auth/user.ts';
 import {logout} from '../../api/auth/auth.ts';
+import PopularSinger from '../../components/list/PopularSinger';
+import Loading from '../../components/loader/Loading';
 
 export default function MainScreen() {
   const navigation = useNavigation();
   const currentColors = useRecoilValue(currentColor);
   const [popular, setPopular] = useState([]);
   const [first, setFirst] = useState([]);
-  const [popularSinger, setPopularSinger] = useState([]);
+  const [popularSingers, setPopularSinger] = useState([]);
   const firstColor = useSharedValue(currentColors[0]);
   const secondColor = useSharedValue(currentColors[1]);
   const thirdColor = useSharedValue(currentColors[2]);
@@ -85,7 +86,7 @@ export default function MainScreen() {
       }
       const fetchedBalance = await connection.getBalance(account.publicKey);
       console.log('개인 지갑 잔액 = ' + fetchedBalance);
-      await setBalance(fetchedBalance);
+      setBalance(fetchedBalance);
     },
     [connection],
   );
@@ -130,7 +131,7 @@ export default function MainScreen() {
         console.log('API 응답: ', data);
         setPopular(data.popular_shows);
         setFirst(data.f_shows);
-        setPopularSinger(data.popularsingers);
+        setPopularSinger(data.popular_singers);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
       }
@@ -165,7 +166,7 @@ export default function MainScreen() {
   };
 
   if (popular.length === 0 && first.length === 0) {
-    return <Text>...로딩</Text>;
+    return <Loading/>
   }
   return (
     <ScrollView style={styles.container}>
@@ -186,19 +187,6 @@ export default function MainScreen() {
           />
         </Rect>
       </Canvas>
-      {/*
-      색상 확인용
-        <View
-        style={{flex: 1, width: 400, flexDirection:'row', justifyContent: 'center'}}>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[0]}}>average</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[1]}}>darkMuted</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[2]}}>darkVibrant</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[3]}}>dominant</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[4]}}>lightMuted</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[5]}}>lightVibrant</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[6]}}>Muted</Text>
-        <Text style={{width:50, height: 100, backgroundColor:currentColors[7]}}>Vibrant</Text>
-      </View> */}
       <PopularConcertList popularConcert={popular} />
       <View
         style={{
@@ -207,6 +195,7 @@ export default function MainScreen() {
         }}>
         <FisrtComeList concerts={first} way="선착 예매" />
         <BannerList banners={bannerList} />
+        <PopularSinger singers={popularSingers}/>
         <EventList />
       </View>
     </ScrollView>
