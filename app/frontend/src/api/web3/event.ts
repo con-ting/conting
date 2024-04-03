@@ -7,6 +7,7 @@ import {
   MPL_TOKEN_METADATA_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from '../../config/web3Config.tsx';
+import axios from 'axios';
 
 /**
  * eventFindBySingerAddress
@@ -149,4 +150,15 @@ export async function doEvent(props: {
     })
     .signers([entry])
     .rpc();
+
+  const res = await processEventEntryTicketUsage(tx);
+
+  return res;
 }
+
+export const processEventEntryTicketUsage = async (tx: string) => {
+  console.log('processEventEntryTicketUsage API request =', tx);
+  const res = await axios.post(`https://conting-blockchain.koyo.kr/use/${tx}`);
+  console.log('processEventEntryTicketUsage API response =', res);
+  return res;
+};
