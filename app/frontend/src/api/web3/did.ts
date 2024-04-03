@@ -18,7 +18,7 @@ export const transferReservationRights = async (params: {
   families: Array<familyType>;
 }) => {
   console.log('[findFamilyInfo request] = ', params);
-  const res = await tokenInstance.post(`${didUrl}/transfer/v2`, params);
+  const res = await tokenInstance.post(`${didUrl}/transfer/owner/v2`, params);
   console.log('[findFamilyInfo response] = ', res.data);
   return res.data;
 };
@@ -61,7 +61,7 @@ export const findReservationRightsByShowId = async (params: {
 }) => {
   console.log('[findReservationRightsByShowId request] = ', params);
   const res = await tokenInstance.get(
-    `${didUrl}/transfer/${params.buyerId}/${params.performanceId}`,
+    `${didUrl}/transfer/owner/${params.performanceId}/${params.buyerId}`,
   );
   console.log('[findReservationRightsByShowId response] = ', res.data);
   return res.data;

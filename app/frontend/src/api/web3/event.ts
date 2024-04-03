@@ -43,7 +43,7 @@ export async function eventFindBySingerAddress(props: {
  * @param anchorWallet
  */
 export async function eventListFindAll(props: {
-  // connection: any;
+  connection: any;
   anchorWallet: any;
 }) {
   // const connection = new Connection(clusterApiUrl(RPC_ENDPOINT), 'confirmed');

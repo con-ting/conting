@@ -9,7 +9,6 @@ import {
 
 import NftShowcase from './NftShowcase.tsx';
 import NftMyShowcase from './NftMyShowcase.tsx';
-import {getNft} from '../../../api/web3/nft.ts';
 import {PublicKey} from '@solana/web3.js';
 import {widthPercent} from '../../../config/Dimensions.tsx';
 import {MAINBLACK} from '../../../config/Color.ts';
