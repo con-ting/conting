@@ -10,15 +10,18 @@ import DaArea from '../seat/DaArea';
 import {SeatApi} from '../../api/seat/Seat';
 import {useRecoilValue} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms';
+import {findFamilyListForPurchaseByShowId} from '../../api/web3/did';
 
 export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
   const [selectedArea, setSelectedArea] = useState('');
+  const [families, setFamilies] = useState([]);
   const [seatsData, setSeatsData] = useState([]); // 좌석 데이터 저장
   const userInfo = useRecoilValue(userInfoState);
   const userID = userInfo ? userInfo.user_id : null;
 
   useEffect(() => {
     console.log('아이디2', showID);
+    console.log('스케줄아이디', scheduleID);
     const fetchSeats = async () => {
       if (selectedArea) {
         const sectorMapping = {가: 'GA', 나: 'NA', 다: 'DA'};
@@ -31,8 +34,21 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
         }
       }
     };
+    // 예매 부탁받은 가족이 있는지 조회
+    const fetchFamilies = async () => {
+      try {
+        const familyList = await findFamilyListForPurchaseByShowId({
+          showId: showID,
+        });
+        console.log('받아온 가족 목록', familyList);
+        setFamilies(familyList);
+      } catch (error) {
+        console.error('가족 목록 조회 중 오류 발생: ', error);
+      }
+    };
 
     fetchSeats();
+    fetchFamilies();
   }, [scheduleID, selectedArea]);
   const renderArea = () => {
     switch (selectedArea) {
@@ -44,6 +60,7 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
             showID={showID}
             scheduleID={scheduleID}
             biometricKey={biometricKey}
+            families={families}
           />
         );
       case '나':
@@ -54,6 +71,7 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
             showID={showID}
             scheduleID={scheduleID}
             biometricKey={biometricKey}
+            families={families}
           />
         );
       case '다':
@@ -64,6 +82,7 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
             showID={showID}
             scheduleID={scheduleID}
             biometricKey={biometricKey}
+            families={families}
           />
         );
       default:
