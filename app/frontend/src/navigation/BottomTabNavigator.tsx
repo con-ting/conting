@@ -3,12 +3,7 @@ import MainScreen from '../screens/mainScreen/MainScreen';
 import TicketListScreen from '../screens/ticketEntryScreen/TicketListScreen';
 import NftTicketListScreen from '../screens/ticketApplyScreen/NftTicketListScreen.tsx';
 import {MyPageScreen} from '../screens/settingScreen/MyPageScreen';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import {Text, TouchableOpacity, View, useWindowDimensions} from 'react-native';
 import {LinearGradient as ReactNativeLinearGradient} from 'react-native-linear-gradient';
 import {
   Home,
@@ -128,7 +123,7 @@ export default function BottomTabNavigator() {
           headerShown: true,
           headerBackground: () => {
             return (
-              <Canvas style={{flex:1}}>
+              <Canvas style={{flex: 1}}>
                 <Rect x={0} y={0} width={width} height={100}>
                   <LinearGradient
                     start={vec(100, 0)}
@@ -182,7 +177,7 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name={'추첨결과'}
+        name={'결제내역'}
         component={ResultMainScreen}
         options={{
           tabBarIcon: ({focused}) => (
@@ -195,7 +190,7 @@ export default function BottomTabNavigator() {
                 fontWeight: 'bold',
                 marginTop: 5,
               }}>
-              추첨결과
+              결제내역
             </Text>
           ),
         }}

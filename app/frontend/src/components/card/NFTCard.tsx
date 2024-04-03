@@ -24,15 +24,23 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 
-type NFTCardProps = {
+export type NFTCardProps = {
   poster: string;
   title: string;
   date: string;
   location: string;
   row: string;
   no: string;
+  grade: string;
   ticketAddress: string;
   webmUrl: string;
+  description: string;
+  ownerAddress: string;
+  creatorAddressList: Array<any>;
+  sellerFeeBasisPoints: number;
+  accountData: any;
+  jsonMetaData: any;
+  primarySaleHappened: boolean;
   colors: Array<string>;
 };
 
