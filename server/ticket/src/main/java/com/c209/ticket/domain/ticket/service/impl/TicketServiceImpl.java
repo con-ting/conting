@@ -179,7 +179,7 @@ public class TicketServiceImpl implements TicketService {
                             .switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))) // 값이 없으면 예외 발생
                             .flatMap(value -> {
                                 // 기존 만료 시간 가져오기
-                                return reactiveRedisTemplate.getExpire(qrUUID)
+                                return reactiveRedisTemplate.opsForValue().get(qrUUID)
                                         .flatMap(expireTime -> {
                                             long currentTimeStamp = Instant.now().getEpochSecond();
                                             // 현재 시간보다 밸류의 시간이 작으면 이미 만료된 것으로 간주
