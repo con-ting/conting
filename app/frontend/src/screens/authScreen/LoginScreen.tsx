@@ -121,38 +121,34 @@ const LoginScreen = () => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
-    if (
-      () => {
-        if (token !== userResponse.user.fcm) {
-          Alert.alert('알림', '사용환경이 달라지신거 같아요.', [
-            {
-              text: '변경',
-              onPress: async () => {
-                await updateUserFcmAndWallet({fcm: token});
-              },
-            },
-            {
-              text: '유지',
-              onPress: () => {},
-            },
-          ]);
-        }
-        return true;
-      }
-    ) {
-      //4. 전역 상태에 유저 정보 저장
-      console.log('전역 상태에 유저 정보 저장 시작');
-      setUserInfo({
-        user_id: userResponse.user.id,
-        user_email: userResponse.user.email,
-        walletAddress: userResponse.user.wallet,
-      });
-      console.log('전역 상태에 유저 정보 저장 끝');
-      //5. goMainPage 수정
-      console.log('goMainPage 수정 시작');
-      setGoMainPage(true);
-      console.log('goMainPage 수정 끝');
+    console.log('userResponse.user.fcmToken', userResponse.user.fcmToken);
+    console.log('token', token);
+    if (token !== userResponse.user.fcmToken) {
+      Alert.alert('알림', '사용환경이 달라지신거 같아요.', [
+        {
+          text: '변경',
+          onPress: async () => {
+            await updateUserFcmAndWallet({fcm: token});
+          },
+        },
+        {
+          text: '변경안함',
+        },
+      ]);
     }
+
+    //4. 전역 상태에 유저 정보 저장
+    console.log('전역 상태에 유저 정보 저장 시작');
+    setUserInfo({
+      user_id: userResponse.user.id,
+      user_email: userResponse.user.email,
+      walletAddress: userResponse.user.wallet,
+    });
+    console.log('전역 상태에 유저 정보 저장 끝');
+    //5. goMainPage 수정
+    console.log('goMainPage 수정 시작');
+    setGoMainPage(true);
+    console.log('goMainPage 수정 끝');
   };
 
   // @ts-ignore

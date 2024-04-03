@@ -89,7 +89,7 @@ export default function ConcertDetailScreen({route}) {
           <SummaryCard info={concertDetail} />
           {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
           <Outline show={concertDetail.show} />
-          <Price />
+          <Price gradeList={concertDetail.grade} />
           {/* <View style={styles.title}>
             <Text style={F_SIZE_BTITLE}>공연장</Text>
           </View> */}
@@ -203,13 +203,15 @@ export default function ConcertDetailScreen({route}) {
   );
 }
 const Outline = ({show}) => {
-  console.log('outline', show)
+  console.log('outline', show);
   return (
     <View>
-      <View style={styles.outline}>
-        <Text style={F_SIZE_BTITLE}>개요</Text>
-        <Text style={F_SIZE_BBIGTEXT}>{show.description}</Text>
-      </View>
+      {show.description && (
+        <View style={styles.outline}>
+          <Text style={F_SIZE_BTITLE}>개요</Text>
+          <Text style={F_SIZE_BBIGTEXT}>{show.description}</Text>
+        </View>
+      )}
       <View style={styles.outline}>
         <Text style={F_SIZE_BTITLE}>시간</Text>
         <Text style={F_SIZE_BBIGTEXT}>
@@ -227,26 +229,20 @@ const Outline = ({show}) => {
   );
 };
 
-const Price = () => {
+const Price = ({gradeList}) => {
   return (
     <View style={styles.price}>
       <Text style={F_SIZE_BTITLE}>가격</Text>
       <View>
-        <View style={styles.priceInfo}>
-          <Text style={F_SIZE_BBIGTEXT}>가구역</Text>
-          <Text style={F_SIZE_BBIGTEXT}>￦ 165,000</Text>
-        </View>
-        <View style={styles.line} />
-        <View style={styles.priceInfo}>
-          <Text style={F_SIZE_BBIGTEXT}>나구역</Text>
-          <Text style={F_SIZE_BBIGTEXT}>￦ 154,000</Text>
-        </View>
-        <View style={styles.line} />
-        <View style={styles.priceInfo}>
-          <Text style={F_SIZE_BBIGTEXT}>다구역</Text>
-          <Text style={F_SIZE_BBIGTEXT}>￦ 99,000</Text>
-        </View>
-        <View style={styles.line} />
+        {gradeList.map(item => (
+          <>
+            <View key={item.grade} style={styles.priceInfo}>
+              <Text style={F_SIZE_BBIGTEXT}>{item.grade}</Text>
+              <Text style={F_SIZE_BBIGTEXT}>￦ {item.price}</Text>
+            </View>
+            <View style={styles.line} />
+          </>
+        ))}
       </View>
     </View>
   );
@@ -278,7 +274,6 @@ const styles = StyleSheet.create({
   },
   price: {
     marginTop: widthPercent(20),
-    height: heightPercent(180),
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     borderRadius: widthPercent(16),
     padding: widthPercent(20),

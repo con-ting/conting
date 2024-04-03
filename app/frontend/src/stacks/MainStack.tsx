@@ -86,7 +86,6 @@ function MainStack() {
         component={ResultRefundScreen}
         options={{headerShown: false}}
       />
-      
       <Stack.Screen
         name={'NftShopMainScreen'}
         component={NftShopMainScreen}
