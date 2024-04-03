@@ -39,6 +39,30 @@ public class DidTransferServiceImpl implements DidTransferService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<DidTransferResponse> getDidTransferListByBuyerId(long buyerId, long performanceId) {
+        return didTransferRepository.findAllByBuyerIdAndPerformanceId(buyerId, performanceId).stream()
+                .map(didTransferMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DidTransferResponse> getDidTransferListByOwnerId(long ownerId) {
+        return didTransferRepository.findAllByOwnerId(ownerId).stream()
+                .map(didTransferMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DidTransferResponse> getDidTransferListByOwnerId(long ownerId, long performanceId) {
+        return didTransferRepository.findAllByOwnerIdAndPerformanceId(ownerId, performanceId).stream()
+                .map(didTransferMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public DidTransferResponse getDidTransfer(final long performanceId, final long ownerId, final long buyerId) {
         return didTransferRepository.findByPerformanceIdAndOwnerIdAndBuyerId(performanceId, ownerId, buyerId)
                 .map(didTransferMapper::toResponse)
