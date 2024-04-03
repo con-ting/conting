@@ -106,7 +106,7 @@ public class QueueController {
     public Flux<Long> registerUsers(
             @RequestParam("schedule_id") Long scheduleId
     ) {
-        return Flux.range(1000, 1300)  // 1부터 1000까지의 숫자를 생성하는 Flux
+        return Flux.range(1000, 100)  // 1부터 1000까지의 숫자를 생성하는 Flux
                 .flatMap(userId -> queueService.registerQueue(Long.valueOf(scheduleId), Long.valueOf(userId)));  // 각 userId에 대해 registerUser 메서드 호출
     }
 }
