@@ -31,7 +31,7 @@ export default function TicketListScreen() {
   const thirdColor = useSharedValue(posterColors[2]);
   const {width, height} = useWindowDimensions();
 
-  // 뒷배경 애니메이션을 위한 부분
+  // 뒷배경 애니메이션 부분
   const duration = 1000;
   const colors = useDerivedValue(() => {
     return [firstColor.value, secondColor.value, thirdColor.value];
