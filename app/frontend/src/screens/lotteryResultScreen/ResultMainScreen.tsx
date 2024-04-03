@@ -26,7 +26,7 @@ import {
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
 import {useRealm} from '../../components/realm/RealmContext.ts';
 import {orderResult} from '../../api/ticket/order.ts';
-import {eventListFindAll, eventListFindByWallet} from '../../api/web3/event.ts';
+import {eventListFindByWallet} from '../../api/web3/event.ts';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
@@ -240,7 +240,7 @@ function MakeConsertCardObject(
       };
   }
 }
-function makeEventData(web3Data: any) {
+export function makeEventData(web3Data: any) {
   // 현재 시간을 Unix 타임스탬프로 가져옵니다.
   const now = new Date().getTime();
 
@@ -273,6 +273,7 @@ function makeEventData(web3Data: any) {
   // 변환된 cardProps 객체를 반환합니다.
   return {
     onPress: () => {
+      //네비게이션으로 이동
       Alert.alert('앙 이벤트띠');
     },
     disabled: false,
@@ -284,6 +285,10 @@ function makeEventData(web3Data: any) {
     img_tag_color: img_tag_color,
     start_at: new Date(startTimestamp).toISOString(),
     end_at: new Date(endTimestamp).toISOString(),
+    doItPress: () => {
+      //여기엔 응모하기
+      Alert.alert('응모하기');
+    },
   };
 }
 export default function SearchMainScreen() {
