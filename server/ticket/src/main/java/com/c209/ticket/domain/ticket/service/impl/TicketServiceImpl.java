@@ -170,33 +170,38 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Mono<Boolean> verifyQR(Long userId, String qrUUID, Long ticketId) {
-        return reactiveRedisTemplate.opsForValue().get(qrUUID)
-                .flatMap(expTime -> {
-                    if (expTime == null) {
-                        return Mono.error(new CommonException(QR_INVALID_ERROR));
-                    } else {
-                        long currentTimeStamp = Instant.now().getEpochSecond();
-                        long expirationTime = Long.parseLong(expTime.toString());
-                        if (currentTimeStamp > expirationTime) {
-                            return Mono.error(new CommonException(QR_EXPIRED_ERROR));
-                        } else {
-                            // Redis에서 uuid 삭제
-                            return reactiveRedisTemplate.opsForValue().delete(qrUUID)
-                                    .then(ticketAsyncRepository.findByTicketId(ticketId)
-                                            .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND)))
-                                            .flatMap(ticket -> {
-                                                if (!ticket.getOwnerId().equals(userId)) {
-                                                    Mono.error(new CommonException(TICKET_UNOWNED));
-                                                } else {
-                                                    // 해당 티켓의 isUsed 속성을 true로 업데이트 후 저장
-                                                    ticket.markAsUsed();
-                                                    return ticketAsyncRepository.save(ticket).then();
-                                                }
-                                            }));
-                        }
-                    }
+        return ticketAsyncRepository.findByTicketId(ticketId)
+                .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND))) // ticket이 존재하지 않을 경우 예외 발생
+                .flatMap(ticket -> validateTicket(userId, ticket))
+                .flatMap(ticket -> {
+                    // Redis에서 uuid로 조회합니다.
+                    return reactiveRedisTemplate.opsForValue().get(qrUUID)
+                            .switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))) // 값이 없으면 예외 발생
+                            .flatMap(value -> {
+                                // 기존 만료 시간 가져오기
+                                return reactiveRedisTemplate.getExpire(qrUUID)
+                                        .flatMap(expireTime -> {
+                                            long currentTimeStamp = Instant.now().getEpochSecond();
+                                            // 현재 시간보다 밸류의 시간이 작으면 이미 만료된 것으로 간주
+                                            // 네트워크 차단이 감지됨
+                                            if (Long.parseLong(value) < currentTimeStamp) {
+                                                return reactiveRedisTemplate.delete(qrUUID)
+                                                        .then(Mono.error(new CommonException(QR_EXPIRED_ERROR)));
+                                            }
+                                            // UUID의 밸류 값을 업데이트하고 새로운 만료 시간 설정
+                                            return reactiveRedisTemplate.delete(qrUUID)
+                                                    .then(ticketAsyncRepository.findByTicketId(ticketId)
+                                                            .flatMap(existingTicket -> {
+                                                                existingTicket.setIsUsed(true);
+                                                                return ticketAsyncRepository.save(existingTicket).
+                                                                        thenReturn(true);
+                                                            }));
+                                        });
+                            })
+                            .defaultIfEmpty(false);
                 });
     }
+
 
     @Override
     public Mono<TicketPaymentsListResponse> getTicketPaymentsList(Long userId) {
