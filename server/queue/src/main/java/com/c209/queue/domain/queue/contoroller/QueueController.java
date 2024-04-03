@@ -41,9 +41,10 @@ public class QueueController {
     ){
 
 
-        return Flux.range(100, 300)  // 100부터 399까지의 숫자를 생성하는 Flux
-                .flatMap(userIndex -> queueService.registerQueue(request.schedule_id(), (long) userIndex)) // 각 userId에 대해 registerQueue 메서드 호출
-                .then(queueService.registerQueue(request.schedule_id(), userId)) // 요청한 사용자의 큐 등록
+        log.error("{} {} ",request, userId);
+
+
+        return queueService.registerQueue(request.schedule_id(), userId)
                 .map(RankNumberResponse::new)
                 .map(ResponseEntity::ok);
     }
@@ -105,7 +106,7 @@ public class QueueController {
     public Flux<Long> registerUsers(
             @RequestParam("schedule_id") Long scheduleId
     ) {
-        return Flux.range(100, 300)  // 1부터 1000까지의 숫자를 생성하는 Flux
-                .flatMap(userId -> queueService.registerQueue(Long.valueOf(), Long.valueOf(userId)));  // 각 userId에 대해 registerUser 메서드 호출
+        return Flux.range(1000, 1300)  // 1부터 1000까지의 숫자를 생성하는 Flux
+                .flatMap(userId -> queueService.registerQueue(Long.valueOf(scheduleId), Long.valueOf(userId)));  // 각 userId에 대해 registerUser 메서드 호출
     }
 }
