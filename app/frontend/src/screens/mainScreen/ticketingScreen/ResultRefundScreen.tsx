@@ -8,7 +8,7 @@ import {useState} from 'react';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
 
 export default function ResultRefundScreen({route}) {
-  const [refundSuccess, setRefundSuccess] = useState(false); // 환불 성공 여부
+  const [refundSuccess, setRefundSuccess] = useState(route.params.refundResult); // 환불 성공 여부
 
   const navigation = useNavigation();
 
@@ -29,7 +29,6 @@ export default function ResultRefundScreen({route}) {
             width={'90%'}
             btnText="메인 페이지로"
             textSize={20}
-            
             isRadius
           />
         </View>
