@@ -3,7 +3,7 @@ import * as web3 from '@solana/web3.js'
 import { BN } from 'bn.js'
 import Fastify from 'fastify'
 
-import { issueFamily, revokeFamilyByLower } from './did/did.js'
+import { getFamilyList, issueFamily, revokeFamily } from './did/did.js'
 import { DidBody, DidInput } from './did/types.js'
 import { createEvent } from './event/event.js'
 import { EventBody, EventInput } from './event/types.js'
@@ -119,6 +119,19 @@ fastify.delete<{ Params: { mint: string } }>(
   },
 )
 
+fastify.get('/dids', async (request, reply) => {
+  const output = await getFamilyList(provider)
+  return output.map((family) => ({
+    publicKey: family.publicKey,
+    account: {
+      lower: family.account.lower,
+      upper: family.account.upper,
+      lowerId: family.account.lowerId.toNumber(),
+      upperId: family.account.upperId.toNumber(),
+    },
+  }))
+})
+
 fastify.post<{ Body: DidBody }>('/dids', async (request, reply) => {
   const input: DidInput = {
     lower: new web3.PublicKey(request.body.lower),
@@ -133,13 +146,12 @@ fastify.post<{ Body: DidBody }>('/dids', async (request, reply) => {
 fastify.delete<{
   Params: { family: string; lower: string }
   Body: { secret: string }
-}>('/dids/:family/lower/:lower', async (request, reply) => {
+}>('/dids/:family', async (request, reply) => {
   const family = new web3.PublicKey(request.params.family)
-  const lower = new web3.PublicKey(request.params.lower)
   const secret = web3.Keypair.fromSecretKey(
     Uint8Array.from(JSON.parse(request.body.secret)),
   )
-  const tx = await revokeFamilyByLower(provider, family, lower, secret)
+  const tx = await revokeFamily(provider, family, secret)
   return { tx }
 })
 
