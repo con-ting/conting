@@ -41,7 +41,7 @@ eureka:
 
 logging:
   level:
-    com.c209.ticket: debug
-    io.lettuce.core: debug
+    com.c209.ticket: info
+    io.lettuce.core: info
 kafka:
   url: ${KAFKA_URL}
