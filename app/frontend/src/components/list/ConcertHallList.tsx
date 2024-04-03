@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   BUTTONSELECT,
   CARDBASE,
@@ -9,43 +9,35 @@ import {
 import {F_SIZE_B_TITLE, F_SIZE_TITLE} from '../../config/Font';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import {Dropdown} from '../dropdown/Dropdown';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
-export default function ConcertHallList() {
+export default function ConcertHallList({halls, onHallSelect}) {
   const [dropDownTestOpen, setDropDownTestOpen] = useState(false);
   const [selectedDropDownTest, setSelectedDropDownTest] = useState(null);
+  // 선택된 공연장 상태 관리
   const [selectedConcertHall, setSelectedConcertHall] = useState(null);
+  const [regions, setRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState('');
+
+  const filteredHalls = halls.filter(hall =>
+    hall.address.startsWith(selectedRegion),
+  );
 
   const handleSidoItemSelect = selectedValue => {
-    setSelectedDropDownTest(selectedValue);
+    setSelectedDropDownTest(selectedValue); // 선택된 드롭다운 항목 상태 업데이트
+    setSelectedRegion(selectedValue); // 필터링할 지역 상태 업데이트
   };
 
-  const sidoData = [
-    {label: '경기도', value: '경기도'},
-    {label: '강원도', value: '강원도'},
-    {label: '충청북도', value: '충청북도'},
-    {label: '충청남도', value: '충청남도'},
-    {label: '전라북도', value: '전라북도'},
-    {label: '전라남도', value: '전라남도'},
-    {label: '경상북도', value: '경상북도'},
-    {label: '경상남도', value: '경상남도'},
-  ];
-  const concertHallData = {
-    경기도: [
-      '서울특별시 예술의 전당',
-      '인천광역시 부평아트센터',
-      '세종 예술의 전당',
-      '세종 문화회관 M씨어터',
-      'LG 아트센터 서울',
-    ],
-    강원도: ['공연장4', '공연장5'],
-    충청북도: ['공연장6', '공연장7'],
-    충청남도: ['공연장8', '공연장9'],
-    전라북도: ['공연장10', '공연장11'],
-    전라남도: ['공연장12', '공연장13'],
-    경상북도: ['공연장14', '공연장15'],
-    경상남도: ['공연장16', '공연장17'],
-  };
+  useEffect(() => {
+    const uniqueRegions = Array.from(
+      new Set(halls.map(hall => hall.address.split(' ')[0])),
+    );
+    const regionData = uniqueRegions.map(region => ({
+      label: region,
+      value: region,
+    }));
+    setRegions(regionData);
+  }, [halls]);
 
   return (
     <View style={styles.container}>
@@ -58,33 +50,35 @@ export default function ConcertHallList() {
             open={dropDownTestOpen}
             setOpen={setDropDownTestOpen}
             onSelectValue={handleSidoItemSelect}
-            data={sidoData}
+            data={regions}
           />
         </View>
       </View>
-      {selectedDropDownTest && (
-        <View style={styles.listContainer}>
-          {concertHallData[selectedDropDownTest]?.map(
-            (hall: any, index: any) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.listItem,
-                  selectedConcertHall === hall ? styles.selectedItem : null,
-                ]}
-                onPress={() => setSelectedConcertHall(hall)}>
-                <Text
-                  style={[
-                    F_SIZE_B_TITLE,
-                    selectedConcertHall === hall ? styles.selectedText : null,
-                  ]}>
-                  {hall}
-                </Text>
-              </TouchableOpacity>
-            ),
-          )}
-        </View>
-      )}
+
+      <FlatList
+        style={{margin: 10}}
+        data={filteredHalls}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            style={[
+              styles.listItem,
+              selectedConcertHall === item.name ? styles.selectedItem : null,
+            ]}
+            onPress={() => {
+              setSelectedConcertHall(item.name); // 공연장 이름으로 선택된 상태 업데이트
+              onHallSelect(item); // 상위 컴포넌트로 선택된 공연장 정보 전달
+            }}>
+            <Text
+              style={[
+                F_SIZE_B_TITLE,
+                selectedConcertHall === item.name ? styles.selectedText : null,
+              ]}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 }

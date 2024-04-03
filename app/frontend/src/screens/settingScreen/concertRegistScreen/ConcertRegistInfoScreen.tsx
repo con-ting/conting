@@ -23,42 +23,92 @@ import {MultiLineInput, SimpleInput} from '../../../components/input/input';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 
-export default function ConcertRegistInfoScreen() {
+export default function ConcertRegistInfoScreen({route}) {
   const [image, setImage] = useState(null); // 이미지 등록
   const [fileName, setFileName] = useState('');
 
   const [selected, setSelected] = useState(''); // 선택된 버튼을 추적하기 위한 상태]
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [descriptionImage, setDescriptionImage] = useState(null);
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [genre, setGenre] = useState('');
   const navigation = useNavigation();
 
   // 버튼을 누를 때 호출되는 함수
   const handlePress = type => {
-    setSelected(type);
+    setGenre(type);
   };
 
-  const selectImage = () => {
+  const selectPosterImage = () => {
     const options = {
-      mediaType: 'photo',
-      maxWidth: 2000,
-      maxHeight: 2000,
-      quality: 1,
+      mediaType: 'photo', // 'photo', 'video', 또는 'mixed' 중 선택
+      maxWidth: 2000, // 선택된 이미지의 최대 너비
+      maxHeight: 2000, // 선택된 이미지의 최대 높이
+      quality: 1, // 0과 1 사이의 값으로, 선택된 이미지의 품질을 지정 (0이 가장 낮은 품질, 1이 가장 높은 품질)
     };
 
+    // options은 동일하게 유지
     launchImageLibrary(options, response => {
       if (response.didCancel) {
-        console.log('image picker 사용 취소');
+        console.log('Image picker cancelled');
       } else if (response.error) {
-        console.log('ImagePicker 에러: ', response.error);
+        console.log('ImagePicker Error: ', response.error);
       } else {
         const source = {uri: response.assets[0].uri};
-        const fileName = response.assets[0].fileName; // 파일 이름 추출
-        setImage(source);
-        setFileName(fileName); // 파일 이름 상태 업데이트
+        setImage(source); // 포스터 이미지 상태 업데이트
       }
     });
   };
 
+  const selectDescriptionImage = () => {
+    const options = {
+      mediaType: 'photo', // 'photo', 'video', 또는 'mixed' 중 선택
+      maxWidth: 2000, // 선택된 이미지의 최대 너비
+      maxHeight: 2000, // 선택된 이미지의 최대 높이
+      quality: 1, // 0과 1 사이의 값으로, 선택된 이미지의 품질을 지정 (0이 가장 낮은 품질, 1이 가장 높은 품질)
+    };
+
+    // options은 동일하게 유지
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('Image picker cancelled');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        const source = {uri: response.assets[0].uri};
+        setDescriptionImage(source); // 소개용 이미지의 URI 상태 업데이트
+        setFileName(response.assets[0].fileName); // 파일 이름 상태 업데이트
+      }
+    });
+  };
+  const handleNext = () => {
+    // 이전 페이지에서 받은 데이터
+    const {reservationType, schedule} = route.params.registrationData;
+
+    console.log('스케쥴아이디', schedule);
+    console.log('예매방식', reservationType);
+
+    const registrationData = {
+      reservationType,
+      schedule,
+      show: {
+        title,
+        description,
+        poster_image: image ? image.uri : '',
+        description_image: descriptionImage ? descriptionImage.uri : '',
+        genre: genre,
+        video_title: videoTitle,
+        video_url: videoUrl,
+        // 추가적으로 필요한 show 관련 정보
+      },
+    };
+    console.log(registrationData);
+    navigation.navigate('ConcertRegistHall', {registrationData});
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -73,7 +123,12 @@ export default function ConcertRegistInfoScreen() {
                 <Text style={F_SIZE_TITLE}>포스터 등록</Text>
               </View>
               <View style={styles.findFileContainer}>
-                <GrayButton onPress={selectImage} width={'100%'} btnText="파일찾기" textSize={16} />
+                <GrayButton
+                  onPress={selectPosterImage}
+                  width={'100%'}
+                  btnText="파일찾기"
+                  textSize={16}
+                />
               </View>
             </View>
             <View>
@@ -92,6 +147,7 @@ export default function ConcertRegistInfoScreen() {
               textColor={MAINBLACK}
               placeholder="제목 입력"
               backGroundColor={MAINWHITE}
+              onChangeText={setTitle}
               height={heightPercent(40)}
             />
           </View>
@@ -103,6 +159,7 @@ export default function ConcertRegistInfoScreen() {
             <MultiLineInput
               textColor={MAINBLACK}
               placeholder="소개 입력"
+              onChangeText={setDescription}
               width={widthPercent(355)}
               height={heightPercent(72)}
             />
@@ -117,7 +174,12 @@ export default function ConcertRegistInfoScreen() {
                 value={fileName} //fileName 상태 적용
                 editable={false}
               />
-              <GrayButton onPress={selectImage} width={'30%'} btnText="파일찾기" textSize={16} />
+              <GrayButton
+                onPress={selectDescriptionImage}
+                width={'30%'}
+                btnText="파일찾기"
+                textSize={16}
+              />
             </View>
           </View>
           <View style={styles.title}>
@@ -127,7 +189,17 @@ export default function ConcertRegistInfoScreen() {
           <View style={styles.infos}>
             <SimpleInput
               textColor={MAINBLACK}
+              placeholder="제목 입력"
+              onChangeText={setVideoTitle}
+              backGroundColor={MAINWHITE}
+              height={heightPercent(40)}
+            />
+          </View>
+          <View style={styles.infos}>
+            <SimpleInput
+              textColor={MAINBLACK}
               placeholder="URL"
+              onChangeText={setVideoUrl}
               backGroundColor={MAINWHITE}
               height={heightPercent(40)}
             />
@@ -138,66 +210,54 @@ export default function ConcertRegistInfoScreen() {
           </View>
           <View style={styles.genre}>
             <TouchableOpacity
-              onPress={() => handlePress('발라드')}
-              style={[
-                styles.button,
-                selected === '발라드' && styles.selectedButton,
-              ]}>
+              onPress={() => handlePress('FE')}
+              style={[styles.button, genre === 'FE' && styles.selectedButton]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '발라드' && styles.selectedText,
+                  genre === 'FE' && styles.selectedText,
                 ]}>
-                발라드
+                페스티벌
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handlePress('랩/힙합')}
-              style={[
-                styles.button,
-                selected === '랩/힙합' && styles.selectedButton,
-              ]}>
+              onPress={() => handlePress('FA')}
+              style={[styles.button, genre === 'FA' && styles.selectedButton]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '랩/힙합' && styles.selectedText,
+                  genre === 'FA' && styles.selectedText,
                 ]}>
-                랩/힙합
+                팬클럽
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handlePress('락/메탈')}
-              style={[
-                styles.button,
-                selected === '락/메탈' && styles.selectedButton,
-              ]}>
+              onPress={() => handlePress('MU')}
+              style={[styles.button, genre === 'MU' && styles.selectedButton]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '락/메탈' && styles.selectedText,
+                  genre === 'MU' && styles.selectedText,
                 ]}>
-                락/메탈
+                뮤지컬
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handlePress('재즈')}
-              style={[
-                styles.button,
-                selected === '재즈' && styles.selectedButton,
-              ]}>
+              onPress={() => handlePress('DR')}
+              style={[styles.button, genre === 'DR' && styles.selectedButton]}>
               <Text
                 style={[
                   F_SIZE_B_BUTTON,
-                  selected === '재즈' && styles.selectedText,
+                  genre === 'DR' && styles.selectedText,
                 ]}>
-                재즈
+                연극
               </Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.nextButton}>
           <YellowButton
-            onPress={() => navigation.navigate('ConcertRegistHall')}
+            onPress={handleNext}
             width={'30%'}
             btnText="다음"
             textSize={20}
@@ -287,7 +347,8 @@ const styles = StyleSheet.create({
     color: MAINWHITE,
   },
   nextButton: {
-    marginBottom: 20,
+    marginTop: 20,
+    // marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

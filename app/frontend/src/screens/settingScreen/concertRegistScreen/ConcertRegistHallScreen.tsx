@@ -8,9 +8,58 @@ import ConcertRegistInputList from '../../../components/list/ConcertRegistInputL
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {YellowButton} from '../../../components/button/Button';
 import {useNavigation} from '@react-navigation/native';
+import {useEffect, useState} from 'react';
+import {HallSearchApi} from '../../../api/catalog/concert';
 
-export default function ConcertRegistHallScreen() {
+export default function ConcertRegistHallScreen({route}) {
   const navigation = useNavigation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [halls, setHalls] = useState([]); // 공연장 데이터 상태
+  // 상태 추가
+  const [selectedHallId, setSelectedHallId] = useState(null);
+
+  const [gradePrices, setGradePrices] = useState({});
+
+  const handlePricesChange = prices => {
+    setGradePrices(prices);
+  };
+
+  // 공연장 선택 핸들러
+  const handleHallSelect = hall => {
+    setSelectedHallId(hall.id); // hall 객체에서 id 추출하여 상태 업데이트
+  };
+
+  useEffect(() => {
+    fetchHalls(searchQuery);
+  }, [searchQuery]);
+
+  const fetchHalls = async (query: string) => {
+    console.log('공연장 조회');
+    const response = await HallSearchApi({
+      keyword: query,
+      region: '',
+    });
+    console.log('fetchHallsResponse=', response);
+    setHalls(response.halls);
+  };
+
+  // 다음 버튼 이벤트 핸들러 수정
+  const handleNext = () => {
+    // 이전 단계에서 받은 데이터
+    const previousData = route.params.registrationData;
+
+    // 데이터 객체 구성
+    const registrationData = {
+      ...previousData,
+      hall_id: selectedHallId, // 선택된 공연장의 hall_id 추가
+      grade_price: gradePrices, // 추가된 구역별 금액 정보
+    };
+
+    // 다음 페이지로 데이터 넘기기
+    console.log(registrationData);
+    navigation.navigate('ConcertRegistCast', {registrationData});
+  };
+
   return (
     <KeyboardAwareScrollView
       style={styles.view}
@@ -22,17 +71,17 @@ export default function ConcertRegistHallScreen() {
             <Text style={F_SIZE_TITLE}>공연 장소 </Text>
           </View>
           <View style={styles.center}>
-            <ConcertHallList />
+            <ConcertHallList halls={halls} onHallSelect={handleHallSelect} />
           </View>
           <View style={styles.title}>
             <DollarCircle style={styles.icon} />
             <Text style={F_SIZE_TITLE}>구역별 좌석 금액 지정 </Text>
           </View>
-          <ConcertRegistInputList />
+          <ConcertRegistInputList onPricesChange={handlePricesChange} />
         </View>
         <View style={styles.nextButton}>
           <YellowButton
-            onPress={() => navigation.navigate('ConcertRegistCast')}
+            onPress={handleNext}
             width={'30%'}
             btnText="다음"
             textSize={20}
