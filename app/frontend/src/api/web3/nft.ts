@@ -7,7 +7,7 @@ import {
 } from '../../config/web3Config.tsx';
 import {PublicKey} from '@solana/web3.js';
 import * as borsh from '@coral-xyz/borsh';
-import * as spl from '@solana/spl-token';
+import {TOKEN_PROGRAM_ID} from '@coral-xyz/anchor/dist/cjs/utils/token';
 
 /**
  * nftListFindByMyWallet
@@ -18,27 +18,66 @@ export async function nftListFindByMyWallet(props: {
   connection: any;
   myWalletAddress: PublicKey;
 }) {
-  const {value: tokenAccounts} = await props.connection.getTokenAccountsByOwner(
+  const ownerMap = new Map<string, string>();
+  const tokenAccountsInfo = await props.connection.getTokenAccountsByOwner(
     props.myWalletAddress,
     {
-      programId: spl.TOKEN_PROGRAM_ID,
+      programId: TOKEN_PROGRAM_ID,
     },
   );
-  const splAccounts = await spl.getMultipleAccounts(
-    props.connection,
-    tokenAccounts.map(x => x.pubkey),
-  );
-  const metadataPublicKeys = splAccounts.map(x => getMetadataAddress(x.mint));
+  // console.log('tokenAccounts : ', tokenAccountsInfo);
+  const mints = tokenAccountsInfo.value
+    .map(x => borshAccountLayout.decode(x.account.data))
+    .filter(x => x.amount.toNumber() == 1);
+  // console.log('mints : ', mints);
+
+  const metadataPublicKeys = mints.map(x => getMetadataAddress(x.mint));
+  mints.map(x => {
+    ownerMap.set(x.mint.toBase58(), x.owner.toBase58());
+    // console.log('x.mint =', x.mint);
+    // console.log('x =', x);
+  });
+  // console.log('metadataPublicKeys : ', metadataPublicKeys);
   const metadataAccountInfos = await props.connection.getMultipleAccountsInfo(
     metadataPublicKeys,
   );
+  // console.log('metadataAccountInfos : ', metadataAccountInfos);
   const metadatas = metadataAccountInfos.map(x =>
     borshMetadataLayout.decode(x.data),
   );
+  // console.log('metadatas : ', metadatas);
   const contingMetadatas = metadatas.filter(x =>
-    x.collection !== null ? SERVER_ADDRESS.equals(x.collection.key) : false,
+    x.updateAuthority.equals(SERVER_ADDRESS),
   );
-  return contingMetadatas;
+  // console.log('contingMetadatas : ', contingMetadatas);
+  return await Promise.all(
+    contingMetadatas.map(async contingMetadata => {
+      // console.log('contingMetadata = ', contingMetadata);
+      const jsonData = await fetchJsonData(contingMetadata.data.uri);
+      // console.log('jsonData = ', jsonData);
+      const ownerAddress = ownerMap.get(contingMetadata.mint.toBase58());
+      // console.log('contingMetadata.mint = ', contingMetadata.mint);
+      // console.log('ownerAddress = ', ownerAddress);
+      return {
+        poster: jsonData.properties[0].files[2],
+        title: jsonData.name,
+        date: jsonData.attributes[4].value,
+        location: jsonData.attributes[1].value,
+        row: jsonData.attributes[7].value,
+        no: jsonData.attributes[8].value,
+        grade: jsonData.attributes[9].value,
+        ticketAddress: contingMetadata.mint,
+        webmUrl: jsonData.properties[0].files[0],
+        description: jsonData.description,
+        ownerAddress: ownerAddress,
+        creatorAddressList: contingMetadata.data.creators,
+        sellerFeeBasisPoints: contingMetadata.data.sellerFeeBasisPoints,
+        primarySaleHappened: contingMetadata.primarySaleHappened,
+        accountData: contingMetadata,
+        jsonMetaData: jsonData,
+      };
+    }),
+  );
 }
 
 /**
@@ -151,6 +190,19 @@ export async function cancelNFTSale(props: {
   price: number;
 }) {}
 
+const borshAccountLayout = borsh.struct([
+  borsh.publicKey('mint'),
+  borsh.publicKey('owner'),
+  borsh.u64('amount'),
+  borsh.u32('delegateOption'),
+  borsh.publicKey('delegate'),
+  borsh.u8('state'),
+  borsh.u32('isNativeOption'),
+  borsh.u64('isNative'),
+  borsh.u64('delegatedAmount'),
+  borsh.u32('closeAuthorityOption'),
+  borsh.publicKey('closeAuthority'),
+]);
 const borshMetadataLayout = borsh.struct([
   borsh.u8('key'),
   borsh.publicKey('updateAuthority'),
@@ -196,8 +248,6 @@ const borshMetadataLayout = borsh.struct([
     [borsh.u8('useMethod'), borsh.u64('remaining'), borsh.u64('total')],
     'uses',
   ),
-  borsh.option(borsh.u64(), 'collectionDetails'),
-  borsh.option(borsh.option(borsh.publicKey()), 'programmableConfig'),
 ]);
 
 const getMetadataAddress = (mint: PublicKey): PublicKey =>
@@ -209,3 +259,17 @@ const getMetadataAddress = (mint: PublicKey): PublicKey =>
     ],
     MPL_TOKEN_METADATA_PROGRAM_ID,
   )[0];
+
+async function fetchJsonData(url: string): Promise<any> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network 에러');
+    }
+    const jsonData = await response.json();
+    return jsonData; //
+  } catch (error) {
+    console.error('json 파싱 오류: ', error);
+    throw error;
+  }
+}

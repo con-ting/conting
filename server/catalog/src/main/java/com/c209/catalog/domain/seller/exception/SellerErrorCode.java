@@ -9,9 +9,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Getter
 @AllArgsConstructor
 public enum SellerErrorCode {
-    NOT_SELLER("seller_id를 잘못 보냈습니다.", BAD_REQUEST);
+    NOT_SELLER("판매자 권한이 없습니다.", BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;
 }
-

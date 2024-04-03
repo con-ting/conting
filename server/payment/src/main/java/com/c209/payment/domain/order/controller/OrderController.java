@@ -50,7 +50,7 @@ public class OrderController {
 
         //아이엠포트 결제 단건 api를 조회해 db값과 비교한다.z
             //아이엠포트 통신시 에러가 났을 경우 최대 3회 더 수행하고 만료한다.
-        payService.capture(request);
+        //payService.capture(request);
 
 
         log.info("결제 성공 요청 :: {}", request);

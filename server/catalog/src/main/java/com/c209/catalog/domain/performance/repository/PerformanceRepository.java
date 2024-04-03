@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -30,5 +31,12 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "WHERE p.id = :showId")
     Optional<List<PerformanceDetailInfo>> getPerformanceByShowId(@Param("showId") Long showId);
 
-    Optional<Performance> findByTitle(String title);
+    @Query("SELECT p.id, p.title, p.description, p.posterImage, p.descriptionImage, " +
+            "p.reservationType, p.reservationStartDatetime, p.reservationEndDatetime, " +
+            "p.startDate, p.endDate, p.maxTicketPerPerson, p.isAdultOnly, p.view " +
+            "FROM Performance p " +
+            "WHERE LOWER(p.title) = LOWER(:title)")
+    Optional<Performance> findFirstByTitle(@Param("title") String title);
+
+    boolean existsByTitleIgnoreCase(String title);
 }

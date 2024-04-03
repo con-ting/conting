@@ -17,12 +17,37 @@ export const par1sMint = new web3.PublicKey(process.env.PARTICIPANT_1_MINT!)
 export const par2sMint = new web3.PublicKey(process.env.PARTICIPANT_2_MINT!)
 export const par3sMint = new web3.PublicKey(process.env.PARTICIPANT_3_MINT!)
 
+export const TOKEN_PROGRAM_ID = new web3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+export const ASSOCIATED_TOKEN_PROGRAM_ID = new web3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
 export const MPL_TOKEN_METADATA_PROGRAM_ID = new web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
-export const getMetadataPDA = (mint: web3.PublicKey): web3.PublicKey =>
+
+export const getAssociatedTokenAddress = (mint: web3.PublicKey, owner: web3.PublicKey): web3.PublicKey => {
+  const [address] = web3.PublicKey.findProgramAddressSync(
+    [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+  )
+  return address
+}
+
+export const getMetadataAddress = (mint: web3.PublicKey): web3.PublicKey =>
   web3.PublicKey.findProgramAddressSync(
     [Buffer.from('metadata'), MPL_TOKEN_METADATA_PROGRAM_ID.toBuffer(), mint.toBuffer()],
     MPL_TOKEN_METADATA_PROGRAM_ID,
   )[0]
+
+export const borshAccountLayout = borsh.struct([
+  borsh.publicKey('mint'),
+  borsh.publicKey('owner'),
+  borsh.u64('amount'),
+  borsh.u32('delegateOption'),
+  borsh.publicKey('delegate'),
+  borsh.u8('state'),
+  borsh.u32('isNativeOption'),
+  borsh.u64('isNative'),
+  borsh.u64('delegatedAmount'),
+  borsh.u32('closeAuthorityOption'),
+  borsh.publicKey('closeAuthority'),
+])
 
 export const borshMetadataLayout = borsh.struct([
   borsh.u8('key'),
@@ -57,6 +82,6 @@ export const borshMetadataLayout = borsh.struct([
   ),
   borsh.option(borsh.struct([borsh.publicKey('key'), borsh.bool('verified')]), 'collection'),
   borsh.struct([borsh.u8('useMethod'), borsh.u64('remaining'), borsh.u64('total')], 'uses'),
-  borsh.option(borsh.u64(), 'collectionDetails'),
-  borsh.option(borsh.option(borsh.publicKey()), 'programmableConfig'),
+  // borsh.option(borsh.u64(), 'collectionDetails'),
+  // borsh.option(borsh.option(borsh.publicKey()), 'programmableConfig'),
 ])

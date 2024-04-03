@@ -30,37 +30,11 @@ export default function RefundInfo({refund}) {
 
   const handleRefund = async () => {
     try {
-      // 아임포트 API 키와 시크릿을 사용하여 액세스 토큰 발급 받기
-      const accessToken = await fetchAccessToken({
-        imp_key: '7368484231035413',
-        imp_secret:
-          'ScabDOEfm3eLP1Tj936pazGTSTps7cst3ToGNoFDWZGi15nX1byHxRmlEDxu90bbhOr2dphr8Nz9V6Na',
-      });
-      console.log('accessToken?', accessToken);
-
-      // 환불 정보와 액세스 토큰을 사용하여 아임포트를 통한 환불 처리
-      const refundResult = await refundImApi(refund.imp_uid, accessToken);
-
-      console.log('환불 결과:', refundResult);
-      // 환불 처리 성공 여부에 따른 추가 작업
-      if (refundResult.response && refundResult.response.data) {
-        // 서버에 환불 정보 업데이트
-        const serverResult = await refundApi(refund.ticket_id);
-        if (serverResult.success) {
-          // 환불 처리 성공
-          navigation.navigate('ResultRefund');
-        } else {
-          // 서버 환불 처리 실패
-          alert('서버 환불 처리 실패: ' + serverResult.message);
-        }
+      const response = await refundApi(refund.ticket_id);
+      if (response.result) {
+        navigation.navigate('ResultRefund', {refundResult: true});
       } else {
-        // 환불 처리 실패
-        alert(
-          '환불 실패: ' +
-            (refundResult.response
-              ? refundResult.response.message
-              : '알 수 없는 오류'),
-        );
+        navigation.navigate('ResultRefund', {refundResult: false});
       }
     } catch (error) {
       console.error('환불 처리 중 오류 발생:', error);

@@ -9,7 +9,7 @@ import { Event } from '../target/types/event'
 import {
   agency,
   collectionMint,
-  getMetadataPDA,
+  getMetadataAddress,
   par1sMint,
   par2sMint,
   par3sMint,
@@ -17,7 +17,7 @@ import {
   participant2,
   participant3,
   singer,
-} from './env'
+} from './common'
 
 describe('event', () => {
   const provider = anchor.AnchorProvider.env()
@@ -29,13 +29,13 @@ describe('event', () => {
   const entry = web3.Keypair.generate()
 
   const collectionToken = spl.getAssociatedTokenAddressSync(collectionMint, server.publicKey)
-  const collectionMetadataPda = getMetadataPDA(collectionMint)
+  const collectionMetadataPda = getMetadataAddress(collectionMint)
   const par1sToken = spl.getAssociatedTokenAddressSync(par1sMint, participant1.publicKey)
   const par2sToken = spl.getAssociatedTokenAddressSync(par2sMint, participant2.publicKey)
   const par3sToken = spl.getAssociatedTokenAddressSync(par3sMint, participant3.publicKey)
-  const par1sMetadataPda = getMetadataPDA(par1sMint)
-  const par2sMetadataPda = getMetadataPDA(par2sMint)
-  const par3sMetadataPda = getMetadataPDA(par3sMint)
+  const par1sMetadataPda = getMetadataAddress(par1sMint)
+  const par2sMetadataPda = getMetadataAddress(par2sMint)
+  const par3sMetadataPda = getMetadataAddress(par3sMint)
 
   before(async () => {
     await provider.connection.requestAirdrop(agency.publicKey, web3.LAMPORTS_PER_SOL)
@@ -43,9 +43,6 @@ describe('event', () => {
     await provider.connection.requestAirdrop(participant1.publicKey, web3.LAMPORTS_PER_SOL)
     await provider.connection.requestAirdrop(participant2.publicKey, web3.LAMPORTS_PER_SOL)
     await provider.connection.requestAirdrop(participant3.publicKey, web3.LAMPORTS_PER_SOL)
-
-    const accountInfo = await provider.connection.getAccountInfo(par1sMetadataPda)
-    console.log(accountInfo.data)
 
     // entry = web3.PublicKey.findProgramAddressSync(
     //   [

@@ -6,7 +6,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { expect } from 'chai'
 
 import { Market } from '../target/types/market'
-import { buyer, collectionMint, getMetadataPDA, sellersMint as mint, seller } from './env'
+import { buyer, collectionMint, getMetadataAddress, sellersMint as mint, seller } from './common'
 
 describe('market', () => {
   const provider = anchor.AnchorProvider.env()
@@ -26,7 +26,7 @@ describe('market', () => {
   const buyersToken = spl.getAssociatedTokenAddressSync(mint, buyer.publicKey)
   const sellersEscrowedToken = spl.getAssociatedTokenAddressSync(mint, sellersEscrow, true)
   const buyersEscrowedToken = spl.getAssociatedTokenAddressSync(mint, buyersEscrow, true)
-  const metadataPda = getMetadataPDA(mint)
+  const metadataPda = getMetadataAddress(mint)
 
   before(async () => {
     await provider.connection.requestAirdrop(seller.publicKey, web3.LAMPORTS_PER_SOL)

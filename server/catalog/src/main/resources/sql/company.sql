@@ -3,7 +3,7 @@ ALTER TABLE company
     MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 -- COMPANY MOCK DATA
-INSERT INTO `company` (`id`, `name`, `call`) VALUES
+INSERT INTO `company` (`company_id`, `company_name`, `company_call`) VALUES
                                                  (1, 'SM Entertainment', 'www.smentertainment.com/'),
                                                  (2, 'YG Entertainment', 'www.ygfamily.com'),
                                                  (3, 'JYP Entertainment', 'www.jype.com\\'),

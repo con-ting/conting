@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {F_SIZE_B_BUTTON, F_SIZE_TITLE} from '../../../config/Font';
 import {Calendar, Ticket2} from 'iconsax-react-native';
 import {heightPercent, widthPercent} from '../../../config/Dimensions';
@@ -17,7 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function ConcertRegistScreen() {
   const [reservationType, setReservationType] = useState('');
-  const [schedule, setSchedule] = useState([]);
+  const [schedule, setSchedule] = useState({});
   const navigation = useNavigation();
 
   // 예매 방식 선택
@@ -25,16 +25,69 @@ export default function ConcertRegistScreen() {
     setReservationType(type);
   };
 
-  // 날짜와 시간 선택
-  const handleSchedule = dates => {
-    setSchedule(dates);
+  // 날짜 선택 시 호출되는 함수
+  const handleDateSelected = selectedDates => {
+    const initialTimes = Object.keys(selectedDates).reduce((acc, date) => {
+      if (!acc[date]) acc[date] = {start: '', end: ''}; // 새로운 날짜만 초기화
+      console.log(acc);
+      return acc;
+    }, {});
+
+    setSchedule(prev => ({...prev, ...initialTimes}));
+  };
+
+  // 시간 입력 시 호출되는 함수
+  const handleTimeSelected = newTimes => {
+    setSchedule(prevSchedule => {
+      const updatedSchedule = {...prevSchedule};
+
+      Object.keys(newTimes).forEach(date => {
+        if (updatedSchedule[date]) {
+          updatedSchedule[date] = {...updatedSchedule[date], ...newTimes[date]};
+        } else {
+          updatedSchedule[date] = newTimes[date];
+        }
+      });
+
+      return updatedSchedule;
+    });
   };
 
   // 다음 페이지로 이동하며 데이터를 전달
   const handleNext = () => {
+    // 예매 방식이 선택되지 않았을 경우
+    if (!reservationType) {
+      Alert.alert('알림', '예매 방식을 선택해주세요.');
+      return;
+    }
+
+    // 날짜가 선택되지 않았을 경우
+    if (Object.keys(schedule).length === 0) {
+      Alert.alert('알림', '공연 일정을 선택해주세요.');
+      return;
+    }
+
+    // 선택된 모든 날짜에 대해 시작 시간과 종료 시간이 입력되었는지 확인
+    const allTimesFilled = Object.values(schedule).every(
+      ({start, end}) => start && end,
+    );
+
+    if (!allTimesFilled) {
+      Alert.alert(
+        '알림',
+        '모든 날짜에 대한 시작 시간과 종료 시간을 입력해주세요.',
+      );
+      return;
+    }
+
+    // 모든 조건이 충족되면 다음 페이지로 이동
+    const formattedSchedule = Object.keys(schedule).map(date => ({
+      start_datetime: `${date}T${schedule[date].start}:00`,
+      end_datetime: `${date}T${schedule[date].end}:00`,
+    }));
     const registrationData = {
       reservationType: reservationType,
-      schedule: schedule,
+      schedule: formattedSchedule,
     };
     console.log('registration1 :', registrationData);
     navigation.navigate('ConcertRegistInfo', {registrationData});
@@ -87,8 +140,8 @@ export default function ConcertRegistScreen() {
           </View>
           <View style={styles.calendarContainer}>
             {/* 공연 일정을 선택하는 컴포넌트 */}
-            <CalendarSelect onDateSelected={setSchedule} />
-            <TimeInput dates={schedule} onTimeSelected={handleSchedule} />
+            <CalendarSelect onDateSelected={handleDateSelected} />
+            <TimeInput dates={schedule} onTimeSelected={handleTimeSelected} />
           </View>
         </View>
         <View style={styles.nextButton}>
