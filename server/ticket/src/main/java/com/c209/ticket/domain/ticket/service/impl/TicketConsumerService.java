@@ -47,8 +47,8 @@ public class TicketConsumerService {
                     save.setImpUid(orderRequest.impUid());
                     save.setStatus(Status.예매완료);
 
-
-                    notificationRestClient.sendFcm(
+                    try{
+                        notificationRestClient.sendFcm(
                             FcmRequest
                                     .builder()
                                     .body("티켓 예매가 완료되었습니다.")
@@ -56,6 +56,10 @@ public class TicketConsumerService {
                                     .title("[콘팅] : 티켓 예매 완료")
                                     .build()
                     );
+                    }catch(Exception e){
+                      log.error("fcm 발송 에러 {}", issue.ownerId());  
+                    }
+                    
                     ticketAsyncRepository.save(save).block();
                     log.info("저장된 값 : {}", save);
             }
@@ -80,14 +84,19 @@ public class TicketConsumerService {
                 ticketAsyncRepository.save(save).block();
                 log.info("저장된 값 : {}", save);
 
-                notificationRestClient.sendFcm(
-                        FcmRequest
-                                .builder()
-                                .body("티켓 예매가 완료되었습니다.")
-                                .receiver_id(ticketIssueDto.ownerId())
-                                .title("[콘팅] : 티켓 예매 완료")
-                                .build()
-                );
+                try{
+                        notificationRestClient.sendFcm(
+                            FcmRequest
+                                    .builder()
+                                    .body("티켓 예매가 완료되었습니다.")
+                                    .receiver_id(issue.ownerId())
+                                    .title("[콘팅] : 티켓 예매 완료")
+                                    .build()
+                    );
+                }catch(Exception e){
+                      log.error("fcm 발송 에러 {}", issue.ownerId());  
+                }
+                    
                 ticketAsyncRepository.save(save).block();
                 log.info("저장된 값 : {}", save);
             }
