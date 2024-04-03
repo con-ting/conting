@@ -31,9 +31,14 @@ import {PublicKey} from '@solana/web3.js';
 import {logout} from '../../api/auth/auth.ts';
 import PopularSinger from '../../components/list/PopularSinger';
 import Loading from '../../components/loader/Loading';
-import {eventListFindAll, eventListFindByWallet} from '../../api/web3/event.ts';
+import {
+  doEvent,
+  eventListFindAll,
+  eventListFindByWallet,
+} from '../../api/web3/event.ts';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {makeEventData} from '../lotteryResultScreen/ResultMainScreen.tsx';
+import moment from 'moment/moment';
 
 export default function MainScreen() {
   const navigation = useNavigation();
@@ -120,12 +125,13 @@ export default function MainScreen() {
       console.log('API 요청');
       try {
         const data = await MainApi();
-        const eventListALl = await getEventList();
+        const eventListAll = await getEventList();
         console.log('API 응답: ', data);
+        console.log('API eventListALl: ', eventListAll);
         setPopular(data.popular_shows);
         setFirst(data.f_shows);
         setPopularSinger(data.popular_singers);
-        setEventList(eventListALl);
+        setEventList(eventListAll);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
       }
@@ -134,15 +140,23 @@ export default function MainScreen() {
   }, []);
   const getEventList = async () => {
     const result = [];
-
     //이벤트 내역 조회
     const eventList = await eventListFindAll({
       connection: connection,
       anchorWallet: useAnchorWallet,
     });
-
+    console.log('eventList', eventList);
     for (const eventListElement of eventList) {
-      result.push(makeEventData(eventListElement));
+      const newVar = makeEventData({
+        web3Data: eventListElement,
+        // doItPress: doEvent({
+        //   connection: connection,
+        //   anchorWallet: useAnchorWallet,
+        //   myWalletAddress: userInfo?.walletAddress,
+        //   eventAddress: eventListElement.
+        // }),
+      });
+      result.push(newVar);
     }
     return result;
   };

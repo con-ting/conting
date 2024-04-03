@@ -26,7 +26,7 @@ import {
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
 import {useRealm} from '../../components/realm/RealmContext.ts';
 import {orderResult} from '../../api/ticket/order.ts';
-import {eventListFindByWallet} from '../../api/web3/event.ts';
+import {doEvent, eventListFindByWallet} from '../../api/web3/event.ts';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
@@ -255,13 +255,14 @@ function MakeConsertCardObject(
       };
   }
 }
-export function makeEventData(web3Data: any) {
+export function makeEventData(props: {web3Data: any; doItPress?: any}) {
   // 현재 시간을 Unix 타임스탬프로 가져옵니다.
   const now = new Date().getTime();
 
   // BN 인스턴스를 사용하여 timestamp를 숫자로 변환합니다.
-  const startTimestamp = web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
-  const endTimestamp = web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const startTimestamp =
+    props.web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const endTimestamp = props.web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
 
   let img_tag: string;
   let img_tag_color: string;
@@ -272,7 +273,9 @@ export function makeEventData(web3Data: any) {
   } else if (now >= endTimestamp) {
     // 이벤트가 종료되었고, 당첨자 명단에 내 지갑 주소가 있는지 확인합니다.
     if (
-      web3Data.account.winners.includes(new PublicKey(userInfo?.walletAddress))
+      props.web3Data.account.winners.includes(
+        new PublicKey(userInfo?.walletAddress),
+      )
     ) {
       img_tag_color = MINTBASE;
       img_tag = '당첨';
@@ -292,18 +295,15 @@ export function makeEventData(web3Data: any) {
       Alert.alert('앙 이벤트띠');
     },
     disabled: false,
-    name: web3Data.account.name,
-    img_url: web3Data.account.uri,
-    participants: web3Data.account.participants,
-    winnersTotal: web3Data.account.winnersTotal,
+    name: props.web3Data.account.name,
+    img_url: props.web3Data.account.uri,
+    participants: props.web3Data.account.participants,
+    winnersTotal: props.web3Data.account.winnersTotal,
     img_tag: img_tag,
     img_tag_color: img_tag_color,
     start_at: new Date(startTimestamp).toISOString(),
     end_at: new Date(endTimestamp).toISOString(),
-    doItPress: () => {
-      //여기엔 응모하기
-      Alert.alert('응모하기');
-    },
+    doItPress: props.doItPress,
   };
 }
 export default function ResultMainScreen() {
@@ -349,7 +349,7 @@ export default function ResultMainScreen() {
     });
 
     for (const eventListElement of eventList) {
-      result.push(makeEventData(eventListElement));
+      result.push(makeEventData({wev3Data: eventListElement}));
     }
     return result;
   };
