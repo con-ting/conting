@@ -13,7 +13,7 @@ import {Spacer} from '../../utils/common/Spacer';
 import {MAINBLACK} from '../../config/Color';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-export default function EventList() {
+export default function EventList(props: {events: Array<any>}) {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>

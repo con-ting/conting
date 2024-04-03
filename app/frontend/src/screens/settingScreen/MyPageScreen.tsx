@@ -14,7 +14,10 @@ export default function MyPageScreen() {
     <View style={styles.container}>
       <View style={styles.context}>
         {/* <Text style={styles.text}>마이 페이지</Text> */}
-        <ProfileSection name={userInfo?.user_email} />
+        <ProfileSection
+          name={userInfo?.user_email}
+          wallet={userInfo?.walletAddress}
+        />
         <MyPageButtons />
         {/* <FamilySelectButton /> */}
         {/* <ConcertDateChoiceButton /> */}
