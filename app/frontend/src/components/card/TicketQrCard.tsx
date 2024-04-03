@@ -67,7 +67,7 @@ export default function TicketQrCard(props: TicketCardProps) {
       } else {
         // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
         console.log('정상 실행');
-        const res = await ticketQRAPI({ticket_id: '10', finger_print: key});
+        const res = await ticketQRAPI({ticket_id: props.ticket.id, finger_print: key});
         setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
         setIspass(true);
         healthCheck(res.uuid);
@@ -105,9 +105,7 @@ export default function TicketQrCard(props: TicketCardProps) {
 
   return (
     <LinearGradient
-      style={{
-        borderRadius: 20,
-      }}
+      style={styles.container}
       colors={props.colors}>
       <View style={styles.container}>
         {isPass ? (
@@ -138,11 +136,8 @@ export default function TicketQrCard(props: TicketCardProps) {
 }
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(250),
-    height: heightPercent(500),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgba(130, 156, 199, 0.6)',
+    flex:1,
+
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,

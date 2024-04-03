@@ -96,7 +96,7 @@ export default function NFTCard(props: NFTCardProps) {
   };
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <BackgroundGradient width={width} height={height} colors={props.colors} />
+      <BackgroundGradient width={width} height={height} colors={[MAINYELLOW ,props.colors[0],MAINYELLOW ,props.colors[0]]} />
       <GestureDetector gesture={gesture}>
         <Animated.View
           style={[
@@ -161,7 +161,7 @@ export const BackgroundGradient = memo(
           r={20}>
           <SweepGradient
             c={vec((width + canvasPadding) / 2, (height + canvasPadding) / 2)}
-            colors={[MAINYELLOW, colors[0], MAINYELLOW, colors[0]]}
+            colors={colors}
           />
         </RoundedRect>
         <BlurMask blur={10} style={'solid'} />

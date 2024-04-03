@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export type profileProps = {
+  id: string;
   name: string;
   profile: string;
   backgroundNone?: boolean;
@@ -26,9 +27,7 @@ export default function SingerProfile(props: profileProps) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('CastDetail', {castId: props.id})
-      }
+      onPress={() => navigation.navigate('CastDetail', {castId: props.id})}
       style={[
         styles.container,
         {backgroundColor: props.backgroundNone ? 'transparent' : MAINBLACK},

@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, useWindowDimensions, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Alert,
+  Dimensions,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
@@ -31,6 +38,8 @@ export default function NftTicketListScreen() {
   const secondColor = useSharedValue(posterColors[1]);
   const thirdColor = useSharedValue(posterColors[2]);
   const {width, height} = useWindowDimensions();
+  const toggleWidth = width
+  const toggleHeight = Math.floor(height/10)
   const [toggleState, setToggleState] = useState(false);
   const [filteringList, setFilteringList] = useState([]);
   useEffect(() => {
@@ -156,7 +165,11 @@ export default function NftTicketListScreen() {
     );
   };
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+      }}>
       <Canvas
         style={{
           flex: 1,
@@ -174,7 +187,7 @@ export default function NftTicketListScreen() {
           />
         </Rect>
       </Canvas>
-      <AuthHeader
+      {/* <AuthHeader
         text="티켓북"
         borderLevel={5}
         rightIcon={<ICON.Shop size={22} color={TEXTGRAY} variant="Bold" />}
@@ -182,8 +195,8 @@ export default function NftTicketListScreen() {
         onRightPress={() => {
           navigation.navigate('NftShopMainScreen');
         }}
-      />
-      <View style={styles.toggleBox}>
+      /> */}
+      <View style={{...styles.toggleBox, top:toggleHeight, right:10}}>
         <BODY1>관람한 NFT 티켓 보기</BODY1>
         <Spacer space={20} horizontal={true}></Spacer>
         <Toggle isEnabled={toggleState} setIsEnabled={setToggleState}></Toggle>
@@ -222,6 +235,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   toggleBox: {
+    position: 'absolute',
+    zIndex:100,
     flexDirection: 'row',
     alignItems: 'center',
   },

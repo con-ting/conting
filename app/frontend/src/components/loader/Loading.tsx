@@ -69,6 +69,7 @@ export const Square = (props: SquareProps) => {
 
 export default function Loading() {
   const progress = useSharedValue(0);
+  
   useEffect(() => {
     progress.value = withRepeat(
       withTiming(4 * Math.PI, {
