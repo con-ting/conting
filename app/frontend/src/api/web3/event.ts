@@ -1,7 +1,12 @@
-import {PublicKey} from '@solana/web3.js';
+import {Keypair, PublicKey, SYSVAR_INSTRUCTIONS_PUBKEY} from '@solana/web3.js';
 import {AnchorProvider, Program} from '@coral-xyz/anchor';
 import {Event, IDL} from '../../config/web3Types/event.ts';
-import {EVENT_PROGRAM_ID} from '../../config/web3Config.tsx';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  EVENT_PROGRAM_ID,
+  MPL_TOKEN_METADATA_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '../../config/web3Config.tsx';
 
 /**
  * eventFindBySingerAddress
@@ -92,45 +97,56 @@ export async function eventListFindByWallet(props: {
  * 이벤트 응모하기 함수
  * @param props
  */
-// export async function doEvent(props: {
-//   connection: any;
-//   anchorWallet: any;
-//   myWalletAddress: PublicKey;
-//   eventAddress: PublicKey;
-//   nftAddress: PublicKey;
-// }) {
-//   const provider = new AnchorProvider(props.connection, props.anchorWallet, {
-//     preflightCommitment: 'confirmed',
-//     commitment: 'processed',
-//   });
-//   const program = new Program<Event>(IDL, EVENT_PROGRAM_ID, provider);
-//
-//   const entry = Keypair.generate();
-//   const token = getAssociatedTokenAddressSync(
-//     props.nftAddress,
-//     props.myWalletAddress,
-//   );
-//
-//   const metadataPda = PublicKey.findProgramAddressSync(
-//     [
-//       Buffer.from('metadata'),
-//       MPL_TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-//       props.nftAddress.toBuffer(),
-//     ],
-//     MPL_TOKEN_METADATA_PROGRAM_ID,
-//   )[0];
-//
-//   const tx = await program.methods
-//     .entryEvent()
-//     .accounts({
-//       participant: props.myWalletAddress,
-//       event: props.eventAddress,
-//       entry: entry.publicKey,
-//       mint: props.nftAddress,
-//       token,
-//       metadataPda,
-//       sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
-//     })
-//     .signers([entry])
-//     .rpc();
-// }
+export async function doEvent(props: {
+  connection: any;
+  anchorWallet: any;
+  myWalletAddress: PublicKey;
+  eventAddress: PublicKey;
+  nftAddress: PublicKey;
+}) {
+  const provider = new AnchorProvider(props.connection, props.anchorWallet, {
+    preflightCommitment: 'confirmed',
+    commitment: 'processed',
+  });
+  const program = new Program<Event>(IDL, EVENT_PROGRAM_ID, provider);
+
+  const getAssociatedTokenAddress = (
+    mint: PublicKey,
+    owner: PublicKey,
+  ): PublicKey =>
+    PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    )[0];
+
+  const getMetadataAddress = (mint: PublicKey): PublicKey =>
+    PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('metadata'),
+        MPL_TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        mint.toBuffer(),
+      ],
+      MPL_TOKEN_METADATA_PROGRAM_ID,
+    )[0];
+
+  const entry = Keypair.generate();
+  const token = getAssociatedTokenAddress(
+    props.nftAddress,
+    props.myWalletAddress,
+  );
+  const metadataPda = getMetadataAddress(props.nftAddress);
+
+  const tx = await program.methods
+    .entryEvent()
+    .accounts({
+      participant: props.myWalletAddress,
+      event: props.eventAddress,
+      entry: entry.publicKey,
+      mint: props.nftAddress,
+      token,
+      metadataPda,
+      sysvarInstructions: SYSVAR_INSTRUCTIONS_PUBKEY,
+    })
+    .signers([entry])
+    .rpc();
+}
