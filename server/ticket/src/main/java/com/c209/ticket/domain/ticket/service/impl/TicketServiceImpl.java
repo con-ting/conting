@@ -179,7 +179,7 @@ public class TicketServiceImpl implements TicketService {
                         long currentTimeStamp = Instant.now().getEpochSecond();
                         long expirationTime = Long.parseLong(expTime.toString());
                         if (currentTimeStamp > expirationTime) {
-                        return Mono.error(new CommonException(QR_EXPIRED_ERROR));
+                            return Mono.error(new CommonException(QR_EXPIRED_ERROR));
                         } else {
                             // Redis에서 uuid 삭제
                             return reactiveRedisTemplate.opsForValue().delete(qrUUID)
@@ -187,17 +187,16 @@ public class TicketServiceImpl implements TicketService {
                                             .switchIfEmpty(Mono.error(new CommonException(TICKET_NOT_FOUND)))
                                             .flatMap(ticket -> {
                                                 if (!ticket.getOwnerId().equals(userId)) {
-                                                    Mono.error(new CommonException(TICKET_UNOWNED));
+                                                    return Mono.error(new CommonException(TICKET_UNOWNED));
                                                 } else {
                                                     // 해당 티켓의 isUsed 속성을 true로 업데이트 후 저장
                                                     ticket.markAsUsed();
-                                                    return ticketAsyncRepository.save(ticket).then();
+                                                    return ticketAsyncRepository.save(ticket).then(Mono.just(true));
                                                 }
                                             }));
                         }
                     }
                 });
-
     }
 
 
