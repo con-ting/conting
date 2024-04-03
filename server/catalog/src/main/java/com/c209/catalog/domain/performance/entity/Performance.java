@@ -4,6 +4,7 @@ import com.c209.catalog.domain.company.entity.Company;
 import com.c209.catalog.domain.hall.dto.HallDto;
 import com.c209.catalog.domain.hall.entity.Hall;
 import com.c209.catalog.domain.performance.dto.PerformanceDto;
+import com.c209.catalog.domain.performance.dto.PerformanceSearchDto;
 import com.c209.catalog.domain.performance.enums.Genre;
 import com.c209.catalog.domain.performance.enums.ReservationType;
 import com.c209.catalog.domain.performance.enums.Status;
@@ -113,6 +114,21 @@ public class Performance extends BaseEntity {
         } else {
             status = Status.after_sale;
         }
+    }
+
+    public PerformanceSearchDto toCache(){
+        return PerformanceSearchDto.builder()
+                .show_id(this.id)
+                .title(this.title)
+                .reservation_type(this.reservationType)
+                .status(this.status)
+                .start_date(this.startDate)
+                .end_date(this.endDate)
+                .reservation_start_date_time(this.reservationStartDatetime)
+                .reservation_end_date_time(this.reservationEndDatetime)
+                .hall_id(this.hall.getId())
+                .hall_name(this.hall.getName())
+                .build();
     }
 }
 
