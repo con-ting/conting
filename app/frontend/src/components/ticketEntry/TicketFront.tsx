@@ -7,28 +7,20 @@ import {ticketProps} from '../card/TicketEntryCard';
 
 type frontProps = {
   ticket: ticketProps;
-  rotate: SharedValue<number>;
   width: number;
   height: number;
 };
 
 export default function TicketFront(props: frontProps) {
   return (
-    <Pressable
-      style={{
-        width: props.width,
-        height: props.height,
+    <FastImage
+      resizeMode={FastImage.resizeMode.stretch}
+      source={{
+        uri: props.ticket.poster,
       }}
-      onPress={() => (props.rotate.value = props.rotate.value ? 0 : 1)}>
-      <FastImage
-        resizeMode={FastImage.resizeMode.stretch}
-        source={{
-          uri: props.ticket.poster,
-        }}
-        style={styles.image}>
-        <TicketInfoCard {...props.ticket} />
-      </FastImage>
-    </Pressable>
+      style={styles.image}>
+      <TicketInfoCard {...props.ticket} />
+    </FastImage>
   );
 }
 

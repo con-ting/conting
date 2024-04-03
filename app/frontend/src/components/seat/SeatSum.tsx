@@ -38,7 +38,7 @@ export default function SeatSum(props: SeatSumProps) {
 
   useEffect(() => {
     console.log('에', props.selectedSeats);
-  });
+  }, []);
 
   const calTotalPrice = () => {
     return Object.values(props.selectedSeats).reduce((total, {seatId}) => {
@@ -61,7 +61,6 @@ export default function SeatSum(props: SeatSumProps) {
       <YellowButton
         onPress={() => {
           navigation.navigate('Pay', {
-            // resData: verificationData,
             selectedSeats: props.selectedSeats,
             showID: props.showID,
             scheduleID: props.scheduleID,
