@@ -15,13 +15,11 @@ import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 import {getTicketListAPI} from '../../api/ticket/ticket';
 import {useRealm} from '../../components/realm/RealmContext';
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery';
-import Loading from '../../components/loader/Loading';
 import { F_SIZE_BUTTON } from '../../config/Font';
 
 export default function TicketListScreen() {
-  const navigation = useNavigation();
   const realm = useRealm();
-  const [ticketList, setTicketList] = useState([{}]);
+  const [ticketList, setTicketList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [posterColors, setPosterColors] = useState([
     '#000000',
@@ -33,7 +31,7 @@ export default function TicketListScreen() {
   const thirdColor = useSharedValue(posterColors[2]);
   const {width, height} = useWindowDimensions();
 
-  // 뒷배경 애니메이션을 위한 부분
+  // 뒷배경 애니메이션 부분
   const duration = 1000;
   const colors = useDerivedValue(() => {
     return [firstColor.value, secondColor.value, thirdColor.value];
@@ -61,7 +59,7 @@ export default function TicketListScreen() {
     if (!ticketList.length) {
       return;
     }
-    getColors(ticketList[currentIndex]?.poster, {
+    getColors(ticketList[currentIndex].poster, {
       cache: true,
       key: ticketList[currentIndex]?.poster,
     }).then((res): any => {
@@ -109,7 +107,7 @@ export default function TicketListScreen() {
         justifyContent:'center',
         alignItems:'center'
       }}>
-        <Text style={F_SIZE_BUTTON}>구매한 티켓이 없어요 ㅠㅠㅠㅠ</Text>
+        <Text style={F_SIZE_BUTTON}>구매한 티켓이 없어요...</Text>
       </View>
     );
   }
@@ -135,6 +133,7 @@ export default function TicketListScreen() {
         data={ticketList}
         renderItem={renderItem}
         width={widthPercent(400)}
+        autoFillData={false}
         mode="horizontal-stack"
         modeConfig={{
           moveSize: 100,

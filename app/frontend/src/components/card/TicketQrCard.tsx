@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from './TicketInfoCard';
@@ -17,11 +17,14 @@ import {BASE_URL} from '../../config/AxiosConfig';
 import {REDBASE} from '../../config/Color';
 import {alertAndLog} from '../../utils/common/alertAndLog';
 import {ticketProps} from './TicketEntryCard';
+import {SharedValue} from 'react-native-reanimated';
 
 type TicketCardProps = {
-  onPress?: () => void;
+  rotate: SharedValue<number>;
   colors: Array<string>;
   ticket: ticketProps;
+  width: number;
+  height: number;
 };
 
 export default function TicketQrCard(props: TicketCardProps) {
@@ -53,13 +56,17 @@ export default function TicketQrCard(props: TicketCardProps) {
     const keyExist = await checkKey();
     // 없다면 키 생성
     if (!keyExist) {
+      alertAndLog('', '등록된 지문이 없습니다. 새로운 지문을 등록합니다.');
       await createKey();
     } else {
       // 지문 인식을 하는데 새로운 지문을 등록했을 경우 키 삭제 후 새로운 키 발급
       const {result, key, msg} = await biometricsAuth();
       console.log(key);
       if (msg === '지문 재등록 필요') {
-        console.log('지문 재등록 실행');
+        alertAndLog(
+          '',
+          '지문 정보가 변경되었습니다. 새로운 지문을 등록합니다.',
+        );
         await deleteKey();
         await createKey();
         // 새로운 키 생성 후 함수 재실행
@@ -111,38 +118,47 @@ export default function TicketQrCard(props: TicketCardProps) {
   };
 
   return (
-    <LinearGradient style={styles.container} colors={props.colors}>
-      <View style={styles.container}>
-        {isPass ? (
-          <View style={styles.QrCard}>
-            <Text style={F_SIZE_TEXT}>캡쳐 방지 기능이 활성화 상태입니다</Text>
-            <View
-              style={{
-                marginVertical: 20,
-              }}>
-              <QRCode
-                size={widthPercent(150)}
-                color="black"
-                backgroundColor="white"
-                value={qrURL}
-              />
+    <Pressable
+      style={{
+        width: props.width, 
+        height: props.height,
+      }}
+      onPress={() => (props.rotate.value = props.rotate.value ? 0 : 1)}>
+      <LinearGradient style={styles.container} colors={props.colors}>
+        <View style={styles.container}>
+          {isPass ? (
+            <View style={styles.QrCard}>
+              <Text style={F_SIZE_TEXT}>
+                캡쳐 방지 기능이 활성화 상태입니다
+              </Text>
+              <View
+                style={{
+                  marginVertical: 20,
+                }}>
+                <QRCode
+                  size={widthPercent(150)}
+                  color="black"
+                  backgroundColor="white"
+                  value={qrURL}
+                />
+              </View>
+              <Text style={F_SIZE_TEXT}>
+                QR코드 유효시간 <Text style={{color: REDBASE}}>{timeLeft}</Text>
+                초
+              </Text>
             </View>
-            <Text style={F_SIZE_TEXT}>
-              QR코드 유효시간 <Text style={{color: REDBASE}}>{timeLeft}</Text>초
-            </Text>
-          </View>
-        ) : (
-          <CreateQR onPress={handlePass} />
-        )}
-        <TicketInfoCard {...props.ticket} />
-      </View>
-    </LinearGradient>
+          ) : (
+            <CreateQR onPress={handlePass} />
+          )}
+          <TicketInfoCard {...props.ticket} />
+        </View>
+      </LinearGradient>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
