@@ -30,7 +30,7 @@ import {doEvent, eventListFindByWallet} from '../../api/web3/event.ts';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {PublicKey} from '@solana/web3.js';
 
@@ -307,6 +307,7 @@ export function makeEventData(props: {web3Data: any; doItPress?: any}) {
   };
 }
 export default function ResultMainScreen() {
+  const isFocused = useIsFocused()
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
   const [eventCardList, setEventCardList] = useState([]);
@@ -369,7 +370,7 @@ export default function ResultMainScreen() {
         setEventCardList(list);
       });
     }
-  }, [selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
+  }, [selectedTab, isFocused]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
 
   const renderTabs = () => {
     switch (selectedTab) {

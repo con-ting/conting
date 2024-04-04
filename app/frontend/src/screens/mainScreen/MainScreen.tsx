@@ -32,13 +32,10 @@ import {logout} from '../../api/auth/auth.ts';
 import PopularSinger from '../../components/list/PopularSinger';
 import Loading from '../../components/loader/Loading';
 import {
-  doEvent,
   eventListFindAll,
-  eventListFindByWallet,
 } from '../../api/web3/event.ts';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {makeEventData} from '../lotteryResultScreen/ResultMainScreen.tsx';
-import moment from 'moment/moment';
 
 export default function MainScreen() {
   const navigation = useNavigation();

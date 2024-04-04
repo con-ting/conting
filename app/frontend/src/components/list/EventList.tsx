@@ -48,6 +48,65 @@ export default function EventList(props: {events: Array<any>}) {
 
     return () => clearInterval(interval);
   }, [startTime, endTime]);
+
+  const renderItem = item => {
+    setStartTime(item.start_at);
+    setEndTime(item.end_at);
+    return (
+      <View>
+        <View style={styles.cardContainer}>
+          <View
+            style={{
+              flex: 4,
+              borderRadius: widthPercent(10),
+            }}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: widthPercent(10),
+                resizeMode: 'stretch',
+              }}
+              source={{
+                uri: item.img_url,
+              }}
+            />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'space-between',
+              padding: widthPercent(20),
+            }}>
+            <Text style={F_SIZE_Y_TITLE}>{item.name}</Text>
+            <Spacer space={10} />
+            <View>
+              <Text style={F_SIZE_BIGTEXT}>
+                {' '}
+                {item.participants}개 응모권 접수 중
+              </Text>
+              <Text style={F_SIZE_BIGTEXT}>
+                상품 개수 : {item.winnersTotal}개
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={item.onPress}
+            style={{
+              width: '100%',
+              height: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'black',
+              borderRadius: 10,
+              overflow: 'hidden',
+            }}>
+            <Text style={F_SIZE_Y_TITLE}>응모하기</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -75,68 +134,15 @@ export default function EventList(props: {events: Array<any>}) {
       {/*start_at: new Date(startTimestamp).toISOString(),*/}
       {/*end_at: new Date(endTimestamp).toISOString(),*/}
       {/*doItPress: props.doItPress,*/}
-      <FlatList
-        data={props.events}
-        decelerationRate="fast"
-        horizontal
-        renderItem={({item, index}) => (
-          <>
-            {setStartTime(item.start_at)}
-            {setEndTime(item.end_at)}
-            <View style={styles.cardContainer}>
-              <View
-                style={{
-                  flex: 4,
-                  borderRadius: widthPercent(10),
-                }}>
-                <Image
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: widthPercent(10),
-                    resizeMode: 'stretch',
-                  }}
-                  source={{
-                    uri: item.img_url,
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'space-between',
-                  padding: widthPercent(20),
-                }}>
-                <Text style={F_SIZE_Y_TITLE}>{item.name}</Text>
-                <Spacer space={10} />
-                <View>
-                  <Text style={F_SIZE_BIGTEXT}>
-                    {' '}
-                    {item.participants}개 응모권 접수 중
-                  </Text>
-                  <Text style={F_SIZE_BIGTEXT}>
-                    상품 개수 : {item.winnersTotal}개
-                  </Text>
-                </View>
-              </View>
-              <TouchableOpacity
-                onPress={item.onPress}
-                style={{
-                  width: '100%',
-                  height: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'black',
-                  borderRadius: 10,
-                  overflow: 'hidden',
-                }}>
-                <Text style={F_SIZE_Y_TITLE}>응모하기</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-        showsHorizontalScrollIndicator={false}
-      />
+      <View style={{flex: 4}}>
+        <FlatList
+          data={props.events}
+          decelerationRate="fast"
+          horizontal
+          renderItem={({item, index}) => renderItem(item)}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 }
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: widthPercent(10),
-    height: heightPercent(500),
+    height: heightPercent(600),
     marginBottom: heightPercent(20),
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     padding: widthPercent(10),
@@ -169,8 +175,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginTop: 10,
     borderRadius: widthPercent(10),
-    height: 260,
-    flex: 3,
+    flex: 1,
     width: '100%',
     backgroundColor: '#1C1C1C',
   },

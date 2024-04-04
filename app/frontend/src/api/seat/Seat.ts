@@ -11,6 +11,6 @@ export const SeatApi = async (params: {
   const res = await tokenInstance.get(
     `${seatUrl}?schedule_id=${params.schedule_id}&sector=${params.sector}`,
   );
-  console.log('[SeatApi Response] = ', res.data);
+  console.log('[SeatApi Response] = 너무 김 응답 온거', );
   return res.data;
 };

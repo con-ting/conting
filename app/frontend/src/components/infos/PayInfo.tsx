@@ -31,7 +31,8 @@ export default function PayInfo({
 
   const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
-    console.log('구매자', buyID);
+    console.log('selectedSeats', selectedSeats)
+    console.log('구매자', selectedSeats.memberId);
     console.log('콘서트정보', concert);
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)

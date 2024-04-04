@@ -1,5 +1,6 @@
 import {Text, View} from 'react-native';
 import WebView from 'react-native-webview';
+import { F_SIZE_BIGTEXT } from '../../../config/Font';
 
 export default function HallViewScreen({route}) {
   const hallView = route.params.hallView;
@@ -21,7 +22,7 @@ export default function HallViewScreen({route}) {
           alignItems: 'center',
           backgroundColor: 'black',
         }}>
-        <Text>올림픽 경기장</Text>
+        <Text style={F_SIZE_BIGTEXT}>{hallName}</Text>
       </View>
       <View
         style={{

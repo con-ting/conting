@@ -1,10 +1,7 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {
-  F_SIZE_BBIGTEXT,
   F_SIZE_HEADER,
   F_SIZE_SMALLTEXT,
-  F_SIZE_TEXT,
-  F_SIZE_TITLE,
 } from '../../config/Font';
 import {MAINBLACK, MAINWHITE} from '../../config/Color';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
