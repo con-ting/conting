@@ -13,10 +13,11 @@ import {
   widthPercent,
 } from '../../config/Dimensions';
 import {CARDBASE, MAINYELLOW} from '../../config/Color';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {PopUpModal} from '../modal/Modal';
 import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
+import {userInfoByWallet} from '../../api/web3/did';
 
 export default function NaArea({
   userID,
@@ -24,6 +25,7 @@ export default function NaArea({
   showID,
   scheduleID,
   biometricKey,
+  families,
 }) {
   const [selectedSeats, setSelectedSeats] = useState({});
 
@@ -33,12 +35,38 @@ export default function NaArea({
   const [selectedDrop, setSelectedDrop] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const familyMembers = [
-    {id: userID, label: '본인', value: '본인', userName: '김싸피'},
-    {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
-    {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
-    {id: 4, label: '누나', value: '누나', userName: '김누나'},
-  ];
+  const [familyMembersDropdownData, setFamilyMembersDropdownData] = useState(
+    [],
+  );
+  // const familyMembers = [
+  //   {id: userID, label: '본인', value: '본인', userName: '김싸피'},
+  //   {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
+  //   {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
+  //   {id: 4, label: '누나', value: '누나', userName: '김누나'},
+  // ];
+  useEffect(() => {
+    // console.log('구역', showID);
+    const fetchFamilyMembersInfo = async () => {
+      const membersData = await Promise.all(
+        families.map(async (family: {buyer_wallet: string}) => {
+          const userInfo = await userInfoByWallet(family.buyer_wallet);
+          console.log('유저정보', userInfo);
+          return {
+            id: family.buyer_id, // buyer_id를 사용합니다.
+            label: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
+            value: family.buyer_wallet, // buyer_wallet을 사용합니다.
+            userName: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
+            owner_id: family.owner_id, // 추가
+            owner_wallet: family.owner_wallet, // 추가
+            owner_fingerprint_key: family.owner_fingerprint_key, // 추가
+          };
+        }),
+      );
+      setFamilyMembersDropdownData(membersData);
+    };
+
+    fetchFamilyMembersInfo();
+  }, [families]);
 
   const handleItemSelect = selectedValue => {
     setSelectedDrop(selectedValue);
@@ -65,7 +93,7 @@ export default function NaArea({
     const seatData = seatsData.find(seat => seat.seat_id === seatId);
     const seatGrade = seatData ? seatData.grade : 'Unknown';
     const gradePrice = seatData ? seatData.grade_price : 0;
-    const memberInfo = familyMembers.find(
+    const memberInfo = familyMembersDropdownData.find(
       member => member.value === selectedDrop,
     );
     const userName = memberInfo ? memberInfo.userName : '알 수 없음';
@@ -79,8 +107,13 @@ export default function NaArea({
         seatCol,
         seatGrade,
         gradePrice,
-        userName,
-        memberId,
+        userName: memberInfo ? memberInfo.userName : '알 수 없음',
+        memberId: memberInfo ? memberInfo.id : null,
+        owner_id: memberInfo ? memberInfo.owner_id : null, // 추가
+        owner_wallet: memberInfo ? memberInfo.owner_wallet : '', // 추가
+        owner_fingerprint_key: memberInfo
+          ? memberInfo.owner_fingerprint_key
+          : '',
       },
     }));
   };
@@ -88,7 +121,7 @@ export default function NaArea({
   const renderSelectedSeats = () => {
     return Object.entries(selectedSeats).map(([member, seatInfo]) => (
       <View key={member} style={styles.selectedSeatInfo}>
-        <Text style={F_SIZE_Y_BTITLE}>{member}</Text>
+        <Text style={F_SIZE_Y_BTITLE}>{seatInfo.userName}</Text>
         <Text style={F_SIZE_TITLE}>
           구역 - {seatInfo.seatGrade} / {seatInfo.seatRow}열 /{' '}
           {seatInfo.seatCol}번
@@ -164,7 +197,7 @@ export default function NaArea({
       />
       <View style={styles.container}>
         <Dropdown
-          data={familyMembers}
+          data={familyMembersDropdownData}
           placeholder="가족선택"
           open={dropDownOpen}
           setOpen={setDropDownOpen}

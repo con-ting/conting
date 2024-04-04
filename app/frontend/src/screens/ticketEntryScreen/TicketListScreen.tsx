@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {View, StyleSheet, useWindowDimensions, Text} from 'react-native';
 import TicketEntryCard from './../../components/card/TicketEntryCard';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import {widthPercent} from '../../config/Dimensions';
 import {getColors} from 'react-native-image-colors';
@@ -15,23 +15,24 @@ import {Canvas, LinearGradient, Rect, vec} from '@shopify/react-native-skia';
 import {getTicketListAPI} from '../../api/ticket/ticket';
 import {useRealm} from '../../components/realm/RealmContext';
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery';
+import {F_SIZE_BUTTON, F_SIZE_Y_BIGTEXT} from '../../config/Font';
 
 export default function TicketListScreen() {
-  const navigation = useNavigation();
   const realm = useRealm();
-  const [ticketList, setTicketList] = useState([{}]);
+  const [ticketList, setTicketList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [posterColors, setPosterColors] = useState([
     '#000000',
     '#000000',
     '#000000',
   ]);
+  const isFocused = useIsFocused();
   const firstColor = useSharedValue(posterColors[0]);
   const secondColor = useSharedValue(posterColors[1]);
   const thirdColor = useSharedValue(posterColors[2]);
   const {width, height} = useWindowDimensions();
 
-  // 뒷배경 애니메이션을 위한 부분
+  // 뒷배경 애니메이션 부분
   const duration = 1000;
   const colors = useDerivedValue(() => {
     return [firstColor.value, secondColor.value, thirdColor.value];
@@ -59,7 +60,7 @@ export default function TicketListScreen() {
     if (!ticketList.length) {
       return;
     }
-    getColors(ticketList[currentIndex]?.poster, {
+    getColors(ticketList[currentIndex].poster, {
       cache: true,
       key: ticketList[currentIndex]?.poster,
     }).then((res): any => {
@@ -71,7 +72,6 @@ export default function TicketListScreen() {
   useEffect(() => {
     const getInfo = async () => {
       const res = await getTicketListAPI();
-      console.log(res);
       let tickets: Array<any> = [];
       await res.forEach((ticket: any) => {
         const concertdata = fetchScheduleDetails(
@@ -80,6 +80,7 @@ export default function TicketListScreen() {
         );
         console.log('concertdata : ', concertdata, 'type:');
         tickets.push({
+          id: ticket.ticket_id,
           poster: concertdata?.img,
           title: concertdata?.title,
           date: concertdata?.start_time,
@@ -91,22 +92,31 @@ export default function TicketListScreen() {
       setTicketList(tickets);
     };
     getInfo();
-  }, []);
+  }, [isFocused]);
   const renderItem = ({item, index}) => {
     return (
-      <View style={styles.ticketContainer}>
+      <View style={styles.container}>
         <TicketEntryCard ticket={item} colors={posterColors} />
       </View>
     );
   };
   if (!ticketList.length) {
-    return <Text>로딩중...</Text>;
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'black',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={F_SIZE_Y_BIGTEXT}>구매한 티켓이 없어요...</Text>
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
       <Canvas
         style={{
-          flex: 1,
           position: 'absolute',
           top: 0,
           left: 0,
@@ -121,21 +131,26 @@ export default function TicketListScreen() {
           />
         </Rect>
       </Canvas>
-      <Carousel
-        data={ticketList}
-        renderItem={renderItem}
-        width={widthPercent(400)}
-        mode="horizontal-stack"
-        modeConfig={{
-          moveSize: 100,
-          stackInterval: 50,
-          scaleInterval: 0.1,
-          rotateZDeg: 80,
-        }}
-        onSnapToItem={index => {
-          setCurrentIndex(index);
-        }}
-      />
+      {ticketList.length === 1 ? (
+        renderItem({item: ticketList[0]})
+      ) : (
+        <Carousel
+          data={ticketList}
+          renderItem={renderItem}
+          width={widthPercent(400)}
+          mode="horizontal-stack"
+          modeConfig={{
+            moveSize: 100,
+            stackInterval: 50,
+            scaleInterval: 0.1,
+            rotateZDeg: 80,
+          }}
+          autoFillData={false}
+          onSnapToItem={index => {
+            setCurrentIndex(index);
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -143,17 +158,7 @@ export default function TicketListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-  },
-  ticketContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    height: 100,
-    alignItems: 'center',
-    marginBottom: 50,
   },
 });

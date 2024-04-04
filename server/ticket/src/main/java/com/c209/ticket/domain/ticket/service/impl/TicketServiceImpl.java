@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static com.c209.ticket.domain.ticket.exception.QRErrorCode.QR_EXPIRED_ERROR;
@@ -142,6 +143,7 @@ public class TicketServiceImpl implements TicketService {
                     }
                 })
                 .switchIfEmpty(Mono.error(new CommonException(QR_INVALID_ERROR))); // Mono가 비어있을 경우 false 반환
+
     }
 
     //reds에서 uuid로 조회합니다.
@@ -200,6 +202,10 @@ public class TicketServiceImpl implements TicketService {
                             .defaultIfEmpty(false);
                 });
     }
+
+
+
+
 
     @Override
     public Mono<TicketPaymentsListResponse> getTicketPaymentsList(Long userId) {

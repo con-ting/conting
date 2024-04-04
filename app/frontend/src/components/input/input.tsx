@@ -533,7 +533,6 @@ export const PhoneNumberInput = (props: InputProps) => {
 
     // 숫자만 추출 (하이픈 제거)
     const digits = text.replace(/-/g, '');
-
     if (regex.test(text)) {
       // 자동 하이픈 추가 로직
       let formattedPhoneNumber = digits;
@@ -544,6 +543,8 @@ export const PhoneNumberInput = (props: InputProps) => {
           3,
           7,
         )}-${digits.slice(7, 11)}`;
+      } else {
+        formattedPhoneNumber = '010';
       }
       props.onChangeText(formattedPhoneNumber);
     }

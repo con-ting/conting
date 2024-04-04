@@ -24,44 +24,44 @@ export default function CastList({casts, isSearch, onCastSelect}) {
       navigation.navigate('CastDetail', {castId: item.singer_id});
     } else {
       // 검색 페이지가 아닐 때는 스타일만 변경
+      onCastSelect(item);
       setSelectedCast(item.singer_id);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={casts}
-        style={styles.context}
-        numColumns={3}
-        renderItem={({item, index}) => (
-          <TouchableOpacity
-            key={item.singer_id}
-            style={[styles.member]}
-            onPress={() => {
-              handlePress(item);
-              onCastSelect(item);
-            }}>
-            <Image
-              source={{uri: item.singer_profile_image}}
-              style={[
-                styles.castImage,
-                selectedCast === item.singer_id && styles.selectedMember,
-              ]}
-            />
-            <Text
-              style={[
-                F_SIZE_TITLE,
-                styles.name,
-                selectedCast === item.singer_id && styles.selectedName,
-              ]}>
-              {item.singer_name}
-            </Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={item => item.singer_id}
-      />
-    </View>
+    <FlatList
+      data={casts}
+      style={styles.context}
+      numColumns={3}
+      renderItem={({item, index}) => (
+        <TouchableOpacity
+          key={item.singer_id}
+          style={[styles.member]}
+          onPress={() => {
+            handlePress(item);
+          }}>
+          <Image
+            source={{uri: item.singer_profile_image}}
+            style={[
+              styles.castImage,
+              selectedCast === item.singer_id && styles.selectedMember,
+            ]}
+          />
+          <Text
+            style={[
+              F_SIZE_TITLE,
+              styles.name,
+              selectedCast === item.singer_id && styles.selectedName,
+            ]}>
+            {item.singer_name.length > 3
+              ? `${item.singer_name.substring(0, 3)}...`
+              : item.singer_name}
+          </Text>
+        </TouchableOpacity>
+      )}
+      keyExtractor={item => item.singer_id}
+    />
   );
 }
 const styles = StyleSheet.create({
@@ -69,17 +69,15 @@ const styles = StyleSheet.create({
     // backgroundColor: CARDBASE,
   },
   context: {
-    width: widthPercent(376),
-    height: heightPercent(500),
     backgroundColor: CARDBASE,
     borderRadius: 12,
     marginTop: 20,
   },
   member: {
-    margin: 22,
     // backgroundColor: 'white',
     alignItems: 'center',
-    // justifyContent: 'center',s
+    margin: widthPercent(12)
+    // justifyContent: 'center'
   },
   castImage: {
     width: widthPercent(80),
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   name: {
-    marginTop: 15,
+    marginTop: heightPercent(10),
   },
   selectedMember: {
     borderWidth: 3,

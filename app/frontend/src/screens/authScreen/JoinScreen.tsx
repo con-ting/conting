@@ -29,7 +29,11 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import {userJoin} from '../../api/auth/user.ts';
 import {useRecoilState} from 'recoil';
-import {fcmToken, userInfoState} from '../../utils/recoil/Atoms.ts';
+import {
+  fcmToken,
+  goMainPageState,
+  userInfoState,
+} from '../../utils/recoil/Atoms.ts';
 import {
   korDateFormat,
   serverDateFormat,
@@ -69,6 +73,7 @@ const JoinScreen = propsData => {
   const [cancelModalVisible, setCancelModalVisible] = useState(false); // < 버튼 눌렀을 때 모달
   const phoneNumber = propsData.route.params.replace(/-/g, '');
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [goMainState, setGoMainState] = useRecoilState(goMainPageState);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
   const [balance, setBalance] = useState<number | null>(null);
@@ -102,28 +107,44 @@ const JoinScreen = propsData => {
     }
   }, [authorizationInProgress, authorizeSession]);
 
-  const fetchAndUpdateBalance = useCallback(
+  const fetchLoginAndJoin = useCallback(
     async (account: Account) => {
-      await setCryptoAddress(account.address);
-      console.log('앱 주소 =: ' + account.address);
-      await setCryptoPublicKey(account.publicKey);
-      console.log('개인 지갑 주소 =: ' + account.publicKey);
-      await setCryptoLabel(account.label ? account.label : '');
-      console.log('개인 지갑 앱 = ' + account.label);
-      const fetchedBalance = await connection.getBalance(account.publicKey);
-      console.log('개인 지갑 잔액 = ' + fetchedBalance);
-      await setBalance(fetchedBalance);
+      await userJoin({
+        email: email,
+        password: password,
+        name: userName,
+        phone_number: phoneNumber,
+        birthday: serverDateFormat(birthDate),
+        fcm: token,
+        wallet: account.publicKey.toBase58(),
+      });
+
+      const userResponse = await loginApiSender(); //1. 로그인 API 요청
+      // console.log('로그인 API 요청 끝');
+      await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
+      //4. 전역 상태에 유저 정보 저장
+      console.log('전역 상태에 유저 정보 저장 시작');
+      setUserInfo({
+        user_id: userResponse.user.id,
+        user_email: userResponse.user.email,
+        walletAddress: userResponse.user.wallet,
+      });
+      console.log('전역 상태에 유저 정보 저장 끝');
+      //5. goMainPage 수정
+      console.log('goMainPage 수정 시작');
+      setGoMainState(true);
+      console.log('goMainPage 수정 끝');
     },
-    [connection],
+    [connection, email, userName, password],
   );
 
   useEffect(() => {
     if (!selectedAccount) {
       return;
     }
-    fetchAndUpdateBalance(selectedAccount);
+    fetchLoginAndJoin(selectedAccount);
     console.log('balance = ', balance);
-  }, [fetchAndUpdateBalance, selectedAccount]);
+  }, [fetchLoginAndJoin, selectedAccount]);
   // 각각의 버튼에 대한 실행될 링크(url)와 링크가 실행되지 않을 때 대체 링크(alterUrl)
   const deepLinkEvent = useCallback(async (url: string, alterUrl: string) => {
     // 만약 어플이 설치되어 있으면 true, 없으면 false
@@ -153,6 +174,7 @@ const JoinScreen = propsData => {
     await setAsync('refreshToken', props.token.refreshToken);
     await setAsync('userId', props.user.id);
   };
+
   const connect = async () => {
     //1. 여기부터 팬텀 연결로직 들어가서 주소 가져와야합니다.
     console.log('지갑 연결 시도');
@@ -175,39 +197,6 @@ const JoinScreen = propsData => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
-    console.log('cryptoPublicKey=', cryptoPublicKey);
-    //2. 회원가입 API 전송
-    if (cryptoPublicKey !== '') {
-      await userJoin({
-        email: email,
-        password: password,
-        name: userName,
-        phone_number: phoneNumber,
-        birthday: serverDateFormat(birthDate),
-        fcm: token,
-        wallet: cryptoPublicKey,
-      });
-      console.log('회원가입 성공');
-    } else {
-      Alert.alert('오류', '지갑 연동 실패.', [{text: '닫기', style: 'cancel'}]);
-      Error('주소 가져오기 실패');
-    }
-
-    const userResponse = await loginApiSender(); //1. 로그인 API 요청
-    // console.log('로그인 API 요청 끝');
-    await userDataSetting(userResponse); //3. 토큰 및 userAgent 저장
-    //4. 전역 상태에 유저 정보 저장
-    console.log('전역 상태에 유저 정보 저장 시작');
-    await setUserInfo({
-      user_id: userResponse.user.id,
-      user_email: userResponse.user.email,
-      walletAddress: userResponse.user.wallet,
-    });
-    console.log('전역 상태에 유저 정보 저장 끝');
-    //5. goMainPage 수정
-    console.log('goMainPage 수정 시작');
-    await setAsync('goMainPage', true);
-    console.log('goMainPage 수정 끝');
   };
 
   const validateEmail = async (): boolean => {

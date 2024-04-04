@@ -31,12 +31,21 @@ import {PublicKey} from '@solana/web3.js';
 import {logout} from '../../api/auth/auth.ts';
 import PopularSinger from '../../components/list/PopularSinger';
 import Loading from '../../components/loader/Loading';
+import {
+  doEvent,
+  eventListFindAll,
+  eventListFindByWallet,
+} from '../../api/web3/event.ts';
+import {useAnchorWallet} from '../../config/web3Config.tsx';
+import {makeEventData} from '../lotteryResultScreen/ResultMainScreen.tsx';
+import moment from 'moment/moment';
 
 export default function MainScreen() {
   const navigation = useNavigation();
   const currentColors = useRecoilValue(currentColor);
   const [popular, setPopular] = useState([]);
   const [first, setFirst] = useState([]);
+  const [eventList, setEventList] = useState([]);
   const [popularSingers, setPopularSinger] = useState([]);
   const firstColor = useSharedValue(currentColors[0]);
   const secondColor = useSharedValue(currentColors[1]);
@@ -68,18 +77,6 @@ export default function MainScreen() {
                 setGoMainPage(false);
               },
             },
-            // {
-            //   text: '지갑주소갱신',
-            //   onPress: async () => {
-            //     // if (token!=userInfo.fcm)
-            //     await updateUserFcmAndWallet({wallet: account.publicKey});
-            //     await setUserInfo({
-            //       user_id: userInfo?.user_id,
-            //       user_email: userInfo?.user_email,
-            //       walletAddress: userInfo?.walletAddress,
-            //     });
-            //   },
-            // },
           ],
           {cancelable: false}, // 밖을 눌러서 취소할 수 없도록 설정
         );
@@ -128,17 +125,41 @@ export default function MainScreen() {
       console.log('API 요청');
       try {
         const data = await MainApi();
+        const eventListAll = await getEventList();
         console.log('API 응답: ', data);
+        console.log('API eventListALl: ', eventListAll);
         setPopular(data.popular_shows);
         setFirst(data.f_shows);
         setPopularSinger(data.popular_singers);
+        setEventList(eventListAll);
       } catch (error) {
         console.log('API 호출 중 오류 발생: ', error);
       }
     };
     fetchData();
   }, []);
-
+  const getEventList = async () => {
+    const result = [];
+    //이벤트 내역 조회
+    const eventList = await eventListFindAll({
+      connection: connection,
+      anchorWallet: useAnchorWallet,
+    });
+    console.log('eventList', eventList);
+    for (const eventListElement of eventList) {
+      const newVar = makeEventData({
+        web3Data: eventListElement,
+        // doItPress: doEvent({
+        //   connection: connection,
+        //   anchorWallet: useAnchorWallet,
+        //   myWalletAddress: userInfo?.walletAddress,
+        //   eventAddress: eventListElement.
+        // }),
+      });
+      result.push(newVar);
+    }
+    return result;
+  };
   const bannerList = [
     {
       imageUrl:
@@ -158,15 +179,8 @@ export default function MainScreen() {
     },
   ];
 
-  const search = (query: string) => {
-    console.log('검색어: ', query);
-    // 검색어를 사용한 검색 로직 구현
-    navigation.navigate('SearchMain', {query});
-    // 예: 서버로 검색어 전송, 검색 결과 상태 업데이트 등
-  };
-
   if (popular.length === 0 && first.length === 0) {
-    return <Loading/>
+    return <Loading />;
   }
   return (
     <ScrollView style={styles.container}>
@@ -195,8 +209,8 @@ export default function MainScreen() {
         }}>
         <FisrtComeList concerts={first} way="선착 예매" />
         <BannerList banners={bannerList} />
-        <PopularSinger singers={popularSingers}/>
-        <EventList />
+        <PopularSinger singers={popularSingers} />
+        <EventList events={eventList} />
       </View>
     </ScrollView>
   );

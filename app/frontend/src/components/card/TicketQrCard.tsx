@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from './TicketInfoCard';
@@ -16,17 +16,20 @@ import {healthCheckAPI, ticketQRAPI} from '../../api/ticket/ticket';
 import {BASE_URL} from '../../config/AxiosConfig';
 import {REDBASE} from '../../config/Color';
 import {alertAndLog} from '../../utils/common/alertAndLog';
-import { ticketProps } from './TicketEntryCard';
+import {ticketProps} from './TicketEntryCard';
+import {SharedValue} from 'react-native-reanimated';
 
 type TicketCardProps = {
-  onPress?: () => void;
   colors: Array<string>;
-  ticket: ticketProps
+  ticket: ticketProps;
+  width: number;
+  height: number;
 };
 
 export default function TicketQrCard(props: TicketCardProps) {
-  console.log('ticket qr : ', props)
+  console.log('ticket qr : ', props);
   const [isPass, setIspass] = useState(false);
+  const [isQR, setIsQR] = useState(false);
   const [qrURL, setQrURL] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
 
@@ -47,19 +50,28 @@ export default function TicketQrCard(props: TicketCardProps) {
     return () => clearInterval(interval);
   }, [isPass, timeLeft]);
 
+  useEffect(() => {
+    if (isPass) {
+      setIsQR(false);
+    }
+  }, [isPass]);
   // 입장권 터치시 지문 인식하는 과정
   const handlePass = async () => {
     // 키가 존재하는지 확인
     const keyExist = await checkKey();
     // 없다면 키 생성
     if (!keyExist) {
+      alertAndLog('', '등록된 지문이 없습니다. 새로운 지문을 등록합니다.');
       await createKey();
     } else {
       // 지문 인식을 하는데 새로운 지문을 등록했을 경우 키 삭제 후 새로운 키 발급
       const {result, key, msg} = await biometricsAuth();
       console.log(key);
       if (msg === '지문 재등록 필요') {
-        console.log('지문 재등록 실행');
+        alertAndLog(
+          '',
+          '지문 정보가 변경되었습니다. 새로운 지문을 등록합니다.',
+        );
         await deleteKey();
         await createKey();
         // 새로운 키 생성 후 함수 재실행
@@ -67,10 +79,17 @@ export default function TicketQrCard(props: TicketCardProps) {
       } else {
         // 정상적인 실행이 가능한 경우 qr코드를 보여줘야 함
         console.log('정상 실행');
-        const res = await ticketQRAPI({ticket_id: '10', finger_print: key});
-        setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
-        setIspass(true);
-        healthCheck(res.uuid);
+        try {
+          const res = await ticketQRAPI({
+            ticket_id: props.ticket.id,
+            finger_print: key,
+          });
+          setQrURL(`${BASE_URL}/ticket/${res.ticket_id}/qr/${res.uuid}`);
+          setIspass(true);
+          healthCheck(res.uuid);
+        } catch (error) {
+          alertAndLog('', error);
+        }
       }
     }
   };
@@ -104,11 +123,7 @@ export default function TicketQrCard(props: TicketCardProps) {
   };
 
   return (
-    <LinearGradient
-      style={{
-        borderRadius: 20,
-      }}
-      colors={props.colors}>
+    <LinearGradient style={styles.container} colors={props.colors}>
       <View style={styles.container}>
         {isPass ? (
           <View style={styles.QrCard}>
@@ -131,18 +146,14 @@ export default function TicketQrCard(props: TicketCardProps) {
         ) : (
           <CreateQR onPress={handlePass} />
         )}
-        <TicketInfoCard {...props.ticket}/>
+        <TicketInfoCard {...props.ticket} />
       </View>
     </LinearGradient>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    width: widthPercent(250),
-    height: heightPercent(500),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgba(130, 156, 199, 0.6)',
+    flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,

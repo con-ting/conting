@@ -5,7 +5,11 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useRecoilState} from 'recoil';
-import {goMainPageState, userInfoState} from '../../utils/recoil/Atoms';
+import {
+  fcmToken,
+  goMainPageState,
+  userInfoState,
+} from '../../utils/recoil/Atoms';
 import * as Color from '../../config/Color';
 
 import {PasswordInput, SimpleInput} from '../../components/input/input.tsx';
@@ -19,6 +23,7 @@ import {login} from '../../api/auth/auth.ts';
 import {setAsync} from '../../utils/async/asyncUtil.ts';
 import {useAuthorization} from '../../components/mobileWalletAdapter/providers/AuthorizationProvider.tsx';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {updateUserFcmAndWallet} from '../../api/auth/user.ts';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -32,15 +37,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [goMainPage, setGoMainPage] = useRecoilState(goMainPageState);
-
-  /**
-   * tryConnect
-   * 연동 앱과 커넥션 요청
-   * @author 김형민
-   */
   const {authorizeSession} = useAuthorization();
   const [authorizationInProgress, setAuthorizationInProgress] = useState(false);
   const {selectedAccount} = useAuthorization();
+  const [token, setToken] = useRecoilState(fcmToken);
+
   const handleConnectPress = useCallback(async () => {
     let success = false; // 성공 여부를 추적하는 변수
     try {
@@ -120,10 +121,25 @@ const LoginScreen = () => {
     }
     //2-2. 연결 성공 시
     console.log('지갑 연결 성공');
+    console.log('userResponse.user.fcmToken', userResponse.user.fcmToken);
+    console.log('token', token);
+    if (token !== userResponse.user.fcmToken) {
+      Alert.alert('알림', '사용환경이 달라지신거 같아요.', [
+        {
+          text: '변경',
+          onPress: async () => {
+            await updateUserFcmAndWallet({fcm: token});
+          },
+        },
+        {
+          text: '변경안함',
+        },
+      ]);
+    }
 
     //4. 전역 상태에 유저 정보 저장
     console.log('전역 상태에 유저 정보 저장 시작');
-    await setUserInfo({
+    setUserInfo({
       user_id: userResponse.user.id,
       user_email: userResponse.user.email,
       walletAddress: userResponse.user.wallet,

@@ -12,23 +12,23 @@ import NftMyShowcase from './NftMyShowcase.tsx';
 import {PublicKey} from '@solana/web3.js';
 import {widthPercent} from '../../../config/Dimensions.tsx';
 import {MAINBLACK} from '../../../config/Color.ts';
+import {sellingNftListFind} from '../../../api/web3/nft.ts';
+import {useRecoilState} from 'recoil';
+import {userInfoState} from '../../../utils/recoil/Atoms.ts';
+import {useConnection} from '../../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
+import {useAnchorWallet} from '../../../config/web3Config.tsx';
 
 const Tabs = ['전체목록', '내 판매록록'];
 
 export default function NftShopMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]);
   const [cardList, setCardList] = useState([]);
-
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const {connection} = useConnection();
   const fetchNftList = async () => {
-    const parameters = [
-      '3sTa62uGxiz5S3z5LBsSpuDeBs75P1owHoGzt8e2BckxihpB3qjvcJ4tBNtVVSPNbqp9vtjn1rvMb84vBeNgxkGk',
-      '5EC3c1UBx8ouZqGdew8arue3TrpYkXVQwRrVUw57AREvNnyLAYDuAyjt7LBk23ac1U9nxnb9bboUqMhAvNQkeWUz',
-      '5fDDPvdFWKzrEdf8LuHjTQaCdDhH6bzFAehuhuW1Xoks8oWhBTAbtAJbiKHyqv5Vn5eoRSRLdXEK7PFTfsXqASpx',
-      '3bTC87SjNQUZLszrgnpP6vN8Skf2LJP8HLBLu8FuK6dhJT7tWqsfLzWBrpMGtcft6sqVYMYosvJb7zyNACjPf91T',
-    ].map(pubKey => new PublicKey(pubKey));
-
-    const nfts = await getNft(parameters);
-    return nfts;
+    const list = await sellingNftListFind(connection, useAnchorWallet);
+    console.log(list);
+    return list;
   };
 
   useEffect(() => {
@@ -39,9 +39,9 @@ export default function NftShopMainScreen() {
     switch (selectedTab) {
       case Tabs[0]:
         console.log('nft cardList = ', cardList);
-      // return <NftShowcase nftList={cardList} />;
+        return <NftShowcase nftList={cardList} />;
       case Tabs[1]:
-      // return <NftMyShowcase nftList={cardList} />;
+        return <NftMyShowcase nftList={cardList} />;
       default:
         return null;
     }
@@ -58,9 +58,7 @@ export default function NftShopMainScreen() {
                 styles.tabItem,
                 selectedTab === tab && styles.tabItemSelected,
               ]}
-              onPress={() => setSelectedTab(tab)}>
-              <Text style={styles.tabText}>{tab}</Text> {/* 수정 필요 */}
-            </TouchableOpacity>
+              onPress={() => setSelectedTab(tab)}></TouchableOpacity>
           ))}
         </View>
         {renderTabs()}

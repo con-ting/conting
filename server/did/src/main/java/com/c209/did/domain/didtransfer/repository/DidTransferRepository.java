@@ -9,5 +9,11 @@ import java.util.Optional;
 public interface DidTransferRepository extends JpaRepository<DidTransferEntity, Long> {
     List<DidTransferEntity> findAllByBuyerId(long buyerId);
 
+    List<DidTransferEntity> findAllByBuyerIdAndPerformanceId(long buyerId, long performanceId);
+
+    List<DidTransferEntity> findAllByOwnerId(long ownerId);
+
+    List<DidTransferEntity> findAllByOwnerIdAndPerformanceId(long ownerId, long performanceId);
+
     Optional<DidTransferEntity> findByPerformanceIdAndOwnerIdAndBuyerId(long performanceId, long ownerId, long buyerId);
 }

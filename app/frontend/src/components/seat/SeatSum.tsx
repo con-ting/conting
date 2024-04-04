@@ -16,6 +16,10 @@ type SeatSumProps = {
       seatRow: string;
       seatCol: string;
       userName: string;
+      memberId: string;
+      owner_id: string;
+      onwer_wallet: string;
+      owner_fingerprint_key: string;
     };
   };
   seatsData: Array<{
@@ -32,6 +36,10 @@ export default function SeatSum(props: SeatSumProps) {
   // const userInfo = useRecoilValue(userInfoState);
   // const userID = userInfo ? userInfo.user_id : null;
 
+  useEffect(() => {
+    console.log('에', props.selectedSeats);
+  }, []);
+
   const calTotalPrice = () => {
     return Object.values(props.selectedSeats).reduce((total, {seatId}) => {
       const seat = props.seatsData.find(s => s.seat_id === seatId);
@@ -44,34 +52,6 @@ export default function SeatSum(props: SeatSumProps) {
     return null;
   }
 
-  // const handleBuyTicketPress = async () => {
-
-  //   const merchantUid = `order_${uuid.v4()}`; // UUID로 주문번호 생성
-  //   const totalPrice = calTotalPrice();
-  //   const seatIds = Object.values(props.selectedSeats).map(seat => parseInt(seat.seatId)); // seatId를 숫자 배열로 변환
-
-  //   const verificationData = {
-  //     seat_list: seatIds,
-  //     merchant_uid: merchantUid,
-  //     amount: totalPrice,
-  //     buyer_id: userID,
-  //   };
-
-  //   try {
-  //     const response = await orderBeforeApi(verificationData);
-  //     if  (response.result){
-  //       // 성공적인 사전 검증 후 처리
-  //       navigation.navigate('Pay', {
-  //         resData: verificationData, selectedSeats: props.selectedSeats, showID: props.showID
-  //       });
-
-  //     }
-  //   } catch (error) {
-  //     // 사전 검증 실패 처리
-  //     alert('티켓 구매를 위한 검증에 실패했습니다.');
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
       <View>
@@ -81,7 +61,6 @@ export default function SeatSum(props: SeatSumProps) {
       <YellowButton
         onPress={() => {
           navigation.navigate('Pay', {
-            // resData: verificationData,
             selectedSeats: props.selectedSeats,
             showID: props.showID,
             scheduleID: props.scheduleID,

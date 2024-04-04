@@ -36,13 +36,8 @@ export default function PopularConcertList({
       cache: true,
       key: popularConcert[currentIndex].poster,
     }).then((res): any => {
-      console.log(res);
       setPreviousColor(currentColors);
       setCurrentColors([res.dominant, res.lightMuted, res.vibrant]);
-
-      // 어떤 색 나오는지 확인하고 싶으면 위에꺼 주석 후 밑에 주석 풀고 mainScreen에서 주석 처리된
-      // View 구문 풀어주면됨 
-      // setCurrentColors([res.average, res.darkMuted, res.darkVibrant, res.dominant, res.lightMuted, res.lightVibrant, res.muted, res.vibrant]);
     });
   }, [currentIndex]);
 

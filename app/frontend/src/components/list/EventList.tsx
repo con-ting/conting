@@ -11,9 +11,43 @@ import {
 } from '../../config/Font';
 import {Spacer} from '../../utils/common/Spacer';
 import {MAINBLACK} from '../../config/Color';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import SingerProfile from '../card/SingerProfile.tsx';
+import {useEffect, useState} from 'react';
+import moment from 'moment';
 
-export default function EventList() {
+export default function EventList(props: {events: Array<any>}) {
+  const [timer, setTimer] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = moment();
+      const start = moment(startTime);
+      const end = moment(endTime);
+
+      if (now.isBefore(start)) {
+        const duration = moment.duration(start.diff(now));
+        const days = Math.floor(duration.asDays());
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+        setTimer(`시작까지 ${days}일 ${hours}시간 ${minutes}분 ${seconds}초`);
+      } else if (now.isAfter(end)) {
+        setTimer('마감됨');
+      } else {
+        const duration = moment.duration(end.diff(now));
+        const days = Math.floor(duration.asDays());
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+        setTimer(`마감까지 ${days}일 ${hours}시간 ${minutes}분 ${seconds}초`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [startTime, endTime]);
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -30,54 +64,79 @@ export default function EventList() {
         </Text>
       </View>
       <View style={styles.timeContainer}>
-        <Text style={{...F_SIZE_TITLE, color: MAINBLACK}}>
-          4일 14: 15:40 남음
-        </Text>
+        <Text style={{...F_SIZE_TITLE, color: MAINBLACK}}>{timer}</Text>
       </View>
-      <View style={styles.cardContainer}>
-        <View
-          style={{
-            flex: 4,
-            borderRadius: widthPercent(10),
-          }}>
-          <Image
-            style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: widthPercent(10),
-              resizeMode: 'stretch',
-            }}
-            source={{
-              uri: 'https://shopping-phinf.pstatic.net/main_4628559/46285599759.20240309134952.jpg?type=f640',
-            }}
-          />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'space-between',
-            padding: widthPercent(20),
-          }}>
-          <Text style={F_SIZE_Y_TITLE}>[BTS] 아미 피크닉 굿즈 세트</Text>
-          <Spacer space={10} />
-          <View>
-            <Text style={F_SIZE_BIGTEXT}>14435개 응모권 접수 중</Text>
-            <Text style={F_SIZE_BIGTEXT}>상품 개수 : 50개</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={{
-            width: '100%',
-            height: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'black',
-            borderRadius: 10,
-            overflow: 'hidden',
-          }}>
-          <Text style={F_SIZE_Y_TITLE}>응모하기</Text>
-        </TouchableOpacity>
-      </View>
+      {/*name: props.web3Data.account.name,*/}
+      {/*img_url: props.web3Data.account.uri,*/}
+      {/*participants: props.web3Data.account.participants,*/}
+      {/*winnersTotal: props.web3Data.account.winnersTotal,*/}
+      {/*img_tag: img_tag,*/}
+      {/*img_tag_color: img_tag_color,*/}
+      {/*start_at: new Date(startTimestamp).toISOString(),*/}
+      {/*end_at: new Date(endTimestamp).toISOString(),*/}
+      {/*doItPress: props.doItPress,*/}
+      <FlatList
+        data={props.events}
+        decelerationRate="fast"
+        horizontal
+        renderItem={({item, index}) => (
+          <>
+            {setStartTime(item.start_at)}
+            {setEndTime(item.end_at)}
+            <View style={styles.cardContainer}>
+              <View
+                style={{
+                  flex: 4,
+                  borderRadius: widthPercent(10),
+                }}>
+                <Image
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: widthPercent(10),
+                    resizeMode: 'stretch',
+                  }}
+                  source={{
+                    uri: item.img_url,
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'space-between',
+                  padding: widthPercent(20),
+                }}>
+                <Text style={F_SIZE_Y_TITLE}>{item.name}</Text>
+                <Spacer space={10} />
+                <View>
+                  <Text style={F_SIZE_BIGTEXT}>
+                    {' '}
+                    {item.participants}개 응모권 접수 중
+                  </Text>
+                  <Text style={F_SIZE_BIGTEXT}>
+                    상품 개수 : {item.winnersTotal}개
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={item.onPress}
+                style={{
+                  width: '100%',
+                  height: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'black',
+                  borderRadius: 10,
+                  overflow: 'hidden',
+                }}>
+                <Text style={F_SIZE_Y_TITLE}>응모하기</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+        showsHorizontalScrollIndicator={false}
+      />
     </View>
   );
 }
@@ -109,8 +168,9 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     marginTop: 10,
-    flex: 10,
     borderRadius: widthPercent(10),
+    height: 260,
+    flex: 3,
     width: '100%',
     backgroundColor: '#1C1C1C',
   },

@@ -26,7 +26,7 @@ import {
 import {fetchScheduleDetails} from '../../utils/realm/dao/OrderResultQuery.ts';
 import {useRealm} from '../../components/realm/RealmContext.ts';
 import {orderResult} from '../../api/ticket/order.ts';
-import {eventListFindAll, eventListFindByWallet} from '../../api/web3/event.ts';
+import {doEvent, eventListFindByWallet} from '../../api/web3/event.ts';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
@@ -87,7 +87,9 @@ function MakeConsertCardObject(
           time: localData.reservation_end_datetime,
           btn_onPress: () => {
             //콘서트 상세 이동 로직
-            Alert.alert('콘서트 상세로 이동');
+            navigation.navigate('ConcertDetail', {
+              show_id: localData.performance_id,
+            });
           },
           swipe_btn_disabled: true,
         };
@@ -111,7 +113,9 @@ function MakeConsertCardObject(
           time: localData.reservation_end_datetime,
           btn_onPress: () => {
             //콘서트 상세 이동 로직
-            Alert.alert('콘서트 상세로 이동');
+            navigation.navigate('ConcertDetail', {
+              show_id: localData.performance_id,
+            });
           },
           swipe_btn_disabled: true,
         };
@@ -136,7 +140,9 @@ function MakeConsertCardObject(
         time: localData.start_time,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
@@ -180,7 +186,9 @@ function MakeConsertCardObject(
         time: apiData.pay_due_date,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: true,
       };
@@ -204,12 +212,17 @@ function MakeConsertCardObject(
         date_tag: '결제마감일',
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: false,
         swipe_btn_onPress: () => {
           //결제 페이지로 이동 로직
-          Alert.alert('앙 결제 띠');
+          navigation.navigate('Waiting', {
+            id: apiData.schedule_id,
+            showID: localData.performance_id,
+          });
         },
         swipe_btn_text: '결제하기', // 스와이프 버튼에 들어갈 텍스트
         swipe_btn_color: MAINYELLOW, //스와이프 버튼의 백그라운드 색상
@@ -234,19 +247,22 @@ function MakeConsertCardObject(
         time: localData.reservation_end_datetime,
         btn_onPress: () => {
           //콘서트 상세 이동 로직
-          Alert.alert('콘서트 상세로 이동');
+          navigation.navigate('ConcertDetail', {
+            show_id: localData.performance_id,
+          });
         },
         swipe_btn_disabled: true,
       };
   }
 }
-function makeEventData(web3Data: any) {
+export function makeEventData(props: {web3Data: any; doItPress?: any}) {
   // 현재 시간을 Unix 타임스탬프로 가져옵니다.
   const now = new Date().getTime();
 
   // BN 인스턴스를 사용하여 timestamp를 숫자로 변환합니다.
-  const startTimestamp = web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
-  const endTimestamp = web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const startTimestamp =
+    props.web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const endTimestamp = props.web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
 
   let img_tag: string;
   let img_tag_color: string;
@@ -257,7 +273,9 @@ function makeEventData(web3Data: any) {
   } else if (now >= endTimestamp) {
     // 이벤트가 종료되었고, 당첨자 명단에 내 지갑 주소가 있는지 확인합니다.
     if (
-      web3Data.account.winners.includes(new PublicKey(userInfo?.walletAddress))
+      props.web3Data.account.winners.includes(
+        new PublicKey(userInfo?.walletAddress),
+      )
     ) {
       img_tag_color = MINTBASE;
       img_tag = '당첨';
@@ -273,22 +291,25 @@ function makeEventData(web3Data: any) {
   // 변환된 cardProps 객체를 반환합니다.
   return {
     onPress: () => {
+      //네비게이션으로 이동
       Alert.alert('앙 이벤트띠');
     },
     disabled: false,
-    name: web3Data.account.name,
-    img_url: web3Data.account.uri,
-    participants: web3Data.account.participants,
-    winnersTotal: web3Data.account.winnersTotal,
+    name: props.web3Data.account.name,
+    img_url: props.web3Data.account.uri,
+    participants: props.web3Data.account.participants,
+    winnersTotal: props.web3Data.account.winnersTotal,
     img_tag: img_tag,
     img_tag_color: img_tag_color,
     start_at: new Date(startTimestamp).toISOString(),
     end_at: new Date(endTimestamp).toISOString(),
+    doItPress: props.doItPress,
   };
 }
-export default function SearchMainScreen() {
+export default function ResultMainScreen() {
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
+  const [eventCardList, setEventCardList] = useState([]);
   const realm = useRealm();
   const {connection} = useConnection();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
@@ -328,23 +349,24 @@ export default function SearchMainScreen() {
     });
 
     for (const eventListElement of eventList) {
-      result.push(makeEventData(eventListElement));
+      result.push(makeEventData({wev3Data: eventListElement}));
     }
     return result;
   };
-
+  const settingOrderResult = async () => {
+    const data = await getOrderResultList();
+    console.log('orderResultList =', data);
+    setCardList(data);
+  };
   // useEffect
   useEffect(() => {
     console.log('내역 페이지 진입 = ', selectedTab);
     if (selectedTab == Tabs[0]) {
       // getOrderResultList 함수의 결과를 기다린 후에 처리하도록 수정
-      getOrderResultList().then(data => {
-        console.log('orderResultList =', data);
-        setCardList(data);
-      });
+      settingOrderResult();
     } else {
       getEventResultList().then(list => {
-        setCardList(list);
+        setEventCardList(list);
       });
     }
   }, [selectedTab]); // searchQuery 또는 selectedTab이 변경될 때마다 API를 호출
@@ -354,7 +376,7 @@ export default function SearchMainScreen() {
       case Tabs[0]:
         return <ReservationWaitingScreen concerts={cardList} />;
       case Tabs[1]:
-        return <EventApplicationScreen events={cardList} />;
+        return <EventApplicationScreen events={eventCardList} />;
     }
   };
 

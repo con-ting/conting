@@ -1,39 +1,33 @@
-import {ImageBackground, StyleSheet, View} from 'react-native';
+import {ImageBackground, Pressable, StyleSheet, View} from 'react-native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import TicketInfoCard from '../card/TicketInfoCard';
-import {ticketProps} from '../card/TicketEntryCard';
 import FastImage from 'react-native-fast-image';
+import {SharedValue} from 'react-native-reanimated';
+import {ticketProps} from '../card/TicketEntryCard';
 
-export default function TicketFront(props: ticketProps) {
+type frontProps = {
+  ticket: ticketProps;
+  width: number;
+  height: number;
+};
+
+export default function TicketFront(props: frontProps) {
   return (
-    <View style={styles.container}>
-      <FastImage
-        source={{
-          uri: props.poster,
-        }}
-        style={styles.image}>
-        <TicketInfoCard {...props} />
-      </FastImage>
-    </View>
+    <FastImage
+      resizeMode={FastImage.resizeMode.stretch}
+      source={{
+        uri: props.ticket.poster,
+      }}
+      style={styles.image}>
+      <TicketInfoCard {...props.ticket} />
+    </FastImage>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: widthPercent(250),
-    height: heightPercent(500),
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgba(130, 156, 199, 0.6)',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
   image: {
     flex: 1,
     justifyContent: 'flex-end',
-    resizeMode: 'stretch',
     borderRadius: 20,
   },
 });

@@ -10,8 +10,9 @@ export const MainApi = async () => {
 
 // 공연 상세 조회 시 사용하는 API
 export const ConcertDetailApi = async (show_id: string) => {
+  console.log('[ConcertDetailApi request] = ', show_id)
   const res = await tokenInstance.get(`${concertUrl}/show/${show_id}`);
-  // console.log('[ConcertDetailApi Response] =', res.data);
+  console.log('[ConcertDetailApi Response] = ', res.data);
   return res.data;
 };
 

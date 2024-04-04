@@ -41,6 +41,15 @@ INSERT INTO seller (user_id, wallet)
 VALUES (1, 'se1k27DnFqFKSb5b3w18mnVvJQYdenaac9uFBKbc9iE'),
        (1, 'se2Y7qvsPJU84kLdWGGR1L42YFLzRatgPrUZjMZftAp');
 
+-- hall mock data 최종
+ALTER TABLE hall MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE hall MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+INSERT INTO hall (`hall_id`, `name`, `telephone`, `total_seat_count`, `relate_url`, `latitude`, `longitude`, `address`, `restaurant`, `cafe`, `convenience_store`, `play_room`, `suyu_room`, `barrier_park`, `barrier_rest`, `barrier_runw`, `barrier_elevator`, `parking_lot`) VALUES
+                                                                                                                                                                                                                                                                                    (1, '(구)송정초등학교 야외운동장', ' ', 0, ' ', 37.4947268, 129.1266626, '부산광역시 해운대구 송정중앙로 14 (송정동)', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+                                                                                                                                                                                                                                                                                    (2, '(재)경기문화재단', '031-231-7200', 154, 'http://www.ggcf.kr/', 37.2657967, 127.03693450000003, '경기도 수원시 팔달구 인계로 178 (인계동)', 0, 1, 0, 0, 0, 0, 0, 1, 0, 1),
+                                                                                                                                                                                                                                                                                    (3, '(재)구리시청소년수련관', '031-553-7101', 286, 'http://www.guriyouth.or.kr/', 37.603757, 127.14178449999997, '경기도 구리시 건원대로34번길 32-10 (인창동)', 0, 0, 0, 0, 0, 1, 0, 1, 0, 1);
+
 ALTER TABLE performance
     MODIFY COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     MODIFY COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

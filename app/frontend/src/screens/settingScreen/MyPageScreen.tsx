@@ -4,22 +4,26 @@ import FamilySelectButton from '../../components/button/FamilySelectButton';
 import ConcertDateChoiceButton from '../../components/button/ConcertDateChoiceButton';
 import ProfileSection from '../../components/profile/ProfileSection';
 import MyPageButtons from '../../components/button/MyPageButtons';
+import {useRecoilState} from 'recoil';
+import {userInfoState} from '../../utils/recoil/Atoms.ts';
 
-export class MyPageScreen extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.context}>
+export default function MyPageScreen() {
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.context}>
         {/* <Text style={styles.text}>마이 페이지</Text> */}
-        <ProfileSection name="전상혁"/>
-        <MyPageButtons/>
+        <ProfileSection
+          name={userInfo?.user_email}
+          wallet={userInfo?.walletAddress}
+        />
+        <MyPageButtons />
         {/* <FamilySelectButton /> */}
         {/* <ConcertDateChoiceButton /> */}
-        </View>
-        
       </View>
-    );
-  }
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
