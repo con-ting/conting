@@ -11,7 +11,7 @@ export default function ConcertHallScreen({halls}: any) {
   const renderItem = ({item}) => (
     <View style={styles.cards}>
       <ConcertHallCard
-        onPress={() => console.log('공연홀보기로 이동')}
+        onPress={() => navigation.navigate('hallDetail', {hallName: item.name})}
         title={item.name}
         seat={item.total_seat_count}
         address={item.address}

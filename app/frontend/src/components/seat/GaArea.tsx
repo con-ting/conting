@@ -50,7 +50,7 @@ export default function GaArea({
     // console.log('구역', showID);
     const fetchFamilyMembersInfo = async () => {
       const membersData = await Promise.all(
-        families.map(async (family: {buyer_wallet: string}) => {
+        families.map(async (family) => {
           const userInfo = await userInfoByWallet(family.buyer_wallet);
           return {
             id: family.buyer_id, // buyer_id를 사용합니다.
@@ -63,6 +63,7 @@ export default function GaArea({
           };
         }),
       );
+      console.log("저장 전 memberData", membersData)
       setFamilyMembersDropdownData(membersData);
     };
 
@@ -97,8 +98,7 @@ export default function GaArea({
     const memberInfo = familyMembersDropdownData.find(
       member => member.value === selectedDrop,
     );
-    const userName = memberInfo ? memberInfo.userName : '알 수 없음';
-    const memberId = memberInfo ? memberInfo.id : null;
+    console.log(memberInfo)
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,

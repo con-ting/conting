@@ -1,11 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {widthPercent} from '../../config/Dimensions';
 import FastImage from 'react-native-fast-image';
-import {
-  F_SIZE_TEXT,
-  F_SIZE_Y_BIGTEXT,
-  F_SIZE_Y_TEXT,
-} from '../../config/Font';
+import {F_SIZE_TEXT, F_SIZE_Y_BIGTEXT, F_SIZE_Y_TEXT} from '../../config/Font';
 import {korDateFormatString} from '../../utils/common/TimeFormat';
 
 type nftFrontProps = {
@@ -48,11 +44,15 @@ export default function NftFront(props: nftFrontProps) {
         <View style={styles.contentCard}>
           <View style={styles.content}>
             <Text style={F_SIZE_Y_TEXT}>location</Text>
-            <Text style={F_SIZE_TEXT}>{props.location}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={F_SIZE_TEXT}>
+              {props.location}
+            </Text>
           </View>
           <View style={styles.content}>
             <Text style={F_SIZE_Y_TEXT}>date</Text>
-            <Text style={F_SIZE_TEXT}>{korDateFormatString(props.date)}</Text>
+            <Text style={F_SIZE_TEXT} numberOfLines={1} ellipsizeMode="tail">
+              {korDateFormatString(props.date)}
+            </Text>
           </View>
           <View style={styles.content}>
             <Text style={F_SIZE_Y_TEXT}>row</Text>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });
