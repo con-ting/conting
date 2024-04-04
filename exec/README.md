@@ -5,6 +5,7 @@
   - [목차](#목차)
   - [시연 시나리오](#시연-시나리오)
   - [외부 서비스](#외부-서비스)
+    - [카프카 설치](#카프카)
   - [빌드 및 배포 정보](#빌드-및-배포-정보)
     - [Linux 패키지 매니저: mise](#linux-패키지-매니저-mise)
     - [Windows 패키지 매니저: scoop](#windows-패키지-매니저-scoop)
@@ -39,6 +40,252 @@
 - Cloudflare S3
 - CoolSMS
 - toss payments
+
+### 카프카 설치 
+
+1. EC2 Instance 생성
+AWS에서 Kafka를 구축하는 방법은 두 가지가 있습니다. 첫 번째는 MSK(Managed Service Kafka)를 사용하는 것이고,
+
+두 번째는 EC2에서 인스턴스를 발급 받아서 설치 및 실행하는 방식입니다. 해당 포스팅에서는 실습을 위해 EC2 인스턴스를 발급 받아서 진행 하겠습니다.
+
+ 
+
+
+ 
+
+EC2 생성 화면으로 이동합니다.
+
+
+
+OS는 프리 티어로 사용 가능한 Amazon Linux 2 AMI를 선택합니다.
+
+추후 주키퍼와 카프카 브로커는 JVM 위에서 돌아가는 애플리케이션으로서 힙 메모리를 지정해야 합니다.
+
+두 프로세스에 각각 400MB의 힙 메모리를 설정하려면 1G 이상의 램이 필요하므로 적당한 t2.micro type을 선택합니다.
+
+ 
+
+
+
+ 
+
+SSH로 인스턴스에 접속하여 실습을 진행하려면 KeyPair를 발급 받아야 합니다. 이미 발급 받은 KeyPair가
+
+없다면 ‘새 키 페어 생성’을 통해 발급 받아야 합니다. 나머지 설정은 Default 값을 사용할 예정이므로,
+
+인스턴스 시작을 눌러 설정을 완료합니다.
+
+2. 보안그룹 설정
+EC2에 설치 된 브로커에 접속하기 위해서는 EC2 보안그룹의 Inbound 설정에 9092와 2181 포트를 열어야 합니다.
+
+실습을 위해 source IP를 any로 설정하겠습니다. 실제 상용 환경에서는 적합한 IP를 대상으로 설정하면 됩니다.
+
+
+보안그룹 인바운드 규칙에 9092와 2181 포트를 추가합니다.
+
+ 
+
+ 
+
+ 
+
+
+발급 받은 KeyPair에 위 명령어로 Read권한만 가지고 있게 400으로 설정합니다. 
+
+
+
+
+EC2 > 인스턴스 > 연결 화면에 가서 ssh 명령어를 복사한 뒤, 터미널에 입력하여 EC2에 접속 합니다.
+
+3. 인스턴스에 자바 설치 
+$ sudo yum install -y java-1.8.0-openjdk-devel.x86_64
+$ ...
+$ Complete!
+
+$ java -version
+$ openjdk version "1.8.0_392"
+$ OpenJDK Runtime Environment (build 1.8.0_392-b08)
+$ OpenJDK 64-Bit Server VM (build 25.392-b08, mixed mode)
+ 
+
+카프카 브로커는 스칼라와 자바로 작성 되어 JVM 환경 위에서 실행되기 때문에 JDK를 설치하도록 하겠습니다.
+
+위 명령어(yum 패키지 관리자)로 java-1.8.0-openjdk를 다운로드, 설치하도록 하겠습니다.
+
+설치 후 자바 버전 확인 명령어로 JDK가 정상적으로 설치 되었는지 확인할 수 있습니다.
+
+4. 주키퍼 & 카프카 브로커 실행
+$ wget https://archive.apache.org/dist/kafka/2.5.0/kafka_2.12-2.5.0.tgz
+$ tar xvf kafka_2.12-2.5.0.tgz
+$ ll
+합계 60164
+drwxr-xr-x 6 ec2-user ec2-user       89  4월  8  2020 kafka_2.12-2.5.0
+-rw-rw-r-- 1 ec2-user ec2-user 61604633  7월  6  2020 kafka_2.12-2.5.0.tg
+
+$ cd kafka_2.12-2.5.0
+ 
+
+카프카 브로커를 실행하기 위해서 카프카 바이너리 패키지를 다운로드 합니다.
+
+wget 명령어와 바이너리 패키지의 URL을 넣으면 카프카 패키지를 EC2 인스턴스에 다운로드 할 수 있습니다.
+
+다운로드가 완료 되면 tar 명령어와 xvf 옵션을 통해 압축 파일을 풉니다.
+
+cd 명령어로 kafka_2.12-2.5.0 디렉토리로 이동해보면 정상적으로 설치된 것을 확인할 수 있습니다.
+
+ 
+
+ 
+
+카프카 브로커 힙 메모리 설정
+
+$ export KAFKA_HEAP_OPTS="-Xmx400m -Xms400m"
+$ echo $KAFKA_HEAP_OPTS
+-Xmx400m -Xms400m
+ 
+
+카프카 브로커를 실행하기 위해서는 힙 메모리 설정이 필요합니다. 카프카 브로커는 레코드의 내용은 페이지 캐시로 시스템 메모리를 사용하고, 나머지 객체들을 힙 메모리에 저장하여 사용한다는 특징이 있습니다. 이러한 특징으로 운영할 때 힙 메모리를 5GB 이상으로 설정하지 않는것이 일반적입니다. 카프카 패키지의 힙 메모리는 브로커는 1G, 주키퍼는 512MB로 기본 설정 되어 있습니다. 실습용으로 생성한 해당 EC2 인스턴스(t2.micro)는 1G 메모리를 가지고 있으므로 카프카 브로커와 주키퍼를 기본 설정값으로 실행하면 1.5G 메모리가 필요하기 때문에 Cannot allocate memory 에러가 출력되면서 실행 되지 않습니다.
+
+ 
+
+이를 해결하기 위해 export 명령어로 힙 메모리 사이즈를 미리 환경변수로 지정한 뒤 실행해야합니다.
+
+export 명령어로 환경변수를 지정한 뒤, echo 명령어로 확인합니다.
+
+ 
+
+ 
+
+bashrc 설정
+
+$ vi ~/.bashrc   (1)
+----------------------------------------------------------------------------------
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+export KAFKA_HEAP_OPTS="-Xmx400m -Xms400m"  (2)
+$ source ~/.bashrc (3)
+$ echo $KAFKA_HEAP_OPTS (4)
+ 
+
+터미널에서 사용자가 입력한 KAFKA_HEAP_OPTS 환경변수는 터미널 세션이 종료되고 나면 초기화 되어 재사용이 불가능합니다. 따라서 ~/.bashrc 파일에 입력하여 bash 쉘이 실행될 때마다 설정할 수 있도록 수정합니다.
+
+ 
+
+ 
+
+ 
+
+ 
+
+카프카 브로커 실행 옵션 설정
+
+ 
+
+config 폴더에 있는 server.properties 파일에는 카프카 브로커가 클러스터 운영에 필요한 옵션들을 지정할 수 있습니다. 저희는 실습용 카프카 브로커를 실행할 것이므로 advertised.listener만 설정하면 됩니다. 해당 설정 파일에서 현재 접속하고 있는 인스턴스의 퍼블릭 IP와 카프카 기본 포트 9092를 PLAINTEXT://와 함께 붙여넣고 advertised.listeners를 주석에서 해제합니다.
+
+ 
+
+advertised.listener : 카프카 클라이언트 또는 커맨드 라인 툴을 브로커와 연결할 때 사용됩니다.
+
+ 
+
+$ vi config/server.properties
+
+ 
+
+ 
+
+위 사진에서 #advertised.listeners=PLAINTEXT://your.host.name:9092 부분에서 #을 삭제하여 주석을 해제하고,
+
+advertised.listeners=PLAINTEXT://13.125.237.53:9092 처럼 자신의 인스턴스 퍼블릭 IP로 변경합니다.
+
+ 
+
+참고로, log.retention.hours 설정은 카프카 브로커가 저장한 파일이 삭제되기까지 걸리는 시간을 지정하는 옵션입니다. 가장 작은 단위를 기준으로 하므로 상용 환경에서는 log.retention.hours 보다는 log.retention.ms 값을 설정하는것을 추천합니다. 또한 해당 설정 값을 -1로 설정하면 파일은 영원히 삭제 되지 않습니다.
+
+ 
+
+ 
+
+주키퍼 실행
+
+ 
+
+카프카 바이너리가 포함된 폴더에는 브로커와 같이 실행할 주키퍼가 준비되어 있습니다. 분산 코디네이션 서비스를 제공하는 주키퍼는 카프카의 클러스터 설정 리더 정보, 컨트롤러 정보를 담고 있어 카프카를 실행하는 데에 필요한 필수 애플리케이션입니다. 상용에서는 안전하게 운영하기 위해서 3대 이상의 서버로 구성하여 사용하지만 실습에서는 동일한 서버에 카프카와 동시에 1대만 실행시켜 사용하겠습니다.
+
+ 
+
+아래 명령어로 주키퍼를 실행합니다. 또한 주키퍼가 정상적으로 실행되었는지 확인하기 위해 jps 명령어를 입력합니다.
+
+ 
+
+jps: JVM 프로세스 상태를 보는 도구로서, JVM 위에서 동작하는 주키퍼의 프로세스를 확인할 수 있습니다.
+
+-v option: JVM에 전달된 인자 (힙 메모리 설정, log4j 설정 등)를 확인할 수 있습니다.
+
+-m option: main 메서드에 전달된 인자를 확인할 수 있습니다.
+
+$ bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+$ jps -vm
+ 
+
+ 
+
+
+내용이 정상적으로 출력된 것을 확인할 수 있습니다.
+
+ 
+
+ 
+
+카프카 브로커 실행 및 로그 확인
+
+ 
+
+이제 카프카 브로커를 실행할 마지막 단계입니다. kafka-server-start.sh 명령어를 통해 카프카 브로커를 실행한 뒤, jps 명령어를 통해 주키퍼와 브로커 프로세스의 동작 여부를 알 수 있습니다. 이후 tail 명령어를 통해 로그를 확인하여 정상 동작하는지 확인합니다.
+
+ 
+
+$ bin/kafka-server-start.sh -daemon config/server.properties
+$ jps -m
+22226 QuorumPeerMain config/zookeeper.properties
+9506 Kafka config/server.properties
+
+$ tail -f logs/server.log
+[2024-01-11 06:31:05,180] INFO [TransactionCoordinator id=0] Starting up. (kafka.coordinator.transaction.TransactionCoordinator)
+[2024-01-11 06:31:05,203] INFO [TransactionCoordinator id=0] Startup complete. (kafka.coordinator.transaction.TransactionCoordinator)
+[2024-01-11 06:31:05,204] INFO [Transaction Marker Channel Manager 0]: Starting (kafka.coordinator.transaction.TransactionMarkerChannelManager)
+[2024-01-11 06:31:05,347] INFO [ExpirationReaper-0-AlterAcls]: Starting (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2024-01-11 06:31:05,457] INFO [/config/changes-event-process-thread]: Starting (kafka.common.ZkNodeChangeNotificationListener$ChangeEventProcessThread)
+[2024-01-11 06:31:05,510] INFO [SocketServer brokerId=0] Started data-plane processors for 1 acceptors (kafka.network.SocketServer)
+[2024-01-11 06:31:05,538] INFO Kafka version: 2.5.0 (org.apache.kafka.common.utils.AppInfoParser)
+[2024-01-11 06:31:05,538] INFO Kafka commitId: 66563e712b0b9f84 (org.apache.kafka.common.utils.AppInfoParser)
+[2024-01-11 06:31:05,538] INFO Kafka startTimeMs: 1704954665511 (org.apache.kafka.common.utils.AppInfoParser)
+[2024-01-11 06:31:05,540] INFO [KafkaServer id=0] started (kafka.server.KafkaServer)
+ 
+콘팅은 다음 3가지 토픽을 사용합니다. 미리 토픽을 생성해놓아 warn알림을 방지합니다.
+
+```java
+./bin/kafka-topics.sh --create --bootstrap-server ${카프카 인스턴스의 퍼블릭 IP}:9092 --replication-factor 1 --partitions 1 --topic success_order
+```
+
+```java
+./bin/kafka-topics.sh --create --bootstrap-server ${카프카 인스턴스의 퍼블릭 IP}:9092 --replication-factor 1 --partitions 1 --topic failure_order
+```
+
+```java
+./bin/kafka-topics.sh --create --bootstrap-server ${카프카 인스턴스의 퍼블릭 IP}:9092 --replication-factor 1 --partitions 1 --topic update_seat
+```
+
 
 ## 빌드 및 배포 정보
 
@@ -94,6 +341,8 @@ scoop --version
   scoop install openjdk17
   java --version
   ```
+
+
 
 ## 백엔드
 
