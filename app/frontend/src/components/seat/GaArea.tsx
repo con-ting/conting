@@ -50,11 +50,6 @@ export default function GaArea({
     // console.log('구역', showID);
     const fetchFamilyMembersInfo = async () => {
       const myInfo = await userInfoByWallet(userWallet);
-      console.log('가져온 내정보는', myInfo);
-      console.log('가져ㅛㄱ', families);
-      console.log('유저', userInfo?.user_id);
-      console.log('바이아이디', families.buyer_id);
-
       const membersData = await Promise.all(
         families.map(async family => {
           const userInfo = await userInfoByWallet(family.owner_wallet);
@@ -78,12 +73,8 @@ export default function GaArea({
         owner_id: userInfo?.user_id, // 현재 유저는 구매하려는 사람임
         owner_fingerprint_key: biometricKey,
       };
-      console.log('현재유저', currentUserData);
-      setFamilyMembersDropdownData([currentUserData, ...membersData]);
 
-      // console.log('저장 전 memberData', membersData);
-      console.log('d응응', familyMembersDropdownData);
-      // setFamilyMembersDropdownData(membersData);
+      setFamilyMembersDropdownData([currentUserData, ...membersData]);
     };
 
     fetchFamilyMembersInfo();
@@ -118,7 +109,7 @@ export default function GaArea({
     const memberInfo = familyMembersDropdownData.find(
       member => member.value === selectedDrop,
     );
-    console.log(memberInfo);
+    // console.log(memberInfo);
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
@@ -169,7 +160,7 @@ export default function GaArea({
       <View key={row} style={styles.row}>
         {seats.map((seat: any) => (
           <TouchableOpacity
-            key={seat.id}
+            key={seat.seat_id}
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,

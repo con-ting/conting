@@ -34,8 +34,8 @@ export default function WaitingScreen({route}: any) {
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
   useEffect(() => {
-    console.log('dddddddd', route);
-    console.log('아이디1', showID);
+    // console.log('dddddddd', route);
+    // console.log('아이디1', showID);
     const handleBiometricAuth = async () => {
       try {
         const hasKey = await checkKey();
@@ -73,7 +73,7 @@ export default function WaitingScreen({route}: any) {
         if (signatureKey && signatureKey.result) {
           console.log('서명 키 생성 성공', signatureKey.key);
           navigation.navigate('SeatArea', {
-            // biometricKey: signatureKey.key,
+            biometricKey: signatureKey.key,
             scheduleID: id,
             showID: showID,
           });
