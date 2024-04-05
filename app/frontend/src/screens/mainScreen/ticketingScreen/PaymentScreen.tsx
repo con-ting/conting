@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 import {ConcertDetailApi} from '../../../api/catalog/concert';
 import {useRecoilValue} from 'recoil';
 import {userInfoState} from '../../../utils/recoil/Atoms';
+import Loading from '../../../components/loader/Loading';
 
 export default function PaymentScreen({route}) {
   const selectedSeats = route.params.selectedSeats;
@@ -38,7 +39,7 @@ export default function PaymentScreen({route}) {
   };
 
   if (concertDetail === null) {
-    return <Text>...로딩</Text>;
+    return <Loading />;
   }
 
   return (
@@ -49,7 +50,7 @@ export default function PaymentScreen({route}) {
         showID={showID}
         scheduleID={scheduleID}
         biometricKey={biometricKey}
-        buyID={selectedSeats.memberId}
+        buyID={userID} // 현재 로그인한 유저의 아이디 = 구매자
       />
     </ScrollView>
   );

@@ -27,9 +27,9 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
         const sectorMapping = {가: 'GA', 나: 'NA', 다: 'DA'};
         const sector = sectorMapping[selectedArea];
         if (sector) {
-          console.log('가져올 구역: ', sector);
+          // console.log('가져올 구역: ', sector);
           const response = await SeatApi({schedule_id: scheduleID, sector});
-          console.log('가져온 구역의 데이터: ', response);
+          // console.log('가져온 구역의 데이터: ', response);
           setSeatsData(response.seats);
         }
       }
