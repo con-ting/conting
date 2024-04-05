@@ -34,8 +34,8 @@ export default function WaitingScreen({route}: any) {
   const intervalId = useRef(null); // intervalId를 위한 ref 생성
 
   useEffect(() => {
-    console.log('dddddddd', route);
-    console.log('아이디1', showID);
+    // console.log('dddddddd', route);
+    // console.log('아이디1', showID);
     const handleBiometricAuth = async () => {
       try {
         const hasKey = await checkKey();
@@ -93,12 +93,12 @@ export default function WaitingScreen({route}: any) {
           clearInterval(intervalId.current);
 
           // 대기열이 없으면 지문 인증 로직 실행
-          // handleBiometricAuth();
-          navigation.navigate('SeatArea', {
-            // biometricKey: signatureKey.key,
-            scheduleID: id,
-            showID: showID,
-          });
+          handleBiometricAuth();
+          // navigation.navigate('SeatArea', {
+          //   // biometricKey: signatureKey.key,
+          //   scheduleID: id,
+          //   showID: showID,
+          // });
         } else {
           setCurrentRank(status.rank);
           console.log('대기열 조회 완료:', status);
