@@ -15,6 +15,7 @@ import Loading from '../loader/Loading';
 import WebView from 'react-native-webview';
 import formatSido from '../../utils/common/SidoFormat';
 import {orderAfterApi, orderFailApi} from '../../api/order/order';
+import {widthPercent} from '../../config/Dimensions';
 
 export default function PayInfo({
   selectedSeats,
@@ -31,8 +32,9 @@ export default function PayInfo({
 
   const [isPaying, setIsPaying] = useState(false);
   useEffect(() => {
-    console.log('selectedSeats', selectedSeats)
-    console.log('구매자', selectedSeats.memberId);
+    console.log('selectedSeats', selectedSeats);
+
+    console.log('바이아이디', buyID);
     console.log('콘서트정보', concert);
     // 주문 번호 생성 : 랜덤 숫자 6자리
     const randomNumbers = Math.floor(Math.random() * 10000)
@@ -100,7 +102,7 @@ export default function PayInfo({
             price: seat.gradePrice,
             owner_id: seat.owner_id,
             finger_print: seat.owner_fingerprint_key, // 소유자 지문, 이 예제에서는 biometricKey를 사용
-            nft_url: '',
+            nft_url: seat.owner_wallet,
             row: seat.seatRow,
             col: seat.seatCol,
           })),
@@ -127,9 +129,9 @@ export default function PayInfo({
             seat_id: seat.seatId,
             schedule_id: scheduleID, // 현재 콘서트의 회차 ID
             price: seat.gradePrice,
-            owner_id: seat.memberId, // 결제 데이터에서 buyer_id 사용
-            finger_print: biometricKey, // 해당 좌석의 소유자 지문 정보
-            nft_url: '',
+            owner_id: seat.owner_id, // 결제 데이터에서 buyer_id 사용
+            finger_print: seat.owner_fingerprint_key, // 해당 좌석의 소유자 지문 정보
+            nft_url: seat.owner_wallet,
             row: seat.seatRow,
             col: seat.seatCol,
           })),
@@ -244,6 +246,7 @@ const styles = StyleSheet.create({
   },
   entry: {
     flexDirection: 'row',
+    width: widthPercent(60),
   },
   name: {
     marginLeft: 2,
