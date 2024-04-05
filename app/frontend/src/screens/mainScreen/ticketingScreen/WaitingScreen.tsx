@@ -73,7 +73,7 @@ export default function WaitingScreen({route}: any) {
         if (signatureKey && signatureKey.result) {
           console.log('서명 키 생성 성공', signatureKey.key);
           navigation.navigate('SeatArea', {
-            // biometricKey: signatureKey.key,
+            biometricKey: signatureKey.key,
             scheduleID: id,
             showID: showID,
           });
@@ -93,12 +93,12 @@ export default function WaitingScreen({route}: any) {
           clearInterval(intervalId.current);
 
           // 대기열이 없으면 지문 인증 로직 실행
-          handleBiometricAuth();
-          // navigation.navigate('SeatArea', {
-          //   // biometricKey: signatureKey.key,
-          //   scheduleID: id,
-          //   showID: showID,
-          // });
+          // handleBiometricAuth();
+          navigation.navigate('SeatArea', {
+            // biometricKey: signatureKey.key,
+            scheduleID: id,
+            showID: showID,
+          });
         } else {
           setCurrentRank(status.rank);
           console.log('대기열 조회 완료:', status);
