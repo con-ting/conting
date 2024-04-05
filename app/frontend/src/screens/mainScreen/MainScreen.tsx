@@ -31,12 +31,52 @@ import {PublicKey} from '@solana/web3.js';
 import {logout} from '../../api/auth/auth.ts';
 import PopularSinger from '../../components/list/PopularSinger';
 import Loading from '../../components/loader/Loading';
-import {
-  eventListFindAll,
-} from '../../api/web3/event.ts';
+import {eventListFindAll} from '../../api/web3/event.ts';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
-import {makeEventData} from '../lotteryResultScreen/ResultMainScreen.tsx';
+import {makeMyEventData} from '../lotteryResultScreen/ResultMainScreen.tsx';
+import {BLUEBASE, MAINGRAY, MINTBASE} from '../../config/Color.ts';
+export function makeEventData(props: {web3Data: any}) {
+  // 현재 시간을 Unix 타임스탬프로 가져옵니다.
+  const now = new Date().getTime();
 
+  // BN 인스턴스를 사용하여 timestamp를 숫자로 변환합니다.
+  const startTimestamp =
+    props.web3Data.account.startTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+  const endTimestamp = props.web3Data.account.endTimestamp.toNumber() * 1000; // 첫 번째 원소를 사용한다고 가정
+
+  let img_tag: string;
+  let img_tag_color: string;
+  // 현재 시간이 이벤트 기간 내인지 확인합니다.
+  if (now > startTimestamp && now < endTimestamp) {
+    img_tag = '진행 중';
+    img_tag_color = BLUEBASE;
+  } else if (now >= endTimestamp) {
+    // 이벤트가 종료되었고, 당첨자 명단에 내 지갑 주소가 있는지 확인합니다.
+    img_tag_color = MINTBASE;
+    img_tag = '응모 마감';
+  } else {
+    img_tag = '응모 예정';
+    img_tag_color = MAINGRAY;
+  }
+
+  // 변환된 cardProps 객체를 반환합니다.
+  return {
+    onPress: () => {
+      //네비게이션으로 이동
+      Alert.alert('앙 이벤트띠');
+    },
+    disabled: false,
+    eventArddress: props.web3Data.publicKey,
+    name: props.web3Data.account.name,
+    img_url: props.web3Data.account.uri,
+    participants: props.web3Data.account.participants,
+    winnersTotal: props.web3Data.account.winnersTotal,
+    img_tag: img_tag,
+    img_tag_color: img_tag_color,
+    start_at: new Date(startTimestamp).toISOString(),
+    end_at: new Date(endTimestamp).toISOString(),
+  };
+}
 export default function MainScreen() {
   const navigation = useNavigation();
   const currentColors = useRecoilValue(currentColor);
@@ -146,12 +186,6 @@ export default function MainScreen() {
     for (const eventListElement of eventList) {
       const newVar = makeEventData({
         web3Data: eventListElement,
-        // doItPress: doEvent({
-        //   connection: connection,
-        //   anchorWallet: useAnchorWallet,
-        //   myWalletAddress: userInfo?.walletAddress,
-        //   eventAddress: eventListElement.
-        // }),
       });
       result.push(newVar);
     }

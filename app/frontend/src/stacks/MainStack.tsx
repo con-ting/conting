@@ -23,6 +23,7 @@ import CameraScreen from '../screens/settingScreen/ticketCheckScreen/CameraScree
 import HallViewScreen from '../screens/mainScreen/hallViewScreen/HallViewScreen';
 import ResultMainScreen from '../screens/lotteryResultScreen/ResultMainScreen';
 import NftShopMainScreen from '../screens/ticketApplyScreen/nftShopScreen/NftShopMainScreen.tsx';
+import SelectNftScreen from '../screens/mainScreen/eventScreen/SelectNftScreen.tsx';
 
 const Stack = createNativeStackNavigator();
 // 키워드 인자를 사용할 경우 인자 타입 받는 부분 변경해야함. 현재 X
@@ -101,6 +102,11 @@ function MainStack() {
         name="hallDetail"
         component={HallViewScreen}
         options={options(true, '')}
+      />
+      <Stack.Screen
+        name="SelectNft"
+        component={SelectNftScreen}
+        options={options(false, '')}
       />
       <Stack.Screen
         name="ConcertRegist"

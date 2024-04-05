@@ -38,19 +38,19 @@ export default function NftTicketListScreen() {
   const toggleHeight = Math.floor(height / 10);
   const [toggleState, setToggleState] = useState(false);
   const [filteringList, setFilteringList] = useState([]);
-  const [concertList, setConcertList] = useState(defualtList);
+  const [myNftList, setMyNftList] = useState(defualtList);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const {connection} = useConnection();
 
   useEffect(() => {
     if (toggleState) {
       setFilteringList(
-        concertList.filter(item => item.primarySaleHappened === !toggleState),
+        myNftList.filter(item => item.primarySaleHappened === !toggleState),
       );
     } else {
-      setFilteringList(concertList);
+      setFilteringList(myNftList);
     }
-  }, [toggleState, concertList]);
+  }, [toggleState, myNftList]);
 
   // 뒷배경 애니메이션을 위한 부분
   const duration = 1000;
@@ -77,16 +77,16 @@ export default function NftTicketListScreen() {
 
   // 배경색 가져오기
   useEffect(() => {
-    if (!concertList.length) {
+    if (!myNftList.length) {
       return;
     }
-    getColors(concertList[currentIndex].poster.uri, {
+    getColors(myNftList[currentIndex].poster.uri, {
       cache: true,
-      key: concertList[currentIndex].poster.uri,
+      key: myNftList[currentIndex].poster.uri,
     }).then((res): any => {
       setPosterColors([res?.dominant, res.muted, res.average]);
     });
-  }, [currentIndex, concertList]);
+  }, [currentIndex, myNftList]);
 
   useEffect(() => {
     const settingList = async () => {
@@ -94,7 +94,7 @@ export default function NftTicketListScreen() {
         connection: connection,
         myWalletAddress: new PublicKey(userInfo?.walletAddress),
       });
-      setConcertList(myNftList);
+      setMyNftList(myNftList);
     };
     settingList();
   }, []);

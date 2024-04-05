@@ -15,12 +15,13 @@ import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import SingerProfile from '../card/SingerProfile.tsx';
 import {useEffect, useState} from 'react';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 
 export default function EventList(props: {events: Array<any>}) {
   const [timer, setTimer] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-
+  const navigation = useNavigation();
   useEffect(() => {
     const interval = setInterval(() => {
       const now = moment();
@@ -91,7 +92,10 @@ export default function EventList(props: {events: Array<any>}) {
             </View>
           </View>
           <TouchableOpacity
-            onPress={item.onPress}
+            onPress={() => {
+              console.log('item = ', item);
+              navigation.navigate('SelectNft', {...item});
+            }}
             style={{
               width: '100%',
               height: 40,
