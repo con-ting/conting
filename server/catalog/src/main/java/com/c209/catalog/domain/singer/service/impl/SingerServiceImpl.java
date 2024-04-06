@@ -16,9 +16,9 @@ import com.c209.catalog.global.exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,38 +26,36 @@ import java.util.stream.Collectors;
 public class SingerServiceImpl implements SingerService {
     private final SingerRepository singerRepository;
 
-    private SingerDto getSingerDtoFromSingerAndAlbumInfoList(List<SingerAndAlbumInfo> singerAndAlbumInfoList){
-        return  singerAndAlbumInfoList.stream()
+    private SingerDto getSingerDtoFromSingerAndAlbumInfoList(List<SingerAndAlbumInfo> singerAndAlbumInfoList) {
+        return singerAndAlbumInfoList.stream()
                 .map(info -> SingerDto.builder()
-                        .name(info.getSingerName())
-                        .profile(info.getSingerImage())
-                        .instagram(info.getInstagram())
+                        .name(info.singerName())
+                        .profile(info.singerImage())
+                        .instagram(info.singerInstagram())
+                        .wallet(info.singerWallet())
                         .build())
                 .findFirst()
                 .orElseThrow(() -> new CommonException(SingerErrorCode.NOT_EXIST_SINGER));
-
     }
 
-    private List<AlbumDto> getAlbumDtoFromSingerAndAlbumInfoList(List<SingerAndAlbumInfo> singerAndAlbumInfoList){
+    private List<AlbumDto> getAlbumDtoFromSingerAndAlbumInfoList(List<SingerAndAlbumInfo> singerAndAlbumInfoList) {
         return singerAndAlbumInfoList.stream()
                 .map(info -> AlbumDto.builder()
-                        .name(info.getAlbumName())
-                        .title(info.getAlbumTitle())
-                        .title_url(info.getAlbumVideo())
-                        .published_at(info.getReleaseAt())
-                        .image(info.getAlbumImage())
+                        .name(info.albumName())
+                        .title(info.albumTitle())
+                        .titleUrl(info.albumVideo())
+                        .publishedAt(info.releaseAt())
+                        .image(info.albumImage())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
+    @Transactional
     public GetSingerResponse getSingerDetails(Long singerId) {
-
         List<SingerAndAlbumInfo> singerAndAlbumInfoList = singerRepository
-                                                            .getSingerAndAlbumBySingerId((singerId))
-                                                            .orElseThrow(()->
-                                                                    new CommonException(SingerErrorCode.NOT_EXIST_SINGER)
-                                                            );
+                .getSingerAndAlbumBySingerId((singerId))
+                .orElseThrow(() -> new CommonException(SingerErrorCode.NOT_EXIST_SINGER));
 
         SingerDto singerDto = getSingerDtoFromSingerAndAlbumInfoList(singerAndAlbumInfoList);
         List<AlbumDto> albumList = getAlbumDtoFromSingerAndAlbumInfoList(singerAndAlbumInfoList);
@@ -70,23 +68,24 @@ public class SingerServiceImpl implements SingerService {
         return GetSingerResponse.builder().singer(singerDto).albums(albumList).build();
     }
 
-    private List<SingerListDto> getSingerListFromSingerInfoList(List<SingerListInfo> singerListInfoList){
+    private List<SingerListDto> getSingerListFromSingerInfoList(List<SingerListInfo> singerListInfoList) {
         return singerListInfoList.stream()
                 .map(info -> SingerListDto.builder()
-                        .singer_id(info.getSinger_id())
-                        .singer_name(info.getSinger_name())
-                        .singer_profile_image(info.getSinger_profile_image())
-                        .singer_instagram(info.getSinger_instagram())
-                        .singer_wallet(info.getSinger_wallet())
-                        .dateOfDebut(info.getDateOfDebut())
-                        .dateOfBirth(info.getDateOfBirth())
-                        .singer_view(info.getSinger_view())
+                        .singerId(info.singerId())
+                        .singerName(info.singerName())
+                        .singerProfileImage(info.singerImage())
+                        .singerInstagram(info.singerInstagram())
+                        .singerWallet(info.singerWallet())
+                        .dateOfDebut(info.dateOfDebut())
+                        .dateOfBirth(info.dateOfBirth())
+                        .singerView(info.singerView())
                         .build())
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
+    @Transactional
     public SingerListResponse getSingerList() {
         List<SingerListInfo> singerListInfoList = singerRepository.getSinger()
                 .orElseThrow(() -> new CommonException(SingerErrorCode.NOT_EXIST_SINGER));

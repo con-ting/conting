@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 
 import java.time.LocalDate;
 
@@ -20,30 +18,22 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Entity
 public class Singer extends BaseEntity {
-
-    @GeneratedValue(strategy=IDENTITY)
-    @Column(name="singer_id")
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "singer_id")
     @Id
     private Long id;
-
     @Column(nullable = false)
     private String name;
-
     @Column
     private String image;
-
     @Column
     private String instagram;
-
     @Column
     private String wallet;
-
-    @Column(name="date_of_debut")
+    @Column(name = "date_of_debut")
     LocalDate dateOfDebut;
-
-    @Column(name="date_of_birth")
+    @Column(name = "date_of_birth")
     LocalDate dateOfBirth;
-
     @Setter
     @Column(columnDefinition = "integer default 0")
     private Integer view;
