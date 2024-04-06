@@ -27,9 +27,9 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
         const sectorMapping = {가: 'GA', 나: 'NA', 다: 'DA'};
         const sector = sectorMapping[selectedArea];
         if (sector) {
-          console.log('가져올 구역: ', sector);
+          // console.log('가져올 구역: ', sector);
           const response = await SeatApi({schedule_id: scheduleID, sector});
-          console.log('가져온 구역의 데이터: ', response);
+          // console.log('가져온 구역의 데이터: ', response);
           setSeatsData(response.seats);
         }
       }
@@ -96,17 +96,26 @@ export default function SeatAreaButtons({biometricKey, scheduleID, showID}) {
         <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setSelectedArea('가')}>
+            onPress={() => {
+              setSeatsData([]); // 이전 좌석 데이터 초기화
+              setSelectedArea('가');
+            }}>
             <Text style={F_SIZE_B_BUTTON}>가</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setSelectedArea('나')}>
+            onPress={() => {
+              setSeatsData([]); // 이전 좌석 데이터 초기화
+              setSelectedArea('나');
+            }}>
             <Text style={F_SIZE_B_BUTTON}>나</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setSelectedArea('다')}>
+            onPress={() => {
+              setSeatsData([]); // 이전 좌석 데이터 초기화
+              setSelectedArea('다');
+            }}>
             <Text style={F_SIZE_B_BUTTON}>다</Text>
           </TouchableOpacity>
         </View>

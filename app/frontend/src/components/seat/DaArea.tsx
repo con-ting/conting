@@ -18,6 +18,8 @@ import {PopUpModal} from '../modal/Modal';
 import {Dropdown} from '../dropdown/Dropdown';
 import SeatSum from './SeatSum';
 import {userInfoByWallet} from '../../api/web3/did';
+import {useRecoilValue} from 'recoil';
+import {userInfoState} from '../../utils/recoil/Atoms';
 
 export default function GaArea({
   userID,
@@ -37,22 +39,23 @@ export default function GaArea({
   const [familyMembersDropdownData, setFamilyMembersDropdownData] = useState(
     [],
   );
-  // const familyMembers = [
-  //   {id: userID, label: '본인', value: '본인'},
-  //   {id: 2, label: '어머니', value: '어머니'},
-  //   {id: 3, label: '아버지', value: '아버지'},
-  //   {id: 4, label: '누나', value: '누나'},
-  // ];
+
+  //현재 유저의 정보
+  const userInfo = useRecoilValue(userInfoState);
+  //현재 유저의 지갑 주소 세팅
+  const userWallet = userInfo ? userInfo.walletAddress : null;
+
   useEffect(() => {
     // console.log('구역', showID);
     const fetchFamilyMembersInfo = async () => {
+      const myInfo = await userInfoByWallet(userWallet);
       const membersData = await Promise.all(
-        families.map(async (family: {buyer_wallet: string}) => {
-          const userInfo = await userInfoByWallet(family.buyer_wallet);
+        families.map(async family => {
+          const userInfo = await userInfoByWallet(family.owner_wallet);
           return {
-            id: family.buyer_id, // buyer_id를 사용합니다.
+            id: family.owner_id, // buyer_id를 사용합니다.
             label: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
-            value: family.buyer_wallet, // buyer_wallet을 사용합니다.
+            value: family.owner_wallet, // buyer_wallet을 사용합니다.
             userName: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
             owner_id: family.owner_id, // 추가
             owner_wallet: family.owner_wallet, // 추가
@@ -60,7 +63,17 @@ export default function GaArea({
           };
         }),
       );
-      setFamilyMembersDropdownData(membersData);
+      // 현재 유저의 정보를 첫 번째 요소로 추가
+      const currentUserData = {
+        id: userInfo?.user_id, // 현재 유저의 ID (현재 유저는 구매하려는 사람임)
+        label: myInfo.name, // 현재 유저의 이름
+        value: userWallet, // 현재 유저의 지갑 주소
+        userName: myInfo.name, // 현재 유저의 이름
+        owner_id: userInfo?.user_id, // 현재 유저는 구매하려는 사람임
+        owner_fingerprint_key: biometricKey,
+      };
+
+      setFamilyMembersDropdownData([currentUserData, ...membersData]);
     };
 
     fetchFamilyMembersInfo();
@@ -94,8 +107,6 @@ export default function GaArea({
     const memberInfo = familyMembersDropdownData.find(
       member => member.value === selectedDrop,
     );
-    const userName = memberInfo ? memberInfo.userName : '알 수 없음';
-    const memberId = memberInfo ? memberInfo.id : null;
 
     setSelectedSeats(prevSelectedSeats => ({
       ...prevSelectedSeats,
@@ -146,7 +157,7 @@ export default function GaArea({
       <View key={row} style={styles.row}>
         {seats.map((seat: any) => (
           <TouchableOpacity
-            key={seat.id}
+            key={seat.seat_id}
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,

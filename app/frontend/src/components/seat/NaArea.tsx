@@ -1,4 +1,10 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   F_SIZE_BIGTEXT,
   F_SIZE_B_TITLE,
@@ -13,11 +19,13 @@ import {
   widthPercent,
 } from '../../config/Dimensions';
 import {CARDBASE, MAINYELLOW} from '../../config/Color';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {PopUpModal} from '../modal/Modal';
 import SeatSum from './SeatSum';
 import {Dropdown} from '../dropdown/Dropdown';
 import {userInfoByWallet} from '../../api/web3/did';
+import {useRecoilValue} from 'recoil';
+import {userInfoState} from '../../utils/recoil/Atoms';
 
 export default function NaArea({
   userID,
@@ -38,23 +46,33 @@ export default function NaArea({
   const [familyMembersDropdownData, setFamilyMembersDropdownData] = useState(
     [],
   );
-  // const familyMembers = [
-  //   {id: userID, label: '본인', value: '본인', userName: '김싸피'},
-  //   {id: 2, label: '어머니', value: '어머니', userName: '김엄마'},
-  //   {id: 3, label: '아버지', value: '아버지', useNrame: '김아빠'},
-  //   {id: 4, label: '누나', value: '누나', userName: '김누나'},
-  // ];
+
+  //현재 유저의 정보
+  const userInfo = useRecoilValue(userInfoState);
+  //현재 유저의 지갑 주소 세팅
+  const userWallet = userInfo ? userInfo.walletAddress : null;
+  const scrollViewRef = useRef(null); // ScrollView에 대한 참조를 생성
+
   useEffect(() => {
+    // "STAGE"를 중앙에 위치시키기 위한 초기 스크롤 위치 계산 및 설정
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollTo({
+        x: widthPercent(280), //'STAGE' 컴포넌트의 너비를 기준으로 계산
+        animated: true,
+      });
+    }, 0); // 타이머를 사용하여 컴포넌트가 완전히 마운트된 후에 실행
+
     // console.log('구역', showID);
     const fetchFamilyMembersInfo = async () => {
+      const myInfo = await userInfoByWallet(userWallet);
       const membersData = await Promise.all(
-        families.map(async (family: {buyer_wallet: string}) => {
-          const userInfo = await userInfoByWallet(family.buyer_wallet);
+        families.map(async family => {
+          const userInfo = await userInfoByWallet(family.owner_wallet);
           console.log('유저정보', userInfo);
           return {
-            id: family.buyer_id, // buyer_id를 사용합니다.
+            id: family.owner_id, // buyer_id를 사용합니다.
             label: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
-            value: family.buyer_wallet, // buyer_wallet을 사용합니다.
+            value: family.owner_wallet, // buyer_wallet을 사용합니다.
             userName: userInfo.name, // userInfoByWallet 응답에서 name을 사용합니다.
             owner_id: family.owner_id, // 추가
             owner_wallet: family.owner_wallet, // 추가
@@ -62,11 +80,22 @@ export default function NaArea({
           };
         }),
       );
-      setFamilyMembersDropdownData(membersData);
+      // 현재 유저의 정보를 첫 번째 요소로 추가
+      const currentUserData = {
+        id: userInfo?.user_id, // 현재 유저의 ID (현재 유저는 구매하려는 사람임)
+        label: myInfo.name, // 현재 유저의 이름
+        value: userWallet, // 현재 유저의 지갑 주소
+        userName: myInfo.name, // 현재 유저의 이름
+        owner_id: userInfo?.user_id, // 현재 유저는 구매하려는 사람임
+        owner_fingerprint_key: biometricKey,
+      };
+
+      setFamilyMembersDropdownData([currentUserData, ...membersData]);
     };
 
     fetchFamilyMembersInfo();
-  }, [families]);
+    return () => clearTimeout(timer); // 컴포넌트가 언마운트될 때 타이머를 정리
+  }, [biometricKey, families, userInfo?.user_id, userWallet]);
 
   const handleItemSelect = selectedValue => {
     setSelectedDrop(selectedValue);
@@ -148,7 +177,7 @@ export default function NaArea({
       <View key={row} style={styles.row}>
         {seats.map((seat: any) => (
           <TouchableOpacity
-            key={seat.id}
+            key={seat.seat_id}
             style={[
               styles.seat,
               !seat.is_available && styles.reservedSeat,
@@ -206,12 +235,19 @@ export default function NaArea({
           textSize={14}
         />
         <View style={styles.space} />
-        <View style={styles.stage}>
-          <Text style={F_SIZE_B_TITLE}>STAGE</Text>
-        </View>
-        {renderSeatsByRow(alphaRows)}
-        <View style={styles.separator} />
-        {renderSeatsByRow(numberRows)}
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.seatContainer}
+          horizontal={true}>
+          <View style={styles.seats}>
+            <View style={styles.stage}>
+              <Text style={F_SIZE_B_TITLE}>STAGE</Text>
+            </View>
+            <View>{renderSeatsByRow(alphaRows)}</View>
+            <View style={styles.separator} />
+            <View>{renderSeatsByRow(numberRows)}</View>
+          </View>
+        </ScrollView>
       </View>
       <View style={styles.row}>
         <View style={styles.available} />
@@ -247,9 +283,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 10,
     position: 'relative',
+    gap: 5,
   },
   rowLabel: {
     width: widthPercent(30),
@@ -263,12 +300,15 @@ const styles = StyleSheet.create({
   },
 
   seatContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
+
+    // backgroundColor: 'gray',
+    // flexDirection: 'column',
+    // height: heightPercent(350),
   },
   seat: {
-    width: widthPercent(21),
-    height: heightPercent(20),
+    width: widthPercent(30),
+    height: heightPercent(30),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1C1C1C',
@@ -276,6 +316,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     // margin: 2,
   },
+  seats: {
+    // alignItems: 'center',
+  },
+
   reservedSeat: {
     backgroundColor: '#877F6C',
   },
@@ -317,8 +361,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stage: {
-    width: widthPercent(140),
-    height: heightPercent(50),
+    width: '100%',
+    // width: widthPercent(140),
+    height: heightPercent(30),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#D9D9D9',
