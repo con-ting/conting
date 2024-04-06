@@ -25,7 +25,6 @@ type NftBackProps = {
 };
 
 export default function NftSelectCard(props: NftBackProps) {
-  console.log('props = ', props);
   return (
     <View style={[styles.container]}>
       <View style={styles.imageContainer}>

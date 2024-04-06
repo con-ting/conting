@@ -21,7 +21,7 @@ type ModalProps = {
 };
 
 /**
- *
+ * SlideModal
  * @param props
  * isVisible : 이 모달의 useState
  * setIsVisible : 이 모달의 setUseState

@@ -22,6 +22,10 @@ import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../../utils/recoil/Atoms.ts';
 import NftSelectCard from '../../../components/nft/NftSelectCard.tsx';
 import {MAINFONT} from '../../../config/Font.ts';
+import {H1, H4} from '../../../config/Typography.tsx';
+import {Spacer} from '../../../utils/common/Spacer.tsx';
+import {doEvent} from '../../../api/web3/event.ts';
+import {useAnchorWallet} from '../../../config/web3Config.tsx';
 
 const {width} = Dimensions.get('window');
 const CARD_WIDTH = width * 0.9;
@@ -36,7 +40,7 @@ export default function SelectNftScreen(props: {selectItem: any}) {
 
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const {connection} = useConnection();
-
+  console.log('select item ', props.selectItem);
   useEffect(() => {
     const settingList = async () => {
       const nftList = await nftListFindByMyWallet({
@@ -125,21 +129,35 @@ export default function SelectNftScreen(props: {selectItem: any}) {
     );
   };
 
-  const apiSendor = () => {
+  const apiSender = () => {
     if (cards.length > 0) {
       const topCard = cards[cards.length - 1];
       Alert.alert(
         'Top Card Info',
         `이름: ${topCard.title}, 주소: ${topCard.ticketAddress}`,
       );
+      const promise = doEvent({
+        connection: connection,
+        anchorWallet: useAnchorWallet,
+        myWalletAddress: new PublicKey(userInfo?.walletAddress),
+        nftAddress: new PublicKey(topCard.ticketAddress),
+        // eventAddress: new PublicKey(props.selectItem.eventAddress),
+        eventAddress: new PublicKey(
+          '3KZGiuXRYdUc2xuSujnjmvs8k3MqRz9vk7spoxJNYupw',
+        ),
+      });
+      console.log('===================');
+      console.log('promise ==', promise);
+      console.log('===================');
     }
   };
 
   return (
     <View style={styles.container}>
+      <Spacer space={30}></Spacer>
       {renderCards()}
-      <TouchableOpacity style={styles.button} onPress={apiSendor}>
-        <Text style={styles.buttonText}>응모권에 사용하기</Text>
+      <TouchableOpacity style={styles.button} onPress={apiSender}>
+        <Text style={styles.buttonText}>선택한 NFT를 응모권에 사용하기</Text>
       </TouchableOpacity>
     </View>
   );
