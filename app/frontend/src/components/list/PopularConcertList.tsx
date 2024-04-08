@@ -114,6 +114,9 @@ export default function PopularConcertList({
       }}
       defaultIndex={0}
       mode="parallax"
+      panGestureHandlerProps={{
+        activeOffsetX: [-30, 30],
+      }}
     />
   );
 }

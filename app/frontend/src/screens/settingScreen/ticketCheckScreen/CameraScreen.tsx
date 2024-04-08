@@ -23,7 +23,7 @@ export default function CameraScreen() {
     <View style={styles.container}>
       <QRCodeScanner
         onRead={checkQR}
-        topContent={<Text>검표하자</Text>}
+        topContent={<Text>검표</Text>}
         reactivateTimeout={3000}
         reactivate={true}
         containerStyle={{

@@ -52,10 +52,6 @@ export default function NftSelectCard(props: NftBackProps) {
             <Text style={F_SIZE_TEXT}>{props.ticketAddress.toBase58()}</Text>
           </View>
           <View style={styles.content}>
-            <Text style={F_SIZE_Y_TEXT}>가수 명</Text>
-            <Text style={F_SIZE_TEXT}>{props.accountData.data.name}</Text>
-          </View>
-          <View style={styles.content}>
             <Text style={F_SIZE_Y_TEXT}>거래시 수수료</Text>
             <Text style={F_SIZE_TEXT}>
               {props.accountData.data.sellerFeeBasisPoints * 0.01} %

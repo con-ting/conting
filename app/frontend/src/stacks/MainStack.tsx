@@ -150,14 +150,14 @@ function MainStack() {
       />
       <Stack.Screen
         name="TicketCheck"
-        component={TicketCheckScreen}
-        options={options(true, '검표 가능 목록')}
-      />
-      <Stack.Screen
-        name="Camera"
         component={CameraScreen}
         options={options(true, '')}
       />
+      {/* <Stack.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={options(true, '')}
+      /> */}
     </Stack.Navigator>
   );
 }

@@ -145,7 +145,6 @@ export default function TicketListScreen() {
             scaleInterval: 0.1,
             rotateZDeg: 80,
           }}
-          autoFillData={false}
           onSnapToItem={index => {
             setCurrentIndex(index);
           }}

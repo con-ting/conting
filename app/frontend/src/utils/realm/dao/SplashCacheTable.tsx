@@ -36,7 +36,6 @@ type ApiData = {
 
 export async function saveDataToRealm(realm: Realm.Realm, data: ApiData) {
   console.log('캐쉬데이터 저장 시작');
-  console.log('data', data);
   try {
     realm.write(() => {
       // 홀 데이터 저장
