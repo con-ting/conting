@@ -15,12 +15,17 @@ import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import SingerProfile from '../card/SingerProfile.tsx';
 import {useEffect, useState} from 'react';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
+import {SlideModal} from '../modal/Modal.tsx';
+import SelectNftScreen from '../../screens/mainScreen/eventScreen/SelectNftScreen.tsx';
 
 export default function EventList(props: {events: Array<any>}) {
   const [timer, setTimer] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [selectNftModalVisible, setSelectNftModalVisible] = useState(false);
 
+  const navigation = useNavigation();
   useEffect(() => {
     const interval = setInterval(() => {
       const now = moment();
@@ -91,7 +96,9 @@ export default function EventList(props: {events: Array<any>}) {
             </View>
           </View>
           <TouchableOpacity
-            onPress={item.onPress}
+            onPress={() => {
+              setSelectNftModalVisible(true);
+            }}
             style={{
               width: '100%',
               height: 40,
@@ -104,6 +111,11 @@ export default function EventList(props: {events: Array<any>}) {
             <Text style={F_SIZE_Y_TITLE}>응모하기</Text>
           </TouchableOpacity>
         </View>
+        <SlideModal
+          isVisible={selectNftModalVisible}
+          setIsVisible={setSelectNftModalVisible}>
+          <SelectNftScreen selectItem={item}></SelectNftScreen>
+        </SlideModal>
       </View>
     );
   };

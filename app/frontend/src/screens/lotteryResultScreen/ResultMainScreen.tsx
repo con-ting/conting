@@ -30,7 +30,7 @@ import {doEvent, eventListFindByWallet} from '../../api/web3/event.ts';
 import {useConnection} from '../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
 import {useRecoilState} from 'recoil';
 import {userInfoState} from '../../utils/recoil/Atoms.ts';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {useAnchorWallet} from '../../config/web3Config.tsx';
 import {PublicKey} from '@solana/web3.js';
 
@@ -255,7 +255,7 @@ function MakeConsertCardObject(
       };
   }
 }
-export function makeEventData(props: {web3Data: any; doItPress?: any}) {
+export function makeMyEventData(props: {web3Data: any}) {
   // 현재 시간을 Unix 타임스탬프로 가져옵니다.
   const now = new Date().getTime();
 
@@ -303,11 +303,10 @@ export function makeEventData(props: {web3Data: any; doItPress?: any}) {
     img_tag_color: img_tag_color,
     start_at: new Date(startTimestamp).toISOString(),
     end_at: new Date(endTimestamp).toISOString(),
-    doItPress: props.doItPress,
   };
 }
 export default function ResultMainScreen() {
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const [selectedTab, setSelectedTab] = useState(Tabs[0]); // 선택된 탭 상태
   const [cardList, setCardList] = useState([]);
   const [eventCardList, setEventCardList] = useState([]);
@@ -350,7 +349,7 @@ export default function ResultMainScreen() {
     });
 
     for (const eventListElement of eventList) {
-      result.push(makeEventData({wev3Data: eventListElement}));
+      result.push(makeMyEventData({wev3Data: eventListElement}));
     }
     return result;
   };

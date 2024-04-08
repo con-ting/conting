@@ -101,9 +101,9 @@ export async function eventListFindByWallet(props: {
 export async function doEvent(props: {
   connection: any;
   anchorWallet: any;
-  myWalletAddress: PublicKey;
-  eventAddress: PublicKey;
-  nftAddress: PublicKey;
+  myWalletAddress: PublicKey; // 내 지갑 주소
+  eventAddress: PublicKey; //이벤트 주소
+  nftAddress: PublicKey; //사용할 nft 주소
 }) {
   const provider = new AnchorProvider(props.connection, props.anchorWallet, {
     preflightCommitment: 'confirmed',
@@ -151,9 +151,7 @@ export async function doEvent(props: {
     .signers([entry])
     .rpc();
 
-  const res = await processEventEntryTicketUsage(tx);
-
-  return res;
+  return await processEventEntryTicketUsage(tx);
 }
 
 export const processEventEntryTicketUsage = async (tx: string) => {

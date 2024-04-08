@@ -18,6 +18,19 @@ import {
   CastDetailSearchApi,
   ConcertSearchApi,
 } from '../../../../api/catalog/concert';
+import {
+  eventFindBySingerAddress,
+  eventListFindAll,
+  eventListFindByWallet,
+} from '../../../../api/web3/event.ts';
+import {useAnchorWallet} from '../../../../config/web3Config.tsx';
+import {PublicKey} from '@solana/web3.js';
+import {makeMyEventData} from '../../../lotteryResultScreen/ResultMainScreen.tsx';
+import {useConnection} from '../../../../components/mobileWalletAdapter/providers/ConnectionProvider.tsx';
+import {useRecoilState} from 'recoil';
+import {userInfoState} from '../../../../utils/recoil/Atoms.ts';
+import {makeEventData} from '../../MainScreen.tsx';
+import {ifError} from 'assert';
 
 const Tabs = ['활동', '이벤트'];
 
@@ -29,6 +42,9 @@ export default function CastDetailScreen({route}: any) {
   const [singer, setSinger] = useState([]); //가
   const [castName, setCastName] = useState('');
   const [concerts, setConcerts] = useState([]); // 공연 데이터 상태
+  const [events, setEvents] = useState([]); // 이벤트 데이터 상태
+  const {connection} = useConnection();
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   useEffect(() => {
     fetchCast(castId);
@@ -43,12 +59,36 @@ export default function CastDetailScreen({route}: any) {
     console.log('fetchCastResponse =', response);
     setCastInfo(response.singer);
     setCastName(response.singer.name);
-    fetchConcerts(response.singer.name);
+    await fetchConcerts(response.singer.name);
+    await settingEvent(response.singer.wallet);
     console.log('이름은-----------------', castName);
     console.log('캐스트정보', castInfo);
     // 가수 명 세팅 후 그에 해당하는 콘서트 조회
     setCastAlbum(response.albums);
   };
+  const fetchEvents = async (wallet: string) => {
+    const resultEvent = [];
+    //이벤트 내역 조회
+    const eventList = await eventFindBySingerAddress({
+      connection: connection,
+      anchorWallet: useAnchorWallet,
+      singerAddress: new PublicKey(wallet),
+    });
+
+    for (const eventListElement of eventList) {
+      resultEvent.push(makeEventData({web3Data: eventListElement}));
+    }
+
+    return resultEvent;
+  };
+  const settingEvent = async (wallet: string) => {
+    const data = await fetchEvents(wallet);
+    setEvents(data);
+  };
+  // useEffect(() => {
+  //   console.log('selectedTab', selectedTab);
+  //   settingEvent();
+  // }, [selectedTab]);
 
   const fetchConcerts = async (name: string) => {
     console.log('fetchConcertsRequest=', {
@@ -80,7 +120,7 @@ export default function CastDetailScreen({route}: any) {
       case '활동':
         return <CastActivityScreen albums={castAlbum} concerts={concerts} />;
       case '이벤트':
-        return <CastEventScreen />;
+        return <CastEventScreen events={events} />;
       default:
         return null;
     }
