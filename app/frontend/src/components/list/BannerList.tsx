@@ -49,6 +49,9 @@ export default function BannerList({banners}: BannerListProps) {
         height={heightPercent(200)}
         autoPlay={true}
         autoPlayInterval={2000}
+        panGestureHandlerProps={{
+          activeOffsetX: [-10, 10],
+        }}
       />
     </View>
   );

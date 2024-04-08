@@ -84,8 +84,8 @@ const handleResponseError = async (error: AxiosError) => {
       console.error('', error.response.data.detail);
       throw error.response.data;
     case 500:
-      alert('시스템 에러, 관리자에게 문의 바랍니다.');
-      break;
+      Alert.alert('시스템 에러, 관리자에게 문의 바랍니다.');
+      throw error.response.data;
     default:
       console.error(error);
       return Promise.reject(error);

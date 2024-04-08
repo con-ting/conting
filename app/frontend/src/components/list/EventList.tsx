@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Image, ColorValue} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ColorValue,
+  Dimensions,
+} from 'react-native';
 import {BlueButton} from '../button/Button';
 import {fontPercent, heightPercent} from '../../config/Dimensions';
 import {widthPercent} from './../../config/Dimensions';
@@ -18,14 +25,16 @@ import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 import {SlideModal} from '../modal/Modal.tsx';
 import SelectNftScreen from '../../screens/mainScreen/eventScreen/SelectNftScreen.tsx';
+import Carousel from 'react-native-reanimated-carousel';
 
 export default function EventList(props: {events: Array<any>}) {
   const [timer, setTimer] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectNftModalVisible, setSelectNftModalVisible] = useState(false);
-
   const navigation = useNavigation();
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = moment();
@@ -54,11 +63,24 @@ export default function EventList(props: {events: Array<any>}) {
     return () => clearInterval(interval);
   }, [startTime, endTime]);
 
-  const renderItem = item => {
-    setStartTime(item.start_at);
-    setEndTime(item.end_at);
+  useEffect(() => {
+    console.log(props.events);
+    const setTime = () => {
+      setStartTime(props.events[currentIndex].start_at);
+      setEndTime(props.events[currentIndex].end_at);
+    };
+    if (props.events.length) {
+      setTime();
+    }
+  }, [props.events, currentIndex]);
+
+  const renderItem = ({item}) => {
     return (
-      <View>
+      <View
+        style={{
+          width: '100%',
+          height: '100%',
+        }}>
         <View style={styles.cardContainer}>
           <View
             style={{
@@ -68,7 +90,7 @@ export default function EventList(props: {events: Array<any>}) {
             <Image
               style={{
                 width: '100%',
-                height: '100%',
+                height: heightPercent(300),
                 borderRadius: widthPercent(10),
                 resizeMode: 'stretch',
               }}
@@ -119,6 +141,7 @@ export default function EventList(props: {events: Array<any>}) {
       </View>
     );
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -147,12 +170,23 @@ export default function EventList(props: {events: Array<any>}) {
       {/*end_at: new Date(endTimestamp).toISOString(),*/}
       {/*doItPress: props.doItPress,*/}
       <View style={{flex: 4}}>
-        <FlatList
+        <Carousel
           data={props.events}
-          decelerationRate="fast"
-          horizontal
-          renderItem={({item, index}) => renderItem(item)}
-          showsHorizontalScrollIndicator={false}
+          renderItem={renderItem}
+          width={Dimensions.get('screen').width * 0.9}
+          defaultIndex={0}
+          mode="parallax"
+          onSnapToItem={index => {
+            setCurrentIndex(index);
+          }}
+          modeConfig={{
+            parallaxScrollingScale: 0.8,
+            parallaxScrollingOffset: 50,
+            parallaxAdjacentItemScale: 0.8,
+          }}
+          panGestureHandlerProps={{
+            activeOffsetX: [-30, 30],
+          }}
         />
       </View>
     </View>
@@ -170,17 +204,17 @@ const styles = StyleSheet.create({
     padding: widthPercent(10),
   },
   titleContainer: {
-    flex: 1,
+    flex: 0.5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: heightPercent(10),
   },
   timeContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    flex: 0.5,
     borderRadius: widthPercent(10),
     backgroundColor: 'rgba(242,242,242,0.8)',
   },

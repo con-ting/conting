@@ -1,7 +1,5 @@
-import {Animated, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {useRecoilValue} from 'recoil';
-import {currentColor} from '../../utils/recoil/Atoms';
 import {ArrowLeft} from 'iconsax-react-native';
 import {
   F_SIZE_BBIGTEXT,
@@ -9,7 +7,7 @@ import {
   F_SIZE_HEADER,
   F_SIZE_Y_TITLE,
 } from '../../config/Font';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {heightPercent, widthPercent} from '../../config/Dimensions';
 import SummaryCard from '../../components/concertDetail/SummaryCard';
 import ConcertHallCard from '../../components/card/ConcertHallCard';
@@ -21,53 +19,52 @@ import SingerProfile from '../../components/card/SingerProfile';
 import {ConcertDetailApi} from '../../api/catalog/concert';
 import Loading from '../../components/loader/Loading';
 import {korDateFormatString} from '../../utils/common/TimeFormat';
+import {getColors} from 'react-native-image-colors';
+import {alertAndLog} from '../../utils/common/alertAndLog';
 
 export default function ConcertDetailScreen({route}) {
   // 지도 토글을 위한
+  const show_id = route.params.show_id;
   const [isRender, setIsRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [concertDetail, setConcertDetail] = useState(null);
-  const backgroundColor = useRecoilValue(currentColor);
+  const [backgroundColors, setBackgroundColors] = useState([]);
   const navigation = useNavigation();
-  const show_id = route.params.show_id;
   // 스크롤 위치 추적을 위한 Animated.Value
   const scrollY = useRef(new Animated.Value(0)).current;
 
   // fetchData 함수는 이제 useEffect 바깥에서 정의되며, 필요한 값을 파라미터로 받는다.
+
   useEffect(() => {
-    const fetchData = async (show_id: string) => {
-      try {
-        const data = await ConcertDetailApi(show_id);
-        // isMounted를 파라미터로 받아, 함수 내에서 직접 접근한다.
-        setConcertDetail(data);
-      } catch (error) {
-        console.error('API 호출 중 오류 발생: ', error);
-        // 에러 처리 로직 추가...
-      }
+    const fetchData = (show_id: string) => {
+      setTimeout(async () => {
+        try {
+          const data = await ConcertDetailApi(show_id);
+          setConcertDetail(data);
+          getColors(data.show.poster, {
+            cache: true,
+            key: data.show.poster,
+          }).then((res): any => {
+            console.log(res);
+            setBackgroundColors([res.dominant, res.lightMuted, res.vibrant]);
+          });
+        } catch (error) {
+          console.error('API 호출 중 오류 발생: ', error);
+          // 에러 처리 로직 추가...
+          alertAndLog('', '공연 정보 로드 중 오류가 발생했습니다.');
+          navigation.goBack();
+        }
+      }, 500);
     };
     fetchData(show_id);
   }, []);
 
-  if (!concertDetail) {
-    // concertDetail 데이터가 아직 로드되지 않았을 때의 대체 컨텐츠 (예: 로딩 스피너)
+  // 콘서트 데이터와 색이 아직 렌더링 되지 않았을 경우 로딩
+  if (!concertDetail || !backgroundColors.length) {
     return <Loading />;
   }
   return (
-    <ImageBackground
-      blurRadius={2}
-      resizeMode="stretch"
-      style={{flex: 1, justifyContent: 'space-between'}}
-      source={{uri: concertDetail.show.poster}}>
-      <View style={styles.topContainer}>
-        <ArrowLeft
-          onPress={() => navigation.goBack()}
-          color="white"
-          size={48}
-        />
-        <Text style={{...F_SIZE_HEADER, marginTop: heightPercent(20)}}>
-          {concertDetail.show.title}
-        </Text>
-      </View>
+    <>
       <LinearGradient
         start={{x: 0.0, y: 0.0}}
         end={{x: 1.0, y: 1.0}}
@@ -75,7 +72,7 @@ export default function ConcertDetailScreen({route}) {
           flex: 1,
           // marginTop: 50,
         }}
-        colors={backgroundColor}>
+        colors={backgroundColors}>
         <Animated.ScrollView
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollY}}}],
@@ -86,6 +83,16 @@ export default function ConcertDetailScreen({route}) {
             flex: 1,
             padding: 10,
           }}>
+          <View style={styles.topContainer}>
+            <ArrowLeft
+              onPress={() => navigation.goBack()}
+              color="white"
+              size={30}
+            />
+            <Text style={{...F_SIZE_HEADER, marginTop: heightPercent(20)}}>
+              {concertDetail.show.title}
+            </Text>
+          </View>
           <SummaryCard info={concertDetail} />
           {/* <Text style={F_SIZE_BBIGTEXT}>{concertDetail.show.description}</Text> */}
           <Outline show={concertDetail.show} />
@@ -134,10 +141,10 @@ export default function ConcertDetailScreen({route}) {
           <View style={styles.casts}>
             <Text style={F_SIZE_BTITLE}>출연</Text>
             <View style={styles.row}>
-              {concertDetail.singers.map((singer, idx) => {
+              {concertDetail.singers.map(singer => {
                 return (
                   <SingerProfile
-                    key={idx}
+                    key={singer.id}
                     id={singer.id}
                     name={singer.name}
                     profile={singer.profile}
@@ -193,13 +200,13 @@ export default function ConcertDetailScreen({route}) {
             />
           </View>
         </Animated.ScrollView>
+        <ConcertBottomButtons
+          scrollY={scrollY}
+          schedule={[concertDetail.schedule]}
+          showID={show_id}
+        />
       </LinearGradient>
-      <ConcertBottomButtons
-        scrollY={scrollY}
-        schedule={[concertDetail.schedule]}
-        showID={show_id}
-      />
-    </ImageBackground>
+    </>
   );
 }
 const Outline = ({show}) => {
@@ -234,14 +241,14 @@ const Price = ({gradeList}) => {
     <View style={styles.price}>
       <Text style={F_SIZE_BTITLE}>가격</Text>
       <View>
-        {gradeList.map(item => (
-          <>
-            <View key={item.grade} style={styles.priceInfo}>
+        {gradeList.map((item, idx) => (
+          <View key={idx}>
+            <View style={styles.priceInfo}>
               <Text style={F_SIZE_BBIGTEXT}>{item.grade}</Text>
               <Text style={F_SIZE_BBIGTEXT}>￦ {item.price}</Text>
             </View>
             <View style={styles.line} />
-          </>
+          </View>
         ))}
       </View>
     </View>

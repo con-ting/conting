@@ -27,9 +27,7 @@ type TicketCardProps = {
 };
 
 export default function TicketQrCard(props: TicketCardProps) {
-  console.log('ticket qr : ', props);
   const [isPass, setIspass] = useState(false);
-  const [isQR, setIsQR] = useState(false);
   const [qrURL, setQrURL] = useState('');
   const [timeLeft, setTimeLeft] = useState(30);
 
@@ -50,11 +48,6 @@ export default function TicketQrCard(props: TicketCardProps) {
     return () => clearInterval(interval);
   }, [isPass, timeLeft]);
 
-  useEffect(() => {
-    if (isPass) {
-      setIsQR(false);
-    }
-  }, [isPass]);
   // 입장권 터치시 지문 인식하는 과정
   const handlePass = async () => {
     // 키가 존재하는지 확인
@@ -67,6 +60,9 @@ export default function TicketQrCard(props: TicketCardProps) {
       // 지문 인식을 하는데 새로운 지문을 등록했을 경우 키 삭제 후 새로운 키 발급
       const {result, key, msg} = await biometricsAuth();
       console.log(key);
+      if (key === null || key === undefined) {
+        return;
+      }
       if (msg === '지문 재등록 필요') {
         alertAndLog(
           '',
@@ -89,6 +85,7 @@ export default function TicketQrCard(props: TicketCardProps) {
           healthCheck(res.uuid);
         } catch (error) {
           alertAndLog('', error);
+          console.log(error);
         }
       }
     }
@@ -105,15 +102,17 @@ export default function TicketQrCard(props: TicketCardProps) {
             alertAndLog('', error);
             clearInterval(healthcheck);
             setIspass(false);
-          case 'QR 코드가 유효하지 않습니다.':
+          case 'QR 코드가 만료되었습니다..':
             alertAndLog('', error);
             clearInterval(healthcheck);
             setIspass(false);
           default:
             console.log(error);
+            clearInterval(healthcheck);
+            setIspass(false);
         }
       }
-    }, 2000);
+    }, 2300);
 
     // 30초 후 자동으로 반복 종료
     setTimeout(() => {

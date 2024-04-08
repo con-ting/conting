@@ -116,7 +116,7 @@ export default function TicketEntryCard(props: TicketEntryCardProps) {
         <Animated.View style={[styles.ticketContainer, animatedCard]}>
           <TouchableOpacity
             style={{width: cardWidth, height: cardHeight}}
-            activeOpacity={0.8}
+            activeOpacity={1}
             onPress={backHandler}>
             {!isBack ? (
               <TicketFront
